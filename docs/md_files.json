@@ -1,0 +1,112 @@
+{
+  "generated_by": "tools/run_service.py",
+  "total": 24,
+  "categories": [
+    "behavioral",
+    "interviews",
+    "knowledge",
+    "mock-interviews",
+    "roadmap"
+  ],
+  "files": [
+    {
+      "category": "behavioral",
+      "file": "behavioral/amazon-leadership-principles.md"
+    },
+    {
+      "category": "behavioral",
+      "file": "behavioral/star-questions.md"
+    },
+    {
+      "category": "interviews",
+      "file": "interviews/_template.md",
+      "translations": {
+        "zh": "interviews/_template.zh.md"
+      }
+    },
+    {
+      "category": "interviews",
+      "file": "interviews/companies/alibaba.md"
+    },
+    {
+      "category": "interviews",
+      "file": "interviews/companies/amazon.md"
+    },
+    {
+      "category": "interviews",
+      "file": "interviews/companies/apple.md"
+    },
+    {
+      "category": "interviews",
+      "file": "interviews/companies/bytedance.md"
+    },
+    {
+      "category": "interviews",
+      "file": "interviews/companies/google.md"
+    },
+    {
+      "category": "interviews",
+      "file": "interviews/companies/meta.md"
+    },
+    {
+      "category": "interviews",
+      "file": "interviews/companies/microsoft.md"
+    },
+    {
+      "category": "interviews",
+      "file": "interviews/companies/tencent.md"
+    },
+    {
+      "category": "knowledge",
+      "file": "knowledge/algorithms.md"
+    },
+    {
+      "category": "knowledge",
+      "file": "knowledge/architecture.md"
+    },
+    {
+      "category": "knowledge",
+      "file": "knowledge/backend.md"
+    },
+    {
+      "category": "knowledge",
+      "file": "knowledge/devops.md"
+    },
+    {
+      "category": "knowledge",
+      "file": "knowledge/frontend.md"
+    },
+    {
+      "category": "mock-interviews",
+      "file": "mock-interviews/behavioral-leadership-conflict.md"
+    },
+    {
+      "category": "mock-interviews",
+      "file": "mock-interviews/system-design-chat-app.md"
+    },
+    {
+      "category": "mock-interviews",
+      "file": "mock-interviews/system-design-rate-limiter.md"
+    },
+    {
+      "category": "mock-interviews",
+      "file": "mock-interviews/system-design-url-shortener.md"
+    },
+    {
+      "category": "roadmap",
+      "file": "roadmap/backend-engineer.md"
+    },
+    {
+      "category": "roadmap",
+      "file": "roadmap/checklist.md"
+    },
+    {
+      "category": "roadmap",
+      "file": "roadmap/frontend-engineer.md"
+    },
+    {
+      "category": "roadmap",
+      "file": "roadmap/fullstack-engineer.md"
+    }
+  ]
+}

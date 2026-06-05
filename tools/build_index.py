@@ -73,6 +73,8 @@ def walk_markdown() -> list[Path]:
             continue
         if path.name.lower() == "readme.md":
             continue
+        if path.name.lower().endswith(".zh.md"):
+            continue
         out.append(path)
     return sorted(out)
 

@@ -32,12 +32,54 @@ cd awesome-interview
 # Pick a random question:
 python tools/random_pick.py knowledge/
 
+# Start the local web service for module browsing, markdown reading, and the question picker:
+python tools/run_service.py
+
+# Open the friendly markdown reader in your browser:
+http://127.0.0.1:8000/docs/reader.html
+
 # Drill it with a 25-minute coding-phase timer:
 python tools/timer.py 25 --coding
 
 # Mark today as done:
 python tools/streak.py done
 ```
+
+## Local web service
+
+`tools/run_service.py` starts a small browser-based service so you can read, browse, and drill questions without leaving the terminal.
+
+```bash
+python tools/run_service.py                # serves on http://127.0.0.1:8000
+python tools/run_service.py --port 9000    # custom port
+python tools/run_service.py --open         # open the reader in your default browser
+python tools/run_service.py --no-build     # skip regenerating questions.json / md_files.json
+```
+
+It serves three pages:
+
+| URL | Page | What you get |
+|---|---|---|
+| `/` | Module home | Card grid linking to every section of the repo |
+| `/docs/reader.html` | Markdown reader | Browse and read all `*.md` files in a clean HTML view with sidebar + TOC |
+| `/docs/index.html` | Question picker | Filter by category / difficulty / topic and pull a random question |
+
+On first run it generates `docs/questions.json` (via `tools/build_index.py`) and `docs/md_files.json` so the picker and reader have content to render. Pass `--no-build` to skip that step.
+
+### Language switching (EN ↔ 中文)
+
+All three pages have an EN / 简体中文 toggle in the top-right. The choice is stored in `localStorage` and persists across pages and reloads.
+
+### Translating markdown content
+
+The reader supports a parallel-file convention for translated content:
+
+- Original: `interviews/companies/google.md`
+- Chinese:  `interviews/companies/google.zh.md`
+
+When the language is set to 中文, the reader serves `*.zh.md` if it exists; otherwise it falls back to the original and shows a "translation not available" notice. `.zh.md` files don't appear as separate entries in the sidebar — they're treated as variants of the original. Restart `run_service.py` after adding or removing one to refresh `docs/md_files.json`. See `interviews/_template.zh.md` for a working example.
+
+To generate translations in bulk via the Claude API, use [`tools/translate_to_zh.py`](tools/translate_to_zh.py) (requires `pip install anthropic` and `ANTHROPIC_API_KEY`). Run with `--dry-run` first to preview what would be translated. See [tools/README.md](tools/README.md#generating-translations-in-bulk) for full usage.
 
 ## How to use this repo
 

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>awesome-interview · Markdown Reader</title>
+  <style>
+    :root { color-scheme: light; font-synthesis: none; }
+    body { margin: 0; font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: #f6f8fb; color: #111827; }
+    a { color: #2563eb; }
+    a:hover { text-decoration: underline; }
+    .page { display: flex; flex-direction: column; min-height: 100vh; }
+    .topbar { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; padding: 20px 28px; background: #ffffff; border-bottom: 1px solid #e2e8f0; }
+    .topbar h1 { margin: 0; font-size: 1.35rem; letter-spacing: -0.03em; }
+    .topbar nav { display: flex; gap: 18px; flex-wrap: wrap; }
+    .topbar nav a { color: #1d4ed8; font-weight: 600; }
+    .layout { display: grid; grid-template-columns: 320px 1fr 280px; gap: 0; flex: 1; }
+    .sidebar { background: #ffffff; border-right: 1px solid #e2e8f0; padding: 24px; overflow-y: auto; }
+    .content { padding: 24px; overflow-y: auto; }
+    .toc { background: #ffffff; border-left: 1px solid #e2e8f0; padding: 24px; overflow-y: auto; }
+    .toc-heading { font-size: 0.85rem; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 14px; color: #475569; }
+    .toc-list { display: grid; gap: 8px; }
+    .toc-item { display: block; padding: 8px 12px; border-radius: 10px; background: #f8fafc; color: #0f172a; text-decoration: none; font-size: 0.94rem; }
+    .toc-item.toc-depth-2 { margin-left: 8px; }
+    .toc-item.toc-depth-3 { margin-left: 16px; }
+    .toc-item.toc-depth-4 { margin-left: 24px; }
+    .toc-item:hover { background: #eff6ff; }
+    .toc-item.active { background: #dbeafe; color: #1d4ed8; }
+    .toc-empty { margin: 0; color: #64748b; font-size: 0.95rem; }
+    .panel-title { margin: 0 0 12px; font-size: 1.1rem; }
+    .intro { margin: 0 0 18px; color: #475569; line-height: 1.7; }
+    .toolbar { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin-bottom: 18px; }
+    .toolbar input { width: 100%; min-width: 0; padding: 12px 14px; border: 1px solid #cbd5e1; border-radius: 12px; background: #f8fafc; color: #0f172a; }
+    .toolbar .meta { color: #475569; font-size: 0.95rem; }
+    #file-count { font-weight: 600; }
+    .category-group { border: 1px solid #e2e8f0; border-radius: 18px; padding: 12px 14px 16px; background: #f8fafc; margin-bottom: 12px; }
+    .category-heading { margin: 0 0 10px; font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.12em; color: #475569; cursor: pointer; }
+    .category-heading::-webkit-details-marker { display: none; }
+    .category-heading::before { content: '▾'; display: inline-block; margin-right: 8px; transform: translateY(-1px); }
+    details:not([open]) .category-heading::before { content: '▸'; }
+    .file-list { display: grid; gap: 8px; }
+    .file-link { display: block; padding: 10px 14px; border-radius: 12px; text-decoration: none; color: #0f172a; background: #ffffff; border: 1px solid transparent; transition: border-color .2s, background .2s; }
+    .file-link:hover { background: #eef2ff; border-color: #bfdbfe; }
+    .file-link.active { background: #dbeafe; border-color: #93c5fd; color: #1d4ed8; }
+    #current-path { color: #475569; font-size: 0.95rem; }
+    .content-toolbar { justify-content: space-between; border-bottom: 1px solid #e2e8f0; padding-bottom: 16px; margin-bottom: 24px; }
+    .reader { max-width: 860px; }
+    .reader h2 { margin-top: 0; font-size: 1.8rem; }
+    .reader h3 { margin-top: 2rem; }
+    .reader p { line-height: 1.8; margin: 1rem 0; }
+    .reader pre { background: #0f172a; color: #f8fafc; border-radius: 14px; padding: 18px; overflow-x: auto; white-space: pre-wrap; word-break: normal; }
+    .reader code { background: #e2e8f0; color: #0f172a; border-radius: 6px; padding: 2px 6px; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
+    .reader blockquote { margin: 1.5rem 0; padding-left: 18px; border-left: 4px solid #cbd5e1; color: #475569; background: #f8fafc; border-radius: 10px; }
+    .reader ul, .reader ol { margin: 1rem 0 1rem 1.5rem; }
+    .reader table { width: 100%; border-collapse: collapse; margin: 1.2rem 0; }
+    .reader th, .reader td { border: 1px solid #d1d5db; padding: 12px 14px; }
+    .reader th { background: #f8fafc; }
+    .reader a { color: #2563eb; }
+    .status { margin-top: 6px; color: #64748b; font-size: 0.95rem; }
+    .translation-notice { margin: 0 0 18px; padding: 10px 14px; border-radius: 10px; background: #ecfeff; border: 1px solid #a5f3fc; color: #0e7490; font-size: 0.9rem; }
+    .translation-notice-warn { background: #fef3c7; border-color: #fde68a; color: #92400e; }
+    @media (max-width: 1080px) { .layout { grid-template-columns: 1fr; } .sidebar { max-height: 320px; position: sticky; top: 0; z-index: 2; } .content { padding: 18px; } .toc { display: none; } }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header class="topbar">
+      <div>
+        <h1>awesome-interview</h1>
+        <p class="intro">Reader for all markdown-based modules. Click a document on the left to render it here.</p>
+      </div>
+      <nav>
+        <a id="nav-markdown" href="/docs/reader.html">Markdown reader</a>
+        <a id="nav-question-picker" href="/docs/index.html">Question picker</a>
+        <a id="nav-readme" href="/README.md">README</a>
+        <select id="language-select" aria-label="Select language">
+          <option value="en">English</option>
+          <option value="zh">简体中文</option>
+        </select>
+      </nav>
+    </header>
+    <div class="layout">
+      <aside class="sidebar">
+        <div class="toolbar">
+          <input id="search" type="search" placeholder="Search by file, category, or keyword" autocomplete="off" />
+        </div>
+        <div class="toolbar">
+          <span class="meta"><span id="file-label">Files:</span> <strong id="file-count">0</strong></span>
+          <span class="status" id="status">Loading files…</span>
+        </div>
+        <div id="file-list" class="file-list"></div>
+      </aside>
+      <main class="content">
+        <div class="toolbar content-toolbar">
+          <a class="link" id="raw-link" href="#" target="_blank" rel="noopener">Open raw markdown</a>
+          <span id="current-path">Select a file to read</span>
+        </div>
+        <article id="reader" class="reader">
+          <h2 id="reader-title">Choose a markdown file</h2>
+          <p id="reader-description">Use the left panel to browse the project’s markdown modules. This reader converts the Markdown into a clean, readable page so you can focus on content instead of source format.</p>
+        </article>
+      </main>
+      <aside class="toc">
+        <div class="toc-heading">Sections</div>
+        <nav id="toc-list" class="toc-list"><p class="toc-empty">Pick a file to see the document outline.</p></nav>
+      </aside>
+    </div>
+  </div>
+  <script src="reader.js"></script>
+</body>
+</html>
