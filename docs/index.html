@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>awesome-interview · Random Question Picker</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <h1>awesome-interview</h1>
+    <p class="tagline">Pick a random question from the bank and start drilling.</p>
+    <nav>
+      <a href="https://github.com/" target="_blank" rel="noopener">GitHub</a>
+      <a href="https://github.com/" target="_blank" rel="noopener">Knowledge</a>
+      <a href="https://github.com/" target="_blank" rel="noopener">Interviews</a>
+      <a href="https://github.com/" target="_blank" rel="noopener">Roadmap</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="filters" aria-label="Filters">
+      <label>
+        Category
+        <select id="category">
+          <option value="">All</option>
+        </select>
+      </label>
+      <label>
+        Difficulty
+        <select id="difficulty">
+          <option value="">Any</option>
+          <option value="Easy">Easy</option>
+          <option value="Medium">Medium</option>
+          <option value="Hard">Hard</option>
+        </select>
+      </label>
+      <label class="search">
+        Topic contains
+        <input id="topic" type="text" placeholder="e.g. graph, caching, conflict" />
+      </label>
+      <button id="pick" type="button">Pick a question</button>
+    </section>
+
+    <section id="result" class="result hidden" aria-live="polite">
+      <div class="meta">
+        <span class="badge" id="r-category"></span>
+        <span class="badge" id="r-difficulty"></span>
+      </div>
+      <h2 id="r-title"></h2>
+      <p class="topics" id="r-topics"></p>
+      <p class="source">
+        Source: <a id="r-source" href="#" target="_blank" rel="noopener"></a>
+      </p>
+    </section>
+
+    <p id="status" class="status">Loading questions…</p>
+  </main>
+
+  <footer>
+    <p>
+      Powered by <code>docs/questions.json</code> — rebuilt on each push via
+      <code>.github/workflows/build-questions-json.yml</code>.
+    </p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

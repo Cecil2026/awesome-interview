@@ -1,0 +1,19 @@
+# Editor
+.vscode/
+.idea/
+*.swp
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Scratch
+scratch/
+notes-private/
+*.local.md
+
+# Python
+__pycache__/
+*.pyc
+.venv/

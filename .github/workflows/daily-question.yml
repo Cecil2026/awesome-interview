@@ -1,0 +1,93 @@
+name: Daily question
+
+on:
+  schedule:
+    # Every day at 14:07 UTC. Off the hour to avoid GitHub's hourly congestion.
+    - cron: "7 14 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  pick-and-post:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Rebuild questions index
+        run: python tools/build_index.py
+
+      - name: Pick today's question
+        id: pick
+        run: |
+          python - <<'PY' >> "$GITHUB_OUTPUT"
+          import json, random, datetime, re, pathlib
+
+          data = json.loads(pathlib.Path("docs/questions.json").read_text(encoding="utf-8"))
+          questions = data["questions"]
+
+          # Deterministic per-day pick: same question for everyone on the same UTC day.
+          seed = int(datetime.datetime.utcnow().strftime("%Y%m%d"))
+          random.seed(seed)
+          q = random.choice(questions)
+
+          path = pathlib.Path(q["file"])
+          text = path.read_text(encoding="utf-8")
+          heading_re = re.compile(r"^### (\d+)\.\s+.+?$", re.MULTILINE)
+          matches = list(heading_re.finditer(text))
+          body = ""
+          for i, m in enumerate(matches):
+              if int(m.group(1)) == q["number"] and q["file"].endswith(path.name):
+                  start = m.end()
+                  end = matches[i + 1].start() if i + 1 < len(matches) else len(text)
+                  body = text[start:end].strip()
+                  break
+
+          # Truncate body for the issue (full content is in the linked file).
+          MAX = 1200
+          if len(body) > MAX:
+              body = body[:MAX].rstrip() + "\n\n…(truncated — see source file for the full entry)"
+
+          title = f"Daily question — {datetime.date.today().isoformat()}: {q['title']}"
+          link = f"https://github.com/${{ github.repository }}/blob/main/{q['file']}#L{q['line']}"
+
+          issue = f"""**Category:** `{q['category']}`
+          **Difficulty:** {q.get('difficulty') or '—'}
+          **Topics:** {', '.join(q.get('topics') or []) or '—'}
+          **Source:** [{q['file']}:{q['line']}]({link})
+
+          ---
+
+          {body}
+
+          ---
+
+          _Set a 25-minute timer (`python tools/timer.py 25 --coding`) and have a go. Reply with your approach._
+          """
+
+          # Escape for GITHUB_OUTPUT multi-line format.
+          print(f"title={title}")
+          print("body<<EOF")
+          print(issue)
+          print("EOF")
+          PY
+
+      - name: Open issue
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const title = `${{ steps.pick.outputs.title }}`;
+            const body = `${{ steps.pick.outputs.body }}`;
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title,
+              body,
+              labels: ['daily-question'],
+            });
