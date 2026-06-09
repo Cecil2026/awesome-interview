@@ -8,7 +8,8 @@ Small Python utilities for interview prep practice. No external dependencies —
 | [random_pick.py](random_pick.py) | Pick a random question from any of the markdown banks |
 | [streak.py](streak.py) | Track your daily prep streak (writes to `~/.awesome-interview-streak.json`) |
 | [build_index.py](build_index.py) | Rebuild `docs/questions.json` from all markdown files (used by the GitHub Pages picker and the daily-question workflow) |
-| [run_service.py](run_service.py) | Start a local browser-based service showing modules, a markdown reader, and the random picker |
+| [run_service.py](run_service.py) | Start a local browser-based service showing modules, a markdown reader, and the random picker (default port 8099, auto-kills an existing process holding the port) |
+| [install.ps1](install.ps1) | (Windows only) Install `run_service.py` as a Scheduled Task that runs at boot, restarts on failure, and adds a Windows Firewall inbound rule. Run as Administrator. |
 | [translate_to_zh.py](translate_to_zh.py) | Batch-translate `*.md` to Simplified Chinese (`*.zh.md`) via the Claude API (**requires `pip install anthropic`** and `ANTHROPIC_API_KEY`) |
 
 ## Quick start
@@ -23,9 +24,16 @@ python tools/streak.py done
 
 # Rebuild the questions index after editing markdown:
 python tools/build_index.py
+
+# Start the local web service (auto-builds indexes, opens browser):
+python tools/run_service.py --open
+
+# (Windows) Install as a background service that starts at boot:
+# Run from an *Administrator* PowerShell:
+.\tools\install.ps1
 ```
 
-All scripts accept `--help` for full usage.
+All Python scripts accept `--help`; PowerShell uses `Get-Help .\tools\install.ps1 -Full`.
 
 ## Chinese translations
 

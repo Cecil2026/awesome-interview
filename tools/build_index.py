@@ -36,6 +36,14 @@ def category_for(path: Path) -> str:
     return parts[0]
 
 
+def parse_zh_titles(zh_path: Path) -> dict[int, str]:
+    try:
+        text = zh_path.read_text(encoding="utf-8")
+    except (UnicodeDecodeError, OSError):
+        return {}
+    return {int(m.group(1)): m.group(2) for m in HEADING_RE.finditer(text)}
+
+
 def parse_file(path: Path) -> list[dict]:
     try:
         text = path.read_text(encoding="utf-8")
@@ -44,6 +52,9 @@ def parse_file(path: Path) -> list[dict]:
     matches = list(HEADING_RE.finditer(text))
     if not matches:
         return []
+    zh_path = path.with_suffix(".zh.md")
+    zh_titles = parse_zh_titles(zh_path) if zh_path.exists() else {}
+    zh_rel = zh_path.relative_to(REPO_ROOT).as_posix() if zh_path.exists() else None
     out = []
     for i, m in enumerate(matches):
         start = m.end()
@@ -53,16 +64,22 @@ def parse_file(path: Path) -> list[dict]:
         difficulty_match = DIFFICULTY_RE.search(body)
         rel = path.relative_to(REPO_ROOT).as_posix()
         line = text.count("\n", 0, m.start()) + 1
-        out.append({
-            "id": f"{rel}#{m.group(1)}",
-            "number": int(m.group(1)),
+        number = int(m.group(1))
+        entry = {
+            "id": f"{rel}#{number}",
+            "number": number,
             "title": m.group(2),
             "file": rel,
             "line": line,
             "category": category_for(path),
             "topics": [t.strip() for t in topics_match.group(1).split(",")] if topics_match else [],
             "difficulty": difficulty_match.group(1) if difficulty_match else None,
-        })
+        }
+        if number in zh_titles:
+            entry["title_zh"] = zh_titles[number]
+        if zh_rel:
+            entry["file_zh"] = zh_rel
+        out.append(entry)
     return out
 
 

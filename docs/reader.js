@@ -8,6 +8,7 @@
   const fileCountEl = document.getElementById('file-count');
   const tocListEl = document.getElementById('toc-list');
   const languageSelect = document.getElementById('language-select');
+  const themeSelect = document.getElementById('theme-select');
   const fileLabelEl = document.getElementById('file-label');
   const introEl = document.querySelector('.intro');
   const readerTitleEl = document.getElementById('reader-title');
@@ -48,6 +49,9 @@
       readerLoadFail: 'Failed to load file.',
       pageTitle: 'Markdown Reader',
       languageSelectAria: 'Select language',
+      themeSelectAria: 'Select theme',
+      themeLight: 'Light',
+      themeDark: 'Dark',
       translationFallback: 'Chinese translation not available for this file — showing the original.',
       translationShown: 'Showing Chinese translation ({path}).',
     },
@@ -75,6 +79,9 @@
       readerLoadFail: '无法加载文件。',
       pageTitle: 'Markdown 阅读器',
       languageSelectAria: '选择语言',
+      themeSelectAria: '选择主题',
+      themeLight: '浅色',
+      themeDark: '深色',
       translationFallback: '该文件暂无中文翻译，已显示原文。',
       translationShown: '已显示中文翻译（{path}）。',
     },
@@ -100,6 +107,14 @@
     if (introEl) introEl.textContent = t('intro');
     searchEl.placeholder = t('searchPlaceholder');
     if (languageSelect) languageSelect.setAttribute('aria-label', t('languageSelectAria'));
+    if (themeSelect) {
+      themeSelect.setAttribute('aria-label', t('themeSelectAria'));
+      const options = themeSelect.options;
+      for (let i = 0; i < options.length; i++) {
+        if (options[i].value === 'light') options[i].textContent = t('themeLight');
+        if (options[i].value === 'dark') options[i].textContent = t('themeDark');
+      }
+    }
     fileLabelEl.textContent = t('fileLabel');
     rawLink.textContent = t('openRawMarkdown');
     currentPathEl.textContent = activePath || t('currentPathDefault');
@@ -433,7 +448,9 @@
         return r.text();
       })
       .then((text) => {
-        const { html, headings } = renderMarkdown(text);
+        const rendered = renderMarkdown(text);
+        const headings = rendered.headings;
+        const html = wrapCodeTabs(rendered.html);
         let banner = '';
         if (currentLanguage === 'zh' && fallback) {
           banner = `<div class="translation-notice translation-notice-warn">${t('translationFallback')}</div>`;
@@ -441,6 +458,7 @@
           banner = `<div class="translation-notice">${t('translationShown', { path: loadPath })}</div>`;
         }
         readerEl.innerHTML = banner + `<h2>${path}</h2>` + html;
+        applyPreferredCodeLang();
         renderToc(headings);
         observeHeadings();
         if (pendingFragment) {
@@ -469,6 +487,16 @@
   }
 
   readerEl.addEventListener('click', (event) => {
+    const tab = event.target.closest('.code-tab');
+    if (tab) {
+      const container = tab.closest('.code-tabs');
+      const lang = tab.dataset.lang;
+      if (container && lang) {
+        setPreferredCodeLang(lang);
+        readerEl.querySelectorAll('.code-tabs').forEach((c) => activateTab(c, lang));
+      }
+      return;
+    }
     const anchor = event.target.closest('a');
     if (!anchor || !anchor.href) return;
     const href = anchor.getAttribute('href');
@@ -497,7 +525,99 @@
 
   searchEl.addEventListener('input', filterFiles);
   languageSelect.addEventListener('change', (event) => setLanguage(event.target.value));
+  if (window.AwesomeTheme) {
+    window.AwesomeTheme.wire(themeSelect);
+  }
   setLanguage(currentLanguage);
+
+  const CODE_LANG_KEY = 'awesome-interview-code-lang';
+  let tabGroupCounter = 0;
+
+  function getPreferredCodeLang() {
+    return localStorage.getItem(CODE_LANG_KEY) || 'Python';
+  }
+
+  function setPreferredCodeLang(lang) {
+    localStorage.setItem(CODE_LANG_KEY, lang);
+  }
+
+  function wrapCodeTabs(html) {
+    const blockRe = /<p><strong>(Python|TypeScript|Java)[:：]<\/strong>\s*<\/p>\s*<pre>(<code[^>]*>[\s\S]*?<\/code>)<\/pre>/g;
+    const matches = [];
+    let m;
+    while ((m = blockRe.exec(html)) !== null) {
+      matches.push({ start: m.index, end: m.index + m[0].length, lang: m[1], code: m[2] });
+    }
+    if (!matches.length) return html;
+
+    const groups = [];
+    for (const match of matches) {
+      const last = groups.length ? groups[groups.length - 1] : null;
+      const lastEnd = last && last.length ? last[last.length - 1].end : -1;
+      if (last && lastEnd >= 0 && /^\s*$/.test(html.slice(lastEnd, match.start))) {
+        last.push(match);
+      } else {
+        groups.push([match]);
+      }
+    }
+
+    for (let i = groups.length - 1; i >= 0; i--) {
+      const group = groups[i];
+      if (group.length < 2) continue;
+      const gid = `tabs-${++tabGroupCounter}`;
+      const tabs = group.map((g) =>
+        `<button type="button" class="code-tab" data-tab-group="${gid}" data-lang="${g.lang}">${g.lang}</button>`
+      ).join('');
+      const panels = group.map((g) =>
+        `<pre class="code-panel" data-tab-group="${gid}" data-lang="${g.lang}">${g.code}</pre>`
+      ).join('');
+      const replacement = `<div class="code-tabs" data-tab-group="${gid}"><div class="code-tab-bar">${tabs}</div>${panels}</div>`;
+      const start = group[0].start;
+      const end = group[group.length - 1].end;
+      html = html.slice(0, start) + replacement + html.slice(end);
+    }
+    return html;
+  }
+
+  function applyPreferredCodeLang() {
+    const pref = getPreferredCodeLang();
+    readerEl.querySelectorAll('.code-tabs').forEach((container) => {
+      const langs = Array.from(container.querySelectorAll('.code-tab')).map((b) => b.dataset.lang);
+      const chosen = langs.includes(pref) ? pref : langs[0];
+      activateTab(container, chosen);
+    });
+  }
+
+  function activateTab(container, lang) {
+    container.querySelectorAll('.code-tab').forEach((b) => {
+      b.classList.toggle('active', b.dataset.lang === lang);
+    });
+    container.querySelectorAll('.code-panel').forEach((p) => {
+      p.classList.toggle('active', p.dataset.lang === lang);
+    });
+  }
+
+  function scrollToQuestionNumber(n) {
+    const headings = readerEl.querySelectorAll('h1[id], h2[id], h3[id], h4[id], h5[id], h6[id]');
+    const target = Array.from(headings).find((h) => /^\s*(\d+)\./.test(h.textContent || '') && parseInt((h.textContent || '').match(/^\s*(\d+)\./)[1], 10) === n);
+    if (target) {
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      updateTocActive(target.id);
+    }
+  }
+
+  function loadFileAndJump(path, n) {
+    loadFile(path);
+    if (n != null && !Number.isNaN(n)) {
+      const interval = setInterval(() => {
+        if (readerEl.querySelector('h2[id], h3[id]')) {
+          clearInterval(interval);
+          scrollToQuestionNumber(n);
+        }
+      }, 50);
+      setTimeout(() => clearInterval(interval), 5000);
+    }
+  }
 
   fetchJson('md_files.json')
     .then((data) => {
@@ -509,6 +629,16 @@
       updateFileCount(files.length);
       setStatus('statusFilesLoaded', { count: files.length });
       renderFileList(files);
+
+      const params = new URLSearchParams(window.location.search);
+      let requestedFile = params.get('file');
+      if (requestedFile) {
+        if (requestedFile.endsWith('.zh.md')) {
+          requestedFile = requestedFile.slice(0, -'.zh.md'.length) + '.md';
+        }
+        const n = parseInt(params.get('n') || '', 10);
+        loadFileAndJump(requestedFile, n);
+      }
     })
     .catch((err) => {
       setStatus('statusLoadJsonFailed', { message: err.message });

@@ -1,37 +1,37 @@
-# Microsoft
+# 微软
 
 ```yaml
-company: Microsoft (Azure, Office, Windows, Xbox, GitHub)
-typical_rounds: 1 recruiter chat + 1 phone screen + 4-5 onsite (2-3 coding, 1 system design, 1 AA "as appropriate" senior leader)
-focus_areas: classical algorithms, OOD, Azure/cloud-flavored system design, "growth mindset" behavioral
-languages_allowed: any major language; C#/Java/Python/C++ common
-duration: 45-60 min per round
+company: 微软（Azure、Office、Windows、Xbox、GitHub）
+typical_rounds: 1 轮 recruiter 沟通 + 1 轮电话面 + 4-5 轮 onsite（2-3 轮编码、1 轮系统设计、1 轮 "As Appropriate" 高管面）
+focus_areas: 经典算法、OOD、Azure/云味系统设计、"成长型思维"行为面试
+languages_allowed: 任意主流语言；C#/Java/Python/C++ 常见
+duration: 每轮 45-60 分钟
 notable_quirks:
-  - "As Appropriate" (AA) round with a senior leader has veto-like influence
-  - "Growth mindset" (Satya Nadella's framing) is the dominant cultural lens
-  - Strong focus on fundamentals — linked lists, trees, recursion, memory
-  - Less algorithmic exotic-ness than Google; more "can you code carefully?"
-sources: Glassdoor, LeetCode Discuss (microsoft tag), Blind, careers.microsoft.com
+  - "As Appropriate"（AA）轮由资深 leader 主持，有近乎一票否决的影响力
+  - "成长型思维"（Satya Nadella 提出）是主导的文化视角
+  - 强调基础——链表、树、递归、内存
+  - 算法奇技不如 Google 多；更多是"你能不能仔细写代码？"
+sources: Glassdoor、LeetCode Discuss（microsoft 标签）、Blind、careers.microsoft.com
 ```
 
-## Overview
+## 概述
 
-Microsoft's bar leans on solid CS fundamentals over algorithmic flashiness. You're more likely to be asked to reverse a linked list and discuss edge cases for 20 minutes than to do a Hard-tagged DP. System design rounds frequently lean on Azure primitives (Cosmos DB, Service Bus, Functions). The "growth mindset" lens dominates behavioral: they look for learners, not know-it-alls. The AA round (senior leader, often a partner-level engineer or director) is your bar-raiser equivalent.
+微软的门槛更看重扎实的计算机基础而非算法花活。你更可能被要求翻转链表然后讨论边界 20 分钟，而不是做 Hard 级 DP。系统设计轮常依赖 Azure 原语（Cosmos DB、Service Bus、Functions）。"成长型思维"主导行为面试：他们要的是学习者，而非全能者。AA 轮（资深 leader，常是 partner 级工程师或总监）相当于他们的 bar raiser。
 
-## Questions
+## 题目
 
-### 1. Reverse a Linked List
+### 1. 翻转链表
 
-**Difficulty:** Easy
-**Topics:** linked-list, recursion, pointers
-**Position:** SWE
-**Years:** L60-L62
+**难度：** 简单
+**主题：** linked-list, recursion, pointers
+**岗位：** SWE
+**级别：** L60-L62
 
-**Question:** Reverse a singly linked list. Implement both iteratively and recursively. Discuss trade-offs.
+**问题：** 翻转单链表。迭代和递归各实现一次。讨论权衡。
 
-**Approach:** Iterative: 3-pointer (`prev, curr, next`); curr.next = prev, advance. O(n) time, O(1) space. Recursive: recurse to end, set `head.next.next = head; head.next = null`. O(n) time, O(n) stack. Microsoft loves discussion of why iterative is preferred for long lists (stack overflow risk).
+**思路：** 迭代：三指针（`prev, curr, next`）；curr.next = prev，推进。O(n) 时间，O(1) 空间。递归：递归到末尾，设 `head.next.next = head; head.next = null`。O(n) 时间，O(n) 栈深。微软喜欢讨论长链表为何首选迭代（栈溢出风险）。
 
-**Python:**
+**Python：**
 ```python
 class ListNode:
     def __init__(self, val: int = 0, next: "ListNode | None" = None) -> None:
@@ -49,7 +49,7 @@ def reverse_list(head: ListNode | None) -> ListNode | None:
     return prev
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 class ListNode {
   val: number;
@@ -70,7 +70,7 @@ function reverseList(head: ListNode | null): ListNode | null {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 class ListNode {
     int val;
@@ -91,27 +91,27 @@ static ListNode reverseList(ListNode head) {
 }
 ```
 
-**Key points:**
-- Save `next` before overwriting `cur.next` or you lose the rest of the list.
-- `prev` becomes the new head when the loop ends.
-- Recursive variant is elegant but O(n) stack risks overflow on long lists.
+**要点：**
+- 改写 `cur.next` 前先保存 `next`，否则丢失链表后半段。
+- 循环结束时 `prev` 即为新头。
+- 递归版优雅但 O(n) 栈深，长链表存在栈溢出风险。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 2. Validate Binary Search Tree
+### 2. 验证二叉搜索树
 
-**Difficulty:** Medium
-**Topics:** tree, bst, recursion, dfs
-**Position:** SWE
-**Years:** L60-L62
+**难度：** 中等
+**主题：** tree, bst, recursion, dfs
+**岗位：** SWE
+**级别：** L60-L62
 
-**Question:** Given a binary tree, determine if it is a valid BST (every node's left subtree < node < right subtree).
+**问题：** 给定二叉树，判断是否为合法 BST（每个节点的左子树 < 节点 < 右子树）。
 
-**Approach:** Recursion with `(min, max)` bounds passed down. Don't just compare node to immediate children — that fails on `[5, 1, 6, null, null, 3, 7]`. Alternative: in-order traversal, check strictly increasing. Watch for integer overflow → use Long bounds or null sentinels.
+**思路：** 递归向下传 `(min, max)` 边界。别只比邻接子节点——`[5, 1, 6, null, null, 3, 7]` 会过。备选：中序遍历，检查严格递增。注意整数溢出 → 用 Long 边界或 null 哨兵。
 
-**Python:**
+**Python：**
 ```python
 class TreeNode:
     def __init__(self, val: int = 0, left: "TreeNode | None" = None, right: "TreeNode | None" = None) -> None:
@@ -127,7 +127,7 @@ def is_valid_bst(root: TreeNode | None) -> bool:
     return go(root, float("-inf"), float("inf"))
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 class TreeNode {
   val: number;
@@ -146,7 +146,7 @@ function isValidBST(root: TreeNode | null): boolean {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 class TreeNode {
     int val;
@@ -165,27 +165,27 @@ private static boolean go(TreeNode n, long lo, long hi) {
 }
 ```
 
-**Key points:**
-- Bounds tighten as you descend; strict inequalities enforce uniqueness.
-- Empty tree is trivially a valid BST.
-- Naive parent-only check fails when distant ancestors are violated.
+**要点：**
+- 边界随下行收紧；严格不等式保证值唯一。
+- 空树天然是合法 BST。
+- 仅比较父子会漏掉远祖被破坏的情况。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 3. Serialize and Deserialize Binary Tree
+### 3. 二叉树的序列化与反序列化
 
-**Difficulty:** Hard
-**Topics:** tree, bfs, dfs, design
-**Position:** SWE
-**Years:** L62-L63
+**难度：** 困难
+**主题：** tree, bfs, dfs, design
+**岗位：** SWE
+**级别：** L62-L63
 
-**Question:** Design an algorithm to serialize a binary tree to a string and deserialize it back.
+**问题：** 设计将二叉树序列化为字符串并反序列化回来的算法。
 
-**Approach:** Preorder DFS with null markers: `"1,2,null,null,3,4,null,null,5,null,null"`. Deserialize with a queue/iterator, consume one token, recurse. O(n) both ways. Alternative: level-order BFS. Discuss compact encoding (variable-length ints, no leading null markers if leaves use a flag).
+**思路：** 前序 DFS 带 null 标记：`"1,2,null,null,3,4,null,null,5,null,null"`。反序列化用队列/迭代器，每次取一个 token 递归。两端 O(n)。备选：层序 BFS。讨论紧凑编码（变长 int、用叶子标志位省去前导 null）。
 
-**Python:**
+**Python：**
 ```python
 from collections import deque
 
@@ -210,7 +210,7 @@ def deserialize(data: str) -> TreeNode | None:
     return go()
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function serialize(root: TreeNode | null): string {
   const out: string[] = [];
@@ -235,7 +235,7 @@ function deserialize(data: string): TreeNode | null {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 static String serialize(TreeNode root) {
     StringBuilder sb = new StringBuilder();
@@ -264,27 +264,27 @@ private static TreeNode des(Deque<String> q) {
 }
 ```
 
-**Key points:**
-- Preorder with null sentinels uniquely identifies a tree.
-- Shared cursor/iterator keeps deserialize O(n) without index math.
-- BFS variant is identical in spirit but uses a queue and produces level-order.
+**要点：**
+- 前序 + null 哨兵能唯一确定一棵树。
+- 共享游标/迭代器让反序列化 O(n) 且无需下标运算。
+- BFS 版本思路一致，用队列产生层序序列。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 4. Find Kth Largest in Array
+### 4. 数组中的第 K 大元素
 
-**Difficulty:** Medium
-**Topics:** heap, quickselect, sorting
-**Position:** SWE
-**Years:** L60-L62
+**难度：** 中等
+**主题：** heap, quickselect, sorting
+**岗位：** SWE
+**级别：** L60-L62
 
-**Question:** Find the kth largest element in an unsorted array.
+**问题：** 在未排序数组中找第 k 大元素。
 
-**Approach:** Min-heap of size k: O(n log k). Or Quickselect (Hoare partition) for O(n) average. Microsoft will probe both — implement Quickselect (random pivot to avoid worst case). Discuss when each wins.
+**思路：** 大小为 k 的小顶堆：O(n log k)。或 Quickselect（Hoare 分区）平均 O(n)。微软会两个都问——实现 Quickselect（随机 pivot 避最坏）。讨论各自胜出场景。
 
-**Python:**
+**Python：**
 ```python
 import heapq, random
 
@@ -302,7 +302,7 @@ def find_kth_largest(nums: list[int], k: int) -> int:
     return quickselect(0, len(nums) - 1, len(nums) - k)
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function findKthLargest(nums: number[], k: number): number {
   const select = (lo: number, hi: number, target: number): number => {
@@ -321,7 +321,7 @@ function findKthLargest(nums: number[], k: number): number {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 static int findKthLargest(int[] nums, int k) {
     return quickselect(nums, 0, nums.length - 1, nums.length - k);
@@ -341,27 +341,27 @@ private static int quickselect(int[] a, int lo, int hi, int target) {
 }
 ```
 
-**Key points:**
-- Three-way (Dutch flag) partition handles duplicates cleanly.
-- Random pivot makes O(n) expected, O(n^2) worst-case extremely unlikely.
-- Heap variant uses O(k) memory and is preferable when input is streamed.
+**要点：**
+- 三路（荷兰国旗）分区天然处理重复元素。
+- 随机 pivot 让期望 O(n)，O(n^2) 最坏极不可能。
+- 堆解法用 O(k) 内存，更适合流式输入。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 5. Spiral Matrix
+### 5. 螺旋矩阵
 
-**Difficulty:** Medium
-**Topics:** matrix, simulation
-**Position:** SWE
-**Years:** L60-L62
+**难度：** 中等
+**主题：** matrix, simulation
+**岗位：** SWE
+**级别：** L60-L62
 
-**Question:** Given an m x n matrix, return all elements in spiral order.
+**问题：** 给定 m x n 矩阵，按螺旋顺序返回所有元素。
 
-**Approach:** Track 4 boundaries `top, bottom, left, right`. Loop: traverse top row L→R, then right col T→B, then check if `top <= bottom` before bottom row R→L, then `left <= right` before left col B→T. Shrink boundaries each loop. Edge cases: single row, single column. Pure simulation — Microsoft loves clean off-by-one handling.
+**思路：** 维护 4 个边界 `top, bottom, left, right`。循环：上行 L→R，右列 T→B，判断 `top <= bottom` 后下行 R→L，判断 `left <= right` 后左列 B→T。每轮收紧边界。边界：单行、单列。纯模拟——微软喜欢干净的 off-by-one 处理。
 
-**Python:**
+**Python：**
 ```python
 def spiral_order(matrix: list[list[int]]) -> list[int]:
     if not matrix:
@@ -378,7 +378,7 @@ def spiral_order(matrix: list[list[int]]) -> list[int]:
     return out
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function spiralOrder(matrix: number[][]): number[] {
   if (matrix.length === 0) return [];
@@ -396,7 +396,7 @@ function spiralOrder(matrix: number[][]): number[] {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 static List<Integer> spiralOrder(int[][] matrix) {
     List<Integer> out = new ArrayList<>();
@@ -415,27 +415,27 @@ static List<Integer> spiralOrder(int[][] matrix) {
 }
 ```
 
-**Key points:**
-- Guard the bottom row and left column to avoid duplicates on single-row/col layers.
-- Shrink all four boundaries by 1 after each ring.
-- O(m*n) time, O(1) extra space besides output.
+**要点：**
+- 单行/单列时跳过下行与左列扫描，避免重复元素。
+- 每完成一圈，四个边界各收 1。
+- O(m*n) 时间，O(1) 额外空间（不含输出）。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 6. Copy List with Random Pointer
+### 6. 复制带随机指针的链表
 
-**Difficulty:** Medium
-**Topics:** linked-list, hashmap, design
-**Position:** SWE
-**Years:** L60-L62
+**难度：** 中等
+**主题：** linked-list, hashmap, design
+**岗位：** SWE
+**级别：** L60-L62
 
-**Question:** A linked list of length n. Each node has `next` and a `random` pointer that may point to any node or null. Deep-copy the list.
+**问题：** 长度为 n 的链表。每个节点有 `next` 和指向任意节点或 null 的 `random` 指针。深拷贝该链表。
 
-**Approach:** Two-pass with hashmap `original -> copy`: first pass create all copies, second pass wire `next` and `random` via map lookup. O(n) time, O(n) space. Optimal O(1) space: interleave copies (`A -> A' -> B -> B' -> ...`), then assign `random`, then unweave.
+**思路：** 两遍法 + 哈希表 `original -> copy`：第一遍创建所有副本，第二遍通过 map 查找接上 `next` 和 `random`。O(n) 时间，O(n) 空间。O(1) 空间最优：交错副本（`A -> A' -> B -> B' -> ...`），赋 `random`，再拆开。
 
-**Python:**
+**Python：**
 ```python
 class RNode:
     def __init__(self, val: int, next: "RNode | None" = None, random: "RNode | None" = None) -> None:
@@ -457,7 +457,7 @@ def copy_random_list(head: RNode | None) -> RNode | None:
     return m[head]
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 class RNode {
   val: number;
@@ -481,7 +481,7 @@ function copyRandomList(head: RNode | null): RNode | null {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 class RNode {
     int val;
@@ -501,27 +501,27 @@ static RNode copyRandomList(RNode head) {
 }
 ```
 
-**Key points:**
-- Two passes avoid the chicken-and-egg of resolving `random` before all nodes exist.
-- Map keys on identity, not value, since values may repeat.
-- Interleave-and-split trick achieves O(1) extra space but is trickier to get right.
+**要点：**
+- 两遍法避开了"还没建好就要接 random"的鸡生蛋问题。
+- 用节点身份作 key，而非值（值可能重复）。
+- 交错-拆分技巧能 O(1) 额外空间，但代码细节更易写错。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 7. Best Time to Buy and Sell Stock
+### 7. 买卖股票的最佳时机
 
-**Difficulty:** Easy
-**Topics:** arrays, dp, greedy
-**Position:** SWE
-**Years:** L60-L62
+**难度：** 简单
+**主题：** arrays, dp, greedy
+**岗位：** SWE
+**级别：** L60-L62
 
-**Question:** Given daily prices, find the max profit from a single buy and sell transaction.
+**问题：** 给定每日价格，找出单次买卖的最大收益。
 
-**Approach:** One pass, track `min_seen` and `max_profit = max(max_profit, price - min_seen)`. O(n) time, O(1) space. Follow-ups Microsoft asks: at most 2 transactions, unlimited transactions, with cooldown, with fee.
+**思路：** 一次遍历，维护 `min_seen` 和 `max_profit = max(max_profit, price - min_seen)`。O(n) 时间，O(1) 空间。微软追问：最多 2 笔、无限笔、含冷冻期、含手续费。
 
-**Python:**
+**Python：**
 ```python
 def max_profit(prices: list[int]) -> int:
     lo = float("inf")
@@ -532,7 +532,7 @@ def max_profit(prices: list[int]) -> int:
     return best
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function maxProfit(prices: number[]): number {
   let lo = Infinity, best = 0;
@@ -544,7 +544,7 @@ function maxProfit(prices: number[]): number {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 static int maxProfit(int[] prices) {
     int lo = Integer.MAX_VALUE, best = 0;
@@ -556,27 +556,27 @@ static int maxProfit(int[] prices) {
 }
 ```
 
-**Key points:**
-- Buy must precede sell, so update `lo` before computing today's profit.
-- Returns 0 for monotonically decreasing prices.
-- Single-pass O(n) beats brute-force O(n^2) over all pairs.
+**要点：**
+- 买在卖之前，所以先更新 `lo` 再算今天的收益。
+- 单调下跌数组正确返回 0。
+- 一次遍历 O(n)，胜过两两枚举的 O(n^2)。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 8. Word Search
+### 8. 单词搜索
 
-**Difficulty:** Medium
-**Topics:** backtracking, matrix, dfs
-**Position:** SWE
-**Years:** L60-L62
+**难度：** 中等
+**主题：** backtracking, matrix, dfs
+**岗位：** SWE
+**级别：** L60-L62
 
-**Question:** Given a 2D board of letters and a word, return true if the word can be constructed from adjacent cells (horizontal/vertical, no cell reuse).
+**问题：** 给定 2D 字母板和一个单词，返回单词能否由相邻单元格（水平/竖直、不复用单元）构造。
 
-**Approach:** DFS from each cell that matches `word[0]`. Mark visited by temporarily setting to a sentinel char, restore on backtrack (saves O(mn) visited array). O(m*n*4^L) worst. Follow-up: word search II (multiple words) → trie + DFS.
+**思路：** 从匹配 `word[0]` 的每个单元 DFS。临时把单元设为哨兵字符标记已访问，回溯时复原（省掉 O(mn) 的 visited 数组）。最坏 O(m*n*4^L)。追问：单词搜索 II（多单词）→ trie + DFS。
 
-**Python:**
+**Python：**
 ```python
 def exist(board: list[list[str]], word: str) -> bool:
     rows, cols = len(board), len(board[0])
@@ -592,7 +592,7 @@ def exist(board: list[list[str]], word: str) -> bool:
     return any(dfs(r, c, 0) for r in range(rows) for c in range(cols))
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function exist(board: string[][], word: string): boolean {
   const rows = board.length, cols = board[0].length;
@@ -610,7 +610,7 @@ function exist(board: string[][], word: string): boolean {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 static boolean exist(char[][] board, String word) {
     for (int r = 0; r < board.length; r++)
@@ -631,207 +631,207 @@ private static boolean dfs(char[][] b, String w, int r, int c, int i) {
 }
 ```
 
-**Key points:**
-- Mutating the board as a visited marker saves O(m*n) memory.
-- Restore the cell on backtrack so other start points stay valid.
-- Worst-case O(m*n*4^L); early character mismatch prunes aggressively.
+**要点：**
+- 直接改写 board 作访问标记，省去 O(m*n) 的 visited。
+- 回溯时复原，保证其他起点仍可用。
+- 最坏 O(m*n*4^L)；字符不匹配能尽早剪枝。
 
-**Tags:** #algorithm
-
----
-
-### 9. Design Microsoft Teams Chat
-
-**Difficulty:** Hard
-**Topics:** system-design, websockets, pub-sub, presence
-**Position:** Senior SWE
-**Years:** L63-L65
-
-**Question:** Design the messaging backend for Microsoft Teams (1:1, group chat, channels with thousands of members, presence).
-
-**Approach:** WebSocket gateways (sticky per user) → message bus (Service Bus / Kafka). Per-channel topic for fanout. Storage: messages in Cosmos DB sharded by `channel_id`. Presence: in-memory store (Redis) per region with TTL'd entries; aggregate cross-region with eventual consistency. Discuss read receipts, typing indicators (throttle to 1/sec), and how large channels avoid fanout storms (lazy fetch on scroll). Bonus: mention compliance/eDiscovery requirements (Office 365 immutable archive).
-
-**Tags:** #system-design
+**标签：** #algorithm
 
 ---
 
-### 10. Design Azure Blob Storage
+### 9. 设计 Microsoft Teams 聊天
 
-**Difficulty:** Hard
-**Topics:** system-design, blob-storage, replication, erasure-coding
-**Position:** Senior SWE
-**Years:** L63-L65
+**难度：** 困难
+**主题：** system-design, websockets, pub-sub, presence
+**岗位：** 高级 SWE
+**级别：** L63-L65
 
-**Question:** Design Azure Blob Storage. Cover sharding, replication, durability, and the read/write path.
+**问题：** 设计 Microsoft Teams 的消息后端（1:1、群聊、数千人 channel、在线状态）。
 
-**Approach:** Front-end layer (load-balanced) → partition layer (mapping blob name to storage server, sharded by account+container+blob) → stream layer (append-only, erasure-coded chunks distributed across nodes/racks/AZs). Partition layer uses a master (Paxos) for table assignment. Multi-AZ for durability, async geo-replication for DR. Discuss strong consistency within a region (partition has a single primary), large blob upload (block blobs with commit), and tiering (hot → cool → archive).
+**思路：** WebSocket 网关（按用户粘性）→ 消息总线（Service Bus / Kafka）。按 channel 的 topic 做扇出。存储：Cosmos DB 按 `channel_id` 分片存消息。在线状态：每区域 Redis 带 TTL；跨区域最终一致聚合。讨论已读回执、输入提示（限流 1/秒）、大 channel 如何避免扇出风暴（滚动时懒拉取）。加分：合规/eDiscovery 要求（Office 365 不可变归档）。
 
-**Tags:** #system-design
-
----
-
-### 11. Design Office 365 Document Co-Authoring
-
-**Difficulty:** Hard
-**Topics:** system-design, ot, crdt, sync
-**Position:** Senior SWE
-**Years:** L63-L65
-
-**Question:** Design how Word/Excel/PowerPoint Online support multiple users editing the same document concurrently.
-
-**Approach:** Operational Transformation or CRDT on a per-document basis. Per-doc service (sharded by doc_id) acts as central serializer; WebSocket-connect clients send ops, server transforms+broadcasts. Persist op log to durable store (Cosmos DB) + periodic snapshots to blob. Discuss offline editing (queue ops locally, replay on reconnect), large document scale (paragraph-level granularity), and rich content (embedded objects, comments). Mention how Excel is harder than Word (cell references can shift formulas).
-
-**Tags:** #system-design
+**标签：** #system-design
 
 ---
 
-### 12. Design a Job Scheduler (Azure Functions backend)
+### 10. 设计 Azure Blob 存储
 
-**Difficulty:** Medium
-**Topics:** system-design, queue, scheduling, distributed-systems
-**Position:** Senior SWE
-**Years:** L63-L65
+**难度：** 困难
+**主题：** system-design, blob-storage, replication, erasure-coding
+**岗位：** 高级 SWE
+**级别：** L63-L65
 
-**Question:** Design a distributed job scheduler that supports one-off, recurring (cron), and delayed jobs at high scale.
+**问题：** 设计 Azure Blob 存储。覆盖分片、复制、持久性、读写路径。
 
-**Approach:** Persistent job store (Cosmos DB) with `next_run_time` index. Scheduler workers (leader-elected via ZK/etcd) scan due jobs every second, push to a queue (Service Bus). Worker pool pulls from queue, executes, reports status. For recurring jobs, on completion re-schedule with next cron time. Discuss exactly-once vs at-least-once (most schedulers commit to at-least-once + idempotent handlers), backfill on outage, and time zone handling for cron.
+**思路：** 前端层（负载均衡）→ 分区层（blob 名映射到存储服务器，按 account+container+blob 分片）→ stream 层（append-only、纠删码 chunk 分布在节点/机架/AZ 间）。分区层用 master（Paxos）做表分配。多 AZ 保证持久性，跨区域异步复制做灾备。讨论单区域内的强一致（分区单 primary）、大 blob 上传（block blob 提交模型）、分层（hot → cool → archive）。
 
-**Tags:** #system-design
-
----
-
-### 13. Design an API Rate Limiter
-
-**Difficulty:** Medium
-**Topics:** system-design, rate-limiting, redis, distributed
-**Position:** SWE
-**Years:** L62-L63
-
-**Question:** Design a rate limiter for an API supporting per-user and per-IP limits.
-
-**Approach:** Token bucket or sliding window log. Storage in Redis cluster sharded by user_id. Atomic Lua script to decrement-and-check. Local first-line in-process cache for very-hot keys (refresh every 100ms). For distributed limiting, prefer regional limits (eventual consistency tolerated) over global synchronous. Discuss fail-open vs fail-closed.
-
-**Tags:** #system-design
+**标签：** #system-design
 
 ---
 
-### 14. Design Xbox Live Matchmaking
+### 11. 设计 Office 365 文档协同编辑
 
-**Difficulty:** Hard
-**Topics:** system-design, gaming, latency, ranking
-**Position:** Senior SWE
-**Years:** L63-L65
+**难度：** 困难
+**主题：** system-design, ot, crdt, sync
+**岗位：** 高级 SWE
+**级别：** L63-L65
 
-**Question:** Design the matchmaking system for Xbox Live (or any multiplayer game) that pairs players by skill and latency.
+**问题：** 设计 Word/Excel/PowerPoint Online 支持多人并发编辑同一文档的方案。
 
-**Approach:** Players enter a queue keyed by `(game_mode, region, skill_bucket)`. TrueSkill/Glicko-2 for skill; expand bucket window over time (skill ± N grows with wait). Region picked by ping test to candidate data centers. Match finder runs every few seconds per bucket. On match: allocate game server (Kubernetes pool) in the lowest-latency DC. Discuss anti-smurf, party matchmaking (group of 4 vs solos), and fairness vs queue time trade-off.
+**思路：** 单文档级别用 OT 或 CRDT。每文档服务（按 doc_id 分片）作为中心序列化器；WebSocket 客户端发操作，服务端 transform + 广播。操作日志持久化（Cosmos DB）+ 定期快照到 blob。讨论离线编辑（本地排队操作、重连时重放）、大文档扩展（按段落粒度）、富内容（嵌入对象、评论）。可以提一句 Excel 比 Word 难（单元引用会让公式漂移）。
 
-**Tags:** #system-design
-
----
-
-### 15. Tell me about a time you learned something new quickly
-
-**Difficulty:** Medium
-**Topics:** behavioral, growth-mindset, learning
-**Position:** SWE
-**Years:** L60-L62
-
-**Question:** Tell me about a time you had to learn a new technology or domain quickly to deliver. How did you approach it?
-
-**Approach:** Direct hit on **growth mindset** — Satya's #1 cultural lens. Show: (1) you didn't pretend to know, (2) you had a structured learning approach (docs → small POC → expert review), (3) you delivered with the new skill, (4) you taught others afterward. Bonus: you actively sought feedback that would have been ego-bruising.
-
-**Tags:** #behavioral
+**标签：** #system-design
 
 ---
 
-### 16. Tell me about a time you got harsh feedback
+### 12. 设计任务调度器（Azure Functions 后端）
 
-**Difficulty:** Medium
-**Topics:** behavioral, growth-mindset, self-awareness
-**Position:** SWE
-**Years:** L60-L62
+**难度：** 中等
+**主题：** system-design, queue, scheduling, distributed-systems
+**岗位：** 高级 SWE
+**级别：** L63-L65
 
-**Question:** Tell me about a time you received tough feedback. What did you do with it?
+**问题：** 设计支持一次性、周期（cron）、延时任务的大规模分布式调度器。
 
-**Approach:** Microsoft really probes this — the "fixed vs growth mindset" tell. Show: (1) you didn't get defensive, (2) you sought to understand the underlying signal, (3) you made a concrete behavior change with evidence (not just intent), (4) the feedback giver acknowledged the change. Avoid stories where you "secretly disagreed" — that's fixed mindset signal.
+**思路：** 持久化任务存储（Cosmos DB）+ `next_run_time` 索引。调度 worker（通过 ZK/etcd 选主）每秒扫描到期任务，推到队列（Service Bus）。worker 池从队列拉取、执行、汇报状态。周期任务完成后按下一次 cron 时间重排。讨论 exactly-once vs at-least-once（多数调度器走 at-least-once + 幂等 handler）、宕机后回补、cron 的时区处理。
 
-**Tags:** #behavioral
-
----
-
-### 17. Tell me about a project that didn't go well
-
-**Difficulty:** Medium
-**Topics:** behavioral, failure, growth-mindset
-**Position:** Senior SWE
-**Years:** L63-L65
-
-**Question:** Walk me through a project that failed or didn't deliver what you hoped. What happened and what did you learn?
-
-**Approach:** Pick a real failure. Show: (1) you owned the failure without blame-shifting, (2) you ran a real retro (process, not just "we should've tested more"), (3) the lessons changed your behavior in a future project — give the specific example. Microsoft likes when you describe the system/process gap, not the person.
-
-**Tags:** #behavioral
+**标签：** #system-design
 
 ---
 
-### 18. Tell me about a time you led without authority
+### 13. 设计 API 限流器
 
-**Difficulty:** Medium
-**Topics:** behavioral, leadership, influence
-**Position:** Senior SWE
-**Years:** L63-L65
+**难度：** 中等
+**主题：** system-design, rate-limiting, redis, distributed
+**岗位：** SWE
+**级别：** L62-L63
 
-**Question:** Tell me about a time you drove a cross-team initiative without having direct authority over the people involved.
+**问题：** 设计支持按用户和按 IP 限流的 API rate limiter。
 
-**Approach:** Senior+ signal. Show: (1) you built a coalition with explicit "what's in it for them" framing, (2) you used data/customer impact (not org politics), (3) you celebrated others' contributions publicly, (4) outcome was measurable. Microsoft cares about collaboration across orgs — they have many.
+**思路：** 令牌桶或滑动窗口日志。存储用按 user_id 分片的 Redis 集群。原子 Lua 脚本递减+判断。超热 key 加进程内本地缓存（每 100ms 刷新）作为第一道。分布式限流优先用区域限流（容忍最终一致），少用全局同步。讨论 fail-open vs fail-closed。
 
-**Tags:** #behavioral
-
----
-
-### 19. Azure cost optimization on a service
-
-**Difficulty:** Medium
-**Topics:** cloud, cost-optimization, azure
-**Position:** SRE
-**Years:** L63
-
-**Question:** A service running on Azure has a $200K/month bill. Walk me through how you'd cut it in half.
-
-**Approach:** Profile costs first: compute (VMs/AKS), storage (Blob/disks), egress, managed services. Common wins: (1) right-size VMs (CPU/mem utilization < 30% = over-provisioned), (2) reserved instances or spot for batch, (3) Cosmos DB → tune RU/s and partitioning, (4) move cold blobs to cool/archive tier, (5) cache aggressively to cut egress, (6) audit dev/test resources auto-shutdown after hours. Don't optimize without measuring impact on SLOs. Show you'd build a cost dashboard before making cuts.
-
-**Tags:** #domain-knowledge
+**标签：** #system-design
 
 ---
 
-### 20. Debug a high-CPU .NET service
+### 14. 设计 Xbox Live 匹配
 
-**Difficulty:** Medium
-**Topics:** dotnet, profiling, debugging
-**Position:** SWE
-**Years:** L62
+**难度：** 困难
+**主题：** system-design, gaming, latency, ranking
+**岗位：** 高级 SWE
+**级别：** L63-L65
 
-**Question:** A C#/.NET service is showing 100% CPU on production VMs intermittently. How would you debug it?
+**问题：** 设计 Xbox Live（或任何多人游戏）的匹配系统，按技术和延迟撮合玩家。
 
-**Approach:** Step 1: collect a dump (`dotnet-dump collect`) or use a profiler (`dotnet-trace`, PerfView). Look at top stacks. Common causes: (1) GC pressure → check Gen2 collections, large object heap, (2) regex with catastrophic backtracking, (3) JSON serialization of huge objects, (4) busy-wait in a Task scheduler, (5) lock contention. Use `dotnet-counters` for live metrics. Mention you'd correlate with deploy diffs and recent traffic patterns. If irreproducible, add structured logging + sampling profiler in prod (always-on profiling).
+**思路：** 玩家进入按 `(game_mode, region, skill_bucket)` 的队列。技术评分用 TrueSkill/Glicko-2；技能 ± N 随等待时间扩大窗口。区域用 ping 候选数据中心决定。匹配器每隔几秒按桶撮合。匹配上后：在延迟最低的 DC 分配游戏服务器（Kubernetes 池）。讨论反小号、组队匹配（4 人队 vs 单排）、公平性与排队时间的权衡。
 
-**Tags:** #domain-knowledge
+**标签：** #system-design
 
 ---
 
-### 21. Reverse Linked List II
+### 15. 讲一次你快速学会新东西的经历
 
-**Difficulty:** Medium
-**Topics:** linked-list, pointers
-**Position:** SWE
-**Years:** L60-L62
+**难度：** 中等
+**主题：** behavioral, growth-mindset, learning
+**岗位：** SWE
+**级别：** L60-L62
 
-**Question:** Reverse the nodes of a linked list from position `left` to `right` (1-indexed), in one pass and in-place.
+**问题：** 讲一次你为了交付不得不快速学习新技术或新领域的经历。你怎么做的？
 
-**Approach:** Use a dummy node. Walk `prev` to position `left-1`. Then iteratively splice the next node to the front of the reversed sublist (`prev.next` insertion). O(n) time, O(1) space. Edge cases: `left == 1`, `left == right`, list shorter than `right`.
+**思路：** 直击**成长型思维**——Satya 的头号文化视角。展示：(1) 你没装懂，(2) 你有结构化学习方法（文档 → 小 POC → 专家 review），(3) 你用新技能交付了，(4) 之后你教别人。加分：你主动寻求了让你面子上挂不住的反馈。
 
-**Python:**
+**标签：** #behavioral
+
+---
+
+### 16. 你收到尖锐反馈的经历
+
+**难度：** 中等
+**主题：** behavioral, growth-mindset, self-awareness
+**岗位：** SWE
+**级别：** L60-L62
+
+**问题：** 讲一次你收到严厉反馈的经历。你怎么处理的？
+
+**思路：** 微软深挖这道题——"固定 vs 成长型思维"的试金石。展示：(1) 你没防御性反应，(2) 你试图理解背后的信号，(3) 你做了可证明的具体行为改变（不只是意图），(4) 反馈给予者认可了改变。避免"我心里其实不同意"的故事——那是固定思维信号。
+
+**标签：** #behavioral
+
+---
+
+### 17. 一个不顺利的项目
+
+**难度：** 中等
+**主题：** behavioral, failure, growth-mindset
+**岗位：** 高级 SWE
+**级别：** L63-L65
+
+**问题：** 介绍一个失败或未达预期的项目。发生了什么？你学到了什么？
+
+**思路：** 挑真实失败。展示：(1) 你不甩锅、独自扛责，(2) 你做了真正的复盘（流程层面，不是"我们应该多测试"这种空话），(3) 教训在后续项目里改变了你的行为——给具体例子。微软喜欢你描述系统/流程缺口，而非个人问题。
+
+**标签：** #behavioral
+
+---
+
+### 18. 你无授权领导一件事的经历
+
+**难度：** 中等
+**主题：** behavioral, leadership, influence
+**岗位：** 高级 SWE
+**级别：** L63-L65
+
+**问题：** 讲一次你推动跨团队倡议，但对相关人员并无直接管理权的经历。
+
+**思路：** Senior+ 信号。展示：(1) 你用"对他们有什么好处"的明确框架建立联盟，(2) 你用数据/客户影响（不是组织政治），(3) 你公开表扬他人贡献，(4) 结果可量化。微软非常看重跨组协作——他们组太多了。
+
+**标签：** #behavioral
+
+---
+
+### 19. 优化某服务在 Azure 上的成本
+
+**难度：** 中等
+**主题：** cloud, cost-optimization, azure
+**岗位：** SRE
+**级别：** L63
+
+**问题：** Azure 上某服务月账单 20 万美元。讲讲你如何砍掉一半。
+
+**思路：** 先剖析成本：算力（VM/AKS）、存储（Blob/磁盘）、出网、托管服务。常见收益：(1) 调整 VM 规格（CPU/内存利用率 <30% 即过度配置），(2) 批处理用 reserved 或 spot 实例，(3) Cosmos DB → 调 RU/s 和分区，(4) 冷 blob 转到 cool/archive 层，(5) 重度缓存减少出网，(6) 审计 dev/test 资源下班后自动关机。别不看 SLO 影响就砍。展示你会先建成本看板再动手。
+
+**标签：** #domain-knowledge
+
+---
+
+### 20. 排查 .NET 服务高 CPU
+
+**难度：** 中等
+**主题：** dotnet, profiling, debugging
+**岗位：** SWE
+**级别：** L62
+
+**问题：** 一个 C#/.NET 服务在生产 VM 间歇性 100% CPU。你如何排查？
+
+**思路：** 第 1 步：取 dump（`dotnet-dump collect`）或用 profiler（`dotnet-trace`、PerfView）。看最热的调用栈。常见原因：(1) GC 压力 → 看 Gen2 回收、大对象堆，(2) 灾难性回溯的正则，(3) 大对象的 JSON 序列化，(4) Task 调度器中的忙等，(5) 锁竞争。用 `dotnet-counters` 看实时指标。要把部署 diff 和近期流量模式关联起来分析。若无法复现，加结构化日志 + 生产采样 profiler（always-on profiling）。
+
+**标签：** #domain-knowledge
+
+---
+
+### 21. 反转链表 II
+
+**难度：** 中等
+**主题：** linked-list, pointers
+**岗位：** SWE
+**级别：** L60-L62
+
+**问题：** 一次遍历且原地反转链表中位置 `left` 到 `right`（1-indexed）的节点。
+
+**思路：** 用 dummy 节点。把 `prev` 走到位置 `left-1`。然后反复把后继节点插到已反转子链表的最前面（在 `prev.next` 位置插入）。O(n) 时间，O(1) 空间。边界：`left == 1`、`left == right`、链表短于 `right`。
+
+**Python：**
 ```python
 def reverse_between(head: ListNode | None, left: int, right: int) -> ListNode | None:
     dummy = ListNode(0, head)
@@ -847,7 +847,7 @@ def reverse_between(head: ListNode | None, left: int, right: int) -> ListNode | 
     return dummy.next
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function reverseBetween(head: ListNode | null, left: number, right: number): ListNode | null {
   const dummy = new ListNode(0, head);
@@ -864,7 +864,7 @@ function reverseBetween(head: ListNode | null, left: number, right: number): Lis
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 static ListNode reverseBetween(ListNode head, int left, int right) {
     ListNode dummy = new ListNode(0, head);
@@ -881,27 +881,27 @@ static ListNode reverseBetween(ListNode head, int left, int right) {
 }
 ```
 
-**Key points:**
-- Dummy node handles `left == 1` (head moves) without branching.
-- Splice-to-front avoids reversing then re-stitching.
-- Each step does O(1) pointer work; `right - left` splices total.
+**要点：**
+- dummy 节点免去 `left == 1`（头节点移动）的特殊分支。
+- "把后继插到前面"省去先反转再缝合两步。
+- 每步 O(1) 指针操作，共 `right - left` 次插入。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 22. Set Matrix Zeroes
+### 22. 矩阵置零
 
-**Difficulty:** Medium
-**Topics:** matrix, in-place
-**Position:** SWE
-**Years:** L60-L62
+**难度：** 中等
+**主题：** matrix, in-place
+**岗位：** SWE
+**级别：** L60-L62
 
-**Question:** Given an m x n matrix, if an element is 0, set its entire row and column to 0. Do it in-place.
+**问题：** 给定 m x n 矩阵，若某元素为 0，则将其所在行和列全部置为 0。要求原地完成。
 
-**Approach:** Use the first row and first column as marker arrays. Track separately whether row 0 and col 0 themselves need zeroing. Two passes: mark, then apply. Finally zero row 0 / col 0 if flagged. O(mn) time, O(1) extra space.
+**思路：** 用第一行和第一列作为标记数组。单独用两个布尔变量记录第 0 行/第 0 列本身是否需要置零。两遍：标记、应用。最后按标记处理第 0 行/列。O(mn) 时间，O(1) 额外空间。
 
-**Python:**
+**Python：**
 ```python
 def set_zeroes(matrix: list[list[int]]) -> None:
     m, n = len(matrix), len(matrix[0])
@@ -921,7 +921,7 @@ def set_zeroes(matrix: list[list[int]]) -> None:
         for r in range(m): matrix[r][0] = 0
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function setZeroes(matrix: number[][]): void {
   const m = matrix.length, n = matrix[0].length;
@@ -937,7 +937,7 @@ function setZeroes(matrix: number[][]): void {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 static void setZeroes(int[][] matrix) {
     int m = matrix.length, n = matrix[0].length;
@@ -955,27 +955,27 @@ static void setZeroes(int[][] matrix) {
 }
 ```
 
-**Key points:**
-- First row/col double as marker arrays for O(1) extra space.
-- Two booleans preserve original zero info for row 0 and col 0.
-- Apply zeros to inner cells before clearing the marker row/column.
+**要点：**
+- 首行/首列复用为标记数组，实现 O(1) 额外空间。
+- 两个布尔变量保留首行/首列自身的原始 0 信息。
+- 必须先处理内部单元，再清零首行/首列，否则会丢失标记。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 23. Rotate Image
+### 23. 旋转图像
 
-**Difficulty:** Medium
-**Topics:** matrix, in-place
-**Position:** SWE
-**Years:** L60-L62
+**难度：** 中等
+**主题：** matrix, in-place
+**岗位：** SWE
+**级别：** L60-L62
 
-**Question:** Rotate an n x n 2D matrix 90 degrees clockwise in-place.
+**问题：** 原地将 n x n 矩阵顺时针旋转 90 度。
 
-**Approach:** Transpose (swap `M[i][j]` with `M[j][i]` for `i<j`), then reverse each row. O(n^2) time, O(1) space. Discuss: counter-clockwise = transpose + reverse columns; 180 = reverse rows + reverse columns.
+**思路：** 先转置（对 `i<j` 交换 `M[i][j]` 和 `M[j][i]`），再逐行翻转。O(n^2) 时间，O(1) 空间。讨论：逆时针 = 转置 + 翻转列；180 度 = 翻转行 + 翻转列。
 
-**Python:**
+**Python：**
 ```python
 def rotate(matrix: list[list[int]]) -> None:
     n = len(matrix)
@@ -986,7 +986,7 @@ def rotate(matrix: list[list[int]]) -> None:
         row.reverse()
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function rotate(matrix: number[][]): void {
   const n = matrix.length;
@@ -999,7 +999,7 @@ function rotate(matrix: number[][]): void {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 static void rotate(int[][] matrix) {
     int n = matrix.length;
@@ -1016,27 +1016,27 @@ static void rotate(int[][] matrix) {
 }
 ```
 
-**Key points:**
-- Transpose + row reverse equals 90 degrees clockwise.
-- Inner loop starts at `i+1` to avoid double-swapping.
-- O(n^2) time, O(1) extra space; in-place satisfies the problem constraint.
+**要点：**
+- 转置 + 行翻转 = 顺时针 90 度。
+- 内层从 `i+1` 起，避免一对元素被交换两次（等于没换）。
+- O(n^2) 时间、O(1) 额外空间，满足原地要求。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 24. Maximum Subarray
+### 24. 最大子数组和
 
-**Difficulty:** Medium
-**Topics:** arrays, dp, kadane
-**Position:** SWE
-**Years:** L60-L62
+**难度：** 中等
+**主题：** arrays, dp, kadane
+**岗位：** SWE
+**级别：** L60-L62
 
-**Question:** Given an integer array, find the contiguous subarray with the largest sum and return that sum.
+**问题：** 给定整数数组，找出和最大的连续子数组并返回该和。
 
-**Approach:** Kadane's algorithm: `cur = max(x, cur + x); best = max(best, cur)`. O(n) time, O(1) space. Follow-up: also return the indices. Divide-and-conquer variant in O(n log n) is a good discussion if asked.
+**思路：** Kadane 算法：`cur = max(x, cur + x); best = max(best, cur)`。O(n) 时间，O(1) 空间。追问：同时返回下标。被问到时可讨论 O(n log n) 的分治变体。
 
-**Python:**
+**Python：**
 ```python
 def max_sub_array(nums: list[int]) -> int:
     cur = best = nums[0]
@@ -1046,7 +1046,7 @@ def max_sub_array(nums: list[int]) -> int:
     return best
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function maxSubArray(nums: number[]): number {
   let cur = nums[0], best = nums[0];
@@ -1058,7 +1058,7 @@ function maxSubArray(nums: number[]): number {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 static int maxSubArray(int[] nums) {
     int cur = nums[0], best = nums[0];
@@ -1070,27 +1070,27 @@ static int maxSubArray(int[] nums) {
 }
 ```
 
-**Key points:**
-- `cur` is the best subarray sum ending at the current index.
-- All-negative arrays correctly return the single largest element.
-- To recover indices, track start whenever `cur` resets to `nums[i]`.
+**要点：**
+- `cur` 表示以当前下标结尾的最佳子数组和。
+- 全负数组正确返回最大单元素。
+- 若需下标：每次 `cur` 重置为 `nums[i]` 时记录新的起点。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 25. Excel Sheet Column Title
+### 25. Excel 表列名称
 
-**Difficulty:** Easy
-**Topics:** math, string
-**Position:** SWE
-**Years:** L60-L62
+**难度：** 简单
+**主题：** math, string
+**岗位：** SWE
+**级别：** L60-L62
 
-**Question:** Given an integer column number, return its corresponding Excel column title (1 -> A, 28 -> AB, 701 -> ZY).
+**问题：** 给定列序号，返回对应的 Excel 表列名称（1 → A，28 → AB，701 → ZY）。
 
-**Approach:** Modified base-26 with 1-indexing (no zero digit). Loop: `n--; c = 'A' + n % 26; n /= 26;` prepend `c`. O(log n) time. Classic Microsoft "off-by-one" probe — they want you to derive the `n--` trick.
+**思路：** 改造的 1-indexed 26 进制（无 0 数字）。循环：`n--; c = 'A' + n % 26; n /= 26;` 前插 `c`。O(log n) 时间。微软经典 off-by-one 考点——他们想看你能推出 `n--` 这一步。
 
-**Python:**
+**Python：**
 ```python
 def convert_to_title(n: int) -> str:
     out: list[str] = []
@@ -1101,7 +1101,7 @@ def convert_to_title(n: int) -> str:
     return "".join(reversed(out))
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function convertToTitle(n: number): string {
   let out = "";
@@ -1114,7 +1114,7 @@ function convertToTitle(n: number): string {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 static String convertToTitle(int n) {
     StringBuilder sb = new StringBuilder();
@@ -1127,27 +1127,27 @@ static String convertToTitle(int n) {
 }
 ```
 
-**Key points:**
-- `n--` shifts the 1-indexed system into a 0-indexed base-26 digit.
-- Build digits least-significant-first, then reverse (or prepend).
-- O(log_26 n) iterations; works for arbitrarily large inputs.
+**要点：**
+- `n--` 把 1-indexed 体系平移到 0-indexed 的 26 进制。
+- 从低位到高位生成字符，再反转（或前插）。
+- O(log_26 n) 次迭代，对任意大输入仍适用。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 26. Palindromic Substrings
+### 26. 回文子串数
 
-**Difficulty:** Medium
-**Topics:** string, dp, two-pointers
-**Position:** SWE
-**Years:** L60-L62
+**难度：** 中等
+**主题：** string, dp, two-pointers
+**岗位：** SWE
+**级别：** L60-L62
 
-**Question:** Given a string, count how many substrings are palindromes.
+**问题：** 给定字符串，统计有多少个子串是回文。
 
-**Approach:** Expand-around-center: for each index, expand odd-length and even-length centers, count while characters match. O(n^2) time, O(1) space. Manacher's algorithm gives O(n) — mention it but don't code unless asked.
+**思路：** 中心扩展：对每个下标，分别按奇长度、偶长度中心扩展，只要两端字符相等就计数。O(n^2) 时间，O(1) 空间。Manacher 可做到 O(n)——提一句即可，未被要求别写。
 
-**Python:**
+**Python：**
 ```python
 def count_substrings(s: str) -> int:
     def grow(l: int, r: int) -> int:
@@ -1158,7 +1158,7 @@ def count_substrings(s: str) -> int:
     return sum(grow(i, i) + grow(i, i + 1) for i in range(len(s)))
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function countSubstrings(s: string): number {
   const grow = (l: number, r: number): number => {
@@ -1172,7 +1172,7 @@ function countSubstrings(s: string): number {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 static int countSubstrings(String s) {
     int total = 0;
@@ -1187,27 +1187,27 @@ private static int grow(String s, int l, int r) {
 }
 ```
 
-**Key points:**
-- Each successful expansion step is exactly one palindromic substring.
-- Both odd (`i, i`) and even (`i, i+1`) centers must be considered.
-- Manacher's algorithm gets O(n) but is rarely required.
+**要点：**
+- 每一次成功扩张恰好对应一个回文子串。
+- 必须同时枚举奇 (`i, i`) 和偶 (`i, i+1`) 两种中心。
+- Manacher 算法可 O(n)，面试很少强制要求。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 27. Group Anagrams
+### 27. 字母异位词分组
 
-**Difficulty:** Medium
-**Topics:** string, hashmap, sorting
-**Position:** SWE
-**Years:** L60-L62
+**难度：** 中等
+**主题：** string, hashmap, sorting
+**岗位：** SWE
+**级别：** L60-L62
 
-**Question:** Given a list of strings, group all anagrams together.
+**问题：** 给定字符串列表，把所有字母异位词归到同一组。
 
-**Approach:** Key each string by either its sorted characters (O(k log k) per string) or a length-26 count array serialized to a string (O(k)). Bucket into a hashmap. Total O(n * k). Discuss memory tradeoffs and Unicode considerations.
+**思路：** 每个字符串的 key 用排序后的字符（每串 O(k log k)）或长度 26 的计数数组序列化为字符串（O(k)）。哈希分桶。总体 O(n * k)。讨论内存权衡及 Unicode 注意点。
 
-**Python:**
+**Python：**
 ```python
 def group_anagrams(strs: list[str]) -> list[list[str]]:
     groups: dict[str, list[str]] = {}
@@ -1217,7 +1217,7 @@ def group_anagrams(strs: list[str]) -> list[list[str]]:
     return list(groups.values())
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function groupAnagrams(strs: string[]): string[][] {
   const groups = new Map<string, string[]>();
@@ -1230,7 +1230,7 @@ function groupAnagrams(strs: string[]): string[][] {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 static List<List<String>> groupAnagrams(String[] strs) {
     Map<String, List<String>> groups = new HashMap<>();
@@ -1243,27 +1243,27 @@ static List<List<String>> groupAnagrams(String[] strs) {
 }
 ```
 
-**Key points:**
-- Sorted string is the simplest canonical key.
-- A 26-length count vector key avoids per-string sorting for O(n*k).
-- Group order is not specified by the problem.
+**要点：**
+- 排序后字符串是最简单的规范 key。
+- 用 26 长度的计数向量做 key 可避免每串排序，做到 O(n*k)。
+- 题目对分组顺序无要求。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 28. Implement Trie (Prefix Tree)
+### 28. 实现 Trie（前缀树）
 
-**Difficulty:** Medium
-**Topics:** trie, design, string
-**Position:** SWE
-**Years:** L60-L62
+**难度：** 中等
+**主题：** trie, design, string
+**岗位：** SWE
+**级别：** L60-L62
 
-**Question:** Implement a Trie with `insert`, `search`, and `startsWith` operations.
+**问题：** 实现支持 `insert`、`search` 和 `startsWith` 操作的 Trie。
 
-**Approach:** Node has `children: Map<Char, Node>` (or 26-array for lowercase a-z) and an `isEnd` flag. Insert/search/startsWith traverse character by character. O(L) per operation, where L is word length. Discuss memory: array faster but sparse; hashmap saves space for large alphabets.
+**思路：** 节点含 `children: Map<Char, Node>`（或小写 a-z 用 26 位数组）和 `isEnd` 标志。三个操作均逐字符走树。每次操作 O(L)，L 为单词长度。讨论：数组快但稀疏；hashmap 节省大字母表场景的空间。
 
-**Python:**
+**Python：**
 ```python
 class Trie:
     def __init__(self) -> None:
@@ -1292,7 +1292,7 @@ class Trie:
         return self._find(prefix) is not None
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 class Trie {
   children: Map<string, Trie> = new Map();
@@ -1319,7 +1319,7 @@ class Trie {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 class Trie {
     private final Map<Character, Trie> children = new HashMap<>();
@@ -1345,27 +1345,27 @@ class Trie {
 }
 ```
 
-**Key points:**
-- Single `find` helper backs both `search` and `startsWith`.
-- `end` flag distinguishes inserted words from mere prefixes.
-- Array children (length 26) is faster but wastes memory on sparse alphabets.
+**要点：**
+- 共用一个 `find` 辅助函数同时支撑 `search` 与 `startsWith`。
+- `end` 标志区分"已插入的单词"和"只是某个前缀"。
+- 26 长度的数组子节点更快，但稀疏字母表浪费内存。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 29. Add and Search Word - Data Structure
+### 29. 添加与搜索单词
 
-**Difficulty:** Medium
-**Topics:** trie, dfs, design
-**Position:** SWE
-**Years:** L62-L63
+**难度：** 中等
+**主题：** trie, dfs, design
+**岗位：** SWE
+**级别：** L62-L63
 
-**Question:** Design a data structure that supports `addWord(word)` and `search(word)` where the search word may contain `.` as a wildcard matching any single letter.
+**问题：** 设计一个数据结构，支持 `addWord(word)` 和 `search(word)`，其中搜索词可含 `.` 通配任意单个字母。
 
-**Approach:** Trie + DFS for search. On `.`, recurse into all non-null children. O(L) for add; O(26^k * L) worst-case for search where k is the wildcard count. Microsoft cares you bound the recursion and handle empty trie / empty word.
+**思路：** Trie + DFS 搜索。遇到 `.` 时递归所有非空子节点。add O(L)；search 最坏 O(26^k * L)，k 是通配符数。微软关注你能否控制好递归边界，并处理空 trie / 空串。
 
-**Python:**
+**Python：**
 ```python
 class WordDictionary:
     def __init__(self) -> None:
@@ -1390,7 +1390,7 @@ class WordDictionary:
         return dfs(self, 0)
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 class WordDictionary {
   children: Map<string, WordDictionary> = new Map();
@@ -1419,7 +1419,7 @@ class WordDictionary {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 class WordDictionary {
     private final Map<Character, WordDictionary> children = new HashMap<>();
@@ -1446,27 +1446,27 @@ class WordDictionary {
 }
 ```
 
-**Key points:**
-- DFS handles wildcards by branching across all children.
-- Termination: `i == len(word)` requires `end` true to match.
-- Worst-case search O(26^k * L) when many dots, but typical use is fast.
+**要点：**
+- DFS 在遇到通配符时分支到所有子节点。
+- 终止条件 `i == len(word)` 要求 `end` 为 true 才算命中。
+- 通配符多时最坏 O(26^k * L)，常规使用很快。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 30. Design Hit Counter
+### 30. 设计点击计数器
 
-**Difficulty:** Medium
-**Topics:** design, queue, concurrency
-**Position:** SWE
-**Years:** L62-L63
+**难度：** 中等
+**主题：** design, queue, concurrency
+**岗位：** SWE
+**级别：** L62-L63
 
-**Question:** Design a hit counter that records hits and returns the number of hits in the past 5 minutes (300 seconds).
+**问题：** 设计一个 hit counter，能记录点击并返回过去 5 分钟（300 秒）内的点击数。
 
-**Approach:** Circular buffer of 300 (`time[i], count[i]`); on hit, if `time[idx] != now` reset, else increment. `getHits` sums entries where `now - time[i] < 300`. O(1) hit, O(300) query. Discuss thread-safety (atomic CAS per slot) and scaling to many requests per second (bucket coarser).
+**思路：** 长度 300 的环形缓冲（`time[i], count[i]`）；hit 时若 `time[idx] != now` 重置，否则自增。`getHits` 求和 `now - time[i] < 300` 的槽。hit O(1)，query O(300)。讨论线程安全（每槽原子 CAS）和高 QPS 下的更粗粒度桶。
 
-**Python:**
+**Python：**
 ```python
 class HitCounter:
     def __init__(self) -> None:
@@ -1485,7 +1485,7 @@ class HitCounter:
         return sum(c for t, c in zip(self.times, self.counts) if timestamp - t < 300)
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 class HitCounter {
   private times = new Array<number>(300).fill(0);
@@ -1503,7 +1503,7 @@ class HitCounter {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 class HitCounter {
     private final int[] times = new int[300];
@@ -1523,27 +1523,27 @@ class HitCounter {
 }
 ```
 
-**Key points:**
-- Fixed-size buffer makes memory O(1) regardless of traffic.
-- Stale slots are detected by comparing stored timestamp to current.
-- For very high QPS, switch to a queue of (ts, count) and pop expired entries.
+**要点：**
+- 固定大小缓冲让内存 O(1)，与流量无关。
+- 比较当前时间戳与槽存时间戳即可识别过期槽。
+- 超高 QPS 时可改为 (ts, count) 队列，过期就 pop。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 31. Find Peak Element
+### 31. 寻找峰值
 
-**Difficulty:** Medium
-**Topics:** binary-search, arrays
-**Position:** SWE
-**Years:** L60-L62
+**难度：** 中等
+**主题：** binary-search, arrays
+**岗位：** SWE
+**级别：** L60-L62
 
-**Question:** A peak element is strictly greater than its neighbors. Given an array where `nums[i] != nums[i+1]`, return the index of any peak in O(log n).
+**问题：** 峰值严格大于相邻元素。给定 `nums[i] != nums[i+1]` 的数组，O(log n) 返回任一峰值下标。
 
-**Approach:** Binary search: compare `mid` with `mid+1`. If `nums[mid] < nums[mid+1]`, peak is to the right (`lo = mid+1`); else left (`hi = mid`). Loop until `lo == hi`. O(log n) time. Boundary `nums[-1] = nums[n] = -inf` guarantees a peak exists.
+**思路：** 二分：比较 `mid` 与 `mid+1`。若 `nums[mid] < nums[mid+1]`，峰值在右（`lo = mid+1`）；否则在左（`hi = mid`）。直到 `lo == hi`。O(log n) 时间。`nums[-1] = nums[n] = -inf` 的边界保证一定存在峰值。
 
-**Python:**
+**Python：**
 ```python
 def find_peak_element(nums: list[int]) -> int:
     lo, hi = 0, len(nums) - 1
@@ -1556,7 +1556,7 @@ def find_peak_element(nums: list[int]) -> int:
     return lo
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function findPeakElement(nums: number[]): number {
   let lo = 0, hi = nums.length - 1;
@@ -1569,7 +1569,7 @@ function findPeakElement(nums: number[]): number {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 static int findPeakElement(int[] nums) {
     int lo = 0, hi = nums.length - 1;
@@ -1582,27 +1582,27 @@ static int findPeakElement(int[] nums) {
 }
 ```
 
-**Key points:**
-- Uphill slope guarantees a peak exists on that side.
-- Loop ends when `lo == hi`, pointing at a peak.
-- Virtual `-inf` boundaries guarantee any array has at least one peak.
+**要点：**
+- 上坡方向必有峰值。
+- 循环结束时 `lo == hi`，指向一个峰值下标。
+- 虚拟的 `-inf` 边界保证任意数组都存在峰值。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 32. Merge K Sorted Lists
+### 32. 合并 K 个有序链表
 
-**Difficulty:** Hard
-**Topics:** linked-list, heap, divide-and-conquer
-**Position:** SWE
-**Years:** L62-L63
+**难度：** 困难
+**主题：** linked-list, heap, divide-and-conquer
+**岗位：** SWE
+**级别：** L62-L63
 
-**Question:** Merge k sorted linked lists into one sorted linked list.
+**问题：** 合并 k 个有序链表为一个有序链表。
 
-**Approach:** Min-heap of size k seeded with each list's head; pop smallest, push its `.next`. O(N log k) time, O(k) space. Alternative: pairwise merge via divide-and-conquer (same complexity, no heap). Watch for null lists in the input.
+**思路：** 大小 k 的小顶堆，初始装入每个链表头；弹出最小，再压入它的 `.next`。O(N log k) 时间，O(k) 空间。备选：分治两两合并（复杂度相同，无需堆）。注意输入里可能有 null 链表。
 
-**Python:**
+**Python：**
 ```python
 import heapq
 
@@ -1622,7 +1622,7 @@ def merge_k_lists(lists: list[ListNode | None]) -> ListNode | None:
     return dummy.next
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function mergeKLists(lists: Array<ListNode | null>): ListNode | null {
   if (lists.length === 0) return null;
@@ -1646,7 +1646,7 @@ function mergeKLists(lists: Array<ListNode | null>): ListNode | null {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 static ListNode mergeKLists(ListNode[] lists) {
     PriorityQueue<ListNode> heap = new PriorityQueue<>(Comparator.comparingInt(n -> n.val));
@@ -1662,27 +1662,27 @@ static ListNode mergeKLists(ListNode[] lists) {
 }
 ```
 
-**Key points:**
-- Index in the tuple breaks ties so heap never compares node objects.
-- Pairwise divide-and-conquer matches O(N log k) without a heap.
-- Skip null inputs before pushing them into the heap.
+**要点：**
+- 元组里的下标用于打破平局，避免堆比较节点对象。
+- 两两分治合并无需堆，同样 O(N log k)。
+- 入堆前过滤掉 null 链表。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 33. Word Search II
+### 33. 单词搜索 II
 
-**Difficulty:** Hard
-**Topics:** trie, backtracking, dfs, matrix
-**Position:** Senior SWE
-**Years:** L62-L63
+**难度：** 困难
+**主题：** trie, backtracking, dfs, matrix
+**岗位：** 高级 SWE
+**级别：** L62-L63
 
-**Question:** Given a 2D board and a list of words, return all words from the list that can be found in the board (adjacent cells, no reuse).
+**问题：** 给定 2D 字母板和一组单词，返回能在板上找到的所有单词（相邻单元，不复用）。
 
-**Approach:** Build a trie of the word list. DFS from each cell, descending the trie in lockstep. On hitting a trie node with a word, record it and null out the marker to avoid duplicates. Prune dead trie branches as you go. O(m*n*4^Lmax) worst-case but pruning makes it very fast in practice.
+**思路：** 把单词列表建成 trie。从每个单元 DFS，并在 trie 上同步下行。命中一个带词的 trie 节点时记录并把标记置空避免重复。沿途剪掉已死的 trie 分支。最坏 O(m*n*4^Lmax)，但剪枝下实际很快。
 
-**Python:**
+**Python：**
 ```python
 def find_words(board: list[list[str]], words: list[str]) -> list[str]:
     root: dict = {}
@@ -1714,7 +1714,7 @@ def find_words(board: list[list[str]], words: list[str]) -> list[str]:
     return out
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function findWords(board: string[][], words: string[]): string[] {
   type Node = { [k: string]: any };
@@ -1744,7 +1744,7 @@ function findWords(board: string[][], words: string[]): string[] {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 private static class TrieNode { Map<Character, TrieNode> children = new HashMap<>(); String word; }
 
@@ -1777,27 +1777,27 @@ private static void dfs(char[][] b, int r, int c, TrieNode node, List<String> ou
 }
 ```
 
-**Key points:**
-- Trie shares prefix work across many candidate words.
-- Deleting `$` after capture and pruning dead branches keeps the trie shrinking.
-- Mutate then restore the board cell for O(1) visited tracking.
+**要点：**
+- Trie 让候选单词共享前缀工作，比逐词搜索高效得多。
+- 命中后删 `$` 并剪枝死分支，trie 持续缩小。
+- 修改后复原 board 单元，实现 O(1) 访问标记。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 34. House Robber
+### 34. 打家劫舍
 
-**Difficulty:** Medium
-**Topics:** dp, arrays
-**Position:** SWE
-**Years:** L60-L62
+**难度：** 中等
+**主题：** dp, arrays
+**岗位：** SWE
+**级别：** L60-L62
 
-**Question:** Given an array of non-negative integers representing the amount of money at each house, find the maximum you can rob without robbing two adjacent houses.
+**问题：** 给定数组表示每户金额，求在不偷相邻两户的前提下最多能偷多少。
 
-**Approach:** DP: `f(i) = max(f(i-1), f(i-2) + nums[i])`. Track only two scalars `prev2, prev1`. O(n) time, O(1) space. Follow-up: House Robber II (circular) — run twice, excluding first or last house.
+**思路：** DP：`f(i) = max(f(i-1), f(i-2) + nums[i])`。只保留 `prev2, prev1` 两个标量。O(n) 时间，O(1) 空间。追问：打家劫舍 II（环形）——跑两次，分别排除第一户或最后一户。
 
-**Python:**
+**Python：**
 ```python
 def rob(nums: list[int]) -> int:
     prev2 = prev1 = 0
@@ -1806,7 +1806,7 @@ def rob(nums: list[int]) -> int:
     return prev1
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function rob(nums: number[]): number {
   let prev2 = 0, prev1 = 0;
@@ -1819,7 +1819,7 @@ function rob(nums: number[]): number {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 static int rob(int[] nums) {
     int prev2 = 0, prev1 = 0;
@@ -1832,27 +1832,27 @@ static int rob(int[] nums) {
 }
 ```
 
-**Key points:**
-- Each house: take it plus best up to i-2, or skip it.
-- Two rolling scalars suffice; full DP array is unnecessary.
-- Empty input safely returns 0.
+**要点：**
+- 每户两种选择：拿（加 i-2 的最优）或不拿。
+- 两个滚动标量足够，完整 DP 数组多余。
+- 空输入安全返回 0。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 35. Coin Change
+### 35. 零钱兑换
 
-**Difficulty:** Medium
-**Topics:** dp, arrays
-**Position:** SWE
-**Years:** L62-L63
+**难度：** 中等
+**主题：** dp, arrays
+**岗位：** SWE
+**级别：** L62-L63
 
-**Question:** Given coin denominations and a target amount, return the fewest coins needed to make that amount, or -1 if impossible.
+**问题：** 给定硬币面额与目标金额，返回凑出该金额所需最少硬币数；不行返回 -1。
 
-**Approach:** Bottom-up DP: `dp[a] = min(dp[a - c] + 1)` over all coins c <= a. Initialize `dp[0] = 0`, others `inf`. O(amount * coins) time, O(amount) space. BFS variant treats it as shortest path from 0 to amount.
+**思路：** 自底向上 DP：`dp[a] = min(dp[a - c] + 1)`，遍历所有 c <= a。`dp[0] = 0`，其余 `inf`。O(amount * coins) 时间，O(amount) 空间。也可看作从 0 到 amount 的 BFS 最短路。
 
-**Python:**
+**Python：**
 ```python
 def coin_change(coins: list[int], amount: int) -> int:
     dp: list[float] = [float("inf")] * (amount + 1)
@@ -1864,7 +1864,7 @@ def coin_change(coins: list[int], amount: int) -> int:
     return -1 if dp[amount] == float("inf") else int(dp[amount])
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function coinChange(coins: number[], amount: number): number {
   const dp = new Array<number>(amount + 1).fill(Infinity);
@@ -1878,7 +1878,7 @@ function coinChange(coins: number[], amount: number): number {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 static int coinChange(int[] coins, int amount) {
     int[] dp = new int[amount + 1];
@@ -1891,27 +1891,27 @@ static int coinChange(int[] coins, int amount) {
 }
 ```
 
-**Key points:**
-- `dp[0] = 0` is the base case; `inf` marks unreachable amounts.
-- O(amount * |coins|) time, O(amount) space.
-- BFS layered by coins also works and stops as soon as `amount` is reached.
+**要点：**
+- `dp[0] = 0` 是基态；`inf` 表示不可达。
+- O(amount * |coins|) 时间，O(amount) 空间。
+- 按硬币层的 BFS 同样可行，且一旦到达 amount 即可停。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 36. Decode Ways
+### 36. 解码方法
 
-**Difficulty:** Medium
-**Topics:** dp, string
-**Position:** SWE
-**Years:** L62-L63
+**难度：** 中等
+**主题：** dp, string
+**岗位：** SWE
+**级别：** L62-L63
 
-**Question:** A message containing letters A-Z is encoded as 1-26. Given a digit string, return the number of ways to decode it.
+**问题：** A-Z 编码为 1-26 的消息。给定数字串，返回有多少种解码方式。
 
-**Approach:** DP: `f(i) = (s[i-1] != '0' ? f(i-1) : 0) + (10 <= int(s[i-2..i]) <= 26 ? f(i-2) : 0)`. Edge: leading zeros, `"0"`, `"30"`. O(n) time, O(1) space with two scalars.
+**思路：** DP：`f(i) = (s[i-1] != '0' ? f(i-1) : 0) + (10 <= int(s[i-2..i]) <= 26 ? f(i-2) : 0)`。边界：前导零、`"0"`、`"30"`。O(n) 时间，O(1) 空间（两个标量）。
 
-**Python:**
+**Python：**
 ```python
 def num_decodings(s: str) -> int:
     if not s or s[0] == "0":
@@ -1928,7 +1928,7 @@ def num_decodings(s: str) -> int:
     return prev1
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function numDecodings(s: string): number {
   if (s.length === 0 || s[0] === "0") return 0;
@@ -1945,7 +1945,7 @@ function numDecodings(s: string): number {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 static int numDecodings(String s) {
     if (s.isEmpty() || s.charAt(0) == '0') return 0;
@@ -1962,27 +1962,27 @@ static int numDecodings(String s) {
 }
 ```
 
-**Key points:**
-- Two transitions: take 1 digit (if non-zero) or 2 digits (if 10–26).
-- `"0"` and leading zeros decode to 0 ways.
-- Two scalars give O(1) space; full DP array is unnecessary.
+**要点：**
+- 两条转移：单字符（非 0）或两字符（10–26）。
+- `"0"` 或前导零均无法解码，返回 0 种。
+- 两个标量给到 O(1) 空间；完整 DP 数组不必要。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 37. Climbing Stairs
+### 37. 爬楼梯
 
-**Difficulty:** Easy
-**Topics:** dp, recursion
-**Position:** SWE
-**Years:** L60-L62
+**难度：** 简单
+**主题：** dp, recursion
+**岗位：** SWE
+**级别：** L60-L62
 
-**Question:** You climb n stairs taking 1 or 2 steps at a time. How many distinct ways?
+**问题：** 每次上 1 阶或 2 阶，爬 n 阶有多少种不同方法？
 
-**Approach:** Fibonacci: `f(n) = f(n-1) + f(n-2)`. Iterate with two scalars. O(n) time, O(1) space. Discuss memoization vs tabulation; matrix exponentiation gives O(log n) if pressed.
+**思路：** 斐波那契：`f(n) = f(n-1) + f(n-2)`。两个标量迭代。O(n) 时间，O(1) 空间。讨论记忆化 vs 表格法；被追问时给矩阵快速幂 O(log n)。
 
-**Python:**
+**Python：**
 ```python
 def climb_stairs(n: int) -> int:
     a, b = 1, 1
@@ -1991,7 +1991,7 @@ def climb_stairs(n: int) -> int:
     return a
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function climbStairs(n: number): number {
   let a = 1, b = 1;
@@ -2000,7 +2000,7 @@ function climbStairs(n: number): number {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 static int climbStairs(int n) {
     int a = 1, b = 1;
@@ -2013,27 +2013,27 @@ static int climbStairs(int n) {
 }
 ```
 
-**Key points:**
-- Base: `f(0) = f(1) = 1`.
-- O(n) time, O(1) space — two scalars rotate.
-- Matrix exponentiation reduces to O(log n) but is overkill here.
+**要点：**
+- 基态：`f(0) = f(1) = 1`。
+- O(n) 时间，O(1) 空间——两个标量轮换。
+- 矩阵快速幂可降到 O(log n)，但本题没必要。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 38. Path Sum II
+### 38. 路径总和 II
 
-**Difficulty:** Medium
-**Topics:** tree, dfs, backtracking
-**Position:** SWE
-**Years:** L60-L62
+**难度：** 中等
+**主题：** tree, dfs, backtracking
+**岗位：** SWE
+**级别：** L60-L62
 
-**Question:** Given a binary tree and a target sum, return all root-to-leaf paths whose values sum to the target.
+**问题：** 给定二叉树和目标和，返回所有从根到叶子且值之和等于目标的路径。
 
-**Approach:** DFS with running path stack and remaining sum. On leaf, if remaining == 0, snapshot the path. Backtrack by popping after recursion. O(n) nodes visited; total output up to O(n) paths * O(h) each.
+**思路：** DFS 维护当前路径栈和剩余和。到叶子时若剩余为 0，快照路径。递归结束 pop 回溯。访问 O(n) 节点；最坏输出 O(n) 条路径 * O(h) 长度。
 
-**Python:**
+**Python：**
 ```python
 def path_sum(root: TreeNode | None, target: int) -> list[list[int]]:
     out: list[list[int]] = []
@@ -2052,7 +2052,7 @@ def path_sum(root: TreeNode | None, target: int) -> list[list[int]]:
     return out
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function pathSum(root: TreeNode | null, target: number): number[][] {
   const out: number[][] = [];
@@ -2072,7 +2072,7 @@ function pathSum(root: TreeNode | null, target: number): number[][] {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 static List<List<Integer>> pathSum(TreeNode root, int target) {
     List<List<Integer>> out = new ArrayList<>();
@@ -2092,27 +2092,27 @@ private static void dfs(TreeNode n, int remaining, Deque<Integer> path, List<Lis
 }
 ```
 
-**Key points:**
-- Snapshot `path` on match; sharing the array would mutate prior results.
-- "Leaf" means both children null — not a null child.
-- Pop after each recursive return to restore backtrack state.
+**要点：**
+- 命中时必须快照 `path`，否则后续修改会污染已收集的结果。
+- "叶子"指左右子节点都为空，而不是某个 null。
+- 递归返回后 pop 以恢复回溯状态。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 39. Construct Binary Tree from Preorder and Inorder
+### 39. 从前序与中序遍历构造二叉树
 
-**Difficulty:** Medium
-**Topics:** tree, recursion, hashmap
-**Position:** SWE
-**Years:** L62-L63
+**难度：** 中等
+**主题：** tree, recursion, hashmap
+**岗位：** SWE
+**级别：** L62-L63
 
-**Question:** Given preorder and inorder traversals of a tree with unique values, reconstruct the tree.
+**问题：** 给定值唯一的树的前序和中序遍历，重建该树。
 
-**Approach:** Preorder's first element is the root; find it in inorder to split left/right subtrees. Recurse. Precompute `value -> inorder index` map for O(1) lookup. O(n) total. Watch index arithmetic for sub-ranges.
+**思路：** 前序首元素为根；在中序里定位它来切分左右子树。递归。预先建 `value -> 中序下标` 哈希表实现 O(1) 查询。总 O(n)。注意区间下标算术。
 
-**Python:**
+**Python：**
 ```python
 def build_tree(preorder: list[int], inorder: list[int]) -> TreeNode | None:
     idx = {v: i for i, v in enumerate(inorder)}
@@ -2129,7 +2129,7 @@ def build_tree(preorder: list[int], inorder: list[int]) -> TreeNode | None:
     return go(0, len(inorder) - 1)
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function buildTree(preorder: number[], inorder: number[]): TreeNode | null {
   const idx = new Map<number, number>();
@@ -2148,7 +2148,7 @@ function buildTree(preorder: number[], inorder: number[]): TreeNode | null {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 static TreeNode buildTree(int[] preorder, int[] inorder) {
     Map<Integer, Integer> idx = new HashMap<>();
@@ -2167,27 +2167,27 @@ private static TreeNode build(int[] pre, int[] p, int l, int r, Map<Integer, Int
 }
 ```
 
-**Key points:**
-- Index map turns inorder search from O(n) to O(1) per node.
-- Consume preorder via a shared cursor so left subtree is built first.
-- Assumes unique values — duplicates break the inorder lookup.
+**要点：**
+- 中序下标哈希表把每节点查找从 O(n) 降到 O(1)。
+- 用共享游标按顺序消费前序数组，先建左子树。
+- 假设值唯一；重复值会让中序定位失效。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 40. Flatten Binary Tree to Linked List
+### 40. 二叉树展开为链表
 
-**Difficulty:** Medium
-**Topics:** tree, dfs, in-place
-**Position:** SWE
-**Years:** L62-L63
+**难度：** 中等
+**主题：** tree, dfs, in-place
+**岗位：** SWE
+**级别：** L62-L63
 
-**Question:** Flatten a binary tree to a "linked list" in-place using right pointers, following preorder.
+**问题：** 原地按前序把二叉树展开成只用 right 指针连成的"链表"。
 
-**Approach:** Reverse-preorder recursion (right, left, root) maintaining a `prev` pointer: set `node.right = prev; node.left = null; prev = node;`. O(n) time, O(h) stack. Morris-style iterative gives O(1) space: for each node, if left exists, find rightmost in left subtree, splice right subtree onto it, move left to right.
+**思路：** 反向前序（右、左、根）递归并维护 `prev` 指针：`node.right = prev; node.left = null; prev = node;`。O(n) 时间，O(h) 栈。Morris 风格的迭代可做 O(1) 空间：对每个节点，若左子树存在，找左子树最右节点，把右子树接到其右上，再把左子树移到右。
 
-**Python:**
+**Python：**
 ```python
 def flatten(root: TreeNode | None) -> None:
     prev: TreeNode | None = None
@@ -2203,7 +2203,7 @@ def flatten(root: TreeNode | None) -> None:
     go(root)
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function flatten(root: TreeNode | null): void {
   let prev: TreeNode | null = null;
@@ -2219,7 +2219,7 @@ function flatten(root: TreeNode | null): void {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 private static TreeNode flattenPrev;
 
@@ -2238,27 +2238,27 @@ private static void flattenGo(TreeNode n) {
 }
 ```
 
-**Key points:**
-- Reverse-preorder visits the tail of the flattened list first.
-- `prev` threads each visited node onto the front of the growing list.
-- Morris-style iteration achieves O(1) extra space if needed.
+**要点：**
+- 反向前序首先到达展平链表的末端。
+- `prev` 把已访问的节点逐个串到正在构造的链表前端。
+- Morris 风格迭代可做到 O(1) 额外空间。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 41. Symmetric Tree
+### 41. 对称二叉树
 
-**Difficulty:** Easy
-**Topics:** tree, recursion, bfs
-**Position:** SWE
-**Years:** L60-L62
+**难度：** 简单
+**主题：** tree, recursion, bfs
+**岗位：** SWE
+**级别：** L60-L62
 
-**Question:** Determine if a binary tree is a mirror of itself (symmetric around its center).
+**问题：** 判断二叉树是否关于自身中心轴对称。
 
-**Approach:** Recursive helper `isMirror(a, b)`: both null = true; one null = false; values equal AND `isMirror(a.left, b.right) AND isMirror(a.right, b.left)`. O(n) time, O(h) stack. Iterative version uses a queue pushing pairs.
+**思路：** 递归 `isMirror(a, b)`：都为空 = true；其一为空 = false；值相等且 `isMirror(a.left, b.right) AND isMirror(a.right, b.left)`。O(n) 时间，O(h) 栈。迭代版用队列成对入队。
 
-**Python:**
+**Python：**
 ```python
 def is_symmetric(root: TreeNode | None) -> bool:
     def mirror(a: TreeNode | None, b: TreeNode | None) -> bool:
@@ -2270,7 +2270,7 @@ def is_symmetric(root: TreeNode | None) -> bool:
     return root is None or mirror(root.left, root.right)
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function isSymmetric(root: TreeNode | null): boolean {
   const mirror = (a: TreeNode | null, b: TreeNode | null): boolean => {
@@ -2282,7 +2282,7 @@ function isSymmetric(root: TreeNode | null): boolean {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 static boolean isSymmetric(TreeNode root) {
     return root == null || mirror(root.left, root.right);
@@ -2295,27 +2295,27 @@ private static boolean mirror(TreeNode a, TreeNode b) {
 }
 ```
 
-**Key points:**
-- Compare outside-with-outside and inside-with-inside subtrees.
-- Both null is true; one null is false.
-- BFS with pairs in a queue is the iterative equivalent.
+**要点：**
+- 外侧与外侧对、内侧与内侧对。
+- 都空为 true；其一空为 false。
+- 迭代版用队列成对入队即等价 BFS 解法。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 42. Maximum Depth of Binary Tree
+### 42. 二叉树的最大深度
 
-**Difficulty:** Easy
-**Topics:** tree, dfs, bfs, recursion
-**Position:** SWE
-**Years:** L60-L62
+**难度：** 简单
+**主题：** tree, dfs, bfs, recursion
+**岗位：** SWE
+**级别：** L60-L62
 
-**Question:** Given a binary tree, return its maximum depth (number of nodes along the longest root-to-leaf path).
+**问题：** 给定二叉树，返回其最大深度（根到叶的最长路径节点数）。
 
-**Approach:** DFS recursion: `depth(node) = node == null ? 0 : 1 + max(depth(left), depth(right))`. O(n) time, O(h) stack. BFS alternative counts levels via queue size loop. Microsoft often follows with "minimum depth" — careful: must reach a leaf, not just a null.
+**思路：** DFS 递归：`depth(node) = node == null ? 0 : 1 + max(depth(left), depth(right))`。O(n) 时间，O(h) 栈。BFS 备选：按层计数。微软常追问"最小深度"——注意必须到叶子，不是到 null。
 
-**Python:**
+**Python：**
 ```python
 def max_depth(root: TreeNode | None) -> int:
     if root is None:
@@ -2323,7 +2323,7 @@ def max_depth(root: TreeNode | None) -> int:
     return 1 + max(max_depth(root.left), max_depth(root.right))
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function maxDepth(root: TreeNode | null): number {
   if (!root) return 0;
@@ -2331,7 +2331,7 @@ function maxDepth(root: TreeNode | null): number {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 static int maxDepth(TreeNode root) {
     if (root == null) return 0;
@@ -2339,27 +2339,27 @@ static int maxDepth(TreeNode root) {
 }
 ```
 
-**Key points:**
-- Base: null node contributes depth 0.
-- O(n) time, O(h) stack space.
-- Minimum depth is trickier — must reach a real leaf, not stop at a null child.
+**要点：**
+- 基态：空节点深度为 0。
+- O(n) 时间，O(h) 栈空间。
+- 最小深度更微妙——必须真到叶子，不能在 null 子上停。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 43. Single Number III
+### 43. 只出现一次的数字 III
 
-**Difficulty:** Medium
-**Topics:** bit-manipulation, arrays
-**Position:** SWE
-**Years:** L62-L63
+**难度：** 中等
+**主题：** bit-manipulation, arrays
+**岗位：** SWE
+**级别：** L62-L63
 
-**Question:** Given an array where exactly two elements appear once and all others appear twice, find the two unique elements in O(n) time and O(1) space.
+**问题：** 数组中恰好两个元素只出现一次，其余都出现两次。O(n) 时间、O(1) 空间找出这两个元素。
 
-**Approach:** XOR all = `a ^ b`. Pick any set bit (e.g., `xor & -xor`) — that bit differs between a and b. Partition the array by that bit; XOR each partition independently to isolate a and b. O(n) time, O(1) space.
+**思路：** 全部 XOR 得 `a ^ b`。任取一个置位的 bit（如 `xor & -xor`）——该位在 a 与 b 上不同。按该位把数组分两组，分别 XOR 即得 a 和 b。O(n) 时间，O(1) 空间。
 
-**Python:**
+**Python：**
 ```python
 from functools import reduce
 from operator import xor
@@ -2374,7 +2374,7 @@ def single_number(nums: list[int]) -> list[int]:
     return [a, x ^ a]
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function singleNumber(nums: number[]): number[] {
   let x = 0;
@@ -2386,7 +2386,7 @@ function singleNumber(nums: number[]): number[] {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 static int[] singleNumber(int[] nums) {
     int x = 0;
@@ -2398,27 +2398,27 @@ static int[] singleNumber(int[] nums) {
 }
 ```
 
-**Key points:**
-- XOR cancels paired elements; only `a ^ b` survives.
-- `x & -x` isolates the lowest set bit — any differing bit works.
-- Second pass partitions and XORs to recover both uniques.
+**要点：**
+- XOR 抵消成对元素，仅剩 `a ^ b`。
+- `x & -x` 取最低置位 bit——任何差异 bit 都行。
+- 第二遍按该 bit 分两组分别 XOR 得到两个唯一元素。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 44. Sum of Two Integers (no + operator)
+### 44. 两整数之和（不用 + 运算符）
 
-**Difficulty:** Medium
-**Topics:** bit-manipulation, math
-**Position:** SWE
-**Years:** L62-L63
+**难度：** 中等
+**主题：** bit-manipulation, math
+**岗位：** SWE
+**级别：** L62-L63
 
-**Question:** Compute the sum of two integers a and b without using the `+` or `-` operators.
+**问题：** 不使用 `+` 或 `-` 运算符，计算两整数之和。
 
-**Approach:** Loop: `sum = a ^ b; carry = (a & b) << 1; a = sum; b = carry;` until `b == 0`. In languages without arbitrary-precision ints (Java/C++), use unsigned semantics or 32-bit masks. Discuss negative numbers via two's complement.
+**思路：** 循环：`sum = a ^ b; carry = (a & b) << 1; a = sum; b = carry;` 直到 `b == 0`。在无任意精度整型的语言（Java/C++）中使用无符号语义或 32 位掩码。讨论负数的二进制补码处理。
 
-**Python:**
+**Python：**
 ```python
 def get_sum(a: int, b: int) -> int:
     mask = 0xFFFFFFFF
@@ -2427,7 +2427,7 @@ def get_sum(a: int, b: int) -> int:
     return a if a <= 0x7FFFFFFF else ~(a ^ mask)
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function getSum(a: number, b: number): number {
   while (b !== 0) {
@@ -2440,7 +2440,7 @@ function getSum(a: number, b: number): number {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 static int getSum(int a, int b) {
     while (b != 0) {
@@ -2452,67 +2452,67 @@ static int getSum(int a, int b) {
 }
 ```
 
-**Key points:**
-- XOR yields sum without carry; AND-shift yields the carry.
-- Iterate until carry is zero (max 32 rounds for 32-bit ints).
-- Python needs a 32-bit mask to emulate fixed-width overflow.
+**要点：**
+- XOR 得无进位和，AND 左移得进位。
+- 进位为 0 时结束（32 位最多 32 轮）。
+- Python 需要 32 位掩码模拟定宽溢出。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 45. Power of Two
+### 45. 2 的幂
 
-**Difficulty:** Easy
-**Topics:** bit-manipulation, math
-**Position:** SWE
-**Years:** L60-L62
+**难度：** 简单
+**主题：** bit-manipulation, math
+**岗位：** SWE
+**级别：** L60-L62
 
-**Question:** Given an integer n, return true if it is a power of two.
+**问题：** 给定整数 n，判断其是否为 2 的幂。
 
-**Approach:** `n > 0 && (n & (n - 1)) == 0`. Why: a power of two has exactly one bit set; subtracting 1 flips that bit and sets all lower bits, so AND is zero. O(1). Discuss edge: zero and negatives are not powers of two.
+**思路：** `n > 0 && (n & (n - 1)) == 0`。原因：2 的幂只置 1 位；减 1 把那位翻为 0 并把更低位全置 1，与之 AND 为 0。O(1)。边界：0 与负数都不是。
 
-**Python:**
+**Python：**
 ```python
 def is_power_of_two(n: int) -> bool:
     return n > 0 and (n & (n - 1)) == 0
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function isPowerOfTwo(n: number): boolean {
   return n > 0 && (n & (n - 1)) === 0;
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 static boolean isPowerOfTwo(int n) {
     return n > 0 && (n & (n - 1)) == 0;
 }
 ```
 
-**Key points:**
-- A power of two has exactly one set bit.
-- `n - 1` flips that bit and lights up all below it, so AND is 0.
-- Guard `n > 0` because `0` and negatives satisfy the bit test in two's complement.
+**要点：**
+- 2 的幂恰好只有一位为 1。
+- `n - 1` 翻转该位并点亮所有低位，AND 为 0。
+- 必须额外加 `n > 0`，因为 0 和负数在补码下也会"通过"位运算判断。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 46. Reverse Bits
+### 46. 颠倒二进制位
 
-**Difficulty:** Easy
-**Topics:** bit-manipulation
-**Position:** SWE
-**Years:** L60-L62
+**难度：** 简单
+**主题：** bit-manipulation
+**岗位：** SWE
+**级别：** L60-L62
 
-**Question:** Reverse the bits of a given 32-bit unsigned integer.
+**问题：** 颠倒一个 32 位无符号整数的二进制位。
 
-**Approach:** Loop 32 times: shift result left, OR in `n & 1`, shift n right. O(32). Optimized: divide-and-conquer with masks (`0xFFFF0000`, `0x00FF00FF`, ...) swaps halves in O(log 32). Microsoft loves the divide-and-conquer version for senior candidates.
+**思路：** 循环 32 次：结果左移，OR 上 `n & 1`，n 右移。O(32)。优化：用掩码（`0xFFFF0000`、`0x00FF00FF`、……）分治交换两半，O(log 32)。微软在高级候选人那里偏爱分治版本。
 
-**Python:**
+**Python：**
 ```python
 def reverse_bits(n: int) -> int:
     result = 0
@@ -2522,7 +2522,7 @@ def reverse_bits(n: int) -> int:
     return result
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function reverseBits(n: number): number {
   let result = 0;
@@ -2534,7 +2534,7 @@ function reverseBits(n: number): number {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 static int reverseBits(int n) {
     int result = 0;
@@ -2546,27 +2546,27 @@ static int reverseBits(int n) {
 }
 ```
 
-**Key points:**
-- Build result LSB-first by shifting it left each iteration.
-- Use unsigned right shift (`>>>`) in JS/TS to avoid sign extension.
-- Divide-and-conquer swaps (16↔16, 8↔8, ...) reduce to O(log 32) ops.
+**要点：**
+- 每轮结果左移，从最低位起按序构造。
+- JS/TS 用无符号右移 `>>>`，避免符号位扩展。
+- 分治交换（16↔16、8↔8……）可降到 O(log 32) 次操作。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 47. Number of 1 Bits (Hamming Weight)
+### 47. 位 1 的个数（Hamming Weight）
 
-**Difficulty:** Easy
-**Topics:** bit-manipulation
-**Position:** SWE
-**Years:** L60-L62
+**难度：** 简单
+**主题：** bit-manipulation
+**岗位：** SWE
+**级别：** L60-L62
 
-**Question:** Return the number of 1 bits in a 32-bit unsigned integer.
+**问题：** 返回 32 位无符号整数中 1 的个数。
 
-**Approach:** Kernighan's trick: `while (n) { n &= n - 1; count++; }` — runs once per set bit. O(k) where k = popcount. Builtin `Integer.bitCount` / `__builtin_popcount` is fine to mention.
+**思路：** Kernighan 技巧：`while (n) { n &= n - 1; count++; }`——每次干掉一个置位。O(k)，k 为置位数。可提一句内建 `Integer.bitCount` / `__builtin_popcount`。
 
-**Python:**
+**Python：**
 ```python
 def hamming_weight(n: int) -> int:
     count = 0
@@ -2576,7 +2576,7 @@ def hamming_weight(n: int) -> int:
     return count
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function hammingWeight(n: number): number {
   let count = 0;
@@ -2588,7 +2588,7 @@ function hammingWeight(n: number): number {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 static int hammingWeight(int n) {
     int count = 0;
@@ -2600,27 +2600,27 @@ static int hammingWeight(int n) {
 }
 ```
 
-**Key points:**
-- `n & (n - 1)` clears the lowest set bit, so loop runs exactly popcount times.
-- Beats the naive bit-by-bit scan that runs 32 times regardless.
-- Builtin popcount (`Integer.bitCount`, `__builtin_popcount`) is preferred in production.
+**要点：**
+- `n & (n - 1)` 清掉最低置位，循环恰好执行 popcount 次。
+- 比逐位扫的 32 轮快得多（位稀疏时）。
+- 生产环境直接用内建 popcount（`Integer.bitCount`、`__builtin_popcount`）。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 48. Lowest Common Ancestor of a BST
+### 48. 二叉搜索树的最近公共祖先
 
-**Difficulty:** Easy
-**Topics:** tree, bst, recursion
-**Position:** SWE
-**Years:** L60-L62
+**难度：** 简单
+**主题：** tree, bst, recursion
+**岗位：** SWE
+**级别：** L60-L62
 
-**Question:** Given a BST and two nodes p and q, find their lowest common ancestor.
+**问题：** 给定 BST 与两个节点 p、q，找它们的最近公共祖先。
 
-**Approach:** Walk from root: if both p and q < root, go left; if both > root, go right; else root is the LCA. O(h) time, O(1) iterative. For a general binary tree, use postorder recursion returning non-null when one subtree contains either node.
+**思路：** 从根出发：若 p、q 都 < 根，往左；都 > 根，往右；否则根即 LCA。O(h) 时间，迭代版 O(1) 空间。一般二叉树则用后序递归，子树含任一目标节点时返回非空。
 
-**Python:**
+**Python：**
 ```python
 def lowest_common_ancestor(root: TreeNode, p: TreeNode, q: TreeNode) -> TreeNode:
     cur: TreeNode | None = root
@@ -2634,7 +2634,7 @@ def lowest_common_ancestor(root: TreeNode, p: TreeNode, q: TreeNode) -> TreeNode
     return root
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function lowestCommonAncestor(root: TreeNode, p: TreeNode, q: TreeNode): TreeNode {
   let cur: TreeNode | null = root;
@@ -2647,7 +2647,7 @@ function lowestCommonAncestor(root: TreeNode, p: TreeNode, q: TreeNode): TreeNod
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 static TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
     TreeNode cur = root;
@@ -2660,27 +2660,27 @@ static TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
 }
 ```
 
-**Key points:**
-- The first node where p and q split (or equals one of them) is the LCA.
-- Iterative O(1) space beats recursive on tall trees.
-- Generic binary-tree LCA needs a different approach (postorder bubble-up).
+**要点：**
+- p、q 第一次分叉（或某一方等于当前）处即 LCA。
+- 迭代 O(1) 空间，在高树上优于递归。
+- 一般二叉树 LCA 要换思路（后序冒泡返回）。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 49. Binary Tree Zigzag Level Order Traversal
+### 49. 二叉树的锯齿形层序遍历
 
-**Difficulty:** Medium
-**Topics:** tree, bfs, deque
-**Position:** SWE
-**Years:** L62-L63
+**难度：** 中等
+**主题：** tree, bfs, deque
+**岗位：** SWE
+**级别：** L62-L63
 
-**Question:** Return the zigzag level order traversal of a binary tree (left-to-right, then right-to-left, alternating per level).
+**问题：** 返回二叉树的锯齿层序遍历（先左到右，再右到左，逐层交替）。
 
-**Approach:** BFS by levels with a flag; on right-to-left levels, prepend to the level list (or reverse at end). O(n) time, O(n) space. Microsoft may probe deque-based variants for one-pass elegance.
+**思路：** 按层 BFS，带一个方向 flag；右到左的层把节点前插到当前层列表（或最后整层反转）。O(n) 时间，O(n) 空间。微软可能追问一遍走完的 deque 解法。
 
-**Python:**
+**Python：**
 ```python
 from collections import deque
 
@@ -2705,7 +2705,7 @@ def zigzag_level_order(root: TreeNode | None) -> list[list[int]]:
     return out
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function zigzagLevelOrder(root: TreeNode | null): number[][] {
   if (!root) return [];
@@ -2728,7 +2728,7 @@ function zigzagLevelOrder(root: TreeNode | null): number[][] {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 static List<List<Integer>> zigzagLevelOrder(TreeNode root) {
     List<List<Integer>> out = new ArrayList<>();
@@ -2752,27 +2752,27 @@ static List<List<Integer>> zigzagLevelOrder(TreeNode root) {
 }
 ```
 
-**Key points:**
-- BFS preserves level boundaries; direction is just a presentation flag.
-- Using a deque (or `unshift`) for right-to-left avoids an extra reverse.
-- Order of pushing children stays the same — only output direction flips.
+**要点：**
+- BFS 保留层边界；方向只是输出形式。
+- 用双端队列（或 `unshift`）做右到左可省额外反转。
+- 子节点入队顺序不变，只翻转输出方向。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 50. Longest Palindromic Substring
+### 50. 最长回文子串
 
-**Difficulty:** Medium
-**Topics:** string, dp, two-pointers
-**Position:** SWE
-**Years:** L62-L63
+**难度：** 中等
+**主题：** string, dp, two-pointers
+**岗位：** SWE
+**级别：** L62-L63
 
-**Question:** Given a string, return the longest palindromic substring.
+**问题：** 给定字符串，返回最长回文子串。
 
-**Approach:** Expand-around-center: for each index, try odd and even centers and grow while characters match. Track best (start, length). O(n^2) time, O(1) space. Manacher's gives O(n) but is rarely required in Microsoft interviews.
+**思路：** 中心扩展：对每个下标分别尝试奇、偶中心，两端字符相等就扩张。记录最佳 (start, length)。O(n^2) 时间，O(1) 空间。Manacher 可 O(n)，微软面试很少强制要求。
 
-**Python:**
+**Python：**
 ```python
 def longest_palindrome(s: str) -> str:
     def grow(l: int, r: int) -> tuple[int, int]:
@@ -2787,7 +2787,7 @@ def longest_palindrome(s: str) -> str:
     return s[bl:br + 1]
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function longestPalindrome(s: string): string {
   const grow = (l: number, r: number): [number, number] => {
@@ -2804,7 +2804,7 @@ function longestPalindrome(s: string): string {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 static String longestPalindrome(String s) {
     int bl = 0, br = 0;
@@ -2822,27 +2822,27 @@ private static int[] growLP(String s, int l, int r) {
 }
 ```
 
-**Key points:**
-- Try both odd (one center) and even (two-center) palindromes per index.
-- Track best by length difference, not by recomputing slices.
-- O(n^2) time, O(1) space; Manacher's is O(n) but rarely required.
+**要点：**
+- 每个下标都要尝试奇（单中心）与偶（双中心）两种情况。
+- 用长度差比较记录最佳，避免反复切片。
+- O(n^2) 时间，O(1) 空间；Manacher 可 O(n)，本场鲜少要求。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 51. KMP Pattern Matching
+### 51. KMP 字符串匹配
 
-**Difficulty:** Hard
-**Topics:** string, kmp
-**Position:** Senior SWE
-**Years:** L62-L63
+**难度：** 困难
+**主题：** string, kmp
+**岗位：** 高级 SWE
+**级别：** L62-L63
 
-**Question:** Implement KMP to find all occurrences of a pattern in a text in O(n + m).
+**问题：** 实现 KMP，在 O(n + m) 内找出模式串在文本中的所有出现位置。
 
-**Approach:** Build the failure (LPS) array: longest proper prefix that's also a suffix for each pattern prefix. Scan text once, on mismatch fall back via the failure table without re-comparing matched chars. O(n + m) time, O(m) space. Microsoft prefers you can derive LPS construction live.
+**思路：** 构造失配（LPS）数组：模式每个前缀的最长既是前缀又是后缀的真子串长度。文本只扫一次，失配时按 LPS 回退，已匹配字符不再比较。O(n + m) 时间，O(m) 空间。微软希望你能现场推 LPS 构造过程。
 
-**Python:**
+**Python：**
 ```python
 def kmp_search(text: str, pattern: str) -> list[int]:
     if not pattern:
@@ -2868,7 +2868,7 @@ def kmp_search(text: str, pattern: str) -> list[int]:
     return out
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function kmpSearch(text: string, pattern: string): number[] {
   if (pattern.length === 0) return [];
@@ -2890,7 +2890,7 @@ function kmpSearch(text: string, pattern: string): number[] {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 static List<Integer> kmpSearch(String text, String pattern) {
     List<Integer> out = new ArrayList<>();
@@ -2910,27 +2910,27 @@ static List<Integer> kmpSearch(String text, String pattern) {
 }
 ```
 
-**Key points:**
-- `lps[i]` = length of longest proper prefix of `pattern[..i]` that is also a suffix.
-- On mismatch, fall back to `lps[j-1]` instead of restarting.
-- Total work is O(n + m) since `j` increases at most n times and decreases monotonically.
+**要点：**
+- `lps[i]` = `pattern[..i]` 的最长既是前缀又是后缀的真子串长度。
+- 失配时跳回 `lps[j-1]`，不再从头开始扫。
+- 总开销 O(n + m)：j 至多增加 n 次，回退单调。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 52. Generate Parentheses
+### 52. 括号生成
 
-**Difficulty:** Medium
-**Topics:** backtracking, recursion, string
-**Position:** SWE
-**Years:** L60-L62
+**难度：** 中等
+**主题：** backtracking, recursion, string
+**岗位：** SWE
+**级别：** L60-L62
 
-**Question:** Given n, generate all combinations of n pairs of well-formed parentheses.
+**问题：** 给定 n，生成所有 n 对合法括号的组合。
 
-**Approach:** Backtracking with counters `open` and `close`: add '(' if `open < n`, add ')' if `close < open`. Stop when length is `2n`. O(Catalan(n)) outputs. Cleaner than filtering all 2^(2n) strings.
+**思路：** 回溯，维护 `open` 与 `close` 两个计数：`open < n` 时可加 '('，`close < open` 时可加 ')'。长度到 `2n` 时停。输出数为 Catalan(n)。比枚举 2^(2n) 字符串再筛选干净得多。
 
-**Python:**
+**Python：**
 ```python
 def generate_parenthesis(n: int) -> list[str]:
     out: list[str] = []
@@ -2946,7 +2946,7 @@ def generate_parenthesis(n: int) -> list[str]:
     return out
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function generateParenthesis(n: number): string[] {
   const out: string[] = [];
@@ -2960,7 +2960,7 @@ function generateParenthesis(n: number): string[] {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 static List<String> generateParenthesis(int n) {
     List<String> out = new ArrayList<>();
@@ -2979,27 +2979,27 @@ private static void go(StringBuilder buf, int openN, int closeN, int n, List<Str
 }
 ```
 
-**Key points:**
-- Only generate valid prefixes — never need to validate after.
-- Each output has exactly `2n` characters.
-- Output count is the n-th Catalan number.
+**要点：**
+- 只生成合法前缀，结尾无需再做校验。
+- 每条结果长度恰好 `2n`。
+- 输出数为第 n 个 Catalan 数。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 53. Subsets
+### 53. 子集
 
-**Difficulty:** Medium
-**Topics:** backtracking, bit-manipulation
-**Position:** SWE
-**Years:** L60-L62
+**难度：** 中等
+**主题：** backtracking, bit-manipulation
+**岗位：** SWE
+**级别：** L60-L62
 
-**Question:** Given a set of distinct integers, return all possible subsets (the power set).
+**问题：** 给定一组不重复整数，返回所有可能的子集（幂集）。
 
-**Approach:** Two approaches. Iterative: for each new element, duplicate existing subsets and append. Backtracking: at each index choose include / exclude. Bit-mask: enumerate `0..2^n - 1`, include `nums[i]` if bit i is set. O(n * 2^n) time and space.
+**思路：** 三种方法。迭代：每来一个新元素，把已有子集复制一份并追加该元素。回溯：每个下标选/不选。位掩码：枚举 `0..2^n - 1`，第 i 位为 1 就包含 `nums[i]`。O(n * 2^n) 时间和空间。
 
-**Python:**
+**Python：**
 ```python
 def subsets(nums: list[int]) -> list[list[int]]:
     out: list[list[int]] = []
@@ -3014,7 +3014,7 @@ def subsets(nums: list[int]) -> list[list[int]]:
     return out
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function subsets(nums: number[]): number[][] {
   const out: number[][] = [];
@@ -3032,7 +3032,7 @@ function subsets(nums: number[]): number[][] {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 static List<List<Integer>> subsets(int[] nums) {
     List<List<Integer>> out = new ArrayList<>();
@@ -3050,27 +3050,27 @@ private static void go(int[] nums, int start, Deque<Integer> cur, List<List<Inte
 }
 ```
 
-**Key points:**
-- Backtracking emits each subset exactly once via `start` index.
-- Total output is `2^n` subsets, time is O(n * 2^n).
-- Bit-mask enumeration is an elegant alternative for small `n`.
+**要点：**
+- 回溯靠 `start` 下标保证每个子集恰好生成一次。
+- 输出 `2^n` 个子集，总时间 O(n * 2^n)。
+- 位掩码枚举是另一种优雅写法，适合小 n。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 54. Permutations
+### 54. 全排列
 
-**Difficulty:** Medium
-**Topics:** backtracking, recursion
-**Position:** SWE
-**Years:** L60-L62
+**难度：** 中等
+**主题：** backtracking, recursion
+**岗位：** SWE
+**级别：** L60-L62
 
-**Question:** Given a list of distinct integers, return all possible permutations.
+**问题：** 给定不重复整数列表，返回所有可能的排列。
 
-**Approach:** Backtracking with a `used[]` array (or swap-in-place). O(n! * n) time. For permutations with duplicates (Permutations II), sort first and skip `nums[i] == nums[i-1] && !used[i-1]` to avoid duplicates.
+**思路：** 回溯加 `used[]` 数组（或原地交换）。O(n! * n) 时间。带重复元素的全排列 II：先排序，跳过 `nums[i] == nums[i-1] && !used[i-1]` 以去重。
 
-**Python:**
+**Python：**
 ```python
 def permute(nums: list[int]) -> list[list[int]]:
     out: list[list[int]] = []
@@ -3092,7 +3092,7 @@ def permute(nums: list[int]) -> list[list[int]]:
     return out
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function permute(nums: number[]): number[][] {
   const out: number[][] = [];
@@ -3112,7 +3112,7 @@ function permute(nums: number[]): number[][] {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 static List<List<Integer>> permute(int[] nums) {
     List<List<Integer>> out = new ArrayList<>();
@@ -3132,27 +3132,27 @@ private static void go(int[] nums, boolean[] used, Deque<Integer> cur, List<List
 }
 ```
 
-**Key points:**
-- `used[]` enforces "each element appears once" per permutation.
-- O(n!) outputs, each O(n) to build — O(n! * n) total.
-- For duplicates, sort and skip `nums[i] == nums[i-1] && !used[i-1]`.
+**要点：**
+- `used[]` 保证每个元素在一条排列中只出现一次。
+- 共 n! 条排列，每条 O(n) 构造——总 O(n! * n)。
+- 含重复时需排序并跳过 `nums[i] == nums[i-1] && !used[i-1]`。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 55. Combination Sum
+### 55. 组合总和
 
-**Difficulty:** Medium
-**Topics:** backtracking, recursion
-**Position:** SWE
-**Years:** L60-L62
+**难度：** 中等
+**主题：** backtracking, recursion
+**岗位：** SWE
+**级别：** L60-L62
 
-**Question:** Given an array of distinct positives and a target, return all unique combinations (each candidate may be used unlimited times) that sum to the target.
+**问题：** 给定不重复正整数数组与目标值，返回所有元素之和等于目标的组合（每个数可无限次使用）。
 
-**Approach:** Sort, then DFS with an index parameter (start at i not i+1 to allow reuse). Prune when `remaining < 0` or candidate exceeds remaining. Backtrack on the chosen path. Time depends on solution count.
+**思路：** 先排序，DFS 带 start 下标（仍从 i 起以允许重复使用）。`remaining < 0` 或当前候选 > remaining 时剪枝。沿路径回溯。复杂度取决于解数。
 
-**Python:**
+**Python：**
 ```python
 def combination_sum(candidates: list[int], target: int) -> list[list[int]]:
     candidates.sort()
@@ -3173,7 +3173,7 @@ def combination_sum(candidates: list[int], target: int) -> list[list[int]]:
     return out
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function combinationSum(candidates: number[], target: number): number[][] {
   candidates.sort((a, b) => a - b);
@@ -3194,7 +3194,7 @@ function combinationSum(candidates: number[], target: number): number[][] {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 static List<List<Integer>> combinationSum(int[] candidates, int target) {
     Arrays.sort(candidates);
@@ -3214,27 +3214,27 @@ private static void go(int[] cands, int start, int remaining, Deque<Integer> cur
 }
 ```
 
-**Key points:**
-- Pass `i` (not `i+1`) to allow reuse of the same candidate.
-- Sort enables early break on `c > remaining`.
-- Output count drives the complexity; pruning is essential for performance.
+**要点：**
+- 递归传 `i`（不是 `i+1`）即可允许同一候选重复使用。
+- 排序之后可在 `c > remaining` 时直接 break。
+- 复杂度由解的个数主导，剪枝对性能至关重要。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 56. Longest Increasing Subsequence
+### 56. 最长递增子序列
 
-**Difficulty:** Medium
-**Topics:** dp, binary-search
-**Position:** Senior SWE
-**Years:** L62-L63
+**难度：** 中等
+**主题：** dp, binary-search
+**岗位：** 高级 SWE
+**级别：** L62-L63
 
-**Question:** Given an array of integers, return the length of the longest strictly increasing subsequence.
+**问题：** 给定整数数组，返回最长严格递增子序列的长度。
 
-**Approach:** O(n^2) DP: `f(i) = 1 + max(f(j) for j < i if nums[j] < nums[i])`. O(n log n): maintain `tails[]` where `tails[k]` is the smallest tail of any increasing subsequence of length k+1; binary-search each new element. Note: `tails` is not itself a valid LIS but its length is correct.
+**思路：** O(n^2) DP：`f(i) = 1 + max(f(j) for j < i if nums[j] < nums[i])`。O(n log n)：维护 `tails[]`，`tails[k]` 是所有长度为 k+1 的递增子序列的最小尾元素；新元素二分查找。注意：`tails` 本身不是一条合法 LIS，但其长度正确。
 
-**Python:**
+**Python：**
 ```python
 from bisect import bisect_left
 
@@ -3249,7 +3249,7 @@ def length_of_lis(nums: list[int]) -> int:
     return len(tails)
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function lengthOfLIS(nums: number[]): number {
   const tails: number[] = [];
@@ -3266,7 +3266,7 @@ function lengthOfLIS(nums: number[]): number {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 static int lengthOfLIS(int[] nums) {
     List<Integer> tails = new ArrayList<>();
@@ -3283,27 +3283,27 @@ static int lengthOfLIS(int[] nums) {
 }
 ```
 
-**Key points:**
-- `tails[k]` is the smallest possible tail for an increasing subseq of length k+1.
-- Binary-search replacement keeps `tails` sorted in O(log n) per insert.
-- `tails` length is the correct LIS length even though `tails` itself is not a valid LIS.
+**要点：**
+- `tails[k]` 是长度为 k+1 的递增子序列的最小尾元素。
+- 二分替换保持 `tails` 有序，每次 O(log n)。
+- `tails` 本身不一定是合法 LIS，但其长度即正确答案。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 57. Edit Distance
+### 57. 编辑距离
 
-**Difficulty:** Hard
-**Topics:** dp, string
-**Position:** Senior SWE
-**Years:** L62-L63
+**难度：** 困难
+**主题：** dp, string
+**岗位：** 高级 SWE
+**级别：** L62-L63
 
-**Question:** Given two strings, return the minimum number of insert, delete, or replace operations to convert one to the other.
+**问题：** 给定两个字符串，求把其一变成另一所需的最少插入、删除、替换次数。
 
-**Approach:** 2D DP: `dp[i][j] = dp[i-1][j-1]` if characters match, else `1 + min(dp[i-1][j], dp[i][j-1], dp[i-1][j-1])`. O(m*n) time and space. Can reduce to O(min(m, n)) space by keeping two rows.
+**思路：** 二维 DP：字符相同时 `dp[i][j] = dp[i-1][j-1]`；否则 `1 + min(dp[i-1][j], dp[i][j-1], dp[i-1][j-1])`。O(m*n) 时间和空间。保留两行可压到 O(min(m, n)) 空间。
 
-**Python:**
+**Python：**
 ```python
 def min_distance(a: str, b: str) -> int:
     m, n = len(a), len(b)
@@ -3319,7 +3319,7 @@ def min_distance(a: str, b: str) -> int:
     return dp[m][n]
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function minDistance(a: string, b: string): number {
   const m = a.length, n = b.length;
@@ -3336,7 +3336,7 @@ function minDistance(a: string, b: string): number {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 static int minDistance(String a, String b) {
     int m = a.length(), n = b.length();
@@ -3351,27 +3351,27 @@ static int minDistance(String a, String b) {
 }
 ```
 
-**Key points:**
-- Three transitions correspond to insert, delete, and replace.
-- Base row/col encode cost of transforming empty prefix.
-- Two rolling rows reduce space to O(min(m, n)).
+**要点：**
+- 三种转移分别对应插入、删除、替换。
+- 首行/首列编码"把空前缀变成对方"的代价。
+- 双行滚动可把空间压到 O(min(m, n))。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 58. LRU Cache
+### 58. LRU 缓存
 
-**Difficulty:** Medium
-**Topics:** design, hashmap, linked-list
-**Position:** SWE
-**Years:** L62-L63
+**难度：** 中等
+**主题：** design, hashmap, linked-list
+**岗位：** SWE
+**级别：** L62-L63
 
-**Question:** Design an LRU cache with O(1) `get` and `put`.
+**问题：** 设计一个 LRU 缓存，`get` 和 `put` 都 O(1)。
 
-**Approach:** Hashmap from key to doubly-linked-list node, plus a DLL with head (most recent) and tail (least recent). On access, unlink and move to head. On `put` past capacity, evict the tail and remove from map. O(1) for both ops. Microsoft cares about clean DLL splice code.
+**思路：** 哈希表 key → 双向链表节点 + 一条双向链表（头=最近，尾=最久）。访问时把节点从原位置摘下并移到头部。`put` 超容时摘掉尾节点并从 map 移除。两个操作都 O(1)。微软关注你能否写出干净的 DLL 拼接代码。
 
-**Python:**
+**Python：**
 ```python
 from collections import OrderedDict
 
@@ -3394,7 +3394,7 @@ class LRUCache:
             self.d.popitem(last=False)
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 class LRUCache {
   private cap: number;
@@ -3417,7 +3417,7 @@ class LRUCache {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 class LRUCache extends LinkedHashMap<Integer, Integer> {
     private final int cap;
@@ -3438,27 +3438,27 @@ class LRUCache extends LinkedHashMap<Integer, Integer> {
 }
 ```
 
-**Key points:**
-- JS `Map` and Python `OrderedDict` preserve insertion order.
-- Re-insert on access to mark the entry as most recent.
-- Evict via the first key (oldest) when over capacity.
+**要点：**
+- JS `Map` 和 Python `OrderedDict` 都保留插入顺序。
+- 访问时重新插入以标记为最近使用。
+- 超容时弹出首个 key（最久未用）即可。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 59. Min Stack
+### 59. 最小栈
 
-**Difficulty:** Medium
-**Topics:** stack, design
-**Position:** SWE
-**Years:** L60-L62
+**难度：** 中等
+**主题：** stack, design
+**岗位：** SWE
+**级别：** L60-L62
 
-**Question:** Design a stack supporting push, pop, top, and `getMin` all in O(1).
+**问题：** 设计一个栈，支持 push、pop、top、`getMin` 都 O(1)。
 
-**Approach:** Two stacks: data stack and min stack. On push, also push `min(x, currentMin)` to min stack. On pop, pop both. `getMin` returns top of min stack. Optimization: only push to min stack when new min is `<=` current. O(1) all ops.
+**思路：** 双栈：数据栈 + 最小栈。push 时把 `min(x, currentMin)` 也压到最小栈。pop 时两栈一起 pop。`getMin` 返回最小栈栈顶。优化：仅当新值 `<=` 当前最小才压最小栈。所有操作 O(1)。
 
-**Python:**
+**Python：**
 ```python
 class MinStack:
     def __init__(self) -> None:
@@ -3481,7 +3481,7 @@ class MinStack:
         return self.mins[-1]
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 class MinStack {
   private stack: number[] = [];
@@ -3499,7 +3499,7 @@ class MinStack {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 class MinStack {
     private final Deque<Integer> stack = new ArrayDeque<>();
@@ -3520,27 +3520,27 @@ class MinStack {
 }
 ```
 
-**Key points:**
-- Min stack only tracks "current minima"; one entry per distinct min era.
-- Use `<=` so duplicates of the min are pushed (otherwise pop breaks).
-- All operations are O(1) amortized and worst-case.
+**要点：**
+- 最小栈只在"最小值变化"时记录，每个最小值代表一段时期。
+- 用 `<=`（含等号），允许重复最小值入栈，否则 pop 时会出错。
+- 所有操作均为均摊和最坏 O(1)。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 60. Sliding Window Maximum
+### 60. 滑动窗口最大值
 
-**Difficulty:** Hard
-**Topics:** deque, sliding-window, arrays
-**Position:** Senior SWE
-**Years:** L62-L63
+**难度：** 困难
+**主题：** deque, sliding-window, arrays
+**岗位：** 高级 SWE
+**级别：** L62-L63
 
-**Question:** Given an array and window size k, return the max of each window as it slides from left to right.
+**问题：** 给定数组与窗口大小 k，返回窗口从左到右滑动时每个窗口的最大值。
 
-**Approach:** Monotonic decreasing deque of indices. For each new element: pop tail while smaller, push current. Pop head if it exits the window. Front of deque is current window max. O(n) amortized, O(k) space.
+**思路：** 单调递减下标双端队列。每来一个元素：尾端比它小的全部 pop，再压入当前下标。头端越出窗口时 pop。队首即当前窗口最大。摊还 O(n)，O(k) 空间。
 
-**Python:**
+**Python：**
 ```python
 from collections import deque
 
@@ -3558,7 +3558,7 @@ def max_sliding_window(nums: list[int], k: int) -> list[int]:
     return out
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function maxSlidingWindow(nums: number[], k: number): number[] {
   const dq: number[] = [];
@@ -3573,7 +3573,7 @@ function maxSlidingWindow(nums: number[], k: number): number[] {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 static int[] maxSlidingWindow(int[] nums, int k) {
     Deque<Integer> dq = new ArrayDeque<>();
@@ -3588,27 +3588,27 @@ static int[] maxSlidingWindow(int[] nums, int k) {
 }
 ```
 
-**Key points:**
-- Deque holds indices in decreasing value order; front is the running max.
-- Each index is pushed and popped at most once — amortized O(n).
-- Drop front when its index falls out of the window of size k.
+**要点：**
+- 队列按值降序保存下标，队首即当前最大。
+- 每个下标至多进队、出队各一次——摊还 O(n)。
+- 当队首下标越出窗口（`dq[0] <= i - k`）时弹出。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 61. Find Median from Data Stream
+### 61. 数据流的中位数
 
-**Difficulty:** Hard
-**Topics:** heap, design
-**Position:** Senior SWE
-**Years:** L62-L63
+**难度：** 困难
+**主题：** heap, design
+**岗位：** 高级 SWE
+**级别：** L62-L63
 
-**Question:** Design a class that supports `addNum(int)` and `findMedian()` as numbers stream in.
+**问题：** 设计一个类，随数据流入支持 `addNum(int)` 与 `findMedian()`。
 
-**Approach:** Two heaps: a max-heap for the lower half and a min-heap for the upper half. On add, push and rebalance to keep size difference <= 1. Median is top of larger heap (odd) or average of tops (even). O(log n) add, O(1) median.
+**思路：** 两个堆：左半大顶堆，右半小顶堆。add 时压入并保持大小差 <= 1。中位数：奇数取较大堆栈顶；偶数取两个堆顶平均。add O(log n)，median O(1)。
 
-**Python:**
+**Python：**
 ```python
 import heapq
 
@@ -3628,7 +3628,7 @@ class MedianFinder:
         return (self.high[0] - self.low[0]) / 2
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 class MedianFinder {
   private low: number[] = [];   // max-heap (store negatives)
@@ -3656,7 +3656,7 @@ class MedianFinder {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 class MedianFinder {
     private final PriorityQueue<Integer> low = new PriorityQueue<>(Comparator.reverseOrder());
@@ -3675,27 +3675,27 @@ class MedianFinder {
 }
 ```
 
-**Key points:**
-- Two heaps split the stream so both medians are at the tops.
-- Funnel through one heap to keep the partition correct.
-- Keep `|high| - |low|` in {0, 1} so the median is always O(1) to read.
+**要点：**
+- 两个堆把数据流切成左右两半，两个堆顶即中位数。
+- 通过一个堆"中转"再压另一个堆，保持分割正确。
+- `|high| - |low|` 维持在 {0, 1}，中位数 O(1) 即可读出。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 62. Design Tic-Tac-Toe
+### 62. 设计井字棋
 
-**Difficulty:** Medium
-**Topics:** design, matrix
-**Position:** SWE
-**Years:** L62-L63
+**难度：** 中等
+**主题：** design, matrix
+**岗位：** SWE
+**级别：** L62-L63
 
-**Question:** Design a Tic-Tac-Toe game on an n x n board that returns the winner (or 0 for no winner) after each move in O(1).
+**问题：** 设计 n x n 的井字棋（Tic-Tac-Toe），每步落子后 O(1) 返回胜者（无胜者返回 0）。
 
-**Approach:** Keep `rows[n]`, `cols[n]`, `diag`, `antiDiag` counters; for player 1 add +1, for player 2 add -1. After a move at `(r, c)`, check if any of `rows[r], cols[c], diag` (if r==c), `antiDiag` (if r+c==n-1) hits +n or -n. O(1) per move, O(n) memory.
+**思路：** 维护 `rows[n]`、`cols[n]`、`diag`、`antiDiag` 计数；玩家 1 加 +1，玩家 2 加 -1。在 `(r, c)` 落子后检查 `rows[r]`、`cols[c]`、`diag`（若 r==c）、`antiDiag`（若 r+c==n-1）是否达到 +n 或 -n。每步 O(1)，O(n) 内存。
 
-**Python:**
+**Python：**
 ```python
 class TicTacToe:
     def __init__(self, n: int) -> None:
@@ -3719,7 +3719,7 @@ class TicTacToe:
         return 0
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 class TicTacToe {
   private n: number;
@@ -3741,7 +3741,7 @@ class TicTacToe {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 class TicTacToe {
     private final int n;
@@ -3767,26 +3767,26 @@ class TicTacToe {
 }
 ```
 
-**Key points:**
-- Signed counters (+1/-1) let one variable per line cover both players.
-- Only the row/col/diag touched by the move can change; check those four.
-- O(1) per move, O(n) memory regardless of game length.
+**要点：**
+- 用带符号计数（+1/-1）让单一变量覆盖两个玩家。
+- 每步只可能影响触碰到的那一行、一列、对角线，只需检查这四处。
+- 每步 O(1) 时间，O(n) 内存，与对局长度无关。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-## Tips specific to Microsoft
+## 微软特有的建议
 
-- **Fundamentals over flash.** Microsoft tends to grade for correctness, edge cases, and code clarity over algorithmic insight. Slow down, handle nulls, comment briefly.
-- **Growth mindset is the cultural code.** Stories should show learning, especially from mistakes or feedback. Fixed mindset signals (defensive, blamey, "I was right all along") tank rounds.
-- **Know one Azure service deeply** if the role is cloud-adjacent. You don't need to know all 200 — pick Cosmos DB, Service Bus, or AKS and have an opinion.
-- **AA round is for fit + level calibration.** Less coding, more architecture and behavioral. Treat it like you'd treat a skip-level interview.
-- **OOD shows up.** Practice 2-3 classic ones (parking lot, vending machine, library system).
+- **基础胜于花活。** 微软倾向给正确性、边界、代码清晰打分，而不是算法洞察。慢一点，处理 null，简短注释。
+- **成长型思维是文化密码。** 故事要体现学习，尤其是从错误或反馈中学习。固定思维信号（防御、甩锅、"我自始至终都是对的"）会拉垮整轮。
+- **若岗位贴近云，深入掌握一项 Azure 服务。** 不用全会 200 项——挑 Cosmos DB、Service Bus 或 AKS 并有自己的观点。
+- **AA 轮是看 fit + 级别校准。** 编码少，架构和行为多。当成 skip-level 面试来准备。
+- **OOD 会出现。** 练 2-3 道经典（停车场、自动售货机、图书馆系统）。
 
-## Resources
+## 参考资料
 
-- LeetCode "Microsoft" company tag
-- "Hit Refresh" by Satya Nadella — gives you the cultural framing
-- Microsoft Learn (Azure certifications) — free, useful for cloud rounds
-- Cracking the Coding Interview — solid for Microsoft's classical bar
+- LeetCode "Microsoft" 公司标签
+- 《Hit Refresh》by Satya Nadella —— 给你文化底色
+- Microsoft Learn（Azure 认证）—— 免费，适合云相关轮
+- 《Cracking the Coding Interview》——契合微软的经典风格门槛

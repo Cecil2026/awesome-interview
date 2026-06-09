@@ -4,61 +4,130 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>awesome-interview · Markdown Reader</title>
+  <script src="theme.js?v=7"></script>
   <style>
-    :root { color-scheme: light; font-synthesis: none; }
-    body { margin: 0; font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: #f6f8fb; color: #111827; }
-    a { color: #2563eb; }
+    :root {
+      color-scheme: light dark;
+      font-synthesis: none;
+      --bg: #f6f8fb;
+      --bg-panel: #ffffff;
+      --bg-card: #f8fafc;
+      --bg-card-hover: #eef2ff;
+      --bg-card-active: #dbeafe;
+      --bg-input: #f8fafc;
+      --border: #e2e8f0;
+      --border-strong: #cbd5e1;
+      --border-accent: #bfdbfe;
+      --border-accent-strong: #93c5fd;
+      --text: #111827;
+      --text-strong: #0f172a;
+      --text-muted: #475569;
+      --text-faint: #64748b;
+      --accent: #2563eb;
+      --accent-strong: #1d4ed8;
+      --code-bg: #0f172a;
+      --code-fg: #f8fafc;
+      --code-inline-bg: #e2e8f0;
+      --code-inline-fg: #0f172a;
+      --table-border: #d1d5db;
+      --notice-bg: #ecfeff;
+      --notice-border: #a5f3fc;
+      --notice-text: #0e7490;
+      --notice-warn-bg: #fef3c7;
+      --notice-warn-border: #fde68a;
+      --notice-warn-text: #92400e;
+    }
+    :root[data-theme="dark"] {
+      color-scheme: dark;
+      --bg: #0b1220;
+      --bg-panel: #111a2e;
+      --bg-card: #182338;
+      --bg-card-hover: #1f2c46;
+      --bg-card-active: #1e3a8a;
+      --bg-input: #0f172a;
+      --border: #1f2a44;
+      --border-strong: #334155;
+      --border-accent: #1d4ed8;
+      --border-accent-strong: #3b82f6;
+      --text: #e2e8f0;
+      --text-strong: #f1f5f9;
+      --text-muted: #94a3b8;
+      --text-faint: #64748b;
+      --accent: #60a5fa;
+      --accent-strong: #93c5fd;
+      --code-bg: #020617;
+      --code-fg: #e2e8f0;
+      --code-inline-bg: #1e293b;
+      --code-inline-fg: #e2e8f0;
+      --table-border: #334155;
+      --notice-bg: #082f3a;
+      --notice-border: #155e75;
+      --notice-text: #a5f3fc;
+      --notice-warn-bg: #3a2a07;
+      --notice-warn-border: #92400e;
+      --notice-warn-text: #fde68a;
+    }
+    body { margin: 0; font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: var(--bg); color: var(--text); }
+    a { color: var(--accent); }
     a:hover { text-decoration: underline; }
     .page { display: flex; flex-direction: column; min-height: 100vh; }
-    .topbar { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; padding: 20px 28px; background: #ffffff; border-bottom: 1px solid #e2e8f0; }
+    .topbar { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; padding: 20px 28px; background: var(--bg-panel); border-bottom: 1px solid var(--border); }
     .topbar h1 { margin: 0; font-size: 1.35rem; letter-spacing: -0.03em; }
-    .topbar nav { display: flex; gap: 18px; flex-wrap: wrap; }
-    .topbar nav a { color: #1d4ed8; font-weight: 600; }
+    .topbar nav { display: flex; gap: 18px; flex-wrap: wrap; align-items: center; }
+    .topbar nav a { color: var(--accent-strong); font-weight: 600; }
+    .topbar select { padding: 6px 10px; border-radius: 8px; border: 1px solid var(--border-strong); background: var(--bg-panel); color: var(--text); font-size: .9rem; }
     .layout { display: grid; grid-template-columns: 320px 1fr 280px; gap: 0; flex: 1; }
-    .sidebar { background: #ffffff; border-right: 1px solid #e2e8f0; padding: 24px; overflow-y: auto; }
+    .sidebar { background: var(--bg-panel); border-right: 1px solid var(--border); padding: 24px; overflow-y: auto; }
     .content { padding: 24px; overflow-y: auto; }
-    .toc { background: #ffffff; border-left: 1px solid #e2e8f0; padding: 24px; overflow-y: auto; }
-    .toc-heading { font-size: 0.85rem; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 14px; color: #475569; }
+    .toc { background: var(--bg-panel); border-left: 1px solid var(--border); padding: 24px; overflow-y: auto; }
+    .toc-heading { font-size: 0.85rem; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 14px; color: var(--text-muted); }
     .toc-list { display: grid; gap: 8px; }
-    .toc-item { display: block; padding: 8px 12px; border-radius: 10px; background: #f8fafc; color: #0f172a; text-decoration: none; font-size: 0.94rem; }
+    .toc-item { display: block; padding: 8px 12px; border-radius: 10px; background: var(--bg-card); color: var(--text-strong); text-decoration: none; font-size: 0.94rem; }
     .toc-item.toc-depth-2 { margin-left: 8px; }
     .toc-item.toc-depth-3 { margin-left: 16px; }
     .toc-item.toc-depth-4 { margin-left: 24px; }
-    .toc-item:hover { background: #eff6ff; }
-    .toc-item.active { background: #dbeafe; color: #1d4ed8; }
-    .toc-empty { margin: 0; color: #64748b; font-size: 0.95rem; }
+    .toc-item:hover { background: var(--bg-card-hover); }
+    .toc-item.active { background: var(--bg-card-active); color: var(--accent-strong); }
+    .toc-empty { margin: 0; color: var(--text-faint); font-size: 0.95rem; }
     .panel-title { margin: 0 0 12px; font-size: 1.1rem; }
-    .intro { margin: 0 0 18px; color: #475569; line-height: 1.7; }
+    .intro { margin: 0 0 18px; color: var(--text-muted); line-height: 1.7; }
     .toolbar { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin-bottom: 18px; }
-    .toolbar input { width: 100%; min-width: 0; padding: 12px 14px; border: 1px solid #cbd5e1; border-radius: 12px; background: #f8fafc; color: #0f172a; }
-    .toolbar .meta { color: #475569; font-size: 0.95rem; }
+    .toolbar input { width: 100%; min-width: 0; padding: 12px 14px; border: 1px solid var(--border-strong); border-radius: 12px; background: var(--bg-input); color: var(--text-strong); }
+    .toolbar .meta { color: var(--text-muted); font-size: 0.95rem; }
     #file-count { font-weight: 600; }
-    .category-group { border: 1px solid #e2e8f0; border-radius: 18px; padding: 12px 14px 16px; background: #f8fafc; margin-bottom: 12px; }
-    .category-heading { margin: 0 0 10px; font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.12em; color: #475569; cursor: pointer; }
+    .category-group { border: 1px solid var(--border); border-radius: 18px; padding: 12px 14px 16px; background: var(--bg-card); margin-bottom: 12px; }
+    .category-heading { margin: 0 0 10px; font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--text-muted); cursor: pointer; }
     .category-heading::-webkit-details-marker { display: none; }
     .category-heading::before { content: '▾'; display: inline-block; margin-right: 8px; transform: translateY(-1px); }
     details:not([open]) .category-heading::before { content: '▸'; }
     .file-list { display: grid; gap: 8px; }
-    .file-link { display: block; padding: 10px 14px; border-radius: 12px; text-decoration: none; color: #0f172a; background: #ffffff; border: 1px solid transparent; transition: border-color .2s, background .2s; }
-    .file-link:hover { background: #eef2ff; border-color: #bfdbfe; }
-    .file-link.active { background: #dbeafe; border-color: #93c5fd; color: #1d4ed8; }
-    #current-path { color: #475569; font-size: 0.95rem; }
-    .content-toolbar { justify-content: space-between; border-bottom: 1px solid #e2e8f0; padding-bottom: 16px; margin-bottom: 24px; }
+    .file-link { display: block; padding: 10px 14px; border-radius: 12px; text-decoration: none; color: var(--text-strong); background: var(--bg-panel); border: 1px solid transparent; transition: border-color .2s, background .2s; }
+    .file-link:hover { background: var(--bg-card-hover); border-color: var(--border-accent); }
+    .file-link.active { background: var(--bg-card-active); border-color: var(--border-accent-strong); color: var(--accent-strong); }
+    #current-path { color: var(--text-muted); font-size: 0.95rem; }
+    .content-toolbar { justify-content: space-between; border-bottom: 1px solid var(--border); padding-bottom: 16px; margin-bottom: 24px; }
     .reader { max-width: 860px; }
     .reader h2 { margin-top: 0; font-size: 1.8rem; }
     .reader h3 { margin-top: 2rem; }
     .reader p { line-height: 1.8; margin: 1rem 0; }
-    .reader pre { background: #0f172a; color: #f8fafc; border-radius: 14px; padding: 18px; overflow-x: auto; white-space: pre-wrap; word-break: normal; }
-    .reader code { background: #e2e8f0; color: #0f172a; border-radius: 6px; padding: 2px 6px; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
-    .reader blockquote { margin: 1.5rem 0; padding-left: 18px; border-left: 4px solid #cbd5e1; color: #475569; background: #f8fafc; border-radius: 10px; }
+    .reader pre { background: var(--code-bg); color: var(--code-fg); border-radius: 14px; padding: 18px; overflow-x: auto; white-space: pre-wrap; word-break: normal; }
+    .reader code { background: var(--code-inline-bg); color: var(--code-inline-fg); border-radius: 6px; padding: 2px 6px; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
+    .reader blockquote { margin: 1.5rem 0; padding-left: 18px; border-left: 4px solid var(--border-strong); color: var(--text-muted); background: var(--bg-card); border-radius: 10px; }
     .reader ul, .reader ol { margin: 1rem 0 1rem 1.5rem; }
     .reader table { width: 100%; border-collapse: collapse; margin: 1.2rem 0; }
-    .reader th, .reader td { border: 1px solid #d1d5db; padding: 12px 14px; }
-    .reader th { background: #f8fafc; }
-    .reader a { color: #2563eb; }
-    .status { margin-top: 6px; color: #64748b; font-size: 0.95rem; }
-    .translation-notice { margin: 0 0 18px; padding: 10px 14px; border-radius: 10px; background: #ecfeff; border: 1px solid #a5f3fc; color: #0e7490; font-size: 0.9rem; }
-    .translation-notice-warn { background: #fef3c7; border-color: #fde68a; color: #92400e; }
+    .reader th, .reader td { border: 1px solid var(--table-border); padding: 12px 14px; }
+    .reader th { background: var(--bg-card); }
+    .reader a { color: var(--accent); }
+    .status { margin-top: 6px; color: var(--text-faint); font-size: 0.95rem; }
+    .translation-notice { margin: 0 0 18px; padding: 10px 14px; border-radius: 10px; background: var(--notice-bg); border: 1px solid var(--notice-border); color: var(--notice-text); font-size: 0.9rem; }
+    .translation-notice-warn { background: var(--notice-warn-bg); border-color: var(--notice-warn-border); color: var(--notice-warn-text); }
+    .code-tabs { margin: 1rem 0; border-radius: 14px; overflow: hidden; background: var(--code-bg); }
+    .code-tab-bar { display: flex; gap: 2px; background: var(--code-bg); padding: 8px 8px 0; border-bottom: 1px solid rgba(148,163,184,.25); }
+    .code-tab { background: transparent; color: var(--code-fg); border: 0; padding: 8px 16px; border-radius: 8px 8px 0 0; cursor: pointer; font-size: .9rem; font-family: ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace; opacity: .6; transition: opacity .15s, background .15s; }
+    .code-tab:hover { opacity: .9; background: rgba(148,163,184,.1); }
+    .code-tab.active { opacity: 1; background: rgba(148,163,184,.18); font-weight: 600; }
+    .code-tabs .code-panel { display: none; margin: 0; border-radius: 0; }
+    .code-tabs .code-panel.active { display: block; }
     @media (max-width: 1080px) { .layout { grid-template-columns: 1fr; } .sidebar { max-height: 320px; position: sticky; top: 0; z-index: 2; } .content { padding: 18px; } .toc { display: none; } }
   </style>
 </head>
@@ -72,10 +141,14 @@
       <nav>
         <a id="nav-markdown" href="/docs/reader.html">Markdown reader</a>
         <a id="nav-question-picker" href="/docs/index.html">Question picker</a>
-        <a id="nav-readme" href="/README.md">README</a>
+        <a id="nav-readme" href="/docs/reader.html?file=README.md">README</a>
         <select id="language-select" aria-label="Select language">
           <option value="en">English</option>
           <option value="zh">简体中文</option>
+        </select>
+        <select id="theme-select" aria-label="Select theme">
+          <option value="light">Light</option>
+          <option value="dark">Dark</option>
         </select>
       </nav>
     </header>
@@ -106,6 +179,6 @@
       </aside>
     </div>
   </div>
-  <script src="reader.js"></script>
+  <script src="reader.js?v=7"></script>
 </body>
 </html>

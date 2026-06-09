@@ -1,38 +1,38 @@
-# Apple
+# 苹果
 
 ```yaml
-company: Apple
-typical_rounds: 1 recruiter chat + 1 phone screen + 4-6 onsite (team-specific; can be 1 day or split across days)
-focus_areas: depends heavily on team — algorithms + system design + DEEP domain expertise
-languages_allowed: Swift/Objective-C for iOS, C/C++ for embedded, JS/TS for web, Python for ML
-duration: 45-60 min per round
+company: 苹果
+typical_rounds: 1 轮 recruiter 沟通 + 1 轮电话面 + 4-6 轮 onsite（团队自定；可能一天打完也可能拆成几天）
+focus_areas: 强烈依赖团队——算法 + 系统设计 + 深度领域专长
+languages_allowed: iOS 用 Swift/Objective-C，嵌入式用 C/C++，Web 用 JS/TS，ML 用 Python
+duration: 每轮 45-60 分钟
 notable_quirks:
-  - Loops are owned by the hiring team — questions/structure vary wildly by org
-  - Heavy domain-specific deep-dive (e.g., web perf for FE, signal processing for audio, low-level for kernel)
-  - Privacy and on-device computation philosophy comes up
-  - "Cross-functional" round common — talk to a non-engineer about your work
-  - Less open with feedback, longer process (often 4-8 weeks)
-sources: Glassdoor, LeetCode Discuss (apple tag), Blind, levels.fyi
+  - Loop 由招聘团队主导——题目和结构因组而异，差别很大
+  - 强领域深挖（如前端考 web perf，音频考信号处理，内核考底层）
+  - 隐私和端上计算的理念会被问到
+  - 常见"跨职能"轮——与非工程师介绍你的工作
+  - 反馈较少，流程长（常 4-8 周）
+sources: Glassdoor、LeetCode Discuss（apple 标签）、Blind、levels.fyi
 ```
 
-## Overview
+## 概述
 
-Apple's interview is the most team-dependent of the FAANGs. A Safari frontend role looks nothing like a CoreAudio role looks nothing like a Siri ML role. This file leans toward a generalist SWE / frontend angle that's broadly applicable. Common threads across teams: deep domain knowledge expected (you should be expert at *something*), privacy-by-design awareness, attention to user-facing detail, and a preference for senior engineers who can own a problem end-to-end. The bar for code quality is high — polish matters.
+苹果是 FAANG 中面试与团队相关度最高的。Safari 前端、CoreAudio 和 Siri ML 三个岗位几乎毫无相似之处。本文偏向通用 SWE / 前端角度，覆盖面较广。各团队的共性：期望候选人具备深度领域知识（你应该在*某个方向*是专家）、隐私优先意识、对用户可感知细节的关注，以及偏好能端到端 own 问题的资深工程师。代码质量的门槛很高——打磨很重要。
 
-## Questions
+## 题目
 
-### 1. Three Sum
+### 1. 三数之和
 
-**Difficulty:** Medium
-**Topics:** arrays, two-pointer, sorting
-**Position:** SWE
-**Years:** ICT3-ICT4
+**难度：** 中等
+**主题：** arrays, two-pointer, sorting
+**岗位：** SWE
+**级别：** ICT3-ICT4
 
-**Question:** Given an array `nums`, return all unique triplets `[a, b, c]` such that `a + b + c == 0`.
+**问题：** 给定数组 `nums`，返回所有满足 `a + b + c == 0` 的不重复三元组 `[a, b, c]`。
 
-**Approach:** Sort. Iterate fixed `i`; for each, use two pointers `l, r` on the right subarray to find pairs summing to `-nums[i]`. Skip duplicates at all three positions to ensure uniqueness. O(n²) time, O(1) extra (output not counted).
+**思路：** 排序。固定 `i` 遍历；对每个 `i`，在右侧子数组用双指针 `l, r` 找和为 `-nums[i]` 的两数。三个位置都跳过重复以保证唯一性。O(n²) 时间，O(1) 额外（输出不计）。
 
-**Python:**
+**Python：**
 ```python
 def three_sum(nums: list[int]) -> list[list[int]]:
     nums.sort()
@@ -53,7 +53,7 @@ def three_sum(nums: list[int]) -> list[list[int]]:
     return out
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function threeSum(nums: number[]): number[][] {
   nums.sort((a, b) => a - b);
@@ -77,7 +77,7 @@ function threeSum(nums: number[]): number[][] {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 import java.util.*;
 class Solution {
@@ -104,27 +104,27 @@ class Solution {
 }
 ```
 
-**Key points:**
-- Sorting enables both the two-pointer scan and duplicate skipping.
-- Skip duplicates at the fixed index and after each match to avoid repeated triplets.
-- Early break when `nums[i] > 0` since remaining elements cannot sum to zero.
+**要点：**
+- 排序后既能用双指针扫描，也能方便地跳过重复。
+- 在固定下标和每次匹配后都要跳过重复，避免输出重复三元组。
+- 当 `nums[i] > 0` 时可以提前 break，剩余元素之和不可能为 0。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 2. Product of Array Except Self
+### 2. 除自身以外数组的乘积
 
-**Difficulty:** Medium
-**Topics:** arrays, prefix-product
-**Position:** SWE
-**Years:** ICT3-ICT4
+**难度：** 中等
+**主题：** arrays, prefix-product
+**岗位：** SWE
+**级别：** ICT3-ICT4
 
-**Question:** Given an integer array `nums`, return an array `out` where `out[i] = product of all nums except nums[i]`. Solve without division and in O(n).
+**问题：** 给定整数数组 `nums`，返回数组 `out`，其中 `out[i] = 除 nums[i] 外所有元素的乘积`。不能用除法，O(n)。
 
-**Approach:** Two passes: first pass `out[i] = product of nums[0..i-1]` (left product). Second pass right-to-left, multiply by running right product. O(n) time, O(1) extra (output not counted). Watch zero handling — naive division fails on zeros.
+**思路：** 两次遍历：第一次 `out[i] = nums[0..i-1] 的乘积`（左积）。第二次从右往左，乘以累计的右积。O(n) 时间，O(1) 额外（输出不计）。注意 0 的处理——朴素除法在含 0 时失效。
 
-**Python:**
+**Python：**
 ```python
 def product_except_self(nums: list[int]) -> list[int]:
     n = len(nums)
@@ -138,7 +138,7 @@ def product_except_self(nums: list[int]) -> list[int]:
     return out
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function productExceptSelf(nums: number[]): number[] {
   const n = nums.length;
@@ -153,7 +153,7 @@ function productExceptSelf(nums: number[]): number[] {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 class Solution {
     public int[] productExceptSelf(int[] nums) {
@@ -171,27 +171,27 @@ class Solution {
 }
 ```
 
-**Key points:**
-- Output array doubles as the prefix-product buffer to keep extra space at O(1).
-- A single running scalar holds the suffix product on the second pass.
-- Zero values are handled naturally without any special branching.
+**要点：**
+- 输出数组本身充当前缀积缓冲区，把额外空间压到 O(1)。
+- 第二趟用单个标量维护后缀积。
+- 含 0 的情形天然处理，无需特判。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 3. Merge Two Sorted Lists
+### 3. 合并两个有序链表
 
-**Difficulty:** Easy
-**Topics:** linked-list, recursion
-**Position:** SWE
-**Years:** ICT3
+**难度：** 简单
+**主题：** linked-list, recursion
+**岗位：** SWE
+**级别：** ICT3
 
-**Question:** Merge two sorted linked lists into one sorted list.
+**问题：** 把两个有序链表合并成一个有序链表。
 
-**Approach:** Dummy head node, two pointers, append smaller, advance, repeat. Append remainder. O(n+m), O(1). Recursive variant: `merge(a, b) = a < b ? a + merge(a.next, b) : b + merge(a, b.next)` — clean but O(n+m) stack.
+**思路：** 哑头节点，双指针，谁小接谁，推进，重复。最后接上剩余部分。O(n+m)，O(1)。递归写法：`merge(a, b) = a < b ? a + merge(a.next, b) : b + merge(a, b.next)`——简洁但 O(n+m) 栈深。
 
-**Python:**
+**Python：**
 ```python
 class ListNode:
     def __init__(self, val: int = 0, next: "ListNode | None" = None) -> None:
@@ -211,7 +211,7 @@ def merge_two_lists(a: ListNode | None, b: ListNode | None) -> ListNode | None:
     return dummy.next
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 class ListNode {
   val: number;
@@ -232,7 +232,7 @@ function mergeTwoLists(a: ListNode | null, b: ListNode | null): ListNode | null 
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 class ListNode {
     int val; ListNode next;
@@ -253,27 +253,27 @@ class Solution {
 }
 ```
 
-**Key points:**
-- Dummy head removes special-casing for the first node.
-- Append the non-null tail in O(1) once one list is consumed.
-- Stable ordering between equal values preserves list semantics.
+**要点：**
+- 哑头节点消除首节点的特殊处理。
+- 一边走空后 O(1) 接上另一边的剩余部分。
+- 相等时保持稳定顺序，符合链表语义。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 4. Longest Palindromic Substring
+### 4. 最长回文子串
 
-**Difficulty:** Medium
-**Topics:** strings, dp, expand-around-center
-**Position:** SWE
-**Years:** ICT3-ICT4
+**难度：** 中等
+**主题：** strings, dp, expand-around-center
+**岗位：** SWE
+**级别：** ICT3-ICT4
 
-**Question:** Given a string `s`, return the longest palindromic substring.
+**问题：** 给定字符串 `s`，返回最长回文子串。
 
-**Approach:** Expand around center — for each index i, try odd-length (center=i) and even-length (center between i and i+1) expansions, track best. O(n²) time, O(1) space. Manacher's is O(n) but rarely required. Watch off-by-one for length / substring indices.
+**思路：** 中心扩展——对每个下标 i，尝试奇长度（中心=i）和偶长度（中心在 i 和 i+1 之间）两种扩张，记录最优。O(n²) 时间，O(1) 空间。Manacher 是 O(n) 但很少要求。注意长度和子串下标的 off-by-one。
 
-**Python:**
+**Python：**
 ```python
 def longest_palindrome(s: str) -> str:
     def grow(l: int, r: int) -> tuple[int, int]:
@@ -288,7 +288,7 @@ def longest_palindrome(s: str) -> str:
     return s[bl:br + 1]
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function longestPalindrome(s: string): string {
   const grow = (l: number, r: number): [number, number] => {
@@ -305,7 +305,7 @@ function longestPalindrome(s: string): string {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 class Solution {
     private int bl = 0, br = 0;
@@ -321,27 +321,27 @@ class Solution {
 }
 ```
 
-**Key points:**
-- Two center types cover odd and even palindromes uniformly.
-- Track the best window by length difference, not by recomputing slices.
-- Manacher's algorithm reaches O(n) but the constant factor and code length rarely pay off.
+**要点：**
+- 两种中心类型统一覆盖奇偶长度的回文。
+- 用长度差比较记录最优区间，避免反复切片。
+- Manacher 可达 O(n)，但常数和代码复杂度通常不值。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 5. Implement strStr() / Find Substring
+### 5. 实现 strStr() / 查找子串
 
-**Difficulty:** Easy
-**Topics:** strings, sliding-window, kmp
-**Position:** SWE
-**Years:** ICT3
+**难度：** 简单
+**主题：** strings, sliding-window, kmp
+**岗位：** SWE
+**级别：** ICT3
 
-**Question:** Implement `strStr(haystack, needle)` — return the index of the first occurrence of `needle` in `haystack`, or -1.
+**问题：** 实现 `strStr(haystack, needle)`——返回 `needle` 在 `haystack` 中首次出现的下标，否则 -1。
 
-**Approach:** Naive sliding window O(n*m). Apple often follows up with "now make it O(n+m)" → KMP with failure function, or Rabin-Karp with rolling hash. Be ready to walk through KMP failure-function construction.
+**思路：** 朴素滑窗 O(n*m)。苹果常追问"做成 O(n+m)"→ KMP 配 failure 函数，或 Rabin-Karp 滚动哈希。准备好讲清 KMP failure 函数的构造。
 
-**Python:**
+**Python：**
 ```python
 def str_str(haystack: str, needle: str) -> int:
     if not needle:
@@ -365,7 +365,7 @@ def str_str(haystack: str, needle: str) -> int:
     return -1
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function strStr(haystack: string, needle: string): number {
   if (!needle) return 0;
@@ -386,7 +386,7 @@ function strStr(haystack: string, needle: string): number {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 class Solution {
     public int strStr(String haystack, String needle) {
@@ -408,27 +408,27 @@ class Solution {
 }
 ```
 
-**Key points:**
-- KMP achieves O(n + m) by avoiding re-scanning the haystack on mismatch.
-- The `lps` (longest proper prefix that is also a suffix) table encodes the fallback positions.
-- Empty needle returns 0 by convention; mirror C's `strstr` semantics.
+**要点：**
+- KMP 通过 `lps` 表避免回退 haystack，从而做到 O(n + m)。
+- `lps[i]` 是 needle 前 i+1 个字符中最长的"既是真前缀又是真后缀"的长度。
+- 空 needle 按约定返回 0，对齐 C 库 `strstr` 的语义。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 6. LRU Cache
+### 6. LRU 缓存
 
-**Difficulty:** Medium
-**Topics:** ood, hashmap, linked-list
-**Position:** SWE
-**Years:** ICT3-ICT4
+**难度：** 中等
+**主题：** ood, hashmap, linked-list
+**岗位：** SWE
+**级别：** ICT3-ICT4
 
-**Question:** Design an LRU cache with O(1) `get` and `put`.
+**问题：** 设计 LRU 缓存，`get` 和 `put` 均为 O(1)。
 
-**Approach:** Hashmap `key -> node` + doubly linked list (head=most recent, tail=oldest). On `get`, move node to head. On `put` overflow, drop tail. Apple may ask follow-up: make it thread-safe (lock per bucket, or compare-and-swap on Node).
+**思路：** 哈希表 `key -> node` + 双向链表（head=最近，tail=最旧）。`get` 时把节点移到头。`put` 溢出时丢尾。苹果可能追问：做成线程安全（按 bucket 加锁，或对 Node 做 CAS）。
 
-**Python:**
+**Python：**
 ```python
 from collections import OrderedDict
 
@@ -451,7 +451,7 @@ class LRUCache:
             self.d.popitem(last=False)
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 class LRUCache {
   private cap: number;
@@ -474,7 +474,7 @@ class LRUCache {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 import java.util.*;
 class LRUCache extends LinkedHashMap<Integer, Integer> {
@@ -492,27 +492,27 @@ class LRUCache extends LinkedHashMap<Integer, Integer> {
 }
 ```
 
-**Key points:**
-- Python `OrderedDict` and JS `Map` preserve insertion order — re-insert on access marks "most recent".
-- Eviction is just popping the first key in O(1).
-- Production code uses a hashmap + custom doubly linked list to keep pointers stable under concurrency.
+**要点：**
+- Python `OrderedDict` 和 JS `Map` 都保留插入顺序——访问时重插即标记"最新"。
+- 淘汰只是弹出最早的 key，O(1)。
+- 生产代码常用哈希表 + 自定义双向链表，便于并发场景下保持指针稳定。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 7. Binary Tree Maximum Path Sum
+### 7. 二叉树中的最大路径和
 
-**Difficulty:** Hard
-**Topics:** tree, dp, recursion
-**Position:** SWE
-**Years:** ICT4
+**难度：** 困难
+**主题：** tree, dp, recursion
+**岗位：** SWE
+**级别：** ICT4
 
-**Question:** Given a non-empty binary tree, find the maximum path sum. A path may start and end at any nodes, not necessarily through the root.
+**问题：** 给定非空二叉树，求最大路径和。路径可起始于任意节点，不一定经过根。
 
-**Approach:** DFS returning "max gain from this node going down one side" (max(0, left), max(0, right) — discard negative). At each node, candidate full path through it = `node.val + leftGain + rightGain`; update global max. Return `node.val + max(leftGain, rightGain)` for parent. O(n).
+**思路：** DFS 返回"从该节点向下走一条边的最大增益"（max(0, left)、max(0, right)——负值丢弃）。在每个节点，候选完整路径 = `node.val + leftGain + rightGain`；更新全局最大值。给父节点返回 `node.val + max(leftGain, rightGain)`。O(n)。
 
-**Python:**
+**Python：**
 ```python
 class TreeNode:
     def __init__(self, val: int = 0, left: "TreeNode | None" = None, right: "TreeNode | None" = None) -> None:
@@ -532,7 +532,7 @@ def max_path_sum(root: TreeNode | None) -> int:
     return int(best)
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function maxPathSum(root: TreeNode | null): number {
   let best = -Infinity;
@@ -548,7 +548,7 @@ function maxPathSum(root: TreeNode | null): number {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 class TreeNode {
     int val; TreeNode left, right;
@@ -567,27 +567,27 @@ class Solution {
 }
 ```
 
-**Key points:**
-- Discard negative subtree contributions by clamping with `max(0, ...)`.
-- The "best" candidate at each node uses both children; the return value uses only one.
-- Initial best is `-Infinity` to handle all-negative trees correctly.
+**要点：**
+- 用 `max(0, ...)` 丢弃负的子树贡献。
+- 当前节点的候选最优同时使用左右两侧，但回传给父节点时只取一侧。
+- 初始最优为 `-Infinity`，正确处理全负值的树。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 8. Coin Change
+### 8. 零钱兑换
 
-**Difficulty:** Medium
-**Topics:** dp, greedy
-**Position:** SWE
-**Years:** ICT3-ICT4
+**难度：** 中等
+**主题：** dp, greedy
+**岗位：** SWE
+**级别：** ICT3-ICT4
 
-**Question:** Given coin denominations and an amount, return the fewest coins needed to make that amount, or -1 if impossible.
+**问题：** 给定面额和目标金额，返回凑出该金额所需的最少硬币数，或 -1。
 
-**Approach:** Bottom-up DP. `dp[i]` = min coins to make `i`; `dp[0] = 0`, `dp[i] = min(dp[i - c] + 1)` for each coin c <= i. O(amount * coins). Greedy fails for arbitrary denominations (e.g., [1, 3, 4] for 6 → greedy gives 4+1+1=3, optimal is 3+3=2).
+**思路：** 自底向上 DP。`dp[i]` = 凑出 `i` 所需最少硬币；`dp[0] = 0`，`dp[i] = min(dp[i - c] + 1)`，c <= i。O(amount * coins)。任意面额下贪心失败（如 [1, 3, 4] 凑 6 → 贪心 4+1+1=3，最优 3+3=2）。
 
-**Python:**
+**Python：**
 ```python
 def coin_change(coins: list[int], amount: int) -> int:
     INF = amount + 1
@@ -599,7 +599,7 @@ def coin_change(coins: list[int], amount: int) -> int:
     return -1 if dp[amount] == INF else dp[amount]
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function coinChange(coins: number[], amount: number): number {
   const INF = amount + 1;
@@ -614,7 +614,7 @@ function coinChange(coins: number[], amount: number): number {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 import java.util.Arrays;
 class Solution {
@@ -633,207 +633,207 @@ class Solution {
 }
 ```
 
-**Key points:**
-- Sentinel `amount + 1` is safe because the answer cannot exceed `amount` (using all 1-coins if available).
-- Order coins inner, amount outer for the unbounded knapsack pattern.
-- Greedy only works when the denomination set is canonical (e.g., USD); always validate.
+**要点：**
+- 哨兵 `amount + 1` 安全，因为答案不可能超过 `amount`（若有 1 元面额则全用 1 元）。
+- 外层金额、内层面额是完全背包的经典写法。
+- 贪心只在面额规范（如美元）时正确，要先证再用。
 
-**Tags:** #algorithm
-
----
-
-### 9. Design Apple Music (or Spotify-like)
-
-**Difficulty:** Hard
-**Topics:** system-design, cdn, drm, recommendation, offline
-**Position:** Senior SWE
-**Years:** ICT5
-
-**Question:** Design Apple Music: streaming, library, recommendations, offline mode, lossless audio.
-
-**Approach:** Audio files in blob storage + CDN, multiple bitrates (AAC 256kbps, lossless ALAC). DRM via FairPlay. Metadata sharded by track_id; user library (playlists, likes) sharded by user_id. Recommendations: offline two-tower embedding model + on-device re-ranking (Apple privacy lean). Offline downloads: client manages local cache with DRM license refresh. Discuss: cross-device sync (CloudKit), lossless streaming bandwidth, and how to preserve privacy by doing personalization on-device.
-
-**Tags:** #system-design
+**标签：** #algorithm
 
 ---
 
-### 10. Design iMessage
+### 9. 设计 Apple Music（或类 Spotify）
 
-**Difficulty:** Hard
-**Topics:** system-design, e2e-encryption, apns, multi-device
-**Position:** Senior SWE
-**Years:** ICT5
+**难度：** 困难
+**主题：** system-design, cdn, drm, recommendation, offline
+**岗位：** 高级 SWE
+**级别：** ICT5
 
-**Question:** Design iMessage: end-to-end encrypted, multi-device delivery, fallback to SMS.
+**问题：** 设计 Apple Music：流媒体、曲库、推荐、离线模式、无损音频。
 
-**Approach:** Each device has its own keypair registered with Apple Push Service. Sender encrypts message N times (once per recipient device) and posts via APNS. Server stores ciphertext briefly until delivery, then deletes. Discuss: Identity Service maps phone/email → device list (this is the trust anchor, hence the Contact Key Verification feature), large group keys (sender key model), media (S3-like blob + per-message key), and graceful SMS fallback when recipient not on iMessage.
+**思路：** 音频文件存对象存储 + CDN，多码率（AAC 256kbps、无损 ALAC）。DRM 用 FairPlay。元数据按 track_id 分片；用户曲库（歌单、喜欢）按 user_id 分片。推荐：离线 two-tower embedding 模型 + 端上重排序（贴合苹果的隐私倾向）。离线下载：客户端管理本地缓存 + DRM 许可证刷新。讨论：跨设备同步（CloudKit）、无损流的带宽、如何通过端上个性化来保护隐私。
 
-**Tags:** #system-design
-
----
-
-### 11. Design iCloud Photo Library
-
-**Difficulty:** Hard
-**Topics:** system-design, sync, dedup, ml-on-device
-**Position:** Senior SWE
-**Years:** ICT5
-
-**Question:** Design iCloud Photos: sync photos across devices, dedup, search by content, edit-on-one-device-sync-everywhere.
-
-**Approach:** Content-addressed blob storage (SHA-256 of original) for dedup across users (with privacy: hash includes per-user salt, no cross-user dedup if true E2E). Per-user CloudKit zone for metadata. Edits stored as non-destructive adjustments (small JSON) layered over the original. Content search via on-device ML (Apple's Photos uses on-device classification — embeddings stored as encrypted metadata, search runs locally). Multi-device sync via CKShare deltas. Discuss bandwidth (lazy fetch full-res, eager thumbnails) and Optimize Storage feature.
-
-**Tags:** #system-design
+**标签：** #system-design
 
 ---
 
-### 12. Design a Notification Service (APNS-like)
+### 10. 设计 iMessage
 
-**Difficulty:** Hard
-**Topics:** system-design, push, persistent-connections, fanout
-**Position:** Senior SWE
-**Years:** ICT5
+**难度：** 困难
+**主题：** system-design, e2e-encryption, apns, multi-device
+**岗位：** 高级 SWE
+**级别：** ICT5
 
-**Question:** Design Apple Push Notification Service — a system that maintains a persistent connection to every active iOS device worldwide and delivers push notifications.
+**问题：** 设计 iMessage：端到端加密、多设备投递、降级到 SMS。
 
-**Approach:** Edge layer of stateful connection servers, each holding ~1M+ persistent TLS connections (tuned kernels). Devices keep-alive every ~20 min (battery-friendly). Producer apps POST notifications → gateway → routed (by device_token → connection server via consistent hashing) → delivered. Persistent queue (Kafka) for transient device offline state, with TTL drop. Discuss: TLS handshake amortization, NAT keep-alive, priority tiers, and dedup on multiple sends for the same alert.
+**思路：** 每台设备有自己的密钥对，注册到 Apple Push Service。发送方对消息加密 N 次（每个接收方设备一次），通过 APNS 投递。服务端临时存密文直至送达后删除。讨论：身份服务把电话/邮箱映射到设备列表（这是信任锚点，因此有 Contact Key Verification 功能）、大群密钥（sender key 模型）、媒体（类 S3 blob + 每消息密钥）、对方不在 iMessage 时优雅降级到 SMS。
 
-**Tags:** #system-design
-
----
-
-### 13. Design Find My (offline finding)
-
-**Difficulty:** Hard
-**Topics:** system-design, e2e-encryption, ble, privacy
-**Position:** Senior SWE
-**Years:** ICT5
-
-**Question:** Design Apple's Find My network — locate a lost device even when it's offline, without Apple knowing its location.
-
-**Approach:** Lost device emits a rotating BLE beacon derived from a public key (private key kept on owner's other Apple devices). Nearby iPhones detect, encrypt their location with the beacon's public key, and upload to Apple. Owner queries with the private key. Apple cannot decrypt — only the owner can. Trade-offs: server stores opaque ciphertext (large data volume), key rotation prevents long-term tracking, finder phones unwittingly relay. Discuss collision resistance, replay attacks, and how owner devices share the private key chain.
-
-**Tags:** #system-design
+**标签：** #system-design
 
 ---
 
-### 14. Design a CDN
+### 11. 设计 iCloud 照片图库
 
-**Difficulty:** Hard
-**Topics:** system-design, cdn, caching, dns
-**Position:** Senior SWE
-**Years:** ICT5
+**难度：** 困难
+**主题：** system-design, sync, dedup, ml-on-device
+**岗位：** 高级 SWE
+**级别：** ICT5
 
-**Question:** Design a CDN like Akamai or Apple's edge cache. Cover routing, cache hierarchy, and invalidation.
+**问题：** 设计 iCloud 照片：多设备同步、去重、按内容搜索、单设备编辑全设备同步。
 
-**Approach:** Edge PoPs in major cities; user routed to nearest via GeoDNS or anycast BGP. Edge → regional cache → origin (tiered to amortize origin load). Cache key = URL + headers (Vary). Invalidation: purge API → propagates via pub/sub to all edges (eventual ~seconds). Origin pull for cache miss; signed URLs for private content. Discuss: cache stampede (request coalescing at edge), TLS termination at edge, and HTTP/3 / QUIC for last-mile.
+**思路：** 基于内容寻址的 blob 存储（原图 SHA-256）实现跨用户去重（隐私下：哈希含用户级 salt，若真正 E2E 则无跨用户去重）。每用户 CloudKit zone 存元数据。编辑以非破坏性调整（小 JSON）形式叠加在原图上。按内容搜索靠端上 ML（苹果 Photos 使用端上分类——embedding 以加密元数据存储，搜索在本地完成）。多设备同步走 CKShare 增量。讨论带宽（懒拉原图、急拉缩略图）和"优化存储"特性。
 
-**Tags:** #system-design
-
----
-
-### 15. Tell me about a time you obsessed over a detail
-
-**Difficulty:** Medium
-**Topics:** behavioral, attention-to-detail, craft
-**Position:** SWE
-**Years:** ICT3-ICT4
-
-**Question:** Tell me about a time you went deep into a small detail others might have overlooked.
-
-**Approach:** Apple values craft — pick a story where the detail mattered to the user (latency shaved, animation jank fixed, accessibility bug nobody filed). STAR with emphasis on: (1) you noticed when others didn't, (2) you measured the impact (not just "it felt better"), (3) you advocated to spend the time. Avoid "I rewrote everything for purity" — that's not craft, that's vanity.
-
-**Tags:** #behavioral
+**标签：** #system-design
 
 ---
 
-### 16. Time you had to balance speed and quality
+### 12. 设计推送通知服务（类 APNS）
 
-**Difficulty:** Medium
-**Topics:** behavioral, tradeoffs, judgment
-**Position:** Senior SWE
-**Years:** ICT5
+**难度：** 困难
+**主题：** system-design, push, persistent-connections, fanout
+**岗位：** 高级 SWE
+**级别：** ICT5
 
-**Question:** Tell me about a time you had to make a trade-off between shipping fast and shipping well. How did you decide?
+**问题：** 设计 Apple Push Notification Service——一个对全球每台活跃 iOS 设备保持长连接、并投递推送的系统。
 
-**Approach:** Apple culture: ship when ready, not when scheduled. But they want pragmatism, not perfectionism. Show: (1) you defined the minimum bar explicitly (what's a P0 bug vs P2?), (2) you communicated trade-offs to PM/leadership, (3) you owned the post-ship follow-up to close the gap. Avoid "we slipped 3 months for polish" without strong user-impact justification.
+**思路：** 边缘层是有状态的连接服务器，每台维持上百万长 TLS 连接（内核调优）。设备约每 20 分钟一次保活（省电）。生产方 App 推送 → 网关 → 路由（device_token → 通过一致性哈希到对应连接服务器）→ 投递。持久队列（Kafka）暂存设备临时离线的消息，超过 TTL 丢弃。讨论：TLS 握手摊销、NAT 保活、优先级分级、同一通知多次发送的去重。
 
-**Tags:** #behavioral
-
----
-
-### 17. Time you collaborated with a difficult cross-functional partner
-
-**Difficulty:** Medium
-**Topics:** behavioral, cross-functional, conflict
-**Position:** Senior SWE
-**Years:** ICT5
-
-**Question:** Tell me about a time you had a difficult working relationship with a designer, PM, or another engineer. How did you make it work?
-
-**Approach:** Apple has strong design and PM functions — engineers must collaborate effectively. Show: (1) you tried to understand their frame (design language, user research data), (2) you found a shared metric/goal, (3) you adjusted *your* communication, not just demanded they change. Bonus: the relationship turned into a productive partnership long-term.
-
-**Tags:** #behavioral
+**标签：** #system-design
 
 ---
 
-### 18. Why do you want to work at Apple
+### 13. 设计 Find My（离线查找）
 
-**Difficulty:** Easy
-**Topics:** behavioral, motivation, fit
-**Position:** SWE
-**Years:** ICT3-ICT5
+**难度：** 困难
+**主题：** system-design, e2e-encryption, ble, privacy
+**岗位：** 高级 SWE
+**级别：** ICT5
 
-**Question:** Why Apple specifically, over <Google/Meta/Microsoft>?
+**问题：** 设计苹果 Find My 网络——丢失设备离线时也能定位，且苹果无法知道其位置。
 
-**Approach:** Don't say "stock" or "brand." Pick one of: (1) specific product you use and love (be specific about what), (2) Apple's privacy stance and how it aligns with your work values, (3) the integration of hardware+software you can't do elsewhere, (4) the team's specific mission. Have something concrete you've done that shows interest (e.g., contributed to Swift, built an iOS app, read Apple's ML research papers).
+**思路：** 丢失设备发出由公钥派生的、定期轮换的 BLE 信标（私钥保存在物主的其他苹果设备上）。附近 iPhone 检测到后用该公钥加密自己的位置，上传到苹果。物主用私钥查询。苹果无法解密——只有物主能。权衡：服务端只存不透明密文（数据量大）、密钥轮换防止长期追踪、发现者手机无感转发。讨论碰撞抗性、重放攻击、物主设备如何共享私钥链。
 
-**Tags:** #behavioral
-
----
-
-### 19. Frontend / web perf: optimize Largest Contentful Paint
-
-**Difficulty:** Hard
-**Topics:** web-perf, frontend, lcp
-**Position:** Frontend
-**Years:** ICT5
-
-**Question:** A marketing page on apple.com has an LCP of 4.5s on 3G. How do you get it under 2.5s?
-
-**Approach:** Identify the LCP element first (DevTools → Performance → LCP marker). Typical wins: (1) preload the LCP image with `<link rel=preload as=image>` + `fetchpriority=high`, (2) serve in AVIF/WebP with proper `srcset`, (3) eliminate render-blocking CSS — inline critical CSS, defer rest, (4) eliminate render-blocking JS — defer all non-critical, (5) use HTTP/2 push or 103 Early Hints, (6) server-side render the hero, (7) optimize TTFB (edge caching, fewer redirects). Measure with field RUM data, not just lab. Mention `loading=lazy` should *not* be on the LCP image (anti-pattern).
-
-**Tags:** #domain-knowledge
+**标签：** #system-design
 
 ---
 
-### 20. On-device ML vs cloud ML trade-offs
+### 14. 设计 CDN
 
-**Difficulty:** Medium
-**Topics:** ml, privacy, mobile, ood
-**Position:** Senior SWE
-**Years:** ICT5
+**难度：** 困难
+**主题：** system-design, cdn, caching, dns
+**岗位：** 高级 SWE
+**级别：** ICT5
 
-**Question:** A new feature needs ML inference on user data. Should it run on-device or in the cloud? Walk through the trade-offs.
+**问题：** 设计类似 Akamai 或苹果边缘缓存的 CDN。覆盖路由、缓存层级和失效。
 
-**Approach:** Apple's strong on-device bias is the cultural lens. Pros of on-device: privacy (data never leaves device), latency (no network round-trip), works offline, no server cost. Cons: model size constrained (must fit in tens of MB), can't share learning across users without federated learning, harder to update (must ship in OS). When cloud wins: model too large (LLMs), needs aggregate data, server-side personalization with explicit consent. Discuss hybrid (on-device candidate generation, cloud re-rank with hashed features) and Differential Privacy when uploading aggregate stats.
+**思路：** 在主要城市部署边缘 PoP；用户通过 GeoDNS 或 anycast BGP 被路由到最近节点。边缘 → 区域缓存 → 源站（分层以摊销源站压力）。缓存键 = URL + headers (Vary)。失效：purge API → 通过 pub/sub 传播到所有边缘（最终一致，秒级）。缓存未命中时回源；私有内容用签名 URL。讨论：缓存击穿（边缘做请求合并）、TLS 在边缘终结、最后一公里用 HTTP/3 / QUIC。
 
-**Tags:** #domain-knowledge
+**标签：** #system-design
 
 ---
 
-### 21. Search in Rotated Sorted Array
+### 15. 讲一次你纠结于某个细节的经历
 
-**Difficulty:** Medium
-**Topics:** arrays, binary-search
-**Position:** ICT4
-**Years:** ICT3-ICT4
+**难度：** 中等
+**主题：** behavioral, attention-to-detail, craft
+**岗位：** SWE
+**级别：** ICT3-ICT4
 
-**Question:** A sorted ascending array was rotated at an unknown pivot. Given a target value, return its index or -1. Must be O(log n).
+**问题：** 讲一次你深入到一个别人可能忽视的小细节的经历。
 
-**Approach:** Modified binary search. At each step, one half `[l..mid]` or `[mid..r]` is sorted — detect which by comparing `nums[l] <= nums[mid]`. Check if target lies in the sorted half; recurse there, else recurse other half. O(log n) time, O(1) space. Watch duplicates (degrades to O(n)).
+**思路：** 苹果重视工艺——挑那种细节真正影响到用户的故事（延迟降低、动画卡顿修复、无人提报的可访问性 bug）。STAR 重点：(1) 别人没注意你注意到了，(2) 你度量了影响（不是"感觉好多了"），(3) 你说服团队为此投入时间。避免"我为了纯粹重写了一切"——那不是工艺，是虚荣。
 
-**Python:**
+**标签：** #behavioral
+
+---
+
+### 16. 在速度和质量之间权衡的经历
+
+**难度：** 中等
+**主题：** behavioral, tradeoffs, judgment
+**岗位：** 高级 SWE
+**级别：** ICT5
+
+**问题：** 讲一次你必须在快速发布和高质量交付之间做权衡。你怎么决定？
+
+**思路：** 苹果文化：准备好了再发，不是按排期发。但他们要的是务实，不是完美主义。展示：(1) 你明确定义了底线（P0 vs P2 bug 的标准），(2) 你向 PM/领导沟通了权衡，(3) 你跟进了发布后的收尾以补齐差距。避免"我们为了打磨延期 3 个月"却没有足够的用户影响佐证。
+
+**标签：** #behavioral
+
+---
+
+### 17. 与难合作的跨职能伙伴共事的经历
+
+**难度：** 中等
+**主题：** behavioral, cross-functional, conflict
+**岗位：** 高级 SWE
+**级别：** ICT5
+
+**问题：** 讲一次你与设计师、PM 或其他工程师有过棘手合作关系的经历。你怎么搞定的？
+
+**思路：** 苹果的设计和 PM 职能很强——工程师必须高效协作。展示：(1) 你尝试理解对方的视角（设计语言、用户研究数据），(2) 你找到了共同的指标/目标，(3) 你调整的是*自己的*沟通方式，而不是要求对方变。加分：这段关系后来发展为长期高产的伙伴关系。
+
+**标签：** #behavioral
+
+---
+
+### 18. 你为什么想加入苹果
+
+**难度：** 简单
+**主题：** behavioral, motivation, fit
+**岗位：** SWE
+**级别：** ICT3-ICT5
+
+**问题：** 为什么是苹果，而不是 <Google/Meta/Microsoft>？
+
+**思路：** 别说"股票"或"品牌"。挑一个：(1) 你使用且热爱的具体产品（说清具体什么），(2) 苹果的隐私立场如何契合你的工作价值观，(3) 你在别处做不到的软硬件整合，(4) 团队的具体使命。准备一件具体做过的事来证明你的兴趣（如向 Swift 提交了贡献、做过 iOS App、读过苹果 ML 研究论文）。
+
+**标签：** #behavioral
+
+---
+
+### 19. 前端 / web perf：优化 Largest Contentful Paint
+
+**难度：** 困难
+**主题：** web-perf, frontend, lcp
+**岗位：** 前端
+**级别：** ICT5
+
+**问题：** apple.com 一个营销页在 3G 下 LCP 为 4.5s。如何降到 2.5s 以下？
+
+**思路：** 先识别 LCP 元素（DevTools → Performance → LCP 标记）。常见收益：(1) 用 `<link rel=preload as=image>` + `fetchpriority=high` 预加载 LCP 图，(2) 用 AVIF/WebP + 合理的 `srcset`，(3) 消除阻塞渲染的 CSS——内联关键 CSS，其余 defer，(4) 消除阻塞渲染的 JS——非关键全部 defer，(5) 用 HTTP/2 push 或 103 Early Hints，(6) 服务端渲染首屏 hero，(7) 优化 TTFB（边缘缓存、减少重定向）。用 RUM 实测数据衡量，不只是 lab。提一句 `loading=lazy` *不应* 加在 LCP 图上（反模式）。
+
+**标签：** #domain-knowledge
+
+---
+
+### 20. 端上 ML 与云端 ML 的权衡
+
+**难度：** 中等
+**主题：** ml, privacy, mobile, ood
+**岗位：** 高级 SWE
+**级别：** ICT5
+
+**问题：** 一个新功能需要对用户数据做 ML 推理。应该在端上还是云上跑？讲讲权衡。
+
+**思路：** 苹果偏好端上是文化基调。端上优点：隐私（数据不离开设备）、延迟（无网络往返）、可离线、无服务器成本。缺点：模型体积受限（必须能塞进几十 MB）、无联邦学习时无法在用户间共享学习成果、更新麻烦（必须随 OS 发布）。云端更优的场景：模型太大（LLM）、需要聚合数据、需要明确同意的服务端个性化。讨论混合方案（端上候选生成 + 云端用哈希特征重排），以及上传聚合统计时用差分隐私。
+
+**标签：** #domain-knowledge
+
+---
+
+### 21. 搜索旋转排序数组
+
+**难度：** 中等
+**主题：** arrays, binary-search
+**岗位：** ICT4
+**级别：** ICT3-ICT4
+
+**问题：** 一个升序排序数组在未知位置被旋转。给定目标值，返回其下标，否则 -1。要求 O(log n)。
+
+**思路：** 改造二分查找。每步中 `[l..mid]` 或 `[mid..r]` 必有一半有序——通过比较 `nums[l] <= nums[mid]` 判断。检查目标是否落在有序那一半；在那一半递归，否则在另一半递归。O(log n) 时间，O(1) 空间。注意重复元素（退化到 O(n)）。
+
+**Python：**
 ```python
 def search(nums: list[int], target: int) -> int:
     lo, hi = 0, len(nums) - 1
@@ -854,7 +854,7 @@ def search(nums: list[int], target: int) -> int:
     return -1
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function search(nums: number[], target: number): number {
   let lo = 0, hi = nums.length - 1;
@@ -873,7 +873,7 @@ function search(nums: number[], target: number): number {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 class Solution {
     public int search(int[] nums, int target) {
@@ -894,27 +894,27 @@ class Solution {
 }
 ```
 
-**Key points:**
-- Identify which half is sorted with a single endpoint comparison.
-- Inclusive checks must match the sorted endpoints (`<= ... <` vs `< ... <=`).
-- Duplicate values can force linear-time worst case; require unique elements or use the II variant.
+**要点：**
+- 通过比较端点判断哪一半有序。
+- 闭区间比较要和有序那一半的端点匹配（`<= ... <` vs `< ... <=`）。
+- 含重复元素时最坏可退化到 O(n)，应使用允许重复的变体。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 22. Find Minimum in Rotated Sorted Array
+### 22. 寻找旋转排序数组中的最小值
 
-**Difficulty:** Medium
-**Topics:** arrays, binary-search
-**Position:** ICT3
-**Years:** ICT3
+**难度：** 中等
+**主题：** arrays, binary-search
+**岗位：** ICT3
+**级别：** ICT3
 
-**Question:** Given a rotated sorted array with unique elements, return the minimum element in O(log n).
+**问题：** 给定一个元素唯一的旋转排序数组，O(log n) 返回最小元素。
 
-**Approach:** Binary search comparing `nums[mid]` with `nums[r]`. If `nums[mid] > nums[r]`, the minimum is in the right half (`l = mid+1`); else it's in the left half including mid (`r = mid`). Loop until `l == r`. O(log n), O(1).
+**思路：** 用 `nums[mid]` 与 `nums[r]` 比较的二分。若 `nums[mid] > nums[r]`，最小值在右半（`l = mid+1`）；否则在含 mid 的左半（`r = mid`）。循环至 `l == r`。O(log n)，O(1)。
 
-**Python:**
+**Python：**
 ```python
 def find_min(nums: list[int]) -> int:
     lo, hi = 0, len(nums) - 1
@@ -927,7 +927,7 @@ def find_min(nums: list[int]) -> int:
     return nums[lo]
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function findMin(nums: number[]): number {
   let lo = 0, hi = nums.length - 1;
@@ -940,7 +940,7 @@ function findMin(nums: number[]): number {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 class Solution {
     public int findMin(int[] nums) {
@@ -955,29 +955,29 @@ class Solution {
 }
 ```
 
-**Key points:**
-- Comparing against `hi` (not `lo`) correctly handles the non-rotated case.
-- The loop ends with `lo == hi` pointing at the minimum.
-- Distinct elements keep the comparison strict, avoiding worst-case O(n).
+**要点：**
+- 与 `hi`（而不是 `lo`）比较，能正确处理未旋转的情形。
+- 循环终止时 `lo == hi`，指向最小值。
+- 元素唯一保证比较严格，避免最坏 O(n)。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 23. First Bad Version
+### 23. 第一个错误的版本
 
-**Difficulty:** Easy
-**Topics:** binary-search, api
-**Position:** ICT3
-**Years:** ICT3
+**难度：** 简单
+**主题：** binary-search, api
+**岗位：** ICT3
+**级别：** ICT3
 
-**Question:** You have versions 1..n; one is bad and all subsequent are bad. Given `isBadVersion(v)` API, find the first bad version with minimum API calls.
+**问题：** 版本 1..n 中某一个开始变坏，之后全部都坏。给定 `isBadVersion(v)` API，找出第一个坏版本，调用次数尽量少。
 
-**Approach:** Classical binary search for left boundary. `l = 1, r = n`; while `l < r`, `mid = l + (r-l)/2`; if bad, `r = mid`, else `l = mid+1`. Use `l + (r-l)/2` to avoid overflow. O(log n) API calls.
+**思路：** 经典左边界二分。`l = 1, r = n`；while `l < r`，`mid = l + (r-l)/2`；坏则 `r = mid`，否则 `l = mid+1`。用 `l + (r-l)/2` 防溢出。O(log n) 次调用。
 
-**Python:**
+**Python：**
 ```python
-def is_bad_version(v: int) -> bool: ...  # provided
+def is_bad_version(v: int) -> bool: ...  # 由系统提供
 
 def first_bad_version(n: int) -> int:
     lo, hi = 1, n
@@ -990,7 +990,7 @@ def first_bad_version(n: int) -> int:
     return lo
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 declare function isBadVersion(v: number): boolean;
 
@@ -1005,7 +1005,7 @@ function firstBadVersion(n: number): number {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 public class Solution extends VersionControl {
     public int firstBadVersion(int n) {
@@ -1020,27 +1020,27 @@ public class Solution extends VersionControl {
 }
 ```
 
-**Key points:**
-- Use `lo + (hi - lo) / 2` to avoid integer overflow in languages with bounded ints.
-- The invariant `hi` is always a bad version (or `n`) keeps the boundary correct.
-- Loop terminates when `lo == hi`, which is the first bad version.
+**要点：**
+- 用 `lo + (hi - lo) / 2`，在有界整型语言里避免溢出。
+- 不变式：`hi` 始终是坏版本（或 `n`），保证边界正确。
+- 循环终止时 `lo == hi`，即第一个坏版本。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 24. Sqrt(x)
+### 24. x 的平方根
 
-**Difficulty:** Easy
-**Topics:** binary-search, math
-**Position:** ICT3
-**Years:** ICT3
+**难度：** 简单
+**主题：** binary-search, math
+**岗位：** ICT3
+**级别：** ICT3
 
-**Question:** Compute the integer square root of `x` (floor) without using built-in sqrt.
+**问题：** 不用内置 sqrt，计算 `x` 的整数平方根（向下取整）。
 
-**Approach:** Binary search on `[0, x]`. Invariant: find largest `k` with `k*k <= x`. Use `mid = l + (r-l)/2` and compare `mid*mid` to `x` (cast to long to avoid overflow). Alternative: Newton's method `x_{n+1} = (x_n + x/x_n)/2`, converges quadratically. O(log x).
+**思路：** 在 `[0, x]` 上二分。不变式：找最大的 `k` 满足 `k*k <= x`。`mid = l + (r-l)/2`，将 `mid*mid` 与 `x` 比较（转 long 防溢出）。或用牛顿迭代 `x_{n+1} = (x_n + x/x_n)/2`，二次收敛。O(log x)。
 
-**Python:**
+**Python：**
 ```python
 def my_sqrt(x: int) -> int:
     lo, hi, ans = 0, x, 0
@@ -1054,7 +1054,7 @@ def my_sqrt(x: int) -> int:
     return ans
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function mySqrt(x: number): number {
   let lo = 0, hi = x, ans = 0;
@@ -1067,7 +1067,7 @@ function mySqrt(x: number): number {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 class Solution {
     public int mySqrt(int x) {
@@ -1082,27 +1082,27 @@ class Solution {
 }
 ```
 
-**Key points:**
-- Track the latest valid `mid` since the loop overshoots by one before exiting.
-- In Java/C++, cast `mid * mid` to a wider type to avoid overflow.
-- Newton's method converges in ~6 iterations even for huge inputs but needs careful starting point.
+**要点：**
+- 用 `ans` 记录最近一次合法 `mid`，因为循环结束前会越界一次。
+- Java/C++ 中要把 `mid * mid` 转为更宽的类型避免溢出。
+- 牛顿迭代收敛极快，但需要小心选择起点。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
 ### 25. Pow(x, n)
 
-**Difficulty:** Medium
-**Topics:** math, recursion, bit-manipulation
-**Position:** ICT4
-**Years:** ICT3-ICT4
+**难度：** 中等
+**主题：** math, recursion, bit-manipulation
+**岗位：** ICT4
+**级别：** ICT3-ICT4
 
-**Question:** Implement `pow(x, n)` for real `x` and integer `n` (possibly negative).
+**问题：** 实现 `pow(x, n)`，`x` 为实数，`n` 为整数（可负）。
 
-**Approach:** Fast exponentiation by squaring. If `n < 0`, negate and invert `x`. Iterate: while `n > 0`, if `n & 1` multiply result by `x`; square `x`; shift `n` right. Watch `INT_MIN` negation — cast to long. O(log n) time, O(1) space.
+**思路：** 快速幂（平方法）。若 `n < 0`，取负并对 `x` 取倒数。迭代：当 `n > 0` 时，若 `n & 1` 则结果乘以 `x`；`x` 自乘；`n` 右移。注意 `INT_MIN` 取负——转 long。O(log n) 时间，O(1) 空间。
 
-**Python:**
+**Python：**
 ```python
 def my_pow(x: float, n: int) -> float:
     if n < 0:
@@ -1116,7 +1116,7 @@ def my_pow(x: float, n: int) -> float:
     return result
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function myPow(x: number, n: number): number {
   if (n < 0) { x = 1 / x; n = -n; }
@@ -1130,7 +1130,7 @@ function myPow(x: number, n: number): number {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 class Solution {
     public double myPow(double x, int n) {
@@ -1147,27 +1147,27 @@ class Solution {
 }
 ```
 
-**Key points:**
-- Halving the exponent each step yields O(log n) multiplications.
-- Negate `n` after inverting `x` for negative exponents.
-- In bounded-int languages, cast `n` to a wider type before negating `INT_MIN`.
+**要点：**
+- 每步把指数减半，乘法次数为 O(log n)。
+- 负指数：先对 `x` 取倒数再把 `n` 取正。
+- 有界整型语言中处理 `INT_MIN`，先转更宽类型再取负。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 26. Container With Most Water
+### 26. 盛最多水的容器
 
-**Difficulty:** Medium
-**Topics:** arrays, two-pointer
-**Position:** ICT3
-**Years:** ICT3-ICT4
+**难度：** 中等
+**主题：** arrays, two-pointer
+**岗位：** ICT3
+**级别：** ICT3-ICT4
 
-**Question:** Given heights `h[i]`, choose two indices to form a container; maximize `min(h[i], h[j]) * (j - i)`.
+**问题：** 给定高度数组 `h[i]`，选两个下标组成容器；最大化 `min(h[i], h[j]) * (j - i)`。
 
-**Approach:** Two pointers at ends. Compute area; move the shorter side inward (moving the taller side can never increase area because width shrinks and height is bounded by min). Track max. O(n) time, O(1) space.
+**思路：** 双指针放两端。算面积；把较短那一边向内移（移动较高一边宽度变小，高度受限于 min，面积不可能更大）。记录最大。O(n) 时间，O(1) 空间。
 
-**Python:**
+**Python：**
 ```python
 def max_area(height: list[int]) -> int:
     l, r = 0, len(height) - 1
@@ -1181,7 +1181,7 @@ def max_area(height: list[int]) -> int:
     return best
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function maxArea(height: number[]): number {
   let l = 0, r = height.length - 1, best = 0;
@@ -1194,7 +1194,7 @@ function maxArea(height: number[]): number {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 class Solution {
     public int maxArea(int[] height) {
@@ -1209,27 +1209,27 @@ class Solution {
 }
 ```
 
-**Key points:**
-- Width strictly decreases each step, so only height increase can grow area.
-- Moving the taller side can never increase area; always move the shorter side.
-- Tie-breaks on equal heights can move either pointer with the same result.
+**要点：**
+- 宽度每步必然减小，只有高度增加才能扩大面积。
+- 移动较高的一边永远不会让面积增大；只能动较短的一边。
+- 高度相等时两边都可以动，结果一样。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 27. 4Sum
+### 27. 四数之和
 
-**Difficulty:** Medium
-**Topics:** arrays, two-pointer, sorting
-**Position:** ICT4
-**Years:** ICT3-ICT4
+**难度：** 中等
+**主题：** arrays, two-pointer, sorting
+**岗位：** ICT4
+**级别：** ICT3-ICT4
 
-**Question:** Given array `nums` and integer `target`, return all unique quadruplets summing to `target`.
+**问题：** 给定数组 `nums` 和整数 `target`，返回所有不重复的、和为 `target` 的四元组。
 
-**Approach:** Sort. Two nested loops fixing `i, j`; two pointers `l, r` for the remaining pair. Skip duplicates at all four positions. Early termination when smallest 4 already exceed target. O(n^3) time, O(1) extra.
+**思路：** 排序。两层循环固定 `i, j`；双指针 `l, r` 找剩下两个数。四个位置都跳过重复。最小四数已超 target 时提前终止。O(n^3) 时间，O(1) 额外空间。
 
-**Python:**
+**Python：**
 ```python
 def four_sum(nums: list[int], target: int) -> list[list[int]]:
     nums.sort()
@@ -1252,7 +1252,7 @@ def four_sum(nums: list[int], target: int) -> list[list[int]]:
     return out
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function fourSum(nums: number[], target: number): number[][] {
   nums.sort((a, b) => a - b);
@@ -1279,7 +1279,7 @@ function fourSum(nums: number[], target: number): number[][] {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 import java.util.*;
 class Solution {
@@ -1311,27 +1311,27 @@ class Solution {
 }
 ```
 
-**Key points:**
-- Skip duplicates at all four index positions to keep results unique.
-- The two-pointer scan reduces inner pair search from O(n^2) to O(n).
-- Early-break when `nums[i] * 4 > target` or smallest possible sum exceeds `target`.
+**要点：**
+- 四个位置都要跳过重复，保证结果唯一。
+- 双指针把内层一对和的搜索从 O(n^2) 降到 O(n)。
+- 当 `nums[i] * 4 > target` 或最小四数和超过 target 时可提前 break。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 28. Remove Duplicates from Sorted Array
+### 28. 删除有序数组中的重复项
 
-**Difficulty:** Easy
-**Topics:** arrays, two-pointer
-**Position:** ICT3
-**Years:** ICT3
+**难度：** 简单
+**主题：** arrays, two-pointer
+**岗位：** ICT3
+**级别：** ICT3
 
-**Question:** Given a sorted array, remove duplicates in-place so each element appears once; return the new length.
+**问题：** 给定有序数组，原地去重使每个元素只出现一次，返回新长度。
 
-**Approach:** Two pointers `write, read`. Iterate `read`; if `nums[read] != nums[write-1]`, copy to `nums[write]` and advance write. Return `write`. O(n) time, O(1) space.
+**思路：** 双指针 `write, read`。遍历 `read`；若 `nums[read] != nums[write-1]`，复制到 `nums[write]` 并 write++。返回 `write`。O(n) 时间，O(1) 空间。
 
-**Python:**
+**Python：**
 ```python
 def remove_duplicates(nums: list[int]) -> int:
     if not nums:
@@ -1344,7 +1344,7 @@ def remove_duplicates(nums: list[int]) -> int:
     return write
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function removeDuplicates(nums: number[]): number {
   if (nums.length === 0) return 0;
@@ -1359,7 +1359,7 @@ function removeDuplicates(nums: number[]): number {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 class Solution {
     public int removeDuplicates(int[] nums) {
@@ -1373,27 +1373,27 @@ class Solution {
 }
 ```
 
-**Key points:**
-- Sorted input means duplicates are always adjacent.
-- The write pointer lags read so we overwrite only when needed.
-- Returns the count of unique elements; values past index `write` are leftovers.
+**要点：**
+- 有序输入保证重复元素相邻。
+- write 指针落后于 read，仅在需要时覆盖写入。
+- 返回的是去重后的有效长度；下标 `write` 之后是残留值。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 29. Remove Nth Node from End of List
+### 29. 删除链表的倒数第 N 个节点
 
-**Difficulty:** Medium
-**Topics:** linked-list, two-pointer
-**Position:** ICT3
-**Years:** ICT3
+**难度：** 中等
+**主题：** linked-list, two-pointer
+**岗位：** ICT3
+**级别：** ICT3
 
-**Question:** Remove the n-th node from the end of a singly linked list in one pass.
+**问题：** 一次遍历删除单链表的倒数第 n 个节点。
 
-**Approach:** Dummy head. Advance `fast` n+1 steps. Move `fast` and `slow` together until `fast` is null. `slow.next` is the node to remove; `slow.next = slow.next.next`. O(L) time, O(1) space.
+**思路：** 哑头。让 `fast` 先走 n+1 步。`fast` 与 `slow` 一起走，直到 `fast` 为 null。`slow.next` 即为待删节点；`slow.next = slow.next.next`。O(L) 时间，O(1) 空间。
 
-**Python:**
+**Python：**
 ```python
 def remove_nth_from_end(head: ListNode | None, n: int) -> ListNode | None:
     dummy = ListNode(0, head)
@@ -1408,7 +1408,7 @@ def remove_nth_from_end(head: ListNode | None, n: int) -> ListNode | None:
     return dummy.next
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function removeNthFromEnd(head: ListNode | null, n: number): ListNode | null {
   const dummy = new ListNode(0, head);
@@ -1420,7 +1420,7 @@ function removeNthFromEnd(head: ListNode | null, n: number): ListNode | null {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 class Solution {
     public ListNode removeNthFromEnd(ListNode head, int n) {
@@ -1434,27 +1434,27 @@ class Solution {
 }
 ```
 
-**Key points:**
-- Dummy head simplifies removal when the target is the original head.
-- Gap of `n + 1` lands `slow` on the node before the one to remove.
-- Single pass — no length precomputation needed.
+**要点：**
+- 哑头简化了删除原头节点的情形。
+- 间距 `n + 1` 让 `slow` 落在待删节点的前一个。
+- 单次遍历完成，不需要先求长度。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 30. Add Two Numbers (Linked List)
+### 30. 两数相加（链表）
 
-**Difficulty:** Medium
-**Topics:** linked-list, math
-**Position:** ICT3
-**Years:** ICT3-ICT4
+**难度：** 中等
+**主题：** linked-list, math
+**岗位：** ICT3
+**级别：** ICT3-ICT4
 
-**Question:** Two numbers stored as linked lists in reverse order (each node holds one digit). Return their sum as a linked list.
+**问题：** 两个数以逆序链表存储（每个节点一位数字）。返回它们的和，仍为链表。
 
-**Approach:** Walk both lists with a carry. At each step, `sum = a + b + carry`; new node has `sum % 10`; carry = `sum / 10`. Continue until both lists exhausted and carry is 0. Use dummy head. O(max(n, m)) time.
+**思路：** 同时遍历两个链表并维护进位。每步 `sum = a + b + carry`；新节点值为 `sum % 10`；`carry = sum / 10`。两链表遍历完且 carry 为 0 才停。用哑头。O(max(n, m)) 时间。
 
-**Python:**
+**Python：**
 ```python
 def add_two_numbers(l1: ListNode | None, l2: ListNode | None) -> ListNode | None:
     dummy = ListNode()
@@ -1470,7 +1470,7 @@ def add_two_numbers(l1: ListNode | None, l2: ListNode | None) -> ListNode | None
     return dummy.next
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function addTwoNumbers(l1: ListNode | null, l2: ListNode | null): ListNode | null {
   const dummy = new ListNode();
@@ -1487,7 +1487,7 @@ function addTwoNumbers(l1: ListNode | null, l2: ListNode | null): ListNode | nul
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 class Solution {
     public ListNode addTwoNumbers(ListNode l1, ListNode l2) {
@@ -1506,27 +1506,27 @@ class Solution {
 }
 ```
 
-**Key points:**
-- Loop condition must include `carry` for the trailing digit (e.g., 5 + 5 = 10).
-- Treat missing nodes as zero so unequal lengths fall out naturally.
-- Output is in the same reverse-digit order as input.
+**要点：**
+- 循环条件要带上 `carry`，处理末位进位（如 5 + 5 = 10）。
+- 缺失节点视为 0，长度不等自然处理。
+- 输出仍然是低位在前的链表。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 31. Copy List with Random Pointer
+### 31. 复制带随机指针的链表
 
-**Difficulty:** Medium
-**Topics:** linked-list, hashmap
-**Position:** ICT4
-**Years:** ICT4
+**难度：** 中等
+**主题：** linked-list, hashmap
+**岗位：** ICT4
+**级别：** ICT4
 
-**Question:** Deep copy a linked list where each node has `next` and a `random` pointer to any node.
+**问题：** 深拷贝一个链表，每个节点除 `next` 外还有 `random` 指针指向任意节点。
 
-**Approach:** Two passes with hashmap `old -> new`: first pass creates clones, second pass wires `next` and `random`. O(n) time, O(n) space. O(1) extra space variant: interleave clones inline (A->A'->B->B'->...), set randoms, then split.
+**思路：** 用哈希表 `old -> new` 两遍法：第一遍创建克隆，第二遍接 `next` 和 `random`。O(n) 时间，O(n) 空间。O(1) 额外空间法：原地交错克隆（A->A'->B->B'->...），设置 random，再拆分。
 
-**Python:**
+**Python：**
 ```python
 class RandomNode:
     def __init__(self, val: int, next: "RandomNode | None" = None, random: "RandomNode | None" = None) -> None:
@@ -1548,7 +1548,7 @@ def copy_random_list(head: RandomNode | None) -> RandomNode | None:
     return m[head]
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 class RandomNode {
   val: number;
@@ -1572,7 +1572,7 @@ function copyRandomList(head: RandomNode | null): RandomNode | null {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 import java.util.*;
 class Node {
@@ -1593,27 +1593,27 @@ class Solution {
 }
 ```
 
-**Key points:**
-- First pass creates the clones; second pass wires pointers via the map.
-- Handles null `next` and `random` without special cases.
-- An O(1)-space variant interleaves clones into the original list, then splits.
+**要点：**
+- 第一遍创建克隆节点，第二遍通过哈希表接好指针。
+- 自然处理 `next` 与 `random` 为 null 的情形。
+- O(1) 额外空间的变体把克隆交错插入原链表，最后再拆分。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 32. Linked List Cycle
+### 32. 环形链表
 
-**Difficulty:** Easy
-**Topics:** linked-list, two-pointer
-**Position:** ICT3
-**Years:** ICT3
+**难度：** 简单
+**主题：** linked-list, two-pointer
+**岗位：** ICT3
+**级别：** ICT3
 
-**Question:** Determine whether a linked list has a cycle. Bonus: return the cycle's start node.
+**问题：** 判断链表是否有环。进阶：返回环的起点。
 
-**Approach:** Floyd's tortoise and hare. `slow` advances 1, `fast` advances 2. If they meet, cycle exists. To find start, reset one pointer to head and advance both by 1 until they meet. O(n) time, O(1) space.
+**思路：** Floyd 龟兔。`slow` 走 1 步，`fast` 走 2 步。相遇即有环。找入口：把一个指针重置到 head，两个都以速度 1 推进，相遇即入口。O(n) 时间，O(1) 空间。
 
-**Python:**
+**Python：**
 ```python
 def detect_cycle(head: ListNode | None) -> ListNode | None:
     slow = fast = head
@@ -1629,7 +1629,7 @@ def detect_cycle(head: ListNode | None) -> ListNode | None:
     return None
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function detectCycle(head: ListNode | null): ListNode | null {
   let slow = head, fast = head;
@@ -1646,7 +1646,7 @@ function detectCycle(head: ListNode | null): ListNode | null {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 class Solution {
     public ListNode detectCycle(ListNode head) {
@@ -1665,27 +1665,27 @@ class Solution {
 }
 ```
 
-**Key points:**
-- The fast pointer doubles up the slow pointer until they meet inside the cycle.
-- The distance from head to cycle start equals the distance from meeting point to cycle start (mod cycle length).
-- Using a hash set is O(n) extra space; Floyd's is O(1).
+**要点：**
+- 快指针双倍速追赶慢指针，环内必相遇。
+- 头到入口的距离与相遇点到入口的距离（模环长）相等。
+- 用哈希集要 O(n) 额外空间；Floyd 是 O(1)。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 33. Intersection of Two Linked Lists
+### 33. 相交链表
 
-**Difficulty:** Easy
-**Topics:** linked-list, two-pointer
-**Position:** ICT3
-**Years:** ICT3
+**难度：** 简单
+**主题：** linked-list, two-pointer
+**岗位：** ICT3
+**级别：** ICT3
 
-**Question:** Given two singly linked lists that may merge at some node, return the intersection node, or null.
+**问题：** 给定两个可能相交的单链表，返回相交节点，或 null。
 
-**Approach:** Two pointers `a, b` start at heads. When `a` hits end, redirect to `headB`; same for `b`. They traverse `lenA + lenB` and meet at intersection (or null). O(n+m) time, O(1) space.
+**思路：** 双指针 `a, b` 从两个头开始。`a` 到末尾后跳到 `headB`；`b` 同理。两者各走 `lenA + lenB`，在交点（或 null）相遇。O(n+m) 时间，O(1) 空间。
 
-**Python:**
+**Python：**
 ```python
 def get_intersection_node(headA: ListNode | None, headB: ListNode | None) -> ListNode | None:
     if not headA or not headB:
@@ -1697,7 +1697,7 @@ def get_intersection_node(headA: ListNode | None, headB: ListNode | None) -> Lis
     return a
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function getIntersectionNode(headA: ListNode | null, headB: ListNode | null): ListNode | null {
   if (!headA || !headB) return null;
@@ -1710,7 +1710,7 @@ function getIntersectionNode(headA: ListNode | null, headB: ListNode | null): Li
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 class Solution {
     public ListNode getIntersectionNode(ListNode headA, ListNode headB) {
@@ -1725,27 +1725,27 @@ class Solution {
 }
 ```
 
-**Key points:**
-- Swapping heads on null equalizes the total walk to `lenA + lenB`.
-- The pointers meet at the intersection node, or both at `null` if disjoint.
-- Compare node identity, not values — duplicate values are allowed.
+**要点：**
+- 走到空时换头，使两个指针总步数都等于 `lenA + lenB`。
+- 它们要么在交点相遇，要么同时变为 `null`。
+- 比较节点身份而不是值——允许重复值。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 34. Reorder List
+### 34. 重排链表
 
-**Difficulty:** Medium
-**Topics:** linked-list, two-pointer
-**Position:** ICT4
-**Years:** ICT3-ICT4
+**难度：** 中等
+**主题：** linked-list, two-pointer
+**岗位：** ICT4
+**级别：** ICT3-ICT4
 
-**Question:** Given list L0 -> L1 -> ... -> Ln-1 -> Ln, reorder it in-place to L0 -> Ln -> L1 -> Ln-1 -> ...
+**问题：** 给定链表 L0 -> L1 -> ... -> Ln-1 -> Ln，原地重排为 L0 -> Ln -> L1 -> Ln-1 -> ...
 
-**Approach:** Three steps: (1) find middle with slow/fast pointers, (2) reverse second half, (3) merge two halves alternately. O(n) time, O(1) space. Watch null termination of merged list.
+**思路：** 三步：(1) 快慢指针找中点，(2) 反转后半段，(3) 两半交替合并。O(n) 时间，O(1) 空间。注意合并后的 null 结尾。
 
-**Python:**
+**Python：**
 ```python
 def reorder_list(head: ListNode | None) -> None:
     if not head or not head.next:
@@ -1765,7 +1765,7 @@ def reorder_list(head: ListNode | None) -> None:
         a, b = an, bn
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function reorderList(head: ListNode | null): void {
   if (!head || !head.next) return;
@@ -1783,7 +1783,7 @@ function reorderList(head: ListNode | null): void {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 class Solution {
     public void reorderList(ListNode head) {
@@ -1803,27 +1803,27 @@ class Solution {
 }
 ```
 
-**Key points:**
-- Cut the list at the middle before reversing the right half.
-- The right half is shorter or equal, so the merge naturally terminates.
-- All work is in-place — no extra allocations beyond a few pointers.
+**要点：**
+- 反转右半段前先在中点断开。
+- 右半段长度小于等于左半段，合并自然终止。
+- 全程原地，仅用少量指针，无额外分配。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 35. Binary Tree Level Order Traversal
+### 35. 二叉树层序遍历
 
-**Difficulty:** Medium
-**Topics:** tree, bfs, queue
-**Position:** ICT3
-**Years:** ICT3
+**难度：** 中等
+**主题：** tree, bfs, queue
+**岗位：** ICT3
+**级别：** ICT3
 
-**Question:** Return the level-order traversal of a binary tree as a list of lists (one per level).
+**问题：** 返回二叉树的层序遍历，按层组织成列表的列表。
 
-**Approach:** BFS with queue. At each level, record current queue size `k`, pop `k` nodes into a level list, push their children. O(n) time, O(w) space where w is max width.
+**思路：** 用队列做 BFS。每层记录当前队列大小 `k`，弹出 `k` 个节点放进当层列表，并入队它们的子节点。O(n) 时间，O(w) 空间，w 为最大宽度。
 
-**Python:**
+**Python：**
 ```python
 from collections import deque
 
@@ -1847,7 +1847,7 @@ def level_order(root: TreeNode | None) -> list[list[int]]:
     return out
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function levelOrder(root: TreeNode | null): number[][] {
   if (!root) return [];
@@ -1868,7 +1868,7 @@ function levelOrder(root: TreeNode | null): number[][] {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 import java.util.*;
 class Solution {
@@ -1893,27 +1893,27 @@ class Solution {
 }
 ```
 
-**Key points:**
-- Capture queue size at the start of each level to delimit it.
-- Empty tree returns an empty list.
-- Pattern generalizes to N-ary trees with one tweak.
+**要点：**
+- 在每层开始时记录队列大小，作为该层结束的边界。
+- 空树返回空列表。
+- 这种模式稍作修改即可用于 N 叉树。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 36. Binary Tree Zigzag Level Order Traversal
+### 36. 二叉树的锯齿形层序遍历
 
-**Difficulty:** Medium
-**Topics:** tree, bfs, deque
-**Position:** ICT4
-**Years:** ICT3-ICT4
+**难度：** 中等
+**主题：** tree, bfs, deque
+**岗位：** ICT4
+**级别：** ICT3-ICT4
 
-**Question:** Return level order but alternate L->R and R->L per level.
+**问题：** 同层序遍历，但每一层方向交替（左->右、右->左）。
 
-**Approach:** Standard BFS but toggle a `reverse` flag per level — either reverse the level list before appending, or use a deque and append to front/back accordingly. O(n) time, O(w) space.
+**思路：** 标准 BFS，每层翻转标志位——要么在追加前反转当层列表，要么用双端队列从前/后端追加。O(n) 时间，O(w) 空间。
 
-**Python:**
+**Python：**
 ```python
 from collections import deque
 
@@ -1936,7 +1936,7 @@ def zigzag_level_order(root: TreeNode | None) -> list[list[int]]:
     return out
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function zigzagLevelOrder(root: TreeNode | null): number[][] {
   if (!root) return [];
@@ -1959,7 +1959,7 @@ function zigzagLevelOrder(root: TreeNode | null): number[][] {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 import java.util.*;
 class Solution {
@@ -1986,27 +1986,27 @@ class Solution {
 }
 ```
 
-**Key points:**
-- Toggling a direction flag is cleaner than reversing after the fact.
-- Use a deque (or `unshift`) for O(1) prepend on right-to-left levels.
-- Children always pushed left-to-right; direction only affects output ordering.
+**要点：**
+- 用方向标志比"事后反转列表"更干净。
+- 反向层用双端队列（或 `unshift`）实现 O(1) 前插。
+- 子节点始终按左右入队；方向只影响输出顺序。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 37. Binary Tree Right Side View
+### 37. 二叉树的右视图
 
-**Difficulty:** Medium
-**Topics:** tree, bfs, dfs
-**Position:** ICT4
-**Years:** ICT3-ICT4
+**难度：** 中等
+**主题：** tree, bfs, dfs
+**岗位：** ICT4
+**级别：** ICT3-ICT4
 
-**Question:** Return the values of nodes visible from the right side of a binary tree, top to bottom.
+**问题：** 返回从右侧看二叉树能看到的节点值，自顶向下。
 
-**Approach:** BFS recording the last node of each level. Or DFS in (root, right, left) order, appending node when depth == result.length. O(n) time, O(h) space.
+**思路：** BFS 时记录每层最后一个节点。或者按 (root, right, left) DFS，当 depth == result.length 时追加。O(n) 时间，O(h) 空间。
 
-**Python:**
+**Python：**
 ```python
 def right_side_view(root: TreeNode | None) -> list[int]:
     out: list[int] = []
@@ -2021,7 +2021,7 @@ def right_side_view(root: TreeNode | None) -> list[int]:
     return out
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function rightSideView(root: TreeNode | null): number[] {
   const out: number[] = [];
@@ -2036,7 +2036,7 @@ function rightSideView(root: TreeNode | null): number[] {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 import java.util.*;
 class Solution {
@@ -2051,27 +2051,27 @@ class Solution {
 }
 ```
 
-**Key points:**
-- Visiting right child first ensures the first node seen at each depth is the rightmost.
-- Append only when depth equals current result length to avoid duplicates per level.
-- BFS variant works too; pick whichever feels cleaner.
+**要点：**
+- 先访问右子树，确保每层第一次到达的就是最右节点。
+- 仅在 depth 等于当前结果长度时追加，避免同层重复。
+- BFS 写法等价，选自己顺手的就行。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 38. Populating Next Right Pointers in Each Node
+### 38. 填充每个节点的下一个右侧节点指针
 
-**Difficulty:** Medium
-**Topics:** tree, bfs, linked-list
-**Position:** ICT4
-**Years:** ICT4
+**难度：** 中等
+**主题：** tree, bfs, linked-list
+**岗位：** ICT4
+**级别：** ICT4
 
-**Question:** Given a perfect binary tree, set each node's `next` to its right sibling at the same level (or null).
+**问题：** 给定一棵完美二叉树，把每个节点的 `next` 指向同层右兄弟（或 null）。
 
-**Approach:** Level-by-level traversal using established `next` pointers: at level L use them to walk; set `node.left.next = node.right` and `node.right.next = node.next ? node.next.left : null`. O(n) time, O(1) extra space.
+**思路：** 利用已建立的 `next` 指针逐层遍历：在第 L 层用它们行走；设 `node.left.next = node.right`，`node.right.next = node.next ? node.next.left : null`。O(n) 时间，O(1) 额外空间。
 
-**Python:**
+**Python：**
 ```python
 class PerfectNode:
     def __init__(self, val: int = 0, left: "PerfectNode | None" = None,
@@ -2090,7 +2090,7 @@ def connect(root: PerfectNode | None) -> PerfectNode | None:
     return root
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 class PerfectNode {
   val: number;
@@ -2117,7 +2117,7 @@ function connect(root: PerfectNode | null): PerfectNode | null {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 class Node {
     int val; Node left, right, next;
@@ -2138,27 +2138,27 @@ class Solution {
 }
 ```
 
-**Key points:**
-- Reuse already-set `next` pointers as the traversal mechanism — no queue needed.
-- Two wiring rules cover both child links.
-- O(1) extra space; only works because the tree is perfect.
+**要点：**
+- 复用已建好的 `next` 作为遍历手段，无需额外队列。
+- 两条接线规则覆盖左右子节点。
+- O(1) 额外空间，只对完美二叉树有效。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 39. Recover Binary Search Tree
+### 39. 恢复二叉搜索树
 
-**Difficulty:** Hard
-**Topics:** tree, bst, inorder
-**Position:** ICT5
-**Years:** ICT4-ICT5
+**难度：** 困难
+**主题：** tree, bst, inorder
+**岗位：** ICT5
+**级别：** ICT4-ICT5
 
-**Question:** Two nodes of a BST have been swapped by mistake. Recover the tree without changing its structure.
+**问题：** 一棵 BST 中两个节点被错误交换。在不改变结构的前提下恢复。
 
-**Approach:** Inorder traversal yields sorted sequence; find two out-of-order positions: first dip's left and last dip's right. Swap their values. Morris traversal achieves O(1) extra space, otherwise O(h) recursion stack. O(n) time.
+**思路：** 中序遍历得到本应有序的序列；找出两处下降位置：第一处下降的左值、最后一处下降的右值。交换两者。Morris 遍历 O(1) 额外空间，否则 O(h) 栈。O(n) 时间。
 
-**Python:**
+**Python：**
 ```python
 def recover_tree(root: TreeNode | None) -> None:
     first: TreeNode | None = None
@@ -2180,7 +2180,7 @@ def recover_tree(root: TreeNode | None) -> None:
         first.val, second.val = second.val, first.val
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function recoverTree(root: TreeNode | null): void {
   let first: TreeNode | null = null, second: TreeNode | null = null, prev: TreeNode | null = null;
@@ -2203,7 +2203,7 @@ function recoverTree(root: TreeNode | null): void {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 class Solution {
     private TreeNode first, second, prev;
@@ -2224,27 +2224,27 @@ class Solution {
 }
 ```
 
-**Key points:**
-- Two swapped nodes create either one or two "dips" in the inorder sequence.
-- `first` is set on the earlier dip; `second` keeps updating to capture the latter swap.
-- Morris traversal removes the O(h) recursion stack for true O(1) extra space.
+**要点：**
+- 两个被错换的节点在中序序列里形成 1 处或 2 处下降。
+- `first` 在首次下降时锁定；`second` 持续更新以捕获后一次下降。
+- Morris 遍历可去掉递归栈，达到真正的 O(1) 额外空间。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 40. Kth Smallest Element in a BST
+### 40. BST 中第 K 小的元素
 
-**Difficulty:** Medium
-**Topics:** tree, bst, inorder
-**Position:** ICT4
-**Years:** ICT3-ICT4
+**难度：** 中等
+**主题：** tree, bst, inorder
+**岗位：** ICT4
+**级别：** ICT3-ICT4
 
-**Question:** Return the k-th smallest element of a BST.
+**问题：** 返回 BST 中第 k 小的元素。
 
-**Approach:** Iterative inorder using a stack: push left spine, pop, decrement k; if k == 0 return node.val; go right. O(h + k) time, O(h) space. Follow-up: with frequent inserts/deletes, augment nodes with subtree count for O(h) lookup.
+**思路：** 用栈做迭代中序：把左脊压栈，弹出后 k--；若 k == 0 返回 node.val；进右子树。O(h + k) 时间，O(h) 空间。追问：频繁插入/删除时给节点加子树大小字段，查询 O(h)。
 
-**Python:**
+**Python：**
 ```python
 def kth_smallest(root: TreeNode | None, k: int) -> int:
     stack: list[TreeNode] = []
@@ -2261,7 +2261,7 @@ def kth_smallest(root: TreeNode | None, k: int) -> int:
     return -1
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function kthSmallest(root: TreeNode | null, k: number): number {
   const stack: TreeNode[] = [];
@@ -2276,7 +2276,7 @@ function kthSmallest(root: TreeNode | null, k: number): number {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 import java.util.*;
 class Solution {
@@ -2294,27 +2294,27 @@ class Solution {
 }
 ```
 
-**Key points:**
-- Inorder traversal on a BST yields keys in sorted order.
-- Iterative form avoids recursion stack overflow on skewed trees.
-- For dynamic trees, augment each node with subtree size for true O(h) lookup.
+**要点：**
+- BST 的中序遍历就是有序输出。
+- 迭代写法避免在偏斜树上的递归栈溢出。
+- 动态树场景下给节点加子树大小字段，可实现真正的 O(h) 查询。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 41. Inorder Successor in BST
+### 41. BST 中的中序后继
 
-**Difficulty:** Medium
-**Topics:** tree, bst
-**Position:** ICT4
-**Years:** ICT3-ICT4
+**难度：** 中等
+**主题：** tree, bst
+**岗位：** ICT4
+**级别：** ICT3-ICT4
 
-**Question:** Given a BST node `p`, return its inorder successor (smallest node larger than p).
+**问题：** 给定 BST 节点 `p`，返回它的中序后继（比 p 大的最小节点）。
 
-**Approach:** If `p.right` exists, successor is leftmost of `p.right`. Else, walk from root: track the last node where we went left. O(h) time, O(1) space.
+**思路：** 若 `p.right` 存在，后继是 `p.right` 的最左节点。否则从根向下走：记下最后一次向左走时的节点。O(h) 时间，O(1) 空间。
 
-**Python:**
+**Python：**
 ```python
 def inorder_successor(root: TreeNode | None, p: TreeNode) -> TreeNode | None:
     if p.right:
@@ -2333,7 +2333,7 @@ def inorder_successor(root: TreeNode | None, p: TreeNode) -> TreeNode | None:
     return succ
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function inorderSuccessor(root: TreeNode | null, p: TreeNode): TreeNode | null {
   if (p.right) {
@@ -2350,7 +2350,7 @@ function inorderSuccessor(root: TreeNode | null, p: TreeNode): TreeNode | null {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 class Solution {
     public TreeNode inorderSuccessor(TreeNode root, TreeNode p) {
@@ -2369,27 +2369,27 @@ class Solution {
 }
 ```
 
-**Key points:**
-- The two cases (has right child vs not) cover all BST shapes.
-- The "last left turn" rule captures the smallest ancestor greater than `p`.
-- O(h) without parent pointers; O(1) with them.
+**要点：**
+- 两种情形（有右子树 vs 无右子树）覆盖了所有 BST 形态。
+- "最后一次向左走"对应的节点就是比 `p` 大的最小祖先。
+- 没有父指针时 O(h)；有父指针可做到 O(1)。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 42. Same Tree
+### 42. 相同的树
 
-**Difficulty:** Easy
-**Topics:** tree, dfs, recursion
-**Position:** ICT3
-**Years:** ICT3
+**难度：** 简单
+**主题：** tree, dfs, recursion
+**岗位：** ICT3
+**级别：** ICT3
 
-**Question:** Determine whether two binary trees are structurally identical with equal values.
+**问题：** 判断两棵二叉树结构相同且对应值相等。
 
-**Approach:** Recursion: both null -> true; one null -> false; values differ -> false; else recurse on left and right children. O(min(n, m)) time, O(h) stack.
+**思路：** 递归：均为 null -> true；一个为 null -> false；值不同 -> false；否则递归比较左右子树。O(min(n, m)) 时间，O(h) 栈。
 
-**Python:**
+**Python：**
 ```python
 def is_same_tree(p: TreeNode | None, q: TreeNode | None) -> bool:
     if p is None and q is None:
@@ -2399,7 +2399,7 @@ def is_same_tree(p: TreeNode | None, q: TreeNode | None) -> bool:
     return is_same_tree(p.left, q.left) and is_same_tree(p.right, q.right)
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function isSameTree(p: TreeNode | null, q: TreeNode | null): boolean {
   if (!p && !q) return true;
@@ -2408,7 +2408,7 @@ function isSameTree(p: TreeNode | null, q: TreeNode | null): boolean {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 class Solution {
     public boolean isSameTree(TreeNode p, TreeNode q) {
@@ -2419,27 +2419,27 @@ class Solution {
 }
 ```
 
-**Key points:**
-- Both null is the success base case; one null implies structural mismatch.
-- Value mismatch short-circuits before recursing further.
-- Iterative lockstep BFS is an equivalent alternative without stack growth.
+**要点：**
+- 两边都为 null 是成功基底；其中一个为 null 即结构不同。
+- 值不同先短路，避免无谓递归。
+- 迭代式 BFS 同步遍历是等价做法，且无栈增长。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 43. Sum Root to Leaf Numbers
+### 43. 求根到叶子节点数字之和
 
-**Difficulty:** Medium
-**Topics:** tree, dfs, recursion
-**Position:** ICT3
-**Years:** ICT3-ICT4
+**难度：** 中等
+**主题：** tree, dfs, recursion
+**岗位：** ICT3
+**级别：** ICT3-ICT4
 
-**Question:** Each root-to-leaf path represents a number (digits along path). Return the sum of all root-to-leaf numbers.
+**问题：** 每条根到叶的路径代表一个数字（路径上的数位）。返回所有根到叶数字之和。
 
-**Approach:** DFS carrying current accumulated number `cur = cur*10 + node.val`. At leaf, add `cur` to total. O(n) time, O(h) space.
+**思路：** DFS 携带当前累计数 `cur = cur*10 + node.val`。到叶节点时将 `cur` 加入总和。O(n) 时间，O(h) 空间。
 
-**Python:**
+**Python：**
 ```python
 def sum_numbers(root: TreeNode | None) -> int:
     def dfs(node: TreeNode | None, cur: int) -> int:
@@ -2452,7 +2452,7 @@ def sum_numbers(root: TreeNode | None) -> int:
     return dfs(root, 0)
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function sumNumbers(root: TreeNode | null): number {
   const dfs = (n: TreeNode | null, cur: number): number => {
@@ -2465,7 +2465,7 @@ function sumNumbers(root: TreeNode | null): number {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 class Solution {
     public int sumNumbers(TreeNode root) { return dfs(root, 0); }
@@ -2478,27 +2478,27 @@ class Solution {
 }
 ```
 
-**Key points:**
-- Carry the running number down the call stack rather than mutating shared state.
-- Add to total only at leaves to avoid double-counting partial paths.
-- An empty tree contributes 0 by base case.
+**要点：**
+- 累计数沿递归栈下传，避免共享可变状态。
+- 仅在叶节点累加到总和，防止重复计入半路径。
+- 空树天然返回 0。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 44. Path Sum
+### 44. 路径总和
 
-**Difficulty:** Easy
-**Topics:** tree, dfs, recursion
-**Position:** ICT3
-**Years:** ICT3
+**难度：** 简单
+**主题：** tree, dfs, recursion
+**岗位：** ICT3
+**级别：** ICT3
 
-**Question:** Given a binary tree and `targetSum`, determine if there is a root-to-leaf path summing to `targetSum`.
+**问题：** 给定二叉树和 `targetSum`，判断是否存在根到叶路径和为 `targetSum`。
 
-**Approach:** DFS subtracting `node.val` from remaining; at leaf, check if remaining equals 0. Be careful with null vs leaf: null is not a leaf. O(n) time, O(h) space.
+**思路：** DFS 从剩余值中减去 `node.val`；到叶节点时检查剩余是否为 0。注意 null 与叶节点的区别：null 不是叶。O(n) 时间，O(h) 空间。
 
-**Python:**
+**Python：**
 ```python
 def has_path_sum(root: TreeNode | None, target_sum: int) -> bool:
     if root is None:
@@ -2509,7 +2509,7 @@ def has_path_sum(root: TreeNode | None, target_sum: int) -> bool:
     return has_path_sum(root.left, remaining) or has_path_sum(root.right, remaining)
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function hasPathSum(root: TreeNode | null, targetSum: number): boolean {
   if (!root) return false;
@@ -2519,7 +2519,7 @@ function hasPathSum(root: TreeNode | null, targetSum: number): boolean {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 class Solution {
     public boolean hasPathSum(TreeNode root, int targetSum) {
@@ -2531,27 +2531,27 @@ class Solution {
 }
 ```
 
-**Key points:**
-- The path must end at a leaf — null children alone don't satisfy the constraint.
-- Subtract on the way down, compare at the leaf.
-- Short-circuiting `or` cuts off unnecessary subtree traversals.
+**要点：**
+- 路径必须终止于叶节点，单独的 null 子节点不算合法路径。
+- 一路下走时做减法，叶节点处做比较。
+- 短路 `or` 能尽早砍掉无意义的子树搜索。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 45. Convert Sorted Array to Binary Search Tree
+### 45. 将有序数组转换为二叉搜索树
 
-**Difficulty:** Easy
-**Topics:** tree, bst, recursion, divide-and-conquer
-**Position:** ICT3
-**Years:** ICT3
+**难度：** 简单
+**主题：** tree, bst, recursion, divide-and-conquer
+**岗位：** ICT3
+**级别：** ICT3
 
-**Question:** Given a sorted ascending array, build a height-balanced BST.
+**问题：** 给定升序数组，构建高度平衡的 BST。
 
-**Approach:** Recursion: pick `mid = (l+r)/2` as root, recurse on left half and right half. O(n) time, O(log n) stack. Choosing left-mid vs right-mid gives different valid trees.
+**思路：** 递归：取 `mid = (l+r)/2` 为根，递归左半与右半。O(n) 时间，O(log n) 栈。取左中或右中得到不同合法树。
 
-**Python:**
+**Python：**
 ```python
 def sorted_array_to_bst(nums: list[int]) -> TreeNode | None:
     def build(l: int, r: int) -> TreeNode | None:
@@ -2565,7 +2565,7 @@ def sorted_array_to_bst(nums: list[int]) -> TreeNode | None:
     return build(0, len(nums) - 1)
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function sortedArrayToBST(nums: number[]): TreeNode | null {
   const build = (l: number, r: number): TreeNode | null => {
@@ -2580,7 +2580,7 @@ function sortedArrayToBST(nums: number[]): TreeNode | null {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 class Solution {
     public TreeNode sortedArrayToBST(int[] nums) { return build(nums, 0, nums.length - 1); }
@@ -2595,27 +2595,27 @@ class Solution {
 }
 ```
 
-**Key points:**
-- Picking the middle as root keeps subtree sizes balanced within one.
-- Sorted input guarantees BST property automatically.
-- Either floor or ceiling middle yields a valid height-balanced result.
+**要点：**
+- 取中点为根可使左右子树规模差不超过 1。
+- 有序输入天然保证 BST 性质。
+- 左中或右中都能产生合法的高度平衡树。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 46. Number of 1 Bits
+### 46. 位 1 的个数
 
-**Difficulty:** Easy
-**Topics:** bit-manipulation
-**Position:** ICT3
-**Years:** ICT3
+**难度：** 简单
+**主题：** bit-manipulation
+**岗位：** ICT3
+**级别：** ICT3
 
-**Question:** Return the number of set bits in an unsigned 32-bit integer.
+**问题：** 返回 32 位无符号整数中 1 的个数。
 
-**Approach:** Brian Kernighan: `while (n) { n &= n-1; count++; }` — strips lowest set bit each iteration. O(popcount) time, O(1) space. Built-in `popcount` is the production answer.
+**思路：** Brian Kernighan：`while (n) { n &= n-1; count++; }`——每次去掉最低位的 1。O(popcount) 时间，O(1) 空间。生产代码用内置 `popcount`。
 
-**Python:**
+**Python：**
 ```python
 def hamming_weight(n: int) -> int:
     count = 0
@@ -2625,7 +2625,7 @@ def hamming_weight(n: int) -> int:
     return count
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function hammingWeight(n: number): number {
   let count = 0;
@@ -2637,7 +2637,7 @@ function hammingWeight(n: number): number {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 class Solution {
     public int hammingWeight(int n) {
@@ -2648,27 +2648,27 @@ class Solution {
 }
 ```
 
-**Key points:**
-- `n & (n - 1)` clears the lowest set bit in one operation.
-- Loop runs once per set bit — O(popcount), not O(bit-width).
-- Python has `int.bit_count()`; most compiled languages expose `popcount`/`POPCNT`.
+**要点：**
+- `n & (n - 1)` 一次操作清掉最低位的 1。
+- 循环次数等于 1 的个数，不是位宽。
+- Python 有 `int.bit_count()`；多数编译型语言提供 `popcount` 指令。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 47. Counting Bits
+### 47. 比特位计数
 
-**Difficulty:** Easy
-**Topics:** bit-manipulation, dp
-**Position:** ICT3
-**Years:** ICT3-ICT4
+**难度：** 简单
+**主题：** bit-manipulation, dp
+**岗位：** ICT3
+**级别：** ICT3-ICT4
 
-**Question:** Given n, return an array `ans[i]` = number of 1-bits in `i` for 0 <= i <= n.
+**问题：** 给定 n，返回长度为 n+1 的数组 `ans[i]`，其中 `ans[i]` 为 `i` 的二进制 1 的个数。
 
-**Approach:** DP using `ans[i] = ans[i >> 1] + (i & 1)`, or `ans[i] = ans[i & (i-1)] + 1`. O(n) time, O(n) space (output).
+**思路：** DP：`ans[i] = ans[i >> 1] + (i & 1)`，或 `ans[i] = ans[i & (i-1)] + 1`。O(n) 时间，O(n) 空间（输出）。
 
-**Python:**
+**Python：**
 ```python
 def count_bits(n: int) -> list[int]:
     ans = [0] * (n + 1)
@@ -2677,7 +2677,7 @@ def count_bits(n: int) -> list[int]:
     return ans
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function countBits(n: number): number[] {
   const ans = new Array(n + 1).fill(0);
@@ -2688,7 +2688,7 @@ function countBits(n: number): number[] {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 class Solution {
     public int[] countBits(int n) {
@@ -2699,27 +2699,27 @@ class Solution {
 }
 ```
 
-**Key points:**
-- `i >> 1` removes the lowest bit, so `bits(i) = bits(i/2) + low_bit(i)`.
-- Building from `ans[0] = 0` upward yields each entry in O(1).
-- Alternative `ans[i] = ans[i & (i-1)] + 1` uses Kernighan's trick.
+**要点：**
+- `i >> 1` 去掉最低位，所以 `bits(i) = bits(i/2) + low_bit(i)`。
+- 从 `ans[0] = 0` 向上构建，每项 O(1)。
+- 也可用 Kernighan 技巧：`ans[i] = ans[i & (i-1)] + 1`。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 48. Single Number
+### 48. 只出现一次的数字
 
-**Difficulty:** Easy
-**Topics:** bit-manipulation, xor
-**Position:** ICT3
-**Years:** ICT3
+**难度：** 简单
+**主题：** bit-manipulation, xor
+**岗位：** ICT3
+**级别：** ICT3
 
-**Question:** Every element appears twice except one. Find that single element in O(n) time and O(1) space.
+**问题：** 每个元素出现两次，仅有一个出现一次。O(n) 时间、O(1) 空间找到它。
 
-**Approach:** XOR all elements. Pairs cancel (a ^ a = 0); the single survives. O(n) time, O(1) space. Follow-up "every element appears three times except one" → bit counts mod 3, or two-variable XOR state machine.
+**思路：** 全部 XOR。成对的相消（a ^ a = 0），剩下的就是答案。O(n) 时间，O(1) 空间。追问"每个元素出现三次，仅一个出现一次"→ 按位计数 mod 3，或两变量 XOR 状态机。
 
-**Python:**
+**Python：**
 ```python
 def single_number(nums: list[int]) -> int:
     result = 0
@@ -2728,7 +2728,7 @@ def single_number(nums: list[int]) -> int:
     return result
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function singleNumber(nums: number[]): number {
   let result = 0;
@@ -2737,7 +2737,7 @@ function singleNumber(nums: number[]): number {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 class Solution {
     public int singleNumber(int[] nums) {
@@ -2748,27 +2748,27 @@ class Solution {
 }
 ```
 
-**Key points:**
-- XOR is commutative and associative, so order does not matter.
-- `a ^ a = 0` and `a ^ 0 = a` make pairs cancel cleanly.
-- Constant space; no hash set or sorting required.
+**要点：**
+- XOR 满足交换律与结合律，顺序无关。
+- `a ^ a = 0`、`a ^ 0 = a` 使成对元素自然相消。
+- O(1) 空间，无需哈希集或排序。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 49. Missing Number
+### 49. 丢失的数字
 
-**Difficulty:** Easy
-**Topics:** bit-manipulation, math
-**Position:** ICT3
-**Years:** ICT3
+**难度：** 简单
+**主题：** bit-manipulation, math
+**岗位：** ICT3
+**级别：** ICT3
 
-**Question:** Given array with n distinct numbers in [0..n], find the missing one.
+**问题：** 数组含 n 个 [0..n] 内互不相同的数，找出缺失的那一个。
 
-**Approach:** XOR all indices [0..n] with all elements; pairs cancel and the missing one remains. Or use sum formula `n*(n+1)/2 - sum(nums)`. XOR avoids overflow. O(n) time, O(1) space.
+**思路：** 把 [0..n] 全部下标与所有元素 XOR；成对相消，剩下缺失值。或用求和公式 `n*(n+1)/2 - sum(nums)`。XOR 无溢出风险。O(n) 时间，O(1) 空间。
 
-**Python:**
+**Python：**
 ```python
 def missing_number(nums: list[int]) -> int:
     result = len(nums)
@@ -2777,7 +2777,7 @@ def missing_number(nums: list[int]) -> int:
     return result
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function missingNumber(nums: number[]): number {
   let result = nums.length;
@@ -2788,7 +2788,7 @@ function missingNumber(nums: number[]): number {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 class Solution {
     public int missingNumber(int[] nums) {
@@ -2799,27 +2799,27 @@ class Solution {
 }
 ```
 
-**Key points:**
-- Initialize with `n` to include the missing top index without an extra loop.
-- XOR avoids overflow that the sum-formula version risks for large `n`.
-- Each present number cancels with its index; the missing one survives.
+**要点：**
+- 初值取 `n`，把缺失的最高下标也纳入异或，免去额外循环。
+- 相比求和公式，XOR 不会有大 `n` 的溢出风险。
+- 出现过的数字与其下标相消，剩下的就是缺失值。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 50. Find All Numbers Disappeared in an Array
+### 50. 找到所有数组中消失的数字
 
-**Difficulty:** Easy
-**Topics:** arrays, in-place
-**Position:** ICT3
-**Years:** ICT3
+**难度：** 简单
+**主题：** arrays, in-place
+**岗位：** ICT3
+**级别：** ICT3
 
-**Question:** Given `nums` of length n with values in [1..n], return all numbers in [1..n] not present in `nums`. O(n) time, O(1) extra.
+**问题：** 给定长度为 n、值域 [1..n] 的数组，返回 [1..n] 中未出现的所有数字。O(n) 时间、O(1) 额外空间。
 
-**Approach:** Use the array itself as a hash. For each `v = abs(nums[i])`, mark `nums[v-1]` negative. Indices with positive values are the missing numbers (i+1). O(n) time, O(1) extra.
+**思路：** 把数组本身当作哈希。对每个 `v = abs(nums[i])`，将 `nums[v-1]` 置为负。最后仍为正值的下标 i+1 即为缺失数字。O(n) 时间，O(1) 额外空间。
 
-**Python:**
+**Python：**
 ```python
 def find_disappeared_numbers(nums: list[int]) -> list[int]:
     for v in nums:
@@ -2829,7 +2829,7 @@ def find_disappeared_numbers(nums: list[int]) -> list[int]:
     return [i + 1 for i, v in enumerate(nums) if v > 0]
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function findDisappearedNumbers(nums: number[]): number[] {
   for (const v of nums) {
@@ -2844,7 +2844,7 @@ function findDisappearedNumbers(nums: number[]): number[] {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 import java.util.*;
 class Solution {
@@ -2862,27 +2862,27 @@ class Solution {
 }
 ```
 
-**Key points:**
-- Encode "seen" as the sign bit of the value at the seen index.
-- Take `abs(v)` since prior marks may have flipped the sign already.
-- Mutates input; if disallowed, restore signs after collecting the result.
+**要点：**
+- 用对应下标处的"符号位"作为"是否出现过"的标记。
+- 取 `abs(v)` 是因为之前的标记可能已经改变符号。
+- 会改写输入；如不允许，收集结果后再把符号恢复。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 51. Majority Element
+### 51. 多数元素
 
-**Difficulty:** Easy
-**Topics:** arrays, voting
-**Position:** ICT3
-**Years:** ICT3
+**难度：** 简单
+**主题：** arrays, voting
+**岗位：** ICT3
+**级别：** ICT3
 
-**Question:** Find the element appearing more than n/2 times in an array (guaranteed to exist).
+**问题：** 找出数组中出现次数超过 n/2 的元素（保证存在）。
 
-**Approach:** Boyer-Moore voting: candidate and count; on match increment, else decrement; reset candidate when count hits 0. O(n) time, O(1) space. Elegant invariant: surviving candidate is the majority if one exists.
+**思路：** Boyer-Moore 投票：候选与计数；相同则 +1，否则 -1；归零时换候选。O(n) 时间，O(1) 空间。不变式优雅：若多数存在，最后存活的候选即多数。
 
-**Python:**
+**Python：**
 ```python
 def majority_element(nums: list[int]) -> int:
     candidate = 0
@@ -2894,7 +2894,7 @@ def majority_element(nums: list[int]) -> int:
     return candidate
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function majorityElement(nums: number[]): number {
   let candidate = 0, count = 0;
@@ -2906,7 +2906,7 @@ function majorityElement(nums: number[]): number {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 class Solution {
     public int majorityElement(int[] nums) {
@@ -2920,27 +2920,27 @@ class Solution {
 }
 ```
 
-**Key points:**
-- Pairing each majority vote with one non-majority leaves the majority surviving.
-- Works only when a majority is guaranteed; otherwise verify with a second pass.
-- O(1) extra space beats the O(n) hash map approach.
+**要点：**
+- 多数票每次与一个非多数票配对相消，最终多数票仍占多。
+- 仅在多数存在的前提下成立；否则需第二趟验证。
+- O(1) 额外空间优于哈希计数。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 52. Maximum Product Subarray
+### 52. 乘积最大子数组
 
-**Difficulty:** Medium
-**Topics:** arrays, dp
-**Position:** ICT4
-**Years:** ICT3-ICT4
+**难度：** 中等
+**主题：** arrays, dp
+**岗位：** ICT4
+**级别：** ICT3-ICT4
 
-**Question:** Find the contiguous subarray with the largest product.
+**问题：** 找出乘积最大的连续子数组。
 
-**Approach:** Track running `maxProd` and `minProd` (negative * negative can become big). At each step, candidates are `nums[i]`, `maxProd * nums[i]`, `minProd * nums[i]`. Update both. Track global max. O(n) time, O(1) space.
+**思路：** 同时维护当前 `maxProd` 与 `minProd`（负 * 负可能很大）。每步候选为 `nums[i]`、`maxProd * nums[i]`、`minProd * nums[i]`。更新两者。全局取最大。O(n) 时间，O(1) 空间。
 
-**Python:**
+**Python：**
 ```python
 def max_product(nums: list[int]) -> int:
     hi = lo = best = nums[0]
@@ -2953,7 +2953,7 @@ def max_product(nums: list[int]) -> int:
     return best
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function maxProduct(nums: number[]): number {
   let hi = nums[0], lo = nums[0], best = nums[0];
@@ -2968,7 +2968,7 @@ function maxProduct(nums: number[]): number {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 class Solution {
     public int maxProduct(int[] nums) {
@@ -2985,27 +2985,27 @@ class Solution {
 }
 ```
 
-**Key points:**
-- Swap hi/lo on a negative element so multiplication propagates correctly.
-- Tracking only the max would miss negative-negative product opportunities.
-- Encountering a zero resets both hi and lo to the current element.
+**要点：**
+- 遇到负数先交换 hi/lo，乘法才能正确传递。
+- 只维护最大值会漏掉"负 * 负"翻盘的机会。
+- 遇 0 时 hi/lo 都会被当前元素重置。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 53. Jump Game
+### 53. 跳跃游戏
 
-**Difficulty:** Medium
-**Topics:** arrays, greedy
-**Position:** ICT3
-**Years:** ICT3-ICT4
+**难度：** 中等
+**主题：** arrays, greedy
+**岗位：** ICT3
+**级别：** ICT3-ICT4
 
-**Question:** Each element of `nums` is max jump length from that position. Determine if you can reach the last index.
+**问题：** `nums` 每个元素为从该位置可跳的最大步数。判断能否到达最后一个下标。
 
-**Approach:** Greedy: track furthest reachable index. Iterate i; if `i > maxReach`, return false; else `maxReach = max(maxReach, i + nums[i])`. If `maxReach >= n-1` return true. O(n) time, O(1) space.
+**思路：** 贪心：跟踪最远可达下标。遍历 i；若 `i > maxReach`，返回 false；否则 `maxReach = max(maxReach, i + nums[i])`。`maxReach >= n-1` 返回 true。O(n) 时间，O(1) 空间。
 
-**Python:**
+**Python：**
 ```python
 def can_jump(nums: list[int]) -> bool:
     max_reach = 0
@@ -3016,7 +3016,7 @@ def can_jump(nums: list[int]) -> bool:
     return True
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function canJump(nums: number[]): boolean {
   let maxReach = 0;
@@ -3028,7 +3028,7 @@ function canJump(nums: number[]): boolean {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 class Solution {
     public boolean canJump(int[] nums) {
@@ -3042,27 +3042,27 @@ class Solution {
 }
 ```
 
-**Key points:**
-- Greedy works because any reachable index extends reach to that point's max.
-- Bail as soon as an unreachable index is encountered.
-- O(1) space — no DP table required.
+**要点：**
+- 任何能到达的下标都能把可达范围扩展到该位置允许的最大值。
+- 一旦遇到不可达下标立刻返回 false。
+- O(1) 空间，无需 DP 表。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 54. Jump Game II
+### 54. 跳跃游戏 II
 
-**Difficulty:** Medium
-**Topics:** arrays, greedy, bfs
-**Position:** ICT4
-**Years:** ICT4
+**难度：** 中等
+**主题：** arrays, greedy, bfs
+**岗位：** ICT4
+**级别：** ICT4
 
-**Question:** Same setup but return the minimum number of jumps to reach the last index.
+**问题：** 同上但返回到达最后一个下标的最少跳跃数。
 
-**Approach:** BFS by jump count, tracked greedily. Maintain `currentEnd` (end of current jump) and `farthest` (max reachable next). When i reaches `currentEnd`, increment jumps and set `currentEnd = farthest`. O(n) time, O(1) space.
+**思路：** 按跳跃数贪心 BFS。维护 `currentEnd`（当前跳跃终点）与 `farthest`（下一跳最远）。当 i 到达 `currentEnd` 时跳数 +1，`currentEnd = farthest`。O(n) 时间，O(1) 空间。
 
-**Python:**
+**Python：**
 ```python
 def jump(nums: list[int]) -> int:
     jumps = current_end = farthest = 0
@@ -3074,7 +3074,7 @@ def jump(nums: list[int]) -> int:
     return jumps
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function jump(nums: number[]): number {
   let jumps = 0, currentEnd = 0, farthest = 0;
@@ -3089,7 +3089,7 @@ function jump(nums: number[]): number {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 class Solution {
     public int jump(int[] nums) {
@@ -3106,27 +3106,27 @@ class Solution {
 }
 ```
 
-**Key points:**
-- Each "level" of BFS represents one jump's worth of reachable indices.
-- Iterate up to `len - 2`; once we've decided to jump from the last range, we are done.
-- The greedy choice (always jump to farthest reachable) is optimal here.
+**要点：**
+- 每一"层" BFS 对应一次跳跃覆盖的区间。
+- 只需遍历到 `len - 2`，因为决定从最后一段起跳后即结束。
+- 每步贪心跳到当前可达最远点是最优的。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 55. Unique Paths
+### 55. 不同路径
 
-**Difficulty:** Medium
-**Topics:** dp, combinatorics
-**Position:** ICT3
-**Years:** ICT3
+**难度：** 中等
+**主题：** dp, combinatorics
+**岗位：** ICT3
+**级别：** ICT3
 
-**Question:** In an m x n grid, a robot moves only right or down from top-left to bottom-right. How many unique paths?
+**问题：** m x n 网格中机器人只能向右或向下从左上走到右下。有多少条不同路径？
 
-**Approach:** DP `dp[i][j] = dp[i-1][j] + dp[i][j-1]`, base `dp[0][*] = dp[*][0] = 1`. Roll to 1D for O(n) space. Closed form: C(m+n-2, m-1) for math fans. O(mn) time.
+**思路：** DP `dp[i][j] = dp[i-1][j] + dp[i][j-1]`，基底 `dp[0][*] = dp[*][0] = 1`。压成一维 O(n) 空间。数学党：闭式解 C(m+n-2, m-1)。O(mn) 时间。
 
-**Python:**
+**Python：**
 ```python
 def unique_paths(m: int, n: int) -> int:
     row = [1] * n
@@ -3136,7 +3136,7 @@ def unique_paths(m: int, n: int) -> int:
     return row[-1]
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function uniquePaths(m: number, n: number): number {
   const row = new Array(n).fill(1);
@@ -3149,7 +3149,7 @@ function uniquePaths(m: number, n: number): number {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 class Solution {
     public int uniquePaths(int m, int n) {
@@ -3163,27 +3163,27 @@ class Solution {
 }
 ```
 
-**Key points:**
-- Rolling array reduces memory from O(mn) to O(n).
-- Each cell depends only on the row above (now `row[j]`) and the left neighbor (`row[j-1]`).
-- The closed-form C(m+n-2, m-1) is O(min(m, n)) if precision permits.
+**要点：**
+- 滚动数组把空间从 O(mn) 压到 O(n)。
+- 每格只依赖正上方（即更新前的 `row[j]`）与左邻 `row[j-1]`。
+- 闭式 C(m+n-2, m-1) 在精度允许时为 O(min(m, n))。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 56. Minimum Path Sum
+### 56. 最小路径和
 
-**Difficulty:** Medium
-**Topics:** dp, grid
-**Position:** ICT3
-**Years:** ICT3-ICT4
+**难度：** 中等
+**主题：** dp, grid
+**岗位：** ICT3
+**级别：** ICT3-ICT4
 
-**Question:** Given an m x n grid of non-negative numbers, find a path from top-left to bottom-right minimizing the sum (moves: down or right).
+**问题：** 给定 m x n 非负数网格，求从左上到右下使路径数字之和最小（只能下或右）。
 
-**Approach:** DP `dp[i][j] = grid[i][j] + min(dp[i-1][j], dp[i][j-1])`. In-place modification of `grid` gives O(1) extra. O(mn) time.
+**思路：** DP `dp[i][j] = grid[i][j] + min(dp[i-1][j], dp[i][j-1])`。原地修改 `grid` 实现 O(1) 额外空间。O(mn) 时间。
 
-**Python:**
+**Python：**
 ```python
 def min_path_sum(grid: list[list[int]]) -> int:
     m, n = len(grid), len(grid[0])
@@ -3196,7 +3196,7 @@ def min_path_sum(grid: list[list[int]]) -> int:
     return grid[m - 1][n - 1]
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function minPathSum(grid: number[][]): number {
   const m = grid.length, n = grid[0].length;
@@ -3212,7 +3212,7 @@ function minPathSum(grid: number[][]): number {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 class Solution {
     public int minPathSum(int[][] grid) {
@@ -3230,27 +3230,27 @@ class Solution {
 }
 ```
 
-**Key points:**
-- Update grid in place to achieve O(1) extra space.
-- Use `Infinity` sentinels for out-of-bounds neighbors so `min` works without branches.
-- O(mn) time is asymptotically optimal — every cell must be visited.
+**要点：**
+- 原地更新 grid 把额外空间压到 O(1)。
+- 对越界邻居用 `Infinity` 哨兵，让 `min` 无需分支。
+- O(mn) 已是渐近最优——每格都必须访问一次。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 57. Triangle
+### 57. 三角形最小路径和
 
-**Difficulty:** Medium
-**Topics:** dp, bottom-up
-**Position:** ICT4
-**Years:** ICT3-ICT4
+**难度：** 中等
+**主题：** dp, bottom-up
+**岗位：** ICT4
+**级别：** ICT3-ICT4
 
-**Question:** Given a triangle of numbers, find the minimum path sum from top to bottom; at each step you may move to adjacent indices on the row below.
+**问题：** 给定数字三角形，求从顶到底的最小路径和；每步可走向下一行相邻下标。
 
-**Approach:** Bottom-up DP. Start from the last row; for each level above, `dp[j] = triangle[i][j] + min(dp[j], dp[j+1])`. Result is `dp[0]`. O(n^2) time, O(n) space.
+**思路：** 自底向上 DP。从最后一行开始；对上一层 `dp[j] = triangle[i][j] + min(dp[j], dp[j+1])`。结果为 `dp[0]`。O(n^2) 时间，O(n) 空间。
 
-**Python:**
+**Python：**
 ```python
 def minimum_total(triangle: list[list[int]]) -> int:
     dp = triangle[-1][:]
@@ -3260,7 +3260,7 @@ def minimum_total(triangle: list[list[int]]) -> int:
     return dp[0]
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function minimumTotal(triangle: number[][]): number {
   const dp = [...triangle[triangle.length - 1]];
@@ -3273,7 +3273,7 @@ function minimumTotal(triangle: number[][]): number {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 import java.util.*;
 class Solution {
@@ -3291,27 +3291,27 @@ class Solution {
 }
 ```
 
-**Key points:**
-- Going bottom-up avoids needing to handle row-width edge cases on the way down.
-- A 1D dp array suffices because each cell depends on only two below.
-- Final answer accumulates into `dp[0]` after the loop.
+**要点：**
+- 自底向上避免向下走时的行宽边界判断。
+- 一维 dp 数组足够，因为每格只依赖下一行的两个值。
+- 最终结果累积在 `dp[0]`。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 58. Word Pattern
+### 58. 单词规律
 
-**Difficulty:** Easy
-**Topics:** strings, hashmap
-**Position:** ICT3
-**Years:** ICT3
+**难度：** 简单
+**主题：** strings, hashmap
+**岗位：** ICT3
+**级别：** ICT3
 
-**Question:** Given a `pattern` and a string `s`, determine if `s` follows the pattern (bijection between letters and space-separated words).
+**问题：** 给定 `pattern` 和字符串 `s`，判断 `s` 是否符合该规律（字母与空格分隔的单词之间存在双射）。
 
-**Approach:** Two maps: char->word and word->char. Walk pairs in lockstep; reject on any mapping conflict. Reject if lengths differ. O(n) time, O(k) space.
+**思路：** 两个映射：char->word 和 word->char。同步遍历对应位置；任一映射冲突则否。长度不一致则否。O(n) 时间，O(k) 空间。
 
-**Python:**
+**Python：**
 ```python
 def word_pattern(pattern: str, s: str) -> bool:
     words = s.split()
@@ -3327,7 +3327,7 @@ def word_pattern(pattern: str, s: str) -> bool:
     return True
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function wordPattern(pattern: string, s: string): boolean {
   const words = s.split(" ");
@@ -3345,7 +3345,7 @@ function wordPattern(pattern: string, s: string): boolean {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 import java.util.*;
 class Solution {
@@ -3367,27 +3367,27 @@ class Solution {
 }
 ```
 
-**Key points:**
-- Two-direction mapping enforces the bijection requirement.
-- Length mismatch is the cheapest early reject.
-- O(n) time over the longer of the two inputs.
+**要点：**
+- 双向映射才能保证双射要求。
+- 长度不一致是成本最低的早返回。
+- 时间复杂度为两者较长者的 O(n)。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 59. Isomorphic Strings
+### 59. 同构字符串
 
-**Difficulty:** Easy
-**Topics:** strings, hashmap
-**Position:** ICT3
-**Years:** ICT3
+**难度：** 简单
+**主题：** strings, hashmap
+**岗位：** ICT3
+**级别：** ICT3
 
-**Question:** Given `s` and `t`, determine if characters of `s` can be replaced to get `t` preserving order (bijection).
+**问题：** 给定 `s` 和 `t`，判断能否对 `s` 中字符做替换得到 `t`（保持顺序的双射）。
 
-**Approach:** Two arrays/maps for last-seen index of each char in s and in t. At each i, the indices must match (both -1 or both equal). Update. O(n) time, O(1) space (fixed alphabet).
+**思路：** 用两个数组/映射分别记录 s 与 t 中每个字符的上次出现下标。每个 i 处两者下标必须一致（同为 -1 或同值）。更新。O(n) 时间，O(1) 空间（固定字母表）。
 
-**Python:**
+**Python：**
 ```python
 def is_isomorphic(s: str, t: str) -> bool:
     if len(s) != len(t):
@@ -3402,7 +3402,7 @@ def is_isomorphic(s: str, t: str) -> bool:
     return True
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function isIsomorphic(s: string, t: string): boolean {
   if (s.length !== t.length) return false;
@@ -3418,7 +3418,7 @@ function isIsomorphic(s: string, t: string): boolean {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 import java.util.*;
 class Solution {
@@ -3438,27 +3438,27 @@ class Solution {
 }
 ```
 
-**Key points:**
-- Both directions must hold; otherwise two `s` chars could map to one `t` char.
-- Use `get(...)` with default to combine "missing" and "matching" checks succinctly.
-- Length check first prevents partial-string false positives.
+**要点：**
+- 双向都得检查，否则两个 `s` 字符可能映射到同一 `t` 字符。
+- 用 `get(...)` 配默认值同时处理"未出现"与"匹配"两种情况。
+- 先做长度判断，避免部分字符串误判通过。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 60. Valid Anagram
+### 60. 有效的字母异位词
 
-**Difficulty:** Easy
-**Topics:** strings, hashmap, sorting
-**Position:** ICT3
-**Years:** ICT3
+**难度：** 简单
+**主题：** strings, hashmap, sorting
+**岗位：** ICT3
+**级别：** ICT3
 
-**Question:** Given `s` and `t`, determine if `t` is an anagram of `s`.
+**问题：** 给定 `s` 和 `t`，判断 `t` 是否是 `s` 的字母异位词。
 
-**Approach:** Count frequencies (array of 26 for lowercase ASCII). Increment for s, decrement for t; check all zero. O(n) time, O(1) space. Sort-and-compare is O(n log n). For Unicode, use a hashmap.
+**思路：** 频次计数（小写 ASCII 用大小 26 的数组）。s 加，t 减；最后全为 0 即可。O(n) 时间，O(1) 空间。排序后比较是 O(n log n)。Unicode 用哈希表。
 
-**Python:**
+**Python：**
 ```python
 def is_anagram(s: str, t: str) -> bool:
     if len(s) != len(t):
@@ -3470,7 +3470,7 @@ def is_anagram(s: str, t: str) -> bool:
     return all(c == 0 for c in cnt)
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function isAnagram(s: string, t: string): boolean {
   if (s.length !== t.length) return false;
@@ -3483,7 +3483,7 @@ function isAnagram(s: string, t: string): boolean {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 class Solution {
     public boolean isAnagram(String s, String t) {
@@ -3499,27 +3499,27 @@ class Solution {
 }
 ```
 
-**Key points:**
-- Combined increment/decrement avoids a second pass.
-- Length mismatch is an early O(1) reject.
-- For Unicode, switch to a hashmap keyed by code point.
+**要点：**
+- 同一趟内做加减，省一次遍历。
+- 长度不一致是 O(1) 的早返回。
+- 处理 Unicode 时改用以码点为键的哈希表。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 61. Lock-Free Bounded Single-Producer Single-Consumer Queue
+### 61. 无锁有界单生产者单消费者队列
 
-**Difficulty:** Hard
-**Topics:** concurrency, lock-free, ring-buffer, memory-ordering
-**Position:** ICT5
-**Years:** ICT5
+**难度：** 困难
+**主题：** concurrency, lock-free, ring-buffer, memory-ordering
+**岗位：** ICT5
+**级别：** ICT5
 
-**Question:** Implement a fixed-capacity SPSC queue with no locks, suitable for an audio thread feeding samples to a real-time consumer.
+**问题：** 实现一个定容 SPSC 队列，无锁，适用于音频线程向实时消费者投递采样的场景。
 
-**Approach:** Ring buffer of size N (power of 2), `head` (writer) and `tail` (reader) as atomic indices. Producer checks `head - tail < N` then writes slot and increments head with release ordering. Consumer checks `head - tail > 0` then reads slot and increments tail with release ordering; loads use acquire. Pad indices to separate cache lines (false-sharing avoidance). Wraparound via `idx & (N-1)`.
+**思路：** 大小为 N（2 的幂）的环形缓冲；`head`（写者）与 `tail`（读者）为原子下标。生产者检查 `head - tail < N`，写入槽位并以 release 顺序递增 head。消费者检查 `head - tail > 0`，读取槽位并以 release 顺序递增 tail；读取用 acquire。把两个下标按缓存行隔离（避免伪共享）。环绕用 `idx & (N-1)`。
 
-**Python:**
+**Python：**
 ```python
 import threading
 from typing import TypeVar, Generic
@@ -3531,9 +3531,9 @@ class SPSCQueue(Generic[T]):
         assert capacity & (capacity - 1) == 0, "capacity must be a power of 2"
         self.buf: list[T | None] = [None] * capacity
         self.mask = capacity - 1
-        self.head = 0  # producer-only
-        self.tail = 0  # consumer-only
-        self.lock = threading.Lock()  # Python GIL is not enough across native code
+        self.head = 0  # 仅生产者写
+        self.tail = 0  # 仅消费者写
+        self.lock = threading.Lock()  # Python 跨原生代码时 GIL 并不足够
 
     def push(self, item: T) -> bool:
         with self.lock:
@@ -3552,7 +3552,7 @@ class SPSCQueue(Generic[T]):
             return item
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 class SPSCQueue<T> {
   private buf: (T | undefined)[];
@@ -3579,7 +3579,7 @@ class SPSCQueue<T> {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 import java.util.concurrent.atomic.AtomicLong;
 class SPSCQueue<T> {
@@ -3610,27 +3610,27 @@ class SPSCQueue<T> {
 }
 ```
 
-**Key points:**
-- Power-of-two capacity lets `idx & (N-1)` replace expensive modulo.
-- Real lock-free SPSC requires C++ `std::atomic` with acquire/release ordering; Python/JS lack such primitives in pure code.
-- Cache-line pad `head` and `tail` separately to eliminate false sharing.
+**要点：**
+- 容量取 2 的幂，可用 `idx & (N-1)` 替代昂贵的取模。
+- 真正的 lock-free SPSC 需要 C++ `std::atomic` 的 acquire/release 内存序，Python/JS 原生不支持。
+- 把 `head` 与 `tail` 用缓存行隔离，消除伪共享。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 62. Cache-Friendly Matrix Transpose
+### 62. 缓存友好的矩阵转置
 
-**Difficulty:** Medium
-**Topics:** arrays, cache, memory-layout
-**Position:** ICT4
-**Years:** ICT4-ICT5
+**难度：** 中等
+**主题：** arrays, cache, memory-layout
+**岗位：** ICT4
+**级别：** ICT4-ICT5
 
-**Question:** Transpose a large N x N matrix in-place (or out-of-place) minimizing cache misses.
+**问题：** 对一个大的 N x N 矩阵做原地（或非原地）转置，最小化缓存未命中。
 
-**Approach:** Naive double loop suffers because writes (or reads) stride by N, blowing the cache. Use blocking/tiling: transpose B x B blocks at a time (B sized so 2 * B * B * sizeof(elem) fits in L1). For each block, do the inner transpose in registers; for diagonal blocks, swap in place. Trade some arithmetic for locality; gains 3-10x in practice.
+**思路：** 朴素双重循环写（或读）步长为 N，会冲垮缓存。采用分块/tiling：每次转置 B x B 的子块（选 B 使 2 * B * B * sizeof(elem) 能塞进 L1）。每个子块在寄存器内完成内部转置；对角块原地交换。以一些算术换取局部性，实测可提升 3-10 倍。
 
-**Python:**
+**Python：**
 ```python
 def transpose_blocked(a: list[list[float]], block: int = 32) -> None:
     n = len(a)
@@ -3648,7 +3648,7 @@ def transpose_blocked(a: list[list[float]], block: int = 32) -> None:
                         a[i][j], a[j][i] = a[j][i], a[i][j]
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function transposeBlocked(a: number[][], block = 32): void {
   const n = a.length;
@@ -3674,7 +3674,7 @@ function transposeBlocked(a: number[][], block = 32): void {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 class Solution {
     public void transposeBlocked(double[][] a, int block) {
@@ -3702,26 +3702,26 @@ class Solution {
 }
 ```
 
-**Key points:**
-- Process B x B tiles so both rows and columns of each tile fit in L1 cache.
-- Iterate only over `jj >= ii` to avoid double-swapping symmetric off-diagonal tiles.
-- Diagonal tiles need an in-tile swap; off-diagonal tiles swap with their mirror tile.
+**要点：**
+- 按 B x B 子块处理，让每个块的行和列都能装进 L1 缓存。
+- 仅遍历 `jj >= ii` 的子块，避免对称的非对角块被重复交换。
+- 对角块需块内交换；非对角块与其镜像块互换。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-## Tips specific to Apple
+## 苹果特有的建议
 
-- **Know which team you're interviewing for.** Loops are owned by hiring teams; loop content varies enormously. Ask the recruiter what to expect.
-- **Have depth somewhere.** Apple hires specialists. Pick a domain (low-level perf, graphics, ML, frontend, embedded, audio) and be deep. Generalists get pushed to compete with FAANG strongholds.
-- **Privacy mindset.** When designing systems, default to "data minimization" and "on-device when possible" without being preachy. Even backend roles get the privacy question.
-- **Don't bash other Apple products** — even gently. Loyalty to the platform is cultural.
-- **Process is slow.** Onsite to offer can be 4-8 weeks. Manage other timelines accordingly.
+- **搞清楚自己面的是哪个团队。** Loop 归招聘团队主导；内容差异巨大。问 recruiter 该期待什么。
+- **要有某方面的深度。** 苹果招专才。挑一个领域（底层性能、图形、ML、前端、嵌入式、音频）做深。通才会被推去和 FAANG 强项硬碰。
+- **隐私思维。** 设计系统时默认"数据最小化"、"尽量端上"，但别说教。即使后端岗也会被问隐私题。
+- **别贬损苹果其他产品**——哪怕委婉。对平台的认同感是文化的一部分。
+- **流程很慢。** 从 onsite 到 offer 可能 4-8 周。其他流程的时间线要相应管理。
 
-## Resources
+## 参考资料
 
-- LeetCode "Apple" company tag
-- Apple Developer documentation (depending on team — read about Swift, Combine, Metal, or Core ML)
-- Apple Machine Learning research blog
-- "Creative Selection" by Ken Kocienda — internal product process at Apple
+- LeetCode "Apple" 公司标签
+- Apple 开发者文档（视团队而定——读 Swift、Combine、Metal 或 Core ML）
+- Apple Machine Learning 研究博客
+- 《Creative Selection》by Ken Kocienda——苹果内部产品流程

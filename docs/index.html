@@ -4,20 +4,25 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>awesome-interview · Random Question Picker</title>
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="style.css?v=7" />
+  <script src="theme.js?v=7"></script>
 </head>
 <body>
   <header>
     <h1>awesome-interview</h1>
     <p class="tagline" id="tagline">Pick a random question from the bank and start drilling.</p>
     <nav>
-      <a id="nav-github" href="https://github.com/" target="_blank" rel="noopener">GitHub</a>
-      <a id="nav-knowledge" href="https://github.com/" target="_blank" rel="noopener">Knowledge</a>
-      <a id="nav-interviews" href="https://github.com/" target="_blank" rel="noopener">Interviews</a>
-      <a id="nav-roadmap" href="https://github.com/" target="_blank" rel="noopener">Roadmap</a>
+      <a id="nav-github" href="reader.html?file=README.md">README</a>
+      <a id="nav-knowledge" href="reader.html?file=knowledge/algorithms.md">Knowledge</a>
+      <a id="nav-interviews" href="reader.html?file=interviews/companies/google.md">Interviews</a>
+      <a id="nav-roadmap" href="reader.html?file=roadmap/fullstack-engineer.md">Roadmap</a>
       <select id="language-select" aria-label="Select language">
         <option value="en">English</option>
         <option value="zh">简体中文</option>
+      </select>
+      <select id="theme-select" aria-label="Select theme">
+        <option value="light">Light</option>
+        <option value="dark">Dark</option>
       </select>
     </nav>
   </header>
@@ -68,6 +73,6 @@
     </p>
   </footer>
 
-  <script src="app.js"></script>
+  <script src="app.js?v=7"></script>
 </body>
 </html>

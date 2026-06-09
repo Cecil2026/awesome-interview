@@ -16,6 +16,7 @@
     rSource: document.getElementById("r-source"),
     status: document.getElementById("status"),
     languageSelect: document.getElementById('language-select'),
+    themeSelect: document.getElementById('theme-select'),
     labelCategory: document.getElementById('label-category'),
     labelDifficulty: document.getElementById('label-difficulty'),
     labelTopic: document.getElementById('label-topic'),
@@ -34,12 +35,17 @@
   };
 
   let questions = [];
+  let lastQuestion = null;
   let currentLanguage = localStorage.getItem('awesome-interview-language') || 'en';
+
+  function rerenderIfActive() {
+    if (lastQuestion) render(lastQuestion);
+  }
 
   const translations = {
     en: {
       tagline: 'Pick a random question from the bank and start drilling.',
-      github: 'GitHub',
+      github: 'README',
       knowledge: 'Knowledge',
       interviews: 'Interviews',
       roadmap: 'Roadmap',
@@ -62,10 +68,13 @@
       footer: 'Powered by docs/questions.json — rebuilt on each push via .github/workflows/build-questions-json.yml.',
       pageTitle: 'Random Question Picker',
       languageSelectAria: 'Select language',
+      themeSelectAria: 'Select theme',
+      themeLight: 'Light',
+      themeDark: 'Dark',
     },
     zh: {
       tagline: '从题库中随机抽题，开始练习。',
-      github: 'GitHub',
+      github: '项目说明',
       knowledge: '知识库',
       interviews: '面试题',
       roadmap: '路线图',
@@ -88,6 +97,9 @@
       footer: '由 docs/questions.json 提供支持 — 每次推送后通过 .github/workflows/build-questions-json.yml 重新生成。',
       pageTitle: '随机题目选择器',
       languageSelectAria: '选择语言',
+      themeSelectAria: '选择主题',
+      themeLight: '浅色',
+      themeDark: '深色',
     },
   };
 
@@ -105,6 +117,14 @@
     if (els.navInterviews) els.navInterviews.textContent = t('interviews');
     if (els.navRoadmap) els.navRoadmap.textContent = t('roadmap');
     if (els.languageSelect) els.languageSelect.setAttribute('aria-label', t('languageSelectAria'));
+    if (els.themeSelect) {
+      els.themeSelect.setAttribute('aria-label', t('themeSelectAria'));
+      const options = els.themeSelect.options;
+      for (let i = 0; i < options.length; i++) {
+        if (options[i].value === 'light') options[i].textContent = t('themeLight');
+        if (options[i].value === 'dark') options[i].textContent = t('themeDark');
+      }
+    }
     if (els.labelCategory) els.labelCategory.textContent = t('category');
     if (els.optionAll) els.optionAll.textContent = t('all');
     if (els.labelDifficulty) els.labelDifficulty.textContent = t('difficulty');
@@ -124,6 +144,7 @@
     currentLanguage = translations[lang] ? lang : 'en';
     localStorage.setItem('awesome-interview-language', currentLanguage);
     applyLocalization();
+    rerenderIfActive();
   }
 
   async function load() {
@@ -158,7 +179,8 @@
       if (cat && q.category !== cat) return false;
       if (diff && q.difficulty !== diff) return false;
       if (topic) {
-        const hay = (q.topics || []).join(",").toLowerCase() + " " + q.title.toLowerCase();
+        const titleText = (q.title || "") + " " + (q.title_zh || "");
+        const hay = (q.topics || []).join(",").toLowerCase() + " " + titleText.toLowerCase();
         if (!hay.includes(topic)) return false;
       }
       return true;
@@ -173,30 +195,40 @@
       return;
     }
     const q = pool[Math.floor(Math.random() * pool.length)];
+    lastQuestion = q;
     render(q);
     const plural = pool.length === 1 ? '' : 's';
     els.status.textContent = t('statusPicked', { count: pool.length, plural });
   }
 
   function render(q) {
-    els.rTitle.textContent = q.title;
+    const useZh = currentLanguage === 'zh';
+    els.rTitle.textContent = useZh && q.title_zh ? q.title_zh : q.title;
     els.rCategory.textContent = q.category;
     if (q.difficulty) {
-      els.rDifficulty.textContent = q.difficulty;
-      els.rDifficulty.className = "badge " + q.difficulty.toLowerCase();
+      const difficultyKey = q.difficulty.toLowerCase();
+      els.rDifficulty.textContent = t(difficultyKey) || q.difficulty;
+      els.rDifficulty.className = "badge " + difficultyKey;
       els.rDifficulty.style.display = "";
     } else {
       els.rDifficulty.style.display = "none";
     }
     els.rTopics.textContent = (q.topics || []).length ? `${t('topicsPrefix')} ${q.topics.join(', ')}` : "";
-    const href = REPO_BLOB_BASE ? `${REPO_BLOB_BASE}${q.file}#L${q.line}` : `../${q.file}#L${q.line}`;
+    const sourceFile = useZh && q.file_zh ? q.file_zh : q.file;
+    const href = REPO_BLOB_BASE
+      ? `${REPO_BLOB_BASE}${sourceFile}#L${q.line}`
+      : `reader.html?file=${encodeURIComponent(q.file)}&n=${q.number}`;
     els.rSource.href = href;
-    els.rSource.textContent = `${q.file}:${q.line}`;
+    els.rSource.textContent = `${sourceFile}:${q.line}`;
     els.result.classList.remove("hidden");
+    els.result.dataset.questionId = q.id;
   }
 
   if (els.languageSelect) {
     els.languageSelect.addEventListener('change', (event) => setLanguage(event.target.value));
+  }
+  if (window.AwesomeTheme) {
+    window.AwesomeTheme.wire(els.themeSelect);
   }
   setLanguage(currentLanguage);
   els.pick.addEventListener("click", pick);

@@ -1,38 +1,38 @@
-# Tencent
+# 腾讯
 
 ```yaml
-company: Tencent (WeChat/Weixin, QQ, Tencent Games, Tencent Cloud, Tencent Video)
-typical_rounds: 1 HR screen + 3-5 technical (often interviewer tier: T2.2 → T3.x → T4) + cross-team + HR final
-focus_areas: C++/distributed systems, networking, gaming backend, social/messaging at scale
-languages_allowed: C++ strongly preferred for game/infra teams; Java/Go for cloud; Python/Node for some web roles
-duration: 45-60 min per round
+company: 腾讯（微信/Weixin、QQ、腾讯游戏、腾讯云、腾讯视频）
+typical_rounds: 1 轮 HR 初筛 + 3-5 轮技术面（常按面试官级别：T2.2 → T3.x → T4）+ 交叉面 + HR 终面
+focus_areas: C++/分布式系统、网络、游戏后端、大规模社交/消息
+languages_allowed: 游戏/基础设施团队强偏好 C++；云相关用 Java/Go；部分 web 岗用 Python/Node
+duration: 每轮 45-60 分钟
 notable_quirks:
-  - Networking deep-dives common (TCP internals, UDP-based protocols, kernel networking)
-  - Game backend roles probe game loop design, lockstep/state sync, anti-cheat
-  - WeChat-scale messaging design comes up for senior roles
-  - Behavioral lighter than US companies; focus on collaboration and getting along across BGs (business groups)
-  - Multiple business groups (WXG, IEG, CSIG, TEG, PCG) — each has its own culture
-sources: 1point3acres, NowCoder (牛客网), LeetCode-cn, niuke.com
+  - 网络深挖常见（TCP 内部、基于 UDP 的协议、内核网络）
+  - 游戏后端岗位深挖游戏循环设计、帧同步/状态同步、反作弊
+  - 高级岗位会考微信级消息系统设计
+  - 行为面试比美国公司轻；重点是协作和跨 BG（事业群）配合
+  - 多事业群（WXG、IEG、CSIG、TEG、PCG）——各有各自文化
+sources: 一亩三分地、牛客网、LeetCode-cn、niuke.com
 ```
 
-## Overview
+## 概述
 
-Tencent's interview leans C++ for infrastructure and gaming roles (Tencent runs huge C++ shops behind WeChat, QQ, Honor of Kings, PUBG Mobile, League of Legends backends). Networking knowledge — TCP windowing, NAT traversal, custom UDP protocols, packet loss handling — is expected for game/IM roles. System design centers on social/messaging at WeChat scale (1B+ MAU) and gaming backends (lockstep, state sync, matchmaking). Behavioral is lighter than US firms; they probe collaboration across business groups (BGs) since cross-BG work is structurally hard at Tencent.
+腾讯的面试在基础设施和游戏岗位上偏 C++（腾讯在微信、QQ、王者荣耀、PUBG Mobile、英雄联盟后端等都有庞大的 C++ 团队）。游戏/IM 岗位期望网络知识——TCP 窗口、NAT 穿透、自定义 UDP 协议、丢包处理。系统设计围绕微信量级（10 亿+ MAU）的社交/消息和游戏后端（帧同步、状态同步、匹配）。行为面试比美国公司轻；他们会探查跨事业群（BG）协作的能力，因为腾讯结构上跨 BG 协作本身就难。
 
-## Questions
+## 题目
 
-### 1. Add Two Numbers (Linked List)
+### 1. 两数相加（链表）
 
-**Difficulty:** Medium
-**Topics:** linked-list, math
-**Position:** SWE
-**Years:** T2-T3
+**难度：** 中等
+**主题：** linked-list, math
+**岗位：** SWE
+**级别：** T2-T3
 
-**Question:** Two non-negative integers stored as reverse-order linked lists (one digit per node). Return their sum as the same kind of list.
+**问题：** 两个非负整数以逆序链表存储（每节点一位数字）。返回它们的和（同样格式的链表）。
 
-**Approach:** Walk both lists together, carry digit forward. Dummy head, advance result pointer. Watch: lists of different length, final carry → extra node. O(max(n, m)).
+**思路：** 同步遍历两个链表，带进位。哑头，结果指针推进。注意：长度不同的链表、最终进位 → 多一个节点。O(max(n, m))。
 
-**Python:**
+**Python：**
 ```python
 class ListNode:
     def __init__(self, val: int = 0, next: "ListNode | None" = None) -> None:
@@ -50,7 +50,7 @@ def add_two_numbers(l1: ListNode | None, l2: ListNode | None) -> ListNode | None
     return dummy.next
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 class ListNode {
   val: number; next: ListNode | null;
@@ -71,7 +71,7 @@ function addTwoNumbers(l1: ListNode | null, l2: ListNode | null): ListNode | nul
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 class ListNode {
   int val; ListNode next;
@@ -93,27 +93,27 @@ ListNode addTwoNumbers(ListNode l1, ListNode l2) {
 }
 ```
 
-**Key points:**
-- Loop condition includes `carry` so a final overflow node is emitted.
-- Treat missing digits as 0 when one list is shorter.
-- Output is also in reverse order — no extra reversal needed.
+**要点：**
+- 循环条件包含 `carry`，最后一位的进位也能输出一个节点。
+- 某条链表先结束时，缺失位按 0 处理。
+- 输出本身也是逆序，无需再反转。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 2. Add Strings
+### 2. 字符串相加
 
-**Difficulty:** Easy
-**Topics:** strings, math
-**Position:** SWE
-**Years:** T2-T3
+**难度：** 简单
+**主题：** strings, math
+**岗位：** SWE
+**级别：** T2-T3
 
-**Question:** Given two non-negative integers as strings, return their sum as a string (no using built-in BigInt).
+**问题：** 给定两个非负整数字符串，返回其和字符串（不用内置 BigInt）。
 
-**Approach:** Two pointers from end, carry, append digit. Reverse result. O(max(n, m)). Common Tencent warm-up to check basic correctness coding.
+**思路：** 双指针从末尾，带进位，追加每位。结果反转。O(max(n, m))。腾讯常用热身题，检验基本正确性。
 
-**Python:**
+**Python：**
 ```python
 def add_strings(num1: str, num2: str) -> str:
     i, j, carry = len(num1) - 1, len(num2) - 1, 0
@@ -128,7 +128,7 @@ def add_strings(num1: str, num2: str) -> str:
     return "".join(reversed(out))
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function addStrings(num1: string, num2: string): string {
   let i = num1.length - 1, j = num2.length - 1, carry = 0;
@@ -145,7 +145,7 @@ function addStrings(num1: string, num2: string): string {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 String addStrings(String num1, String num2) {
   int i = num1.length() - 1, j = num2.length() - 1, carry = 0;
@@ -162,27 +162,27 @@ String addStrings(String num1, String num2) {
 }
 ```
 
-**Key points:**
-- Iterate while either index or carry remains.
-- Use char code arithmetic to avoid `parseInt` per digit.
-- Append digits in reverse, then reverse the buffer once at the end.
+**要点：**
+- 只要有任一下标或进位剩余就继续循环。
+- 用字符编码做算术，避免对每位调用 `parseInt`。
+- 先按倒序追加，最后只反转一次。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 3. Linked List Cycle II
+### 3. 环形链表 II
 
-**Difficulty:** Medium
-**Topics:** linked-list, two-pointer, floyd
-**Position:** SWE
-**Years:** T2-T3
+**难度：** 中等
+**主题：** linked-list, two-pointer, floyd
+**岗位：** SWE
+**级别：** T2-T3
 
-**Question:** Given a linked list, return the node where the cycle begins, or null if no cycle.
+**问题：** 给定链表，返回环开始的节点，无环则 null。
 
-**Approach:** Floyd's tortoise and hare. Slow + fast pointers — if they meet, reset slow to head, advance both by 1; they meet at cycle start. O(n) time, O(1) space. The math (2k = k + nL → k - μ = nL - μ) trips people up — be ready to explain.
+**思路：** Floyd 龟兔。慢 + 快指针——相遇后把慢指针重置到 head，两者都走 1 步；它们在环起点再相遇。O(n) 时间，O(1) 空间。数学（2k = k + nL → k - μ = nL - μ）容易绕——准备好讲清楚。
 
-**Python:**
+**Python：**
 ```python
 def detect_cycle(head: ListNode | None) -> ListNode | None:
     slow = fast = head
@@ -198,7 +198,7 @@ def detect_cycle(head: ListNode | None) -> ListNode | None:
     return None
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function detectCycle(head: ListNode | null): ListNode | null {
   let slow = head, fast = head;
@@ -215,7 +215,7 @@ function detectCycle(head: ListNode | null): ListNode | null {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 ListNode detectCycle(ListNode head) {
   ListNode slow = head, fast = head;
@@ -232,27 +232,27 @@ ListNode detectCycle(ListNode head) {
 }
 ```
 
-**Key points:**
-- After meeting, head-to-start equals meeting-to-start modulo cycle length.
-- Works when the cycle starts at head — both pointers stay aligned.
-- O(1) space beats a visited-set; both pointers chase at most one full loop.
+**要点：**
+- 相遇后，从头到环起点的距离与相遇点到环起点的距离模环长相等。
+- 环起点即头节点的情形天然成立，两指针起点一致。
+- 相比哈希记录访问节点，O(1) 空间最多再追一圈即可定位环起点。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 4. Permutations
+### 4. 全排列
 
-**Difficulty:** Medium
-**Topics:** backtracking, recursion
-**Position:** SWE
-**Years:** T2-T3
+**难度：** 中等
+**主题：** backtracking, recursion
+**岗位：** SWE
+**级别：** T2-T3
 
-**Question:** Given a distinct integer array, return all possible permutations.
+**问题：** 给定不重复整数数组，返回所有可能的排列。
 
-**Approach:** Backtracking — swap current index with each subsequent index, recurse, swap back. Or use a `used[]` boolean array. O(n * n!). Follow-up: with duplicates — sort and skip when `used[i-1]` is false and `nums[i] == nums[i-1]`.
+**思路：** 回溯——当前下标与后续每个下标交换，递归，再换回。或用 `used[]` 布尔数组。O(n * n!)。追问：含重复——先排序，当 `used[i-1]` 为 false 且 `nums[i] == nums[i-1]` 时跳过。
 
-**Python:**
+**Python：**
 ```python
 def permute(nums: list[int]) -> list[list[int]]:
     out: list[list[int]] = []
@@ -268,7 +268,7 @@ def permute(nums: list[int]) -> list[list[int]]:
     return out
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function permute(nums: number[]): number[][] {
   const out: number[][] = [];
@@ -285,7 +285,7 @@ function permute(nums: number[]): number[][] {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 List<List<Integer>> permute(int[] nums) {
   List<List<Integer>> out = new ArrayList<>();
@@ -308,27 +308,27 @@ void go(int[] nums, int start, List<List<Integer>> out) {
 }
 ```
 
-**Key points:**
-- Swap-in-place avoids an explicit `used[]` array.
-- Always undo the swap on the way back to preserve the array.
-- Snapshot via `slice`/`[:]` so later mutations don't corrupt outputs.
+**要点：**
+- 原地交换可省去显式 `used[]` 数组。
+- 回溯返回前务必还原交换，保持原数组状态。
+- 通过 `slice`/`[:]` 拷贝快照，避免后续修改破坏已记录结果。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 5. Maximum Subarray (Kadane)
+### 5. 最大子数组和（Kadane）
 
-**Difficulty:** Easy
-**Topics:** dp, arrays, greedy
-**Position:** SWE
-**Years:** T2-T3
+**难度：** 简单
+**主题：** dp, arrays, greedy
+**岗位：** SWE
+**级别：** T2-T3
 
-**Question:** Given an integer array, find the contiguous subarray with the largest sum.
+**问题：** 给定整数数组，找出和最大的连续子数组。
 
-**Approach:** Kadane's: track `current = max(num, current + num)`, `best = max(best, current)`. O(n) time, O(1) space. Handle all-negative case (return single max element). Follow-up: also return start/end indices.
+**思路：** Kadane：维护 `current = max(num, current + num)`、`best = max(best, current)`。O(n) 时间，O(1) 空间。处理全负数（返回单个最大元素）。追问：同时返回起止下标。
 
-**Python:**
+**Python：**
 ```python
 def max_subarray(nums: list[int]) -> int:
     cur = best = nums[0]
@@ -338,7 +338,7 @@ def max_subarray(nums: list[int]) -> int:
     return best
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function maxSubArray(nums: number[]): number {
   let cur = nums[0], best = nums[0];
@@ -350,7 +350,7 @@ function maxSubArray(nums: number[]): number {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 int maxSubArray(int[] nums) {
   int cur = nums[0], best = nums[0];
@@ -362,27 +362,27 @@ int maxSubArray(int[] nums) {
 }
 ```
 
-**Key points:**
-- `cur` is the best sum ending at the current index.
-- Initialize both to `nums[0]` so all-negative arrays still return the max element.
-- Divide-and-conquer also works at O(n log n) but is overkill.
+**要点：**
+- `cur` 表示以当前下标结尾的最大子数组和。
+- 两者均初始化为 `nums[0]`，全负数也能返回最大元素。
+- 分治写法也能 O(n log n)，但相对小题大做。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 6. Reverse a String In-Place
+### 6. 原地反转字符串
 
-**Difficulty:** Easy
-**Topics:** strings, two-pointer
-**Position:** SWE
-**Years:** T2
+**难度：** 简单
+**主题：** strings, two-pointer
+**岗位：** SWE
+**级别：** T2
 
-**Question:** Reverse a `char[]` in-place. Then: reverse word order in a sentence in-place (`"the sky is blue"` → `"blue is sky the"`).
+**问题：** 原地反转 `char[]`。然后：原地反转句子中的单词顺序（`"the sky is blue"` → `"blue is sky the"`）。
 
-**Approach:** Part 1: two pointers swap. Part 2: reverse whole string, then reverse each word. O(n) time, O(1) extra. Tencent C++ classic — interviewers also ask about `std::string` SSO and copy-on-write semantics in pre-C++11.
+**思路：** 第一部分：双指针交换。第二部分：先整体反转，再逐词反转。O(n) 时间，O(1) 额外空间。腾讯 C++ 经典题——面试官还会问 `std::string` 的 SSO 和 C++11 之前的 COW 语义。
 
-**Python:**
+**Python：**
 ```python
 def reverse_words(chars: list[str]) -> None:
     def rev(l: int, r: int) -> None:
@@ -398,7 +398,7 @@ def reverse_words(chars: list[str]) -> None:
             l = r + 1
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function reverseWords(chars: string[]): void {
   const rev = (l: number, r: number): void => {
@@ -415,7 +415,7 @@ function reverseWords(chars: string[]): void {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 void reverseWords(char[] chars) {
   rev(chars, 0, chars.length - 1);
@@ -433,27 +433,27 @@ void rev(char[] a, int l, int r) {
 }
 ```
 
-**Key points:**
-- Reverse the whole buffer first, then reverse each word in place.
-- Strings in Python/JS are immutable, so the input is a mutable `list`/`array` of chars.
-- O(1) extra space — only index variables are added.
+**要点：**
+- 先整体反转，再原地反转每个单词即可。
+- Python/JS 字符串不可变，输入用可变字符 `list`/`array`。
+- 仅用少量下标变量，O(1) 额外空间。
 
-**Tags:** #coding
+**标签：** #coding
 
 ---
 
-### 7. Lowest Common Ancestor of BST
+### 7. BST 的最近公共祖先
 
-**Difficulty:** Easy
-**Topics:** tree, bst, recursion
-**Position:** SWE
-**Years:** T2-T3
+**难度：** 简单
+**主题：** tree, bst, recursion
+**岗位：** SWE
+**级别：** T2-T3
 
-**Question:** Given a BST and two nodes `p` and `q`, find their LCA.
+**问题：** 给定 BST 和两个节点 `p`、`q`，求 LCA。
 
-**Approach:** BST property: if both p and q < root, recurse left; if both >, recurse right; else current is LCA. O(h) time, O(1) iterative. Don't over-engineer for general binary tree.
+**思路：** BST 性质：若 p、q 都 < root 递归左；都 > 递归右；否则当前即 LCA。O(h) 时间，迭代写法 O(1)。别用通用二叉树的解法过度设计。
 
-**Python:**
+**Python：**
 ```python
 class TreeNode:
     def __init__(self, val: int = 0, left: "TreeNode | None" = None, right: "TreeNode | None" = None) -> None:
@@ -471,7 +471,7 @@ def lowest_common_ancestor_bst(root: TreeNode, p: TreeNode, q: TreeNode) -> Tree
     return root
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 class TreeNode {
   val: number; left: TreeNode | null; right: TreeNode | null;
@@ -489,7 +489,7 @@ function lowestCommonAncestorBST(root: TreeNode, p: TreeNode, q: TreeNode): Tree
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 class TreeNode {
   int val; TreeNode left, right;
@@ -507,27 +507,27 @@ TreeNode lowestCommonAncestorBST(TreeNode root, TreeNode p, TreeNode q) {
 }
 ```
 
-**Key points:**
-- The first node that splits `p` and `q` across its subtrees is the LCA.
-- Iterative form is O(1) extra space.
-- Equality (one target equals current) also makes current the LCA.
+**要点：**
+- 第一个把 `p`、`q` 分到两侧子树的节点即为 LCA。
+- 迭代写法只需 O(1) 额外空间。
+- 当前节点等于 `p` 或 `q` 时同样视为 LCA。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 8. Min Stack
+### 8. 最小栈
 
-**Difficulty:** Easy
-**Topics:** stack, design
-**Position:** SWE
-**Years:** T2-T3
+**难度：** 简单
+**主题：** stack, design
+**岗位：** SWE
+**级别：** T2-T3
 
-**Question:** Design a stack supporting `push`, `pop`, `top`, and `getMin`, all in O(1).
+**问题：** 设计支持 `push`、`pop`、`top` 和 `getMin` 全部 O(1) 的栈。
 
-**Approach:** Two stacks: main stack + min stack (push min to min stack only when new value ≤ current min; pop in sync). Or single stack of `(value, current_min)` pairs. O(1) all ops.
+**思路：** 两栈：主栈 + min 栈（新值 ≤ 当前 min 时才推 min 栈；pop 同步）。或单栈存 `(value, current_min)` 对。所有操作 O(1)。
 
-**Python:**
+**Python：**
 ```python
 class MinStack:
     def __init__(self) -> None:
@@ -547,7 +547,7 @@ class MinStack:
         return self.stk[-1][1]
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 class MinStack {
   private stk: Array<[number, number]> = [];
@@ -561,7 +561,7 @@ class MinStack {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 class MinStack {
   private final Deque<int[]> stk = new ArrayDeque<>();  // {value, runningMin}
@@ -575,207 +575,207 @@ class MinStack {
 }
 ```
 
-**Key points:**
-- Each entry carries the running min so all ops are O(1).
-- Alternative two-stack design saves space when many duplicates of min are pushed.
-- Empty-stack handling depends on the problem contract; here methods assume non-empty.
+**要点：**
+- 每个栈元素自带运行最小值，所有操作均 O(1)。
+- 当最小值重复较多时，双栈写法更省空间。
+- 是否需要处理空栈取决于题目约定，这里假定调用前非空。
 
-**Tags:** #coding
-
----
-
-### 9. Design WeChat Messaging Backend
-
-**Difficulty:** Hard
-**Topics:** system-design, im, websockets, presence, scale
-**Position:** Senior SWE
-**Years:** T3-T4
-
-**Question:** Design WeChat's messaging backend supporting 1B+ MAU, 1:1 chat, group chat (up to 500 members), and global presence.
-
-**Approach:** Persistent TCP/MQTT connection from each client to nearest access gateway (sharded by user_id). Messages flow gateway → routing service (looks up recipient's gateway via online registry) → recipient gateway → device. Offline messages persisted to KV store; pushed on reconnect. Group chat: fan-out at the per-group routing service; for 500 members, that's tractable. Presence: in-memory store per region, gossip globally with TTL'd entries (eventual consistency OK). Persist messages 7 days in hot store + 90 days cold. Discuss: end-to-end encryption (Tencent historically not E2E for compliance with Chinese law — call this out honestly), message ordering within a chat (sequence numbers per chat), multi-device sync, and very large group support (broadcast groups have different design).
-
-**Tags:** #system-design
+**标签：** #coding
 
 ---
 
-### 10. Design WeChat Moments (朋友圈)
+### 9. 设计微信消息后端
 
-**Difficulty:** Hard
-**Topics:** system-design, feed, privacy, fanout
-**Position:** Senior SWE
-**Years:** T3-T4
+**难度：** 困难
+**主题：** system-design, im, websockets, presence, scale
+**岗位：** 高级 SWE
+**级别：** T3-T4
 
-**Question:** Design WeChat Moments — friends-only feed where posts are visible only to mutual friends, with strict privacy controls.
+**问题：** 设计支持 10 亿+ MAU、1:1 聊天、群聊（500 人）和全球在线状态的微信消息后端。
 
-**Approach:** Closed-graph feed (unlike Twitter/Weibo) — only mutual friends see posts. Hybrid push/pull as in News Feed. Critical privacy property: comments and likes on a post are visible only to mutual friends of the *poster*. So when displaying a post, server filters comments to those by people the viewer is also friends with — done at read time via friend-graph intersection (cache the intersection result). Photos in CDN with signed short-lived URLs (no public discoverable URL). Discuss: "三天可见" (visible-for-3-days) implemented as a per-post TTL flag, message-style notification on comment/like (via the IM system from Q9), and how to handle a viral post (rare in closed graph, but possible — cache aggressively).
+**思路：** 每客户端到最近接入网关一条持久 TCP/MQTT（按 user_id 分片）。消息流：网关 → 路由服务（在在线注册表查接收方网关）→ 接收方网关 → 设备。离线消息持久化到 KV，重连时推送。群聊：在每群路由服务做扇出；500 人这量级可行。在线状态：每区域内存存储，全球用带 TTL 的 gossip（最终一致 OK）。消息热存 7 天 + 冷存 90 天。讨论：端到端加密（腾讯出于中国法律合规历史上不做 E2E——直说）、单聊会话内消息有序（每会话序列号）、多设备同步、超大群（广播群另有设计）。
 
-**Tags:** #system-design
-
----
-
-### 11. Design a Multiplayer Game Server (Honor of Kings-style)
-
-**Difficulty:** Hard
-**Topics:** system-design, gaming, low-latency, state-sync
-**Position:** Senior SWE
-**Years:** T3-T4
-
-**Question:** Design the backend for a real-time 5v5 MOBA game like Honor of Kings. Latency budget: <100ms perceived.
-
-**Approach:** Matchmaking service (skill + region + party-aware) → game server allocator (Kubernetes pool of dedicated game servers across regions). Game server runs authoritative simulation. **Frame sync (lockstep)**: clients send inputs only (small packets), all clients run identical deterministic simulation in lockstep, advance frame when all inputs received. Tencent's choice for MOBAs — bandwidth tiny, anti-cheat via input-only model. Tradeoff: 1 slow client = everyone waits. **State sync**: server simulates, sends state diffs — used by FPS. Network: custom UDP protocol (with reliability layer); TCP unacceptable for game traffic. Discuss: clock sync (NTP-ish), packet loss tolerance (resend inputs, predict for state-sync), reconnect (replay inputs from last frame), and cheat detection (server-side replay for sample matches).
-
-**Tags:** #system-design
+**标签：** #system-design
 
 ---
 
-### 12. Design QQ / WeChat Voice & Video Call
+### 10. 设计微信朋友圈
 
-**Difficulty:** Hard
-**Topics:** system-design, webrtc, sfu, nat-traversal, codecs
-**Position:** Senior SWE
-**Years:** T3-T4
+**难度：** 困难
+**主题：** system-design, feed, privacy, fanout
+**岗位：** 高级 SWE
+**级别：** T3-T4
 
-**Question:** Design the voice/video call infrastructure for WeChat (1:1 and multi-party up to 9).
+**问题：** 设计微信朋友圈——仅好友可见的信息流，严格隐私控制。
 
-**Approach:** Signaling over the IM channel (SDP offer/answer through messaging). Media: WebRTC-style with ICE for NAT traversal (STUN/TURN servers). For 1:1, P2P preferred (lower latency, less server cost). For multi-party, SFU (Selective Forwarding Unit) — each client uploads one stream, server forwards to N-1 others without transcoding (low latency, scales reasonably). Codecs: Opus audio, H.264/H.265 video, adaptive bitrate. Echo cancellation, noise suppression, jitter buffer on client. Discuss: TURN relay cost (many users behind symmetric NAT), regional media servers, and bandwidth adaptation under network degradation.
+**思路：** 封闭图谱 feed（不同于 Twitter/微博）——只有好友能看到帖子。push/pull 混合（同 News Feed）。关键隐私性质：某帖的评论和点赞仅对*发帖人*的共同好友可见。所以展示帖时，服务端按观看者与评论者是否也是好友过滤——读时通过好友图交集完成（缓存交集结果）。照片放 CDN，URL 带短期签名（无公开可发现 URL）。讨论："三天可见"实现为每帖 TTL 标志、评论/点赞通过 IM 系统（第 9 题）发消息式通知、爆款帖处理（封闭图中少见但可能——重度缓存）。
 
-**Tags:** #system-design
-
----
-
-### 13. Design Tencent Cloud Object Storage (COS)
-
-**Difficulty:** Hard
-**Topics:** system-design, blob-storage, replication, consistency
-**Position:** Senior SWE
-**Years:** T3-T4
-
-**Question:** Design Tencent COS — object storage API-compatible with S3.
-
-**Approach:** Front-end S3-compatible API → metadata service (sharded by bucket+key) → storage layer with erasure coding (Reed-Solomon 10+4) across many nodes/racks/AZs. Strong consistency within a region via metadata coordinator (Paxos). Multi-region async replication for DR. Discuss: erasure coding vs 3x replication trade-offs (~50% storage savings, more CPU/network on read), large object multipart upload, lifecycle to cold storage (Archive Storage equivalent), and how to handle a hot key (CDN + replica fan-out for popular reads).
-
-**Tags:** #system-design
+**标签：** #system-design
 
 ---
 
-### 14. Design a Live Streaming Gift / Bullet-Comment System
+### 11. 设计多人游戏服务器（王者荣耀风格）
 
-**Difficulty:** Hard
-**Topics:** system-design, real-time, fanout, monetization
-**Position:** Senior SWE
-**Years:** T3-T4
+**难度：** 困难
+**主题：** system-design, gaming, low-latency, state-sync
+**岗位：** 高级 SWE
+**级别：** T3-T4
 
-**Question:** Design the gift-sending and bullet-comment system for Tencent Video / NOW Live where viewers can send virtual gifts (with payment) and chat in real-time during a live broadcast.
+**问题：** 设计实时 5v5 MOBA（如王者荣耀）的后端。延迟预算：感知 <100ms。
 
-**Approach:** Gift purchase: transactional flow (debit user wallet → record gift event → broadcast). Wallet write is the consistency-critical step; rest can be eventual. Comment/gift event → per-stream Kafka topic → fan out to viewer WebSocket gateways. On very hot streams (1M+ concurrent), throttle and sample for display; persist all to DB. Big-spender effects (special animations) prioritized in the broadcast queue. Discuss: anti-fraud on gifts (sudden spike from one user = potential card fraud), tax/compliance for streamer revenue share, and graceful degradation when the stream becomes too hot (drop low-value comments first).
+**思路：** 匹配服务（考虑技术 + 区域 + 组队）→ 游戏服务器分配器（多区域 dedicated 游戏服 K8s 池）。游戏服跑权威模拟。**帧同步（lockstep）**：客户端只发输入（小包），所有客户端跑相同的确定性模拟，所有输入到齐推进一帧。腾讯 MOBA 的选择——带宽极小，输入-only 模型方便反作弊。代价：1 个慢客户端 = 全等。**状态同步**：服务端模拟，发状态 diff——FPS 常用。网络：自定义 UDP 协议（含可靠层）；TCP 不适合游戏流量。讨论：时钟同步（类 NTP）、丢包容忍（重发输入，状态同步要预测）、重连（从最近一帧重放输入）、作弊检测（抽样比赛服务端重放）。
 
-**Tags:** #system-design
-
----
-
-### 15. Tell me about a time you collaborated across teams
-
-**Difficulty:** Medium
-**Topics:** behavioral, collaboration, cross-bg
-**Position:** SWE
-**Years:** T2-T3
-
-**Question:** Tell me about a time you had to work with another team or BG to deliver a project. What was hard about it?
-
-**Approach:** Tencent's BG structure makes cross-team work culturally hard — they probe whether you can navigate it. Show: (1) you built the relationship early (didn't just escalate when blocked), (2) you understood their priorities (different OKRs, different leadership), (3) you proposed a win-win framing, (4) you delivered together. Mentioning specific friction (resource allocation, schedule misalignment) and how you resolved it lands well.
-
-**Tags:** #behavioral
+**标签：** #system-design
 
 ---
 
-### 16. Time you proactively fixed something not in your scope
+### 12. 设计 QQ / 微信音视频通话
 
-**Difficulty:** Medium
-**Topics:** behavioral, ownership, initiative
-**Position:** SWE
-**Years:** T2-T3
+**难度：** 困难
+**主题：** system-design, webrtc, sfu, nat-traversal, codecs
+**岗位：** 高级 SWE
+**级别：** T3-T4
 
-**Question:** Tell me about a time you noticed a problem and fixed it without being asked.
+**问题：** 设计微信的语音/视频通话基础设施（1:1 和最多 9 人多方）。
 
-**Approach:** Tencent values "主动" (proactive) engineers. Show: (1) the specific problem (production bug, tech debt, missing tool), (2) you didn't wait for prioritization — you spent personal time or off-cycle, (3) you made sure your fix was reviewed and adopted (didn't just commit cowboy-style), (4) impact: it helped the team measurably. Don't pick a story where the fix was actually your direct responsibility.
+**思路：** 信令走 IM 通道（SDP offer/answer 通过消息）。媒体：WebRTC 风格 + ICE 做 NAT 穿透（STUN/TURN 服务器）。1:1 优先 P2P（延迟低、服务器成本低）。多方：SFU（选择性转发单元）——每客户端上传一路，服务端不转码地转发给其他 N-1 人（延迟低、扩展尚可）。编解码：音频 Opus，视频 H.264/H.265，自适应码率。客户端做回声消除、降噪、抖动缓冲。讨论：TURN 中继成本（许多用户在对称 NAT 后）、区域媒体服务器、网络劣化下的带宽自适应。
 
-**Tags:** #behavioral
-
----
-
-### 17. Time you handled a production incident
-
-**Difficulty:** Medium
-**Topics:** behavioral, incident-response, ownership
-**Position:** Senior SWE
-**Years:** T3-T4
-
-**Question:** Walk me through a production incident you led. What happened, how did you respond, and what changed afterward?
-
-**Approach:** Pick a real incident (not a "near miss"). Show: (1) you triaged with cool head — mitigation first, RCA later, (2) you communicated to stakeholders during (status updates every 15-30 min), (3) you ran a blameless retro that produced concrete action items, (4) you followed up on the action items not just filed them. Quantify the impact (downtime minutes, users affected) and the post-fix improvement (MTTR cut by X).
-
-**Tags:** #behavioral
+**标签：** #system-design
 
 ---
 
-### 18. Why Tencent
+### 13. 设计腾讯云对象存储（COS）
 
-**Difficulty:** Easy
-**Topics:** behavioral, motivation, fit
-**Position:** SWE
-**Years:** T2-T3
+**难度：** 困难
+**主题：** system-design, blob-storage, replication, consistency
+**岗位：** 高级 SWE
+**级别：** T3-T4
 
-**Question:** Why do you want to join Tencent specifically, and which BG/team?
+**问题：** 设计腾讯 COS——S3 兼容 API 的对象存储。
 
-**Approach:** Show specificity. Don't say "big company" or "stock." Pick: (1) a specific product (WeChat ecosystem, a game you love and want to work on), (2) a technical area Tencent is strong in (game tech, IM, cloud), (3) the BG culture (IEG for games, WXG for WeChat — quite different). Mentioning open-source contributions Tencent has made (TARS, ncnn for ML inference) shows you've done homework.
+**思路：** 前端 S3 兼容 API → 元数据服务（按 bucket+key 分片）→ 存储层采用纠删码（Reed-Solomon 10+4），跨多节点/机架/AZ。区域内强一致由元数据协调器（Paxos）保证。跨区域异步复制做灾备。讨论：纠删码 vs 3 副本权衡（节省约 50% 存储，但读端 CPU/网络更多）、大对象分片上传、生命周期到冷存储（类 Archive Storage）、热 key 处理（CDN + 副本扇出应对爆量读）。
 
-**Tags:** #behavioral
-
----
-
-### 19. TCP deep dive: why does TCP throughput drop on a high-RTT link?
-
-**Difficulty:** Hard
-**Topics:** networking, tcp, performance
-**Position:** Senior SWE
-**Years:** T3-T4
-
-**Question:** A service running cross-region (Shanghai → US-East, 200ms RTT) shows TCP throughput much lower than the available bandwidth. Why? How would you fix it?
-
-**Approach:** Bandwidth-Delay Product (BDP): on a high-RTT link, throughput = window_size / RTT. Default TCP send/recv buffers may be too small — calculate: 1 Gbps × 0.2s = 200 Mbits = 25 MB BDP, but default Linux send buffer is ~4MB. Fixes: (1) increase `net.ipv4.tcp_rmem` / `tcp_wmem`, (2) enable TCP window scaling (RFC 7323 — usually on by default but check), (3) switch congestion control algorithm to BBR (better on high-BDP than CUBIC), (4) use parallel connections to multiply effective throughput, (5) for true bulk transfer, consider QUIC or UDP-based protocols. Mention measurement: `tc`, `ss -i`, `iperf3` to baseline. Tencent has built custom transport protocols precisely for this reason (e.g., for cross-region game traffic).
-
-**Tags:** #domain-knowledge
+**标签：** #system-design
 
 ---
 
-### 20. Anti-cheat in a real-time multiplayer game
+### 14. 设计直播打赏 / 弹幕系统
 
-**Difficulty:** Hard
-**Topics:** gaming, security, anti-cheat
-**Position:** Senior SWE
-**Years:** T3-T4
+**难度：** 困难
+**主题：** system-design, real-time, fanout, monetization
+**岗位：** 高级 SWE
+**级别：** T3-T4
 
-**Question:** A new PUBG Mobile cheating tool is widespread (aimbot + wallhack). Walk through how you'd architect anti-cheat to detect and respond.
+**问题：** 设计腾讯视频 / NOW 直播中的打赏和弹幕系统，让观众在直播中实时送虚拟礼物（含支付）并聊天。
 
-**Approach:** Multi-layered: (1) **Server authority** — never trust client-reported damage/position; server runs hit detection. Wallhack requires the *client* to render data it shouldn't have — fix by not sending data about enemies the player can't see (visibility culling). Trade-off: more server CPU. (2) **Behavioral detection** — server-side ML on aim trajectories, headshot ratios, reaction times; flag outliers for review/shadowban. (3) **Client integrity** — anti-tampering (code obfuscation, native checksums, kernel-mode anti-cheat for PC). Detect known cheat signatures. (4) **Reporting + replay** — player reports trigger server-side replay review, sometimes by ML. (5) **Soft penalties** — shadowban (matchmake cheaters together) before hardban (gives cheat-makers less signal to iterate). Discuss false-positive cost (banning honest players is catastrophic for retention) and the perpetual cat-and-mouse nature.
+**思路：** 礼物购买：事务化流程（扣用户钱包 → 记录礼物事件 → 广播）。钱包写是一致性关键步骤；其余可最终一致。评论/礼物事件 → 单直播 Kafka topic → 扇出到观众 WebSocket 网关。超热直播（1M+ 同时在线）下，限速 + 采样展示；全部异步入 DB。土豪特效（特殊动画）在广播队列里优先级高。讨论：礼物反欺诈（单用户突然飙量 = 潜在盗刷）、主播分成的税务/合规、流过热时优雅降级（先丢低价值评论）。
 
-**Tags:** #domain-knowledge
+**标签：** #system-design
 
 ---
 
-### 21. Network Delay Time
+### 15. 讲一次你跨团队协作的经历
 
-**Difficulty:** Medium
-**Topics:** graph, dijkstra, shortest-path
-**Position:** T2-3
-**Years:** T2-T3
+**难度：** 中等
+**主题：** behavioral, collaboration, cross-bg
+**岗位：** SWE
+**级别：** T2-T3
 
-**Question:** Given `n` nodes and a list of weighted directed edges `(u, v, w)` representing a signal travel time, find the time it takes for a signal sent from node `k` to reach all nodes. Return -1 if impossible.
+**问题：** 讲一次你与另一团队或 BG 一起交付项目的经历。难点在哪？
 
-**Approach:** Single-source shortest path → Dijkstra with min-heap. Build adjacency list, relax neighbors, push to heap. Answer is max distance among all nodes; if any node unreachable, return -1. O((V + E) log V). Tencent IM-routing variant.
+**思路：** 腾讯的 BG 结构让跨团队协作文化上较难——他们查你能不能驾驭。展示：(1) 你提前建立了关系（不是被卡了才升级），(2) 你理解对方优先级（不同 OKR、不同领导），(3) 你提出 win-win 框架，(4) 你们共同交付。提具体摩擦（资源、排期错位）以及你如何化解，会很加分。
 
-**Python:**
+**标签：** #behavioral
+
+---
+
+### 16. 主动修了职责外问题的经历
+
+**难度：** 中等
+**主题：** behavioral, ownership, initiative
+**岗位：** SWE
+**级别：** T2-T3
+
+**问题：** 讲一次你发现问题主动修复、且无人要求的经历。
+
+**思路：** 腾讯看重"主动"工程师。展示：(1) 具体问题（生产 bug、技术债、缺少工具），(2) 你没等优先级——用个人或非排期时间，(3) 你确保修复经过 review 并被采纳（不是孤胆牛仔式 commit），(4) 影响：可量化地帮到团队。别挑那种修复其实就是你直接职责的故事。
+
+**标签：** #behavioral
+
+---
+
+### 17. 处理生产事故的经历
+
+**难度：** 中等
+**主题：** behavioral, incident-response, ownership
+**岗位：** 高级 SWE
+**级别：** T3-T4
+
+**问题：** 讲一次你主导的生产事故。发生了什么？你怎么应对？事后做了什么改变？
+
+**思路：** 挑真事故（不是"差点出事"）。展示：(1) 你冷静分流——先缓解、后 RCA，(2) 你期间持续向干系人通报（每 15-30 分钟状态更新），(3) 你做了无指责复盘并产出具体行动项，(4) 你跟进行动项而不是仅记录。量化影响（宕机分钟、影响用户数）和修复后的提升（MTTR 降低 X）。
+
+**标签：** #behavioral
+
+---
+
+### 18. 你为什么想加入腾讯
+
+**难度：** 简单
+**主题：** behavioral, motivation, fit
+**岗位：** SWE
+**级别：** T2-T3
+
+**问题：** 为什么是腾讯？想去哪个 BG/团队？
+
+**思路：** 要具体。别说"大厂"或"股票"。挑：(1) 具体产品（微信生态、你热爱并想参与的某款游戏），(2) 腾讯强势的技术领域（游戏技术、IM、云），(3) BG 文化（IEG 游戏、WXG 微信——风格相当不同）。提腾讯开源贡献（TARS、ncnn 做 ML 推理）能体现你做了功课。
+
+**标签：** #behavioral
+
+---
+
+### 19. TCP 深挖：高 RTT 链路上 TCP 吞吐为何下降？
+
+**难度：** 困难
+**主题：** networking, tcp, performance
+**岗位：** 高级 SWE
+**级别：** T3-T4
+
+**问题：** 跨地域服务（上海 → 美东，200ms RTT）TCP 吞吐远低于可用带宽。为什么？怎么修？
+
+**思路：** 带宽时延积（BDP）：高 RTT 下吞吐 = window_size / RTT。默认 TCP 发送/接收缓冲可能太小——计算：1 Gbps × 0.2s = 200 Mbits = 25 MB BDP，但 Linux 默认发送缓冲约 4MB。修复：(1) 调大 `net.ipv4.tcp_rmem` / `tcp_wmem`，(2) 启用 TCP window scaling（RFC 7323——通常默认开但要检查），(3) 拥塞控制改用 BBR（高 BDP 下比 CUBIC 好），(4) 用并行连接放大有效吞吐，(5) 真正的批量传输考虑 QUIC 或基于 UDP 的协议。测量：`tc`、`ss -i`、`iperf3` 打基线。腾讯就是因为这种场景做了自研传输协议（如跨地域游戏流量）。
+
+**标签：** #domain-knowledge
+
+---
+
+### 20. 实时多人游戏的反作弊
+
+**难度：** 困难
+**主题：** gaming, security, anti-cheat
+**岗位：** 高级 SWE
+**级别：** T3-T4
+
+**问题：** 一款新的 PUBG Mobile 作弊工具广泛流传（自瞄 + 透视）。讲讲你如何架构反作弊以检测和应对。
+
+**思路：** 多层：(1) **服务端权威**——绝不信客户端报告的伤害/位置；服务端做命中判定。透视需要*客户端*渲染本不该有的数据——通过可见性剔除不发送看不到的敌人数据来防。代价：服务端 CPU 更高。(2) **行为检测**——服务端 ML 分析瞄准轨迹、爆头率、反应时间；异常打标，人工或 ML review，影子封号。(3) **客户端完整性**——防篡改（代码混淆、原生 checksum、PC 端内核态反作弊）。检测已知作弊签名。(4) **举报 + 回放**——玩家举报触发服务端回放复审，部分由 ML 完成。(5) **软惩罚**——影子封号（让作弊者互相匹配）优先于硬封号（给作弊作者的迭代信号更少）。讨论假阳性代价（误封诚实玩家对留存灾难性）和反作弊与作弊者的永恒猫鼠游戏。
+
+**标签：** #domain-knowledge
+
+---
+
+### 21. 网络延迟时间
+
+**难度：** 中等
+**主题：** graph, dijkstra, shortest-path
+**岗位：** T2-3
+**级别：** T2-T3
+
+**问题：** 给定 `n` 个节点和带权有向边列表 `(u, v, w)` 表示信号传播时间，求从节点 `k` 出发使所有节点都收到信号的时间。若不可达返回 -1。
+
+**思路：** 单源最短路径 → 带最小堆的 Dijkstra。建邻接表，松弛邻居，入堆。答案为所有节点距离的最大值；存在不可达即返回 -1。O((V + E) log V)。腾讯 IM 路由变体。
+
+**Python：**
 ```python
 import heapq
 
@@ -796,7 +796,7 @@ def network_delay_time(times: list[list[int]], n: int, k: int) -> int:
     return max(dist.values()) if len(dist) == n else -1
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function networkDelayTime(times: number[][], n: number, k: number): number {
   const graph: Array<Array<[number, number]>> = Array.from({ length: n + 1 }, () => []);
@@ -814,7 +814,7 @@ function networkDelayTime(times: number[][], n: number, k: number): number {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 int networkDelayTime(int[][] times, int n, int k) {
   List<List<int[]>> graph = new ArrayList<>();
@@ -837,27 +837,27 @@ int networkDelayTime(int[][] times, int n, int k) {
 }
 ```
 
-**Key points:**
-- Skip a popped node if it is already finalized in `dist`.
-- Answer is the latest arrival across all nodes.
-- Unreachable nodes leave `dist` smaller than `n` → return -1.
+**要点：**
+- 弹出的节点若已在 `dist` 中则跳过，保证每个点只确定一次。
+- 答案是所有节点最晚的到达时间。
+- 不可达节点会让 `dist` 的大小小于 `n`，返回 -1。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 22. Cheapest Flights Within K Stops
+### 22. K 站中转内最便宜的航班
 
-**Difficulty:** Medium
-**Topics:** graph, bfs, dp, bellman-ford
-**Position:** T2-3
-**Years:** T2-T3
+**难度：** 中等
+**主题：** graph, bfs, dp, bellman-ford
+**岗位：** T2-3
+**级别：** T2-T3
 
-**Question:** Given `n` cities, weighted flights, source `src`, destination `dst`, and max `k` stops, return the cheapest price (or -1).
+**问题：** 给定 `n` 个城市、带权航班、起点 `src`、终点 `dst` 以及最多 `k` 站中转，返回最便宜价格（或 -1）。
 
-**Approach:** Bellman-Ford limited to `k+1` relaxations — copy `dist` before each round to avoid same-round multi-hop. O(k * E). Alternative: Dijkstra with state `(cost, node, stops_used)` and prune by stops. Common pitfall: mutating distances in-place violates the stop constraint.
+**思路：** Bellman-Ford 限制 `k+1` 轮松弛——每轮前拷贝 `dist`，避免同轮多跳。O(k * E)。或 Dijkstra，状态 `(cost, node, stops_used)`，按 stops 剪枝。常见坑：原地修改距离会违反中转限制。
 
-**Python:**
+**Python：**
 ```python
 def find_cheapest_price(n: int, flights: list[list[int]], src: int, dst: int, k: int) -> int:
     INF = float("inf")
@@ -872,7 +872,7 @@ def find_cheapest_price(n: int, flights: list[list[int]], src: int, dst: int, k:
     return -1 if dist[dst] == INF else int(dist[dst])
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function findCheapestPrice(n: number, flights: number[][], src: number, dst: number, k: number): number {
   let dist = new Array<number>(n).fill(Infinity);
@@ -888,7 +888,7 @@ function findCheapestPrice(n: number, flights: number[][], src: number, dst: num
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 int findCheapestPrice(int n, int[][] flights, int src, int dst, int k) {
   int[] dist = new int[n];
@@ -907,27 +907,27 @@ int findCheapestPrice(int n, int[][] flights, int src, int dst, int k) {
 }
 ```
 
-**Key points:**
-- Snapshot `dist` per round so a relaxation uses values from the previous hop count only.
-- `k + 1` relaxation rounds correspond to up to `k` intermediate stops.
-- Mutating `dist` in place would over-count hops in a single round.
+**要点：**
+- 每轮基于上一轮快照松弛，确保单轮只走一跳。
+- `k + 1` 轮松弛对应最多 `k` 个中转。
+- 原地修改 `dist` 会在一轮内累计多跳，违反约束。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 23. Path with Maximum Probability
+### 23. 概率最大的路径
 
-**Difficulty:** Medium
-**Topics:** graph, dijkstra, shortest-path
-**Position:** T2-3
-**Years:** T2-T3
+**难度：** 中等
+**主题：** graph, dijkstra, shortest-path
+**岗位：** T2-3
+**级别：** T2-T3
 
-**Question:** Given an undirected graph where each edge has a success probability, find the path from `start` to `end` with the maximum probability of success.
+**问题：** 给定无向图，每条边有成功概率，求 `start` 到 `end` 概率最大的路径。
 
-**Approach:** Dijkstra variant with a max-heap, multiplying probabilities (or use `-log(p)` to convert to standard min-cost shortest path). Track `prob[node]`, relax via `prob[v] = max(prob[v], prob[u] * w)`. O((V + E) log V).
+**思路：** Dijkstra 变体，用最大堆，乘概率（或转 `-log(p)` 化为标准最小代价最短路）。维护 `prob[node]`，松弛 `prob[v] = max(prob[v], prob[u] * w)`。O((V + E) log V)。
 
-**Python:**
+**Python：**
 ```python
 import heapq
 
@@ -953,7 +953,7 @@ def max_probability(n: int, edges: list[list[int]], succ_prob: list[float], star
     return 0.0
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function maxProbability(n: number, edges: number[][], succProb: number[], start: number, end: number): number {
   const graph: Array<Array<[number, number]>> = Array.from({ length: n }, () => []);
@@ -975,7 +975,7 @@ function maxProbability(n: number, edges: number[][], succProb: number[], start:
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 double maxProbability(int n, int[][] edges, double[] succProb, int start, int end) {
   List<List<double[]>> graph = new ArrayList<>();
@@ -1002,27 +1002,27 @@ double maxProbability(int n, int[][] edges, double[] succProb, int start, int en
 }
 ```
 
-**Key points:**
-- Negate probabilities to reuse a min-heap as a max-heap.
-- Multiplication keeps numbers in [0, 1]; no log conversion needed.
-- Early-return on popping `end` since Dijkstra finalizes nodes in optimal order.
+**要点：**
+- 概率取负数即可用最小堆模拟最大堆。
+- 概率始终在 [0, 1]，相乘即可，无需对数转换。
+- Dijkstra 按最优顺序确定节点，弹出 `end` 时可直接返回。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 24. Minimum Number of Refueling Stops
+### 24. 最低加油次数
 
-**Difficulty:** Hard
-**Topics:** greedy, heap, dp
-**Position:** T3-1
-**Years:** T3-T4
+**难度：** 困难
+**主题：** greedy, heap, dp
+**岗位：** T3-1
+**级别：** T3-T4
 
-**Question:** A car starts with `startFuel` and must reach `target`. Stations along the way provide fuel `stations[i] = [position, liters]`. Return the min number of refuels needed (or -1).
+**问题：** 汽车初始油量 `startFuel`，目标位置 `target`。途中加油站 `stations[i] = [position, liters]`。返回到达目标的最少加油次数（或 -1）。
 
-**Approach:** Greedy with max-heap. Drive as far as possible; when you can't reach the next station/target, refuel from the most-fuel-providing station you've passed (pop max-heap). Increment refuel count. O(n log n). Elegant alternative: DP on stops, but heap is cleaner.
+**思路：** 贪心 + 最大堆。尽量往前开；当无法到达下一站/终点时，从已经经过的加油站中弹出油量最多的（弹最大堆顶）加油。计数加一。O(n log n)。也可 DP 按站数转移，但堆解更清晰。
 
-**Python:**
+**Python：**
 ```python
 import heapq
 
@@ -1040,7 +1040,7 @@ def min_refuel_stops(target: int, start_fuel: int, stations: list[list[int]]) ->
     return stops
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function minRefuelStops(target: number, startFuel: number, stations: number[][]): number {
   const heap: number[] = [];  // negated liters
@@ -1059,7 +1059,7 @@ function minRefuelStops(target: number, startFuel: number, stations: number[][])
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 int minRefuelStops(int target, int startFuel, int[][] stations) {
   PriorityQueue<Integer> heap = new PriorityQueue<>(Comparator.reverseOrder());
@@ -1075,27 +1075,27 @@ int minRefuelStops(int target, int startFuel, int[][] stations) {
 }
 ```
 
-**Key points:**
-- Treat passed stations as a "fuel reserve" — only consume when stuck.
-- Always pick the largest passed reserve to maximize range gained per refuel.
-- Stations are assumed sorted by position; if not, sort first.
+**要点：**
+- 把已经经过的加油站当作"油料储备"，没油时再取。
+- 每次取储备中油量最多的，使单次加油的行程增量最大化。
+- 假设加油站按位置升序；否则先排序。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 25. Bus Routes
+### 25. 公交路线
 
-**Difficulty:** Hard
-**Topics:** graph, bfs
-**Position:** T3-1
-**Years:** T3
+**难度：** 困难
+**主题：** graph, bfs
+**岗位：** T3-1
+**级别：** T3
 
-**Question:** Given an array `routes[i]` of bus stops served by bus `i`, return the minimum number of buses to take from `source` to `target`.
+**问题：** 给定 `routes[i]` 表示第 `i` 路公交所经停的站点，返回从 `source` 到 `target` 最少需要乘几趟公交。
 
-**Approach:** BFS over *buses*, not stops. Build `stop → buses[]` map. Queue holds buses; visiting a bus visits all its stops; each unvisited stop enqueues all other buses through it. Mark buses (not stops) visited. O(N * S) where N = buses, S = avg stops.
+**思路：** 以*公交*而非站点为节点做 BFS。建 `stop → buses[]` 映射。队列保存公交；访问公交即访问其所有站点；每个未访问站点把它经过的其他公交入队。标记公交（不是站点）已访问。O(N * S)，N 为公交数，S 为平均站点数。
 
-**Python:**
+**Python：**
 ```python
 from collections import deque, defaultdict
 
@@ -1124,7 +1124,7 @@ def num_buses_to_destination(routes: list[list[int]], source: int, target: int) 
     return -1
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function numBusesToDestination(routes: number[][], source: number, target: number): number {
   if (source === target) return 0;
@@ -1150,7 +1150,7 @@ function numBusesToDestination(routes: number[][], source: number, target: numbe
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 int numBusesToDestination(int[][] routes, int source, int target) {
   if (source == target) return 0;
@@ -1176,27 +1176,27 @@ int numBusesToDestination(int[][] routes, int source, int target) {
 }
 ```
 
-**Key points:**
-- Marking buses (not just stops) avoids re-expanding entire routes.
-- BFS yields the minimum number of bus rides.
-- Source == target needs an explicit 0 short-circuit.
+**要点：**
+- 标记公交（而非仅站点）避免重复展开整条线路。
+- BFS 自然给出最少换乘次数。
+- 起点等于终点需特判返回 0。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 26. Critical Connections in a Network
+### 26. 网络中的关键连接
 
-**Difficulty:** Hard
-**Topics:** graph, dfs, tarjan, bridges
-**Position:** T3-1
-**Years:** T3-T4
+**难度：** 困难
+**主题：** graph, dfs, tarjan, bridges
+**岗位：** T3-1
+**级别：** T3-T4
 
-**Question:** Given an undirected network of `n` servers and connections, return all critical connections (bridges) — removing which disconnects some server.
+**问题：** 给定 `n` 个服务器的无向网络和连接，返回所有关键连接（桥）——移除即会断开某些服务器的连接。
 
-**Approach:** Tarjan's bridge-finding DFS. Track `disc[u]` (discovery time) and `low[u]` (lowest reachable ancestor). Edge `(u, v)` is a bridge iff `low[v] > disc[u]`. Skip parent edge. O(V + E). Tencent infra/networking favorite.
+**思路：** Tarjan 求桥 DFS。维护 `disc[u]`（发现时间）和 `low[u]`（可达最浅祖先）。边 `(u, v)` 是桥当且仅当 `low[v] > disc[u]`。跳过父边。O(V + E)。腾讯基础设施/网络岗最爱。
 
-**Python:**
+**Python：**
 ```python
 def critical_connections(n: int, connections: list[list[int]]) -> list[list[int]]:
     graph: list[list[int]] = [[] for _ in range(n)]
@@ -1223,7 +1223,7 @@ def critical_connections(n: int, connections: list[list[int]]) -> list[list[int]
     return bridges
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function criticalConnections(n: number, connections: number[][]): number[][] {
   const graph: number[][] = Array.from({ length: n }, () => []);
@@ -1248,7 +1248,7 @@ function criticalConnections(n: number, connections: number[][]): number[][] {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 int timer = 0;
 int[] disc, low;
@@ -1280,27 +1280,27 @@ void dfsBridge(int u, int parent) {
 }
 ```
 
-**Key points:**
-- `low[v] > disc[u]` means the subtree at v cannot reach u without using edge (u, v).
-- Skip the immediate parent so an undirected edge isn't counted as a back-edge.
-- Iterative version is needed for very deep graphs to avoid stack overflow.
+**要点：**
+- `low[v] > disc[u]` 表示 v 子树无法绕开 (u, v) 这条边回到 u。
+- 跳过直接父节点，避免把无向边误判为反向边。
+- 图很深时需要改写成迭代版以避免爆栈。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 27. Number of Connected Components in an Undirected Graph
+### 27. 无向图中连通分量的数目
 
-**Difficulty:** Medium
-**Topics:** graph, union-find, dfs
-**Position:** T2-3
-**Years:** T2-T3
+**难度：** 中等
+**主题：** graph, union-find, dfs
+**岗位：** T2-3
+**级别：** T2-T3
 
-**Question:** Given `n` nodes and an edge list, return the number of connected components.
+**问题：** 给定 `n` 个节点和边列表，返回连通分量数。
 
-**Approach:** Union-Find with path compression + union by rank. Each edge → union. Count distinct roots. O(E α(N)) ≈ O(E). Alternative: DFS/BFS from each unvisited node, count starts. Building block for friend-graph features.
+**思路：** 并查集 + 路径压缩 + 按秩合并。每条边 → 合并。统计不同根数。O(E α(N)) ≈ O(E)。或从每个未访问节点 DFS/BFS，统计起点数。好友关系特性的基础组件。
 
-**Python:**
+**Python：**
 ```python
 def count_components(n: int, edges: list[list[int]]) -> int:
     parent = list(range(n))
@@ -1318,7 +1318,7 @@ def count_components(n: int, edges: list[list[int]]) -> int:
     return comps
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function countComponents(n: number, edges: number[][]): number {
   const parent = Array.from({ length: n }, (_, i) => i);
@@ -1335,7 +1335,7 @@ function countComponents(n: number, edges: number[][]): number {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 int[] parentUF;
 
@@ -1356,27 +1356,27 @@ int findUF(int x) {
 }
 ```
 
-**Key points:**
-- Start with `n` singletons; each successful union reduces the count by 1.
-- Path compression keeps amortized cost near O(α(n)).
-- Union by rank is optional but useful on adversarial inputs.
+**要点：**
+- 初始每个点独立，每次成功合并组件数减 1。
+- 路径压缩使平均复杂度接近 O(α(n))。
+- 按秩合并可选，对极端输入更稳健。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 28. Number of Provinces (Friend Circles)
+### 28. 省份数量（朋友圈）
 
-**Difficulty:** Medium
-**Topics:** graph, union-find, dfs
-**Position:** T2-3
-**Years:** T2-T3
+**难度：** 中等
+**主题：** graph, union-find, dfs
+**岗位：** T2-3
+**级别：** T2-T3
 
-**Question:** Given an `n x n` adjacency matrix `isConnected` where `isConnected[i][j] = 1` means city `i` and `j` are directly connected, return the number of provinces (connected components).
+**问题：** 给定 `n x n` 邻接矩阵 `isConnected`，`isConnected[i][j] = 1` 表示城市 `i` 与 `j` 直连，返回省份数（连通分量数）。
 
-**Approach:** Union-find or DFS on rows: for each unvisited city, DFS all reachable cities, increment province count. O(n^2). Direct WeChat friend-circle analog — Tencent loves the framing.
+**思路：** 并查集或按行 DFS：每遇到未访问城市，DFS 所有可达城市，省份数 +1。O(n^2)。微信朋友圈直接对应——腾讯爱这个包装。
 
-**Python:**
+**Python：**
 ```python
 def find_circle_num(is_connected: list[list[int]]) -> int:
     n = len(is_connected)
@@ -1394,7 +1394,7 @@ def find_circle_num(is_connected: list[list[int]]) -> int:
     return provinces
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function findCircleNum(isConnected: number[][]): number {
   const n = isConnected.length;
@@ -1413,7 +1413,7 @@ function findCircleNum(isConnected: number[][]): number {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 int findCircleNum(int[][] isConnected) {
   int n = isConnected.length;
@@ -1433,27 +1433,27 @@ void dfsProv(int[][] m, boolean[] visited, int u) {
 }
 ```
 
-**Key points:**
-- Each DFS launch corresponds to one new province.
-- The adjacency matrix is symmetric — no need to handle reverse direction specially.
-- Union-find variant fits incremental "add friendship" streaming scenarios better.
+**要点：**
+- 每次 DFS 启动即一个新省份。
+- 邻接矩阵对称，无需特别处理反向。
+- 流式增量加好友时，并查集写法更合适。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 29. Redundant Connection
+### 29. 冗余连接
 
-**Difficulty:** Medium
-**Topics:** graph, union-find, cycle
-**Position:** T2-3
-**Years:** T2-T3
+**难度：** 中等
+**主题：** graph, union-find, cycle
+**岗位：** T2-3
+**级别：** T2-T3
 
-**Question:** A tree of `n` nodes has one extra edge added, forming a cycle. Return the edge that can be removed so the graph is a tree again. If multiple, return the one appearing last.
+**问题：** 一棵 `n` 节点的树被加了多余的一条边，形成环。返回可以删除使其重新成树的边。若有多个，返回出现最晚的那条。
 
-**Approach:** Process edges in order, union endpoints. The first edge whose endpoints already share a root is the answer. O(n α(n)). Classic union-find application.
+**思路：** 按序处理边，合并端点。首条端点已在同根中的边即答案。O(n α(n))。经典并查集应用。
 
-**Python:**
+**Python：**
 ```python
 def find_redundant_connection(edges: list[list[int]]) -> list[int]:
     parent = list(range(len(edges) + 1))
@@ -1470,7 +1470,7 @@ def find_redundant_connection(edges: list[list[int]]) -> list[int]:
     return []
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function findRedundantConnection(edges: number[][]): number[] {
   const parent = Array.from({ length: edges.length + 1 }, (_, i) => i);
@@ -1487,7 +1487,7 @@ function findRedundantConnection(edges: number[][]): number[] {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 int[] parRC;
 
@@ -1508,27 +1508,27 @@ int findRC(int x) {
 }
 ```
 
-**Key points:**
-- Edges are processed in input order so the first cycle-closer is the answer.
-- Path compression keeps each `find` near-constant.
-- Returning the last cycle-closing edge satisfies the "appearing last" tiebreak naturally.
+**要点：**
+- 按输入顺序处理边，首条成环的边即答案。
+- 路径压缩使每次 `find` 近乎常数时间。
+- 自然返回出现最晚的成环边，满足题目并列要求。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 30. Course Schedule
+### 30. 课程表
 
-**Difficulty:** Medium
-**Topics:** graph, topological-sort, dfs, bfs
-**Position:** T2-3
-**Years:** T2-T3
+**难度：** 中等
+**主题：** graph, topological-sort, dfs, bfs
+**岗位：** T2-3
+**级别：** T2-T3
 
-**Question:** Given `numCourses` and prerequisite pairs `[a, b]` meaning take `b` before `a`, determine if you can finish all courses.
+**问题：** 给定 `numCourses` 和先修对 `[a, b]`（学 `a` 前先学 `b`），判断能否完成全部课程。
 
-**Approach:** Cycle detection in a directed graph. BFS Kahn's: compute in-degrees, enqueue zeros, pop and decrement neighbors. If processed count = `numCourses`, no cycle. Or DFS with 3-color marking (white/gray/black). O(V + E).
+**思路：** 有向图环检测。BFS Kahn 算法：算入度，入度为 0 的入队，弹出后邻居入度减一。处理数 = `numCourses` 即无环。或 DFS 三色法（白/灰/黑）。O(V + E)。
 
-**Python:**
+**Python：**
 ```python
 from collections import deque
 
@@ -1550,7 +1550,7 @@ def can_finish(num_courses: int, prerequisites: list[list[int]]) -> bool:
     return done == num_courses
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function canFinish(numCourses: number, prerequisites: number[][]): boolean {
   const graph: number[][] = Array.from({ length: numCourses }, () => []);
@@ -1568,7 +1568,7 @@ function canFinish(numCourses: number, prerequisites: number[][]): boolean {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 boolean canFinish(int numCourses, int[][] prerequisites) {
   List<List<Integer>> graph = new ArrayList<>();
@@ -1587,27 +1587,27 @@ boolean canFinish(int numCourses, int[][] prerequisites) {
 }
 ```
 
-**Key points:**
-- A cycle leaves some nodes with `indeg > 0` forever — `done < numCourses`.
-- Edge `b -> a` means b is a prerequisite of a.
-- Same skeleton extends to topological order output.
+**要点：**
+- 存在环时部分节点入度永远不为 0，`done < numCourses`。
+- 边 `b -> a` 表示 b 是 a 的先修。
+- 同样的骨架可直接输出拓扑序。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 31. Course Schedule II
+### 31. 课程表 II
 
-**Difficulty:** Medium
-**Topics:** graph, topological-sort
-**Position:** T2-3
-**Years:** T2-T3
+**难度：** 中等
+**主题：** graph, topological-sort
+**岗位：** T2-3
+**级别：** T2-T3
 
-**Question:** Same setup as Course Schedule, but return a valid order to take all courses, or empty array if impossible.
+**问题：** 与课程表相同，但返回一种可行的修课顺序，无解则空数组。
 
-**Approach:** Kahn's topological sort: BFS from in-degree-0 nodes, append to order as popped. If `order.size() != numCourses`, cycle exists → return `[]`. O(V + E). Show you understand it's any valid order, not unique.
+**思路：** Kahn 拓扑排序：从入度 0 节点 BFS，弹出顺序加入结果。若 `order.size() != numCourses`，存在环 → 返回 `[]`。O(V + E)。说明任意可行序均可，非唯一。
 
-**Python:**
+**Python：**
 ```python
 from collections import deque
 
@@ -1629,7 +1629,7 @@ def find_order(num_courses: int, prerequisites: list[list[int]]) -> list[int]:
     return order if len(order) == num_courses else []
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function findOrder(numCourses: number, prerequisites: number[][]): number[] {
   const graph: number[][] = Array.from({ length: numCourses }, () => []);
@@ -1647,7 +1647,7 @@ function findOrder(numCourses: number, prerequisites: number[][]): number[] {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 int[] findOrder(int numCourses, int[][] prerequisites) {
   List<List<Integer>> graph = new ArrayList<>();
@@ -1667,27 +1667,27 @@ int[] findOrder(int numCourses, int[][] prerequisites) {
 }
 ```
 
-**Key points:**
-- Output order tracks Kahn's pop order — any valid topological order is acceptable.
-- Cycle detection still piggybacks on the processed-count check.
-- Use a priority queue if a lexicographically smallest order is required.
+**要点：**
+- 弹出顺序即为一种合法拓扑序，结果不唯一。
+- 仍通过处理节点数判定是否存在环。
+- 需要字典序最小时改用优先队列。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 32. Alien Dictionary
+### 32. 火星词典
 
-**Difficulty:** Hard
-**Topics:** graph, topological-sort, strings
-**Position:** T3-1
-**Years:** T3
+**难度：** 困难
+**主题：** graph, topological-sort, strings
+**岗位：** T3-1
+**级别：** T3
 
-**Question:** Given a list of words sorted lexicographically by an unknown alphabet, derive a valid character order. Return empty string if no valid order or contradiction (e.g., `["abc", "ab"]`).
+**问题：** 给定按未知字母序排列的单词列表，推出一个合法字符序。若无解或矛盾（如 `["abc","ab"]`）返回空串。
 
-**Approach:** Build a directed graph from adjacent-word first-differing chars. Topological sort. Edge cases: prefix conflict (`["abc","ab"]` invalid), cycles in derived graph. O(total chars). Tencent loves this one — combines parsing + topo.
+**思路：** 相邻单词首个不同字符建有向图。拓扑排序。边界：前缀冲突（`["abc","ab"]` 非法）、推得图存在环。O(总字符数)。腾讯爱出——解析 + 拓扑结合。
 
-**Python:**
+**Python：**
 ```python
 from collections import defaultdict, deque
 
@@ -1716,7 +1716,7 @@ def alien_order(words: list[str]) -> str:
     return "".join(out) if len(out) == len(indeg) else ""
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function alienOrder(words: string[]): string {
   const graph = new Map<string, Set<string>>();
@@ -1749,7 +1749,7 @@ function alienOrder(words: string[]): string {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 String alienOrder(String[] words) {
   Map<Character, Set<Character>> graph = new HashMap<>();
@@ -1779,27 +1779,27 @@ String alienOrder(String[] words) {
 }
 ```
 
-**Key points:**
-- Only the first differing character between consecutive words yields an edge.
-- Prefix conflict (`"abc"` before `"ab"`) is invalid — detect and return `""`.
-- A cycle in the derived graph also yields `""`.
+**要点：**
+- 仅相邻两词的首个不同字符产生一条有向边。
+- 前缀冲突（`"abc"` 在 `"ab"` 之前）属非法，返回 `""`。
+- 派生图中存在环时同样返回 `""`。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 33. Stone Game
+### 33. 石子游戏
 
-**Difficulty:** Medium
-**Topics:** dp, game-theory, minimax
-**Position:** T2-3
-**Years:** T2-T3
+**难度：** 中等
+**主题：** dp, game-theory, minimax
+**岗位：** T2-3
+**级别：** T2-T3
 
-**Question:** Even-length piles array. Two players alternate taking either the leftmost or rightmost pile. Both play optimally. Return true if player 1 wins.
+**问题：** 偶数长石堆数组。两人轮流拿最左或最右一堆。双方都最优，先手是否必胜？
 
-**Approach:** DP `dp[i][j] = max(piles[i] - dp[i+1][j], piles[j] - dp[i][j-1])` representing best score-diff achievable for the current player on `piles[i..j]`. Answer: `dp[0][n-1] > 0`. O(n^2) time/space. Trick answer: always true for even n with even total, but interviewer wants the DP.
+**思路：** DP `dp[i][j] = max(piles[i] - dp[i+1][j], piles[j] - dp[i][j-1])`，表示当前玩家在 `piles[i..j]` 上能取得的最优分差。答案：`dp[0][n-1] > 0`。O(n^2) 时间/空间。脑筋急转弯答案：偶数 n 且总和为偶时恒为 true，但面试官想看 DP。
 
-**Python:**
+**Python：**
 ```python
 def stone_game(piles: list[int]) -> bool:
     n = len(piles)
@@ -1813,7 +1813,7 @@ def stone_game(piles: list[int]) -> bool:
     return dp[0][n - 1] > 0
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function stoneGame(piles: number[]): boolean {
   const n = piles.length;
@@ -1829,7 +1829,7 @@ function stoneGame(piles: number[]): boolean {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 boolean stoneGame(int[] piles) {
   int n = piles.length;
@@ -1845,67 +1845,67 @@ boolean stoneGame(int[] piles) {
 }
 ```
 
-**Key points:**
-- `dp[i][j]` is the maximum score difference the player-to-move can guarantee.
-- Fill by interval length so all needed sub-intervals exist first.
-- Both players are optimal — the subtractive recurrence already encodes that.
+**要点：**
+- `dp[i][j]` 表示当前先手在该区间上能稳取的最大分差。
+- 按区间长度填表，保证子区间已就绪。
+- 递推中的减号已经隐含了对手也最优行动。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 34. Nim Game
+### 34. Nim 游戏
 
-**Difficulty:** Easy
-**Topics:** game-theory, math
-**Position:** T2-3
-**Years:** T2-T3
+**难度：** 简单
+**主题：** game-theory, math
+**岗位：** T2-3
+**级别：** T2-T3
 
-**Question:** A pile of `n` stones. Players alternate removing 1, 2, or 3 stones. The player taking the last stone wins. You go first — can you always win?
+**问题：** `n` 颗石头，每人每轮拿 1、2 或 3 颗，拿到最后一颗者胜。你先手——能否必胜？
 
-**Approach:** Losing position iff `n % 4 == 0`. Whoever faces a multiple of 4 loses with optimal play (opponent mirrors to keep you at multiples of 4). O(1). Be ready to prove inductively.
+**思路：** 必败位为 `n % 4 == 0`。面对 4 的倍数者最优下必败（对手镜像维持你处于 4 的倍数）。O(1)。准备好归纳证明。
 
-**Python:**
+**Python：**
 ```python
 def can_win_nim(n: int) -> bool:
     return n % 4 != 0
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function canWinNim(n: number): boolean {
   return n % 4 !== 0;
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 boolean canWinNim(int n) {
   return n % 4 != 0;
 }
 ```
 
-**Key points:**
-- Multiples of 4 are losing positions; everything else is winning.
-- Mirror strategy: opponent always responds with `4 - your_take` to keep you stuck.
-- Inductive proof: from any `n % 4 != 0`, you can move to a multiple of 4.
+**要点：**
+- 4 的倍数为必败位，其余皆必胜。
+- 镜像策略：对方总用 `4 - 你拿数` 让你始终停留在 4 的倍数。
+- 归纳证明：任意非 4 倍数都能一步走到 4 的倍数。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 35. Predict the Winner
+### 35. 预测赢家
 
-**Difficulty:** Medium
-**Topics:** dp, game-theory, minimax, recursion
-**Position:** T2-3
-**Years:** T2-T3
+**难度：** 中等
+**主题：** dp, game-theory, minimax, recursion
+**岗位：** T2-3
+**级别：** T2-T3
 
-**Question:** Given a score array, two players alternately pick from either end. Return true if player 1 can win or tie with optimal play.
+**问题：** 给定分数数组，两人轮流从两端取数。最优策略下玩家 1 是否能赢或平。
 
-**Approach:** Same DP as Stone Game: `dp[i][j]` = max score-diff current player can achieve on `nums[i..j]`. Top-down memo also works. O(n^2). Answer: `dp[0][n-1] >= 0`. Tencent variant: ask about space optimization to O(n) using 1D rolling.
+**思路：** 与石子游戏同 DP：`dp[i][j]` = 当前玩家在 `nums[i..j]` 上能取得的最大分差。自顶向下记忆化也可。O(n^2)。答案：`dp[0][n-1] >= 0`。腾讯变体：问如何用 1D 滚动数组优化到 O(n)。
 
-**Python:**
+**Python：**
 ```python
 def predict_the_winner(nums: list[int]) -> bool:
     n = len(nums)
@@ -1916,7 +1916,7 @@ def predict_the_winner(nums: list[int]) -> bool:
     return dp[n - 1] >= 0
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function PredictTheWinner(nums: number[]): boolean {
   const n = nums.length;
@@ -1930,7 +1930,7 @@ function PredictTheWinner(nums: number[]): boolean {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 boolean predictTheWinner(int[] nums) {
   int n = nums.length;
@@ -1944,27 +1944,27 @@ boolean predictTheWinner(int[] nums) {
 }
 ```
 
-**Key points:**
-- 1D rolling array works because `dp[i][j]` depends only on `dp[i+1][j]` and `dp[i][j-1]`.
-- Initialize `dp[j] = nums[j]` to represent the base case `i == j`.
-- Return `>= 0` so ties also count as a player-1 win.
+**要点：**
+- `dp[i][j]` 仅依赖 `dp[i+1][j]` 与 `dp[i][j-1]`，可压成 1D。
+- 初始化 `dp[j] = nums[j]` 表示 `i == j` 的基线。
+- 平局也算先手获胜，所以判定 `>= 0`。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 36. Can I Win
+### 36. 我能赢吗
 
-**Difficulty:** Medium
-**Topics:** dp, game-theory, bitmask, memoization
-**Position:** T3-1
-**Years:** T3
+**难度：** 中等
+**主题：** dp, game-theory, bitmask, memoization
+**岗位：** T3-1
+**级别：** T3
 
-**Question:** Numbers 1..`maxChoosableInteger`, no replacement. Players alternate picking; first to push the running total ≥ `desiredTotal` wins. Return true if first player can force a win.
+**问题：** 数字 1..`maxChoosableInteger`，不放回，两人轮流取；先使累计和 ≥ `desiredTotal` 者胜。判断先手是否必胜。
 
-**Approach:** Bitmask DP over chosen-set state (`maxChoosable ≤ 20`). Memo `state → win/lose`. For each unchosen number, if picking it wins immediately OR opponent loses from new state, current player wins. Edge cases: if sum < target → impossible (false). O(2^n * n).
+**思路：** 状压 DP（`maxChoosable ≤ 20`）。记忆化 `state → win/lose`。对每个未选数：若选了立即赢，或对手在新状态必败，则当前胜。边界：总和 < 目标即不可能（返回 false）。O(2^n * n)。
 
-**Python:**
+**Python：**
 ```python
 from functools import lru_cache
 
@@ -1983,7 +1983,7 @@ def can_i_win(max_choosable: int, desired_total: int) -> bool:
     return win(0, desired_total)
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function canIWin(maxChoosable: number, desiredTotal: number): boolean {
   if ((maxChoosable * (maxChoosable + 1)) / 2 < desiredTotal) return false;
@@ -2003,7 +2003,7 @@ function canIWin(maxChoosable: number, desiredTotal: number): boolean {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 Map<Integer, Boolean> memoCIW;
 int maxChoosableCIW;
@@ -2028,27 +2028,27 @@ boolean winCIW(int state, int remaining) {
 }
 ```
 
-**Key points:**
-- Bitmask captures the set of used numbers — fits within an int for `n ≤ 20`.
-- Memoize by `state` alone since `remaining` is uniquely determined by `state`.
-- Early-impossible: if total of all numbers < target, no one can win.
+**要点：**
+- 位掩码表示已选数集合，`n ≤ 20` 时可放入一个 int。
+- 仅以 `state` 为键记忆，`remaining` 由 `state` 唯一决定。
+- 早返：当所有数之和小于目标时直接判负。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 37. Flip Game II
+### 37. 翻转游戏 II
 
-**Difficulty:** Medium
-**Topics:** game-theory, dp, memoization, sprague-grundy
-**Position:** T3-1
-**Years:** T3
+**难度：** 中等
+**主题：** game-theory, dp, memoization, sprague-grundy
+**岗位：** T3-1
+**级别：** T3
 
-**Question:** A string of `+` and `-`. A move flips two consecutive `++` to `--`. Return true if the starting player can guarantee a win.
+**问题：** 由 `+`、`-` 组成的字符串。每次将相邻 `++` 翻成 `--`。判断先手是否必胜。
 
-**Approach:** Recursion + memoization on string state. For each `++` position, flip, recurse opponent — if opponent loses, current wins. Optimize with Sprague-Grundy theorem (XOR of independent runs' Grundy numbers) for O(n^2). Without SG, exponential worst case.
+**思路：** 在字符串状态上递归 + 记忆化。对每个 `++` 位置，翻转后递归对手——对手败则当前胜。可用 Sprague-Grundy 定理（独立连续段 Grundy 数异或）优化到 O(n^2)。无 SG 最坏指数级。
 
-**Python:**
+**Python：**
 ```python
 def can_win(s: str) -> bool:
     memo: dict[str, bool] = {}
@@ -2066,7 +2066,7 @@ def can_win(s: str) -> bool:
     return go(s)
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function canWin(s: string): boolean {
   const memo = new Map<string, boolean>();
@@ -2084,7 +2084,7 @@ function canWin(s: string): boolean {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 Map<String, Boolean> memoFG = new HashMap<>();
 
@@ -2100,27 +2100,27 @@ boolean canWin(String s) {
 }
 ```
 
-**Key points:**
-- Current player wins iff some move leaves the opponent in a losing state.
-- Memoize per string state to avoid recomputing common positions.
-- Grundy numbers can collapse runs to O(n^2) but the memoized recursion is simpler.
+**要点：**
+- 当前玩家只要能让对手陷入必败态即胜。
+- 按字符串状态记忆化，避免重复计算同形局面。
+- Grundy 数把独立段压成 O(n^2)，但记忆化版本更直观。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 38. Guess Number Higher or Lower II
+### 38. 猜数字大小 II
 
-**Difficulty:** Medium
-**Topics:** dp, minimax, game-theory
-**Position:** T3-1
-**Years:** T3
+**难度：** 中等
+**主题：** dp, minimax, game-theory
+**岗位：** T3-1
+**级别：** T3
 
-**Question:** Pick a number 1..n. Each guess `x` costs `$x`; you're told higher/lower until correct. Return the minimum money guaranteed to win, assuming worst-case answer placement.
+**问题：** 选 1..n 中一数。每次猜 `x` 花 `$x`；猜错被告知大小直到猜中。返回保证胜出所需的最少金额（最坏情况）。
 
-**Approach:** Minimax DP. `dp[i][j]` = min money for range `[i, j]`. Try every `k` as guess: `cost(k) = k + max(dp[i][k-1], dp[k+1][j])`. Take min over k. O(n^3). Interval DP — fill by length.
+**思路：** Minimax DP。`dp[i][j]` = 区间 `[i, j]` 的最低保证花费。枚举每个 `k` 作猜测：`cost(k) = k + max(dp[i][k-1], dp[k+1][j])`，取 min。O(n^3)。区间 DP，按长度填表。
 
-**Python:**
+**Python：**
 ```python
 def get_money_amount(n: int) -> int:
     dp = [[0] * (n + 2) for _ in range(n + 2)]
@@ -2131,7 +2131,7 @@ def get_money_amount(n: int) -> int:
     return dp[1][n]
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function getMoneyAmount(n: number): number {
   const dp: number[][] = Array.from({ length: n + 2 }, () => new Array(n + 2).fill(0));
@@ -2149,7 +2149,7 @@ function getMoneyAmount(n: number): number {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 int getMoneyAmount(int n) {
   int[][] dp = new int[n + 2][n + 2];
@@ -2167,27 +2167,27 @@ int getMoneyAmount(int n) {
 }
 ```
 
-**Key points:**
-- Worst-case minimax: opponent (the hidden number) picks the worse branch.
-- Range length ordering ensures sub-ranges are filled first.
-- Indices are 1-based to match the value range `[1, n]`.
+**要点：**
+- 最坏情况博弈：对方（隐藏数）总挑代价更高的一侧。
+- 按区间长度递增填表，先备齐子区间。
+- 下标使用 1-based 以匹配值域 `[1, n]`。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 39. Wildcard Matching
+### 39. 通配符匹配
 
-**Difficulty:** Hard
-**Topics:** dp, strings
-**Position:** T3-1
-**Years:** T3
+**难度：** 困难
+**主题：** dp, strings
+**岗位：** T3-1
+**级别：** T3
 
-**Question:** Implement wildcard pattern matching with `?` (any single char) and `*` (any sequence including empty). Return whether the pattern matches the full string.
+**问题：** 实现通配符匹配：`?` 匹配任意单字符，`*` 匹配任意序列（含空）。要求整串匹配。
 
-**Approach:** 2D DP `dp[i][j]` = match `s[0..i)` vs `p[0..j)`. Star: `dp[i][j] = dp[i][j-1] (empty) || dp[i-1][j] (extend)`. Question mark: `dp[i][j] = dp[i-1][j-1]`. Initialize `dp[0][j]` for leading stars. O(n*m).
+**思路：** 2D DP `dp[i][j]` 表示 `s[0..i)` 与 `p[0..j)` 是否匹配。`*`：`dp[i][j] = dp[i][j-1]（空）|| dp[i-1][j]（延伸）`。`?`：`dp[i][j] = dp[i-1][j-1]`。前导 `*` 时初始化 `dp[0][j]`。O(n*m)。
 
-**Python:**
+**Python：**
 ```python
 def is_match_wildcard(s: str, p: str) -> bool:
     n, m = len(s), len(p)
@@ -2205,7 +2205,7 @@ def is_match_wildcard(s: str, p: str) -> bool:
     return dp[n][m]
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function isMatchWildcard(s: string, p: string): boolean {
   const n = s.length, m = p.length;
@@ -2222,7 +2222,7 @@ function isMatchWildcard(s: string, p: string): boolean {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 boolean isMatchWildcard(String s, String p) {
   int n = s.length(), m = p.length();
@@ -2240,27 +2240,27 @@ boolean isMatchWildcard(String s, String p) {
 }
 ```
 
-**Key points:**
-- `*` means either match nothing (`dp[i][j-1]`) or extend the match (`dp[i-1][j]`).
-- Leading `*`-only prefixes must seed `dp[0][j]` to true.
-- `?` matches exactly one character — handle like a literal match.
+**要点：**
+- `*` 既可匹配空串（`dp[i][j-1]`），也可继续吃字符（`dp[i-1][j]`）。
+- 全是 `*` 的前缀需要把 `dp[0][j]` 初始化为 true。
+- `?` 恰好匹配一个字符，按字面字符处理即可。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 40. Regular Expression Matching
+### 40. 正则表达式匹配
 
-**Difficulty:** Hard
-**Topics:** dp, strings, recursion
-**Position:** T3-1
-**Years:** T3-T4
+**难度：** 困难
+**主题：** dp, strings, recursion
+**岗位：** T3-1
+**级别：** T3-T4
 
-**Question:** Implement regex matching with `.` (any single char) and `*` (zero or more of preceding element). Match whole string.
+**问题：** 实现支持 `.`（任意单字符）与 `*`（前一元素的 0 次或多次）的正则匹配。整串匹配。
 
-**Approach:** DP `dp[i][j]`. If `p[j-1] == '*'`: zero occurrences (`dp[i][j-2]`) OR one+ if `s[i-1]` matches `p[j-2]` (`dp[i-1][j]`). Else: char/dot match → `dp[i-1][j-1]`. Tricky init for patterns like `a*b*c*`. O(n*m).
+**思路：** DP `dp[i][j]`。若 `p[j-1] == '*'`：取 0 次（`dp[i][j-2]`）或 1 次及以上且 `s[i-1]` 与 `p[j-2]` 匹配（`dp[i-1][j]`）。否则：字符/点匹配 → `dp[i-1][j-1]`。`a*b*c*` 之类的初始化要细心。O(n*m)。
 
-**Python:**
+**Python：**
 ```python
 def is_match_regex(s: str, p: str) -> bool:
     n, m = len(s), len(p)
@@ -2280,7 +2280,7 @@ def is_match_regex(s: str, p: str) -> bool:
     return dp[n][m]
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function isMatchRegex(s: string, p: string): boolean {
   const n = s.length, m = p.length;
@@ -2301,7 +2301,7 @@ function isMatchRegex(s: string, p: string): boolean {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 boolean isMatchRegex(String s, String p) {
   int n = s.length(), m = p.length();
@@ -2324,27 +2324,27 @@ boolean isMatchRegex(String s, String p) {
 }
 ```
 
-**Key points:**
-- `x*` either skips itself (`dp[i][j-2]`) or matches one more character (`dp[i-1][j]`).
-- Initialize `dp[0][j]` for patterns like `a*b*c*` that match empty strings.
-- `.` substitutes for any single character — handle inside the `*` branch too.
+**要点：**
+- `x*` 要么整段忽略（`dp[i][j-2]`），要么再多吃一个字符（`dp[i-1][j]`）。
+- 初始化 `dp[0][j]` 以支持 `a*b*c*` 这种空匹配模式。
+- `.` 可代替任意单字符，需在 `*` 分支也处理。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 41. Longest Palindromic Substring
+### 41. 最长回文子串
 
-**Difficulty:** Medium
-**Topics:** strings, dp, two-pointer
-**Position:** T2-3
-**Years:** T2-T3
+**难度：** 中等
+**主题：** strings, dp, two-pointer
+**岗位：** T2-3
+**级别：** T2-T3
 
-**Question:** Return the longest palindromic substring of `s`.
+**问题：** 返回 `s` 的最长回文子串。
 
-**Approach:** Expand-around-center: for each i, expand for odd and even-length palindromes; track longest. O(n^2) time, O(1) space. For O(n) — Manacher's algorithm (interviewer rarely demands but bonus). Don't confuse with longest palindromic *subsequence*.
+**思路：** 中心扩展：对每个 i 分别按奇偶长度扩展；维护最长。O(n^2) 时间，O(1) 空间。O(n) — Manacher 算法（面试很少强求但可加分）。别和最长回文*子序列*混淆。
 
-**Python:**
+**Python：**
 ```python
 def longest_palindrome(s: str) -> str:
     def grow(l: int, r: int) -> tuple[int, int]:
@@ -2360,7 +2360,7 @@ def longest_palindrome(s: str) -> str:
     return s[bl:br + 1]
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function longestPalindrome(s: string): string {
   const grow = (l: number, r: number): [number, number] => {
@@ -2377,7 +2377,7 @@ function longestPalindrome(s: string): string {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 int blLP = 0, brLP = 0;
 
@@ -2396,27 +2396,27 @@ void grow(String s, int l, int r) {
 }
 ```
 
-**Key points:**
-- Try both odd (single-character center) and even (two-character center) expansions.
-- Track best by length comparison, avoiding repeated substring slicing.
-- Manacher gets O(n), but expand-around-center is plenty for typical sizes.
+**要点：**
+- 同时尝试奇数中心和偶数中心两种扩展。
+- 通过长度比较记录最优起止，避免反复切片。
+- Manacher 可达 O(n)，但中心扩展在常见规模下已够用。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 42. Longest Palindromic Subsequence
+### 42. 最长回文子序列
 
-**Difficulty:** Medium
-**Topics:** dp, strings
-**Position:** T2-3
-**Years:** T2-T3
+**难度：** 中等
+**主题：** dp, strings
+**岗位：** T2-3
+**级别：** T2-T3
 
-**Question:** Return the length of the longest palindromic subsequence in `s` (not necessarily contiguous).
+**问题：** 返回 `s` 中最长回文子序列长度（不必连续）。
 
-**Approach:** Interval DP `dp[i][j]` = LPS length in `s[i..j]`. If `s[i] == s[j]`: `dp[i][j] = dp[i+1][j-1] + 2`. Else: `max(dp[i+1][j], dp[i][j-1])`. Fill by length. O(n^2). Trick: equals LCS of `s` and reverse(`s`).
+**思路：** 区间 DP `dp[i][j]` = `s[i..j]` 上的 LPS 长度。若 `s[i] == s[j]`：`dp[i][j] = dp[i+1][j-1] + 2`，否则：`max(dp[i+1][j], dp[i][j-1])`。按长度填。O(n^2)。技巧：等价于 `s` 与 reverse(`s`) 的 LCS。
 
-**Python:**
+**Python：**
 ```python
 def longest_palindrome_subseq(s: str) -> int:
     n = len(s)
@@ -2433,7 +2433,7 @@ def longest_palindrome_subseq(s: str) -> int:
     return dp[0][n - 1]
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function longestPalindromeSubseq(s: string): number {
   const n = s.length;
@@ -2449,7 +2449,7 @@ function longestPalindromeSubseq(s: string): number {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 int longestPalindromeSubseq(String s) {
   int n = s.length();
@@ -2467,27 +2467,27 @@ int longestPalindromeSubseq(String s) {
 }
 ```
 
-**Key points:**
-- Interval DP filled by length so subproblems are ready.
-- Each character alone is a palindrome of length 1 — seed the diagonal.
-- Equivalent to LCS of `s` with its reverse, in O(n^2).
+**要点：**
+- 区间 DP 按长度填，保证子区间先就绪。
+- 单字符自身是长度 1 的回文，先初始化主对角线。
+- 等价于 `s` 与 reverse(`s`) 的 LCS，O(n^2)。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 43. Palindrome Partitioning
+### 43. 分割回文串
 
-**Difficulty:** Medium
-**Topics:** backtracking, dp, strings
-**Position:** T2-3
-**Years:** T2-T3
+**难度：** 中等
+**主题：** backtracking, dp, strings
+**岗位：** T2-3
+**级别：** T2-T3
 
-**Question:** Partition `s` so every substring is a palindrome. Return all such partitions.
+**问题：** 将 `s` 划分使每段都是回文。返回所有划分方案。
 
-**Approach:** Backtracking: at index `i`, try every prefix `s[i..j]`; if palindrome, recurse from `j+1`. Precompute palindrome table `isP[i][j]` in O(n^2) for speedup. Total O(n * 2^n) worst-case (exponential outputs).
+**思路：** 回溯：在下标 `i`，尝试每个前缀 `s[i..j]`；若回文则从 `j+1` 递归。预处理回文表 `isP[i][j]`（O(n^2)）加速。最坏 O(n * 2^n)（输出指数级）。
 
-**Python:**
+**Python：**
 ```python
 def partition(s: str) -> list[list[str]]:
     n = len(s)
@@ -2511,7 +2511,7 @@ def partition(s: str) -> list[list[str]]:
     return out
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function partition(s: string): string[][] {
   const n = s.length;
@@ -2538,7 +2538,7 @@ function partition(s: string): string[][] {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 List<List<String>> partition(String s) {
   int n = s.length();
@@ -2565,27 +2565,27 @@ void goPP(String s, int start, boolean[][] isP, List<String> path, List<List<Str
 }
 ```
 
-**Key points:**
-- Precomputed `isP` makes palindrome checks O(1) during backtracking.
-- Use a shared mutable `path` and snapshot it on completion.
-- Worst-case exponential output (e.g., string of all same chars).
+**要点：**
+- 预处理 `isP` 把回溯里的回文判断降到 O(1)。
+- 复用可变 `path`，命中终点时快照入结果。
+- 最坏输出指数级（如全相同字符的串）。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 44. Word Break II
+### 44. 单词拆分 II
 
-**Difficulty:** Hard
-**Topics:** dp, backtracking, memoization, trie
-**Position:** T3-1
-**Years:** T3
+**难度：** 困难
+**主题：** dp, backtracking, memoization, trie
+**岗位：** T3-1
+**级别：** T3
 
-**Question:** Given string `s` and dictionary, return all sentences where `s` can be space-segmented into dictionary words.
+**问题：** 给定字符串 `s` 和字典，返回所有可以将 `s` 用空格分割为字典词的句子。
 
-**Approach:** Backtracking + memoization on suffix → list of sentences. For each split point producing a dictionary word prefix, recurse on the suffix. Cache results per starting index. Trie for prefix lookup speeds the prefix scan. Worst case exponential (output-bound).
+**思路：** 后缀上做回溯 + 记忆化（后缀起点 → 句子列表）。每个使前缀是字典词的切点，对后缀递归。按起点缓存结果。Trie 做前缀查找加速扫描。最坏指数（受输出限制）。
 
-**Python:**
+**Python：**
 ```python
 from functools import lru_cache
 
@@ -2605,7 +2605,7 @@ def word_break(s: str, word_dict: list[str]) -> list[str]:
     return go(0)
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function wordBreak(s: string, wordDict: string[]): string[] {
   const words = new Set(wordDict);
@@ -2627,7 +2627,7 @@ function wordBreak(s: string, wordDict: string[]): string[] {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 Map<Integer, List<String>> memoWB;
 Set<String> wordsWB;
@@ -2655,27 +2655,27 @@ List<String> goWB(int start) {
 }
 ```
 
-**Key points:**
-- Memoize by suffix start index so each index is expanded once.
-- Empty-rest sentinel `""` signals a clean termination at the end.
-- Trie/longest-prefix optimization helps when the dictionary is large.
+**要点：**
+- 按后缀起点记忆化，每个下标只展开一次。
+- 用空串作为递归终止标记。
+- 字典大时可结合 Trie/最长前缀加速扫描。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 45. Concatenated Words
+### 45. 连接词
 
-**Difficulty:** Hard
-**Topics:** dp, trie, strings
-**Position:** T3-1
-**Years:** T3
+**难度：** 困难
+**主题：** dp, trie, strings
+**岗位：** T3-1
+**级别：** T3
 
-**Question:** Given an array of unique strings, return all strings that are concatenations of at least two other strings in the array.
+**问题：** 给定不重复字符串数组，返回所有由数组中至少两个其他字符串拼接而成的字符串。
 
-**Approach:** For each word, run a Word Break DP using the set of all *other* words (or all words, requiring `>=2` segments). `dp[i]` true if `word[0..i)` is a valid segmentation. Optimize: sort by length, use a growing set. O(N * L^2) typical.
+**思路：** 对每个词，用其他词（或所有词，要求 `>=2` 段）跑 Word Break DP。`dp[i]` 表示 `word[0..i)` 可分割。优化：按长度排序，使用增量集合。常见 O(N * L^2)。
 
-**Python:**
+**Python：**
 ```python
 def find_all_concatenated_words(words: list[str]) -> list[str]:
     words.sort(key=len)
@@ -2700,7 +2700,7 @@ def find_all_concatenated_words(words: list[str]) -> list[str]:
     return out
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function findAllConcatenatedWordsInADict(words: string[]): string[] {
   words.sort((a, b) => a.length - b.length);
@@ -2726,7 +2726,7 @@ function findAllConcatenatedWordsInADict(words: string[]): string[] {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 List<String> findAllConcatenatedWordsInADict(String[] words) {
   Arrays.sort(words, Comparator.comparingInt(String::length));
@@ -2753,27 +2753,27 @@ boolean composableCW(String w, Set<String> seen) {
 }
 ```
 
-**Key points:**
-- Sorting by length lets the dictionary only contain shorter words.
-- A concatenated word requires at least two parts, enforced naturally because the word itself isn't in `seen` yet.
-- O(N * L^2) total — each word does Word Break against an incremental set.
+**要点：**
+- 按长度排序使候选字典只含更短的词。
+- 当前词尚未加入集合，天然保证至少由两段拼接。
+- 总复杂度 O(N * L^2)：每个词在增量集合上做一次 Word Break。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 46. Number of Atoms
+### 46. 原子的数量
 
-**Difficulty:** Hard
-**Topics:** stack, parsing, hashmap, strings
-**Position:** T3-1
-**Years:** T3
+**难度：** 困难
+**主题：** stack, parsing, hashmap, strings
+**岗位：** T3-1
+**级别：** T3
 
-**Question:** Parse a chemical formula like `"K4(ON(SO3)2)2"` and return atom counts in sorted order: `"K4N2O14S4"`.
+**问题：** 解析化学式如 `"K4(ON(SO3)2)2"`，按字典序输出原子计数：`"K4N2O14S4"`。
 
-**Approach:** Stack of hashmaps. Scan: atom name then optional count → add to top map. `(` → push new map. `)` then optional count → pop, multiply counts, merge into new top. End: sort keys, build result string.
+**思路：** 哈希表栈。扫描：原子名 + 可选计数 → 加到栈顶 map。`(` → 新建 map 入栈。`)` 后可选计数 → 出栈，计数乘倍数，合并到新栈顶。结束：键排序，拼字符串。
 
-**Python:**
+**Python：**
 ```python
 from collections import defaultdict
 
@@ -2809,7 +2809,7 @@ def count_of_atoms(formula: str) -> str:
     return "".join(k + (str(v) if v > 1 else "") for k, v in sorted(stack[0].items()))
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function countOfAtoms(formula: string): string {
   const stack: Array<Map<string, number>> = [new Map()];
@@ -2846,7 +2846,7 @@ function countOfAtoms(formula: string): string {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 String countOfAtoms(String formula) {
   Deque<Map<String, Integer>> stack = new ArrayDeque<>();
@@ -2881,27 +2881,27 @@ String countOfAtoms(String formula) {
 }
 ```
 
-**Key points:**
-- Stack of count maps mirrors nested groups exactly.
-- An atom token is one uppercase letter followed by zero or more lowercase letters.
-- Final output sorts atoms alphabetically and omits the count when it equals 1.
+**要点：**
+- 计数 map 栈与嵌套结构一一对应。
+- 原子 token = 一个大写字母后跟若干小写字母。
+- 输出按字母序，计数为 1 时省略。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 47. Basic Calculator II
+### 47. 基本计算器 II
 
-**Difficulty:** Medium
-**Topics:** stack, parsing, strings
-**Position:** T2-3
-**Years:** T2-T3
+**难度：** 中等
+**主题：** stack, parsing, strings
+**岗位：** T2-3
+**级别：** T2-T3
 
-**Question:** Evaluate a string expression with `+ - * /` and non-negative integers (no parentheses). Integer division truncates toward zero.
+**问题：** 求值字符串表达式，含 `+ - * /` 与非负整数（无括号）。整除向零截断。
 
-**Approach:** Single-pass with a stack. Track current number and previous operator. On operator or end: if prev is `+` push num; `-` push `-num`; `*` or `/` pop and combine. Final result = sum of stack. O(n). Variant with parentheses → recursion or extra stack.
+**思路：** 单次扫描 + 栈。维护当前数字与上一个运算符。遇运算符或末尾时：上一个为 `+` 入栈 num；`-` 入栈 `-num`；`*` 或 `/` 弹栈合并。最终结果为栈中之和。O(n)。带括号变体 → 递归或加栈。
 
-**Python:**
+**Python：**
 ```python
 def calculate(s: str) -> int:
     stack: list[int] = []
@@ -2923,7 +2923,7 @@ def calculate(s: str) -> int:
     return sum(stack)
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function calculate(s: string): number {
   const stack: number[] = [];
@@ -2944,7 +2944,7 @@ function calculate(s: string): number {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 int calculate(String s) {
   Deque<Integer> stack = new ArrayDeque<>();
@@ -2967,27 +2967,27 @@ int calculate(String s) {
 }
 ```
 
-**Key points:**
-- Buffer the current number then commit when an operator or end arrives.
-- `*` and `/` mutate the top of the stack (precedence baked in).
-- Integer division truncates toward zero — use `int(a / b)` / `Math.trunc`, not floor.
+**要点：**
+- 缓存当前数字，遇运算符或末尾再提交。
+- `*` 和 `/` 直接改写栈顶，自然体现优先级。
+- 整除向零截断——用 `int(a / b)` / `Math.trunc`，不要用向下取整。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 48. Decode String
+### 48. 字符串解码
 
-**Difficulty:** Medium
-**Topics:** stack, parsing, recursion, strings
-**Position:** T2-3
-**Years:** T2-T3
+**难度：** 中等
+**主题：** stack, parsing, recursion, strings
+**岗位：** T2-3
+**级别：** T2-T3
 
-**Question:** Decode strings like `"3[a2[c]]"` → `"accaccacc"`. Encoded as `k[string]` meaning the string repeated `k` times. Nested allowed.
+**问题：** 解码如 `"3[a2[c]]"` → `"accaccacc"`。编码为 `k[string]` 表示 string 重复 k 次，可嵌套。
 
-**Approach:** Two stacks: count stack and string stack. On digit, build number. On `[`, push current count and current string, reset. On `]`, pop count and prev string; new current = prev + current * count. On letter, append. O(output length).
+**思路：** 两个栈：数字栈和字符串栈。遇数字累计；遇 `[` 推当前数字和当前字符串，重置；遇 `]` 弹数字和上层字符串，新当前 = 上层 + 当前 * 数字；遇字母追加。O(输出长度)。
 
-**Python:**
+**Python：**
 ```python
 def decode_string(s: str) -> str:
     count_stack: list[int] = []
@@ -3007,7 +3007,7 @@ def decode_string(s: str) -> str:
     return cur
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function decodeString(s: string): string {
   const countStack: number[] = [];
@@ -3023,7 +3023,7 @@ function decodeString(s: string): string {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 String decodeString(String s) {
   Deque<Integer> countStack = new ArrayDeque<>();
@@ -3044,27 +3044,27 @@ String decodeString(String s) {
 }
 ```
 
-**Key points:**
-- Two stacks keep counts and prefix strings independent.
-- Multi-digit numbers must be aggregated before `[` resets them.
-- Each `]` collapses one nesting level into the outer string.
+**要点：**
+- 数字栈和字符串栈分别保存上下文。
+- 多位数字必须在遇到 `[` 之前累计完成。
+- 每个 `]` 把一层嵌套合并回外层字符串。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 49. Mini Parser (Flatten Nested List Iterator)
+### 49. 迷你解析器（扁平嵌套列表迭代器）
 
-**Difficulty:** Medium
-**Topics:** stack, parsing, design, strings
-**Position:** T2-3
-**Years:** T2-T3
+**难度：** 中等
+**主题：** stack, parsing, design, strings
+**岗位：** T2-3
+**级别：** T2-T3
 
-**Question:** Parse a string like `"[123,[456,[789]]]"` into a NestedInteger structure, or design an iterator that flattens a nested list lazily.
+**问题：** 把 `"[123,[456,[789]]]"` 解析成 NestedInteger 结构，或设计懒展开嵌套列表的迭代器。
 
-**Approach:** Parser: stack-based — push new NestedInteger on `[`, parse numbers (possibly negative), commit on `,` or `]`. Iterator: stack of iterators; `hasNext` peels through nesting lazily; `next` returns the next integer. O(total elements).
+**思路：** 解析器：基于栈——遇 `[` 新建 NestedInteger 入栈，解析数字（含负号），遇 `,` 或 `]` 提交。迭代器：迭代器栈；`hasNext` 懒剥嵌套；`next` 返回下一个整数。O(总元素数)。
 
-**Python:**
+**Python：**
 ```python
 NestedItem = int | list["NestedItem"]
 
@@ -3095,7 +3095,7 @@ def deserialize(s: str) -> NestedItem:
     return cur[0]
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 type NestedItem = number | NestedItem[];
 
@@ -3118,7 +3118,7 @@ function deserialize(s: string): NestedItem {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 // NestedInteger: holds either a single integer or a list of NestedIntegers.
 NestedInteger deserialize(String s) {
@@ -3141,27 +3141,27 @@ NestedInteger deserialize(String s) {
 }
 ```
 
-**Key points:**
-- Single-integer payloads bypass the parser entirely.
-- Commit pending number on either `,` or `]` — handles trailing numbers.
-- Stack swaps make the parent the "current" list after each `]`.
+**要点：**
+- 单整数输入直接绕过解析器。
+- 在 `,` 或 `]` 处提交挂起的数字，可处理末尾数字。
+- 栈交换使父列表在 `]` 之后重新成为"当前"。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 50. Reverse Pairs
+### 50. 翻转对
 
-**Difficulty:** Hard
-**Topics:** merge-sort, bit, divide-and-conquer
-**Position:** T3-1
-**Years:** T3
+**难度：** 困难
+**主题：** merge-sort, bit, divide-and-conquer
+**岗位：** T3-1
+**级别：** T3
 
-**Question:** Count pairs `(i, j)` with `i < j` and `nums[i] > 2 * nums[j]`.
+**问题：** 统计满足 `i < j` 且 `nums[i] > 2 * nums[j]` 的对数。
 
-**Approach:** Merge sort: during merge, for each `i` in left half, count `j` in right half with `nums[i] > 2*nums[j]` using a moving pointer. Then standard merge. O(n log n). Alternative: BIT over coordinate-compressed values.
+**思路：** 归并排序：合并阶段，对左半每个 `i`，用滑动指针在右半统计满足 `nums[i] > 2*nums[j]` 的 `j`。再正常合并。O(n log n)。另解：在坐标压缩后的值域上用树状数组。
 
-**Python:**
+**Python：**
 ```python
 def reverse_pairs(nums: list[int]) -> int:
     def sort(lo: int, hi: int) -> int:
@@ -3179,7 +3179,7 @@ def reverse_pairs(nums: list[int]) -> int:
     return sort(0, len(nums) - 1)
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function reversePairs(nums: number[]): number {
   const sort = (lo: number, hi: number): number => {
@@ -3199,9 +3199,7 @@ function reversePairs(nums: number[]): number {
 }
 ```
 
-<!-- // unrolled merge omitted for brevity; sort suffices for clarity -->
-
-**Java:**
+**Java：**
 ```java
 int[] numsRP;
 
@@ -3226,27 +3224,27 @@ int sortRP(int lo, int hi) {
 }
 ```
 
-**Key points:**
-- Count pairs before merging — both halves are already sorted, so the pointer never goes backward.
-- Multiplication can overflow in some languages; in JS it stays safe within `Number` here.
-- Splitting count from merge keeps the recurrence T(n) = 2T(n/2) + O(n).
+**要点：**
+- 先在已排好序的左右两半上统计，再合并，指针无需回退。
+- 某些语言中 `2 * nums[j]` 可能溢出；JS `Number` 范围内无忧。
+- 计数与合并分开，递推式仍为 T(n) = 2T(n/2) + O(n)。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 51. Count of Smaller Numbers After Self
+### 51. 计算右侧小于当前元素的个数
 
-**Difficulty:** Hard
-**Topics:** bit, merge-sort, segment-tree
-**Position:** T3-1
-**Years:** T3
+**难度：** 困难
+**主题：** bit, merge-sort, segment-tree
+**岗位：** T3-1
+**级别：** T3
 
-**Question:** For each `nums[i]`, return the count of `nums[j]` with `j > i` and `nums[j] < nums[i]`.
+**问题：** 对每个 `nums[i]`，求 `j > i` 且 `nums[j] < nums[i]` 的数量。
 
-**Approach:** Merge sort with index tracking: when an element from the right half is placed before an element from the left, increment the left element's count. Or BIT over compressed values, processed right-to-left, query prefix. O(n log n).
+**思路：** 带索引归并排序：右半元素被放到左半元素前时，对应左半元素计数加一。或对压缩后的值从右往左用树状数组前缀查询。O(n log n)。
 
-**Python:**
+**Python：**
 ```python
 def count_smaller(nums: list[int]) -> list[int]:
     n = len(nums)
@@ -3275,7 +3273,7 @@ def count_smaller(nums: list[int]) -> list[int]:
     return counts
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function countSmaller(nums: number[]): number[] {
   const n = nums.length;
@@ -3302,7 +3300,7 @@ function countSmaller(nums: number[]): number[] {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 int[] numsCS;
 int[] countsCS;
@@ -3338,27 +3336,27 @@ int[] sortCS(int lo, int hi) {
 }
 ```
 
-**Key points:**
-- Sort indices, not values, so each element's count remains addressable.
-- When taking a left element, `j` already equals the count of smaller right elements seen.
-- `<=` (not `<`) avoids inflating counts due to ties.
+**要点：**
+- 对索引而非数值排序，保证每个元素的计数始终可寻址。
+- 取走左侧元素时，`j` 即为已见的更小右侧元素个数。
+- 用 `<=` 而非 `<` 处理相等，避免重复计数。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 52. Count of Range Sum
+### 52. 区间和的个数
 
-**Difficulty:** Hard
-**Topics:** merge-sort, prefix-sum, bit
-**Position:** T3-1
-**Years:** T3
+**难度：** 困难
+**主题：** merge-sort, prefix-sum, bit
+**岗位：** T3-1
+**级别：** T3
 
-**Question:** Count subarray sums that lie in `[lower, upper]` inclusive.
+**问题：** 统计区间和落在 `[lower, upper]` 内（含两端）的子数组数量。
 
-**Approach:** Compute prefix sums. Need pairs `(i, j)` with `lower <= prefix[j] - prefix[i] <= upper`. Modified merge sort on prefix array: during merge, for each left index, count right indices satisfying the bounds via two moving pointers. O(n log n).
+**思路：** 计算前缀和。要找的是满足 `lower <= prefix[j] - prefix[i] <= upper` 的 `(i, j)` 对。在前缀数组上做归并排序：合并时，对每个左侧下标，用两个滑动指针统计右侧合法下标数。O(n log n)。
 
-**Python:**
+**Python：**
 ```python
 def count_range_sum(nums: list[int], lower: int, upper: int) -> int:
     prefix = [0]
@@ -3381,7 +3379,7 @@ def count_range_sum(nums: list[int], lower: int, upper: int) -> int:
     return sort(0, len(prefix))
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function countRangeSum(nums: number[], lower: number, upper: number): number {
   const prefix: number[] = [0];
@@ -3404,7 +3402,7 @@ function countRangeSum(nums: number[], lower: number, upper: number): number {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 long[] prefixCRS;
 int lowerCRS, upperCRS;
@@ -3434,27 +3432,27 @@ int sortCRS(int lo, int hi) {
 }
 ```
 
-**Key points:**
-- Prefix sums turn range-sum questions into pair-difference questions.
-- Both halves are sorted before counting, so the two scan pointers only move forward.
-- Use `n + 1` prefixes so the first element of `nums` is also considered.
+**要点：**
+- 前缀和把区间和问题转成"前缀对差"。
+- 排序后两侧都有序，两个扫描指针只需单向前进。
+- 使用 `n + 1` 个前缀，第一段也会被纳入考量。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 53. Find Median from Data Stream
+### 53. 数据流的中位数
 
-**Difficulty:** Hard
-**Topics:** heap, design, data-stream
-**Position:** T3-1
-**Years:** T3-T4
+**难度：** 困难
+**主题：** heap, design, data-stream
+**岗位：** T3-1
+**级别：** T3-T4
 
-**Question:** Design a class supporting `addNum(int)` and `findMedian()` over a streaming sequence.
+**问题：** 设计支持 `addNum(int)` 和 `findMedian()` 的类，流式输入。
 
-**Approach:** Two heaps: `lo` (max-heap) holds lower half, `hi` (min-heap) holds upper half. Maintain `len(lo) - len(hi) ∈ {0, 1}`. Add: push to lo, move top to hi, rebalance if hi larger. Median: top of lo or average of tops. O(log n) add, O(1) query.
+**思路：** 双堆：`lo`（大顶堆）存较小一半，`hi`（小顶堆）存较大一半。维持 `len(lo) - len(hi) ∈ {0, 1}`。Add：入 lo，弹顶推 hi，若 hi 更大则回弹。Median：取 lo 顶或两顶均值。O(log n) add，O(1) 查询。
 
-**Python:**
+**Python：**
 ```python
 import heapq
 
@@ -3475,7 +3473,7 @@ class MedianFinder:
         return (-self.lo[0] + self.hi[0]) / 2
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 class MedianFinder {
   private lo: number[] = [];  // max-heap (negate)
@@ -3494,7 +3492,7 @@ class MedianFinder {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 class MedianFinder {
   private final PriorityQueue<Integer> lo = new PriorityQueue<>(Comparator.reverseOrder());
@@ -3512,27 +3510,27 @@ class MedianFinder {
 }
 ```
 
-**Key points:**
-- `lo` always holds the smaller half (size `n/2` ceil), `hi` the larger half.
-- Rebalance with a one-element swap after each add.
-- Median is the `lo` top when odd, average of both tops when even.
+**要点：**
+- `lo` 始终装较小一半（向上取整 n/2），`hi` 装较大一半。
+- 每次插入后通过一次倒堆完成再平衡。
+- 奇数个时取 `lo` 顶，偶数个时取两顶均值。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 54. Sliding Window Median
+### 54. 滑动窗口中位数
 
-**Difficulty:** Hard
-**Topics:** heap, sliding-window, design
-**Position:** T3-1
-**Years:** T3-T4
+**难度：** 困难
+**主题：** heap, sliding-window, design
+**岗位：** T3-1
+**级别：** T3-T4
 
-**Question:** Given an array and window size `k`, return the median of each sliding window.
+**问题：** 给定数组和窗口大小 `k`，返回每个滑动窗口的中位数。
 
-**Approach:** Two heaps + lazy deletion (hash map of pending removals). Each step: add new num; mark outgoing num for removal; clean up tops by popping invalidated entries; rebalance heap sizes. O(n log k). Alternative: ordered multiset (C++ `multiset`).
+**思路：** 双堆 + 延迟删除（待删除哈希表）。每步：加入新数；将滑出的数标记删除；清理堆顶将失效项弹出；调整两堆大小。O(n log k)。或用有序多重集合（C++ `multiset`）。
 
-**Python:**
+**Python：**
 ```python
 from sortedcontainers import SortedList
 
@@ -3551,7 +3549,7 @@ def median_sliding_window(nums: list[int], k: int) -> list[float]:
     return out
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function medianSlidingWindow(nums: number[], k: number): number[] {
   const window = nums.slice(0, k).sort((a, b) => a - b);
@@ -3573,7 +3571,7 @@ function medianSlidingWindow(nums: number[], k: number): number[] {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 double[] medianSlidingWindow(int[] nums, int k) {
   TreeMap<Integer, Integer> window = new TreeMap<>();
@@ -3603,27 +3601,27 @@ double medianOf(TreeMap<Integer, Integer> window, int k) {
 }
 ```
 
-**Key points:**
-- A sorted multiset (Python `SortedList`, C++ `multiset`) is the cleanest model.
-- Insertion + deletion are O(log k); median lookup is O(1) by index.
-- Two-heap + lazy deletion variant avoids external libraries when needed.
+**要点：**
+- 有序多重集合（Python `SortedList`、C++ `multiset`）模型最干净。
+- 插入与删除均 O(log k)，按下标取中位数 O(1)。
+- 不依赖外部库时，可用双堆 + 延迟删除替代。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 55. Smallest Range Covering Elements from K Lists
+### 55. 最小区间覆盖 K 个有序列表
 
-**Difficulty:** Hard
-**Topics:** heap, sliding-window
-**Position:** T3-1
-**Years:** T3
+**难度：** 困难
+**主题：** heap, sliding-window
+**岗位：** T3-1
+**级别：** T3
 
-**Question:** Given `k` sorted lists, find the smallest range `[a, b]` such that at least one element from each list lies within.
+**问题：** 给定 `k` 个有序列表，求最小区间 `[a, b]`，使每个列表至少有一个元素落在其中。
 
-**Approach:** Min-heap holding one element per list plus indices. Track current max among heap entries. Pop min; range = `[min, max]`; if best, save. Advance that list — if exhausted, stop. Push new element, update max. O(N log k).
+**思路：** 小顶堆保存每个列表当前一个元素及索引。维护当前堆中最大值。弹出最小；当前区间 `[min, max]`，更优则更新。该列表下推一位——耗尽则停。入新元素，更新 max。O(N log k)。
 
-**Python:**
+**Python：**
 ```python
 import heapq
 
@@ -3646,7 +3644,7 @@ def smallest_range(nums: list[list[int]]) -> list[int]:
     return [best_lo, best_hi]
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function smallestRange(nums: number[][]): number[] {
   const heap: Array<[number, number, number]> = [];
@@ -3667,7 +3665,7 @@ function smallestRange(nums: number[][]): number[] {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 int[] smallestRange(List<List<Integer>> nums) {
   PriorityQueue<int[]> heap = new PriorityQueue<>((a, b) -> a[0] - b[0]);
@@ -3691,27 +3689,27 @@ int[] smallestRange(List<List<Integer>> nums) {
 }
 ```
 
-**Key points:**
-- Window is implicitly `[heap_min, cur_max]` and always contains one item per list.
-- Terminate as soon as any list is exhausted — moving its pointer is impossible.
-- Update `cur_max` lazily on each push to avoid scanning the heap.
+**要点：**
+- 窗口隐式为 `[heap_min, cur_max]`，每个列表恰有一项在内。
+- 任意列表耗尽即可终止，因为该列表指针无法继续推进。
+- 每次入堆时懒更新 `cur_max`，避免扫描整堆。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 56. Single Number II
+### 56. 只出现一次的数字 II
 
-**Difficulty:** Medium
-**Topics:** bit-manipulation, math
-**Position:** T2-3
-**Years:** T2-T3
+**难度：** 中等
+**主题：** bit-manipulation, math
+**岗位：** T2-3
+**级别：** T2-T3
 
-**Question:** Every element appears exactly three times except one which appears once. Find it in O(n) time, O(1) space.
+**问题：** 每个元素恰好出现三次，仅有一个元素出现一次。O(n) 时间 O(1) 空间找出它。
 
-**Approach:** Bit counting per position mod 3, reassemble. Slicker: two-state counter `ones`, `twos`. Updates: `ones = (ones ^ x) & ~twos; twos = (twos ^ x) & ~ones`. Result in `ones`. Explain the state machine clearly.
+**思路：** 按位统计模 3，再拼。更巧：两状态计数 `ones`、`twos`。更新 `ones = (ones ^ x) & ~twos; twos = (twos ^ x) & ~ones`。结果在 `ones`。讲清楚状态机。
 
-**Python:**
+**Python：**
 ```python
 def single_number(nums: list[int]) -> int:
     ones = twos = 0
@@ -3721,7 +3719,7 @@ def single_number(nums: list[int]) -> int:
     return ones
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function singleNumber(nums: number[]): number {
   let ones = 0, twos = 0;
@@ -3733,7 +3731,7 @@ function singleNumber(nums: number[]): number {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 int singleNumber(int[] nums) {
   int ones = 0, twos = 0;
@@ -3745,27 +3743,27 @@ int singleNumber(int[] nums) {
 }
 ```
 
-**Key points:**
-- Each bit cycles through states 00 -> 01 -> 10 -> 00 as it sees 0/1/2/3 ones.
-- After processing, bits appearing exactly once land in `ones`.
-- All arithmetic is bitwise, so this is O(n) time and O(1) space.
+**要点：**
+- 每位在状态 00 -> 01 -> 10 -> 00 间循环，对应见到 0/1/2/3 次 1。
+- 处理完后，恰好出现一次的位都留在 `ones` 中。
+- 全是位运算，O(n) 时间、O(1) 空间。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 57. Single Number III
+### 57. 只出现一次的数字 III
 
-**Difficulty:** Medium
-**Topics:** bit-manipulation, xor
-**Position:** T2-3
-**Years:** T2-T3
+**难度：** 中等
+**主题：** bit-manipulation, xor
+**岗位：** T2-3
+**级别：** T2-T3
 
-**Question:** Exactly two elements appear once; all others appear twice. Find both in O(n) time, O(1) space.
+**问题：** 恰好两个元素出现一次，其余出现两次。O(n) 时间 O(1) 空间找出二者。
 
-**Approach:** XOR all → `x = a ^ b`. Pick any set bit (e.g., `x & -x`) to partition nums into two groups (bit set vs not). XOR each group → `a` and `b`. The two distinct numbers differ in that bit so end up in different groups.
+**思路：** 全 XOR → `x = a ^ b`。取 `x` 任意一位 1（如 `x & -x`），按此位将原数分成两组（该位为 1 与否）。各组 XOR → `a` 与 `b`。两数在该位不同因此一定分入不同组。
 
-**Python:**
+**Python：**
 ```python
 def single_number_iii(nums: list[int]) -> list[int]:
     xor_all = 0
@@ -3781,7 +3779,7 @@ def single_number_iii(nums: list[int]) -> list[int]:
     return [a, b]
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function singleNumberIII(nums: number[]): number[] {
   let xorAll = 0;
@@ -3796,7 +3794,7 @@ function singleNumberIII(nums: number[]): number[] {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 int[] singleNumberIII(int[] nums) {
   int xorAll = 0;
@@ -3811,27 +3809,27 @@ int[] singleNumberIII(int[] nums) {
 }
 ```
 
-**Key points:**
-- `x & -x` isolates the lowest set bit (works for any nonzero int).
-- The two unique numbers differ in that bit, landing in different XOR groups.
-- Duplicates self-cancel within each group via XOR.
+**要点：**
+- `x & -x` 取最低的那个 1（对任意非零整数有效）。
+- 两个目标数在该位不同，必然落入不同分组。
+- 出现两次的数在各自分组内通过 XOR 互相抵消。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 58. Bitwise AND of Numbers Range
+### 58. 数字范围按位与
 
-**Difficulty:** Medium
-**Topics:** bit-manipulation, math
-**Position:** T2-3
-**Years:** T2-T3
+**难度：** 中等
+**主题：** bit-manipulation, math
+**岗位：** T2-3
+**级别：** T2-T3
 
-**Question:** Given `[m, n]`, return the bitwise AND of all integers in the range inclusive.
+**问题：** 给定 `[m, n]`，返回区间内所有整数按位与的结果。
 
-**Approach:** Result = common prefix of `m` and `n` in binary. Right-shift both until equal, counting shifts; then left-shift back. Or: while `m < n`, `n = n & (n - 1)`. O(log n).
+**思路：** 结果等于 `m` 与 `n` 二进制的公共前缀。同时右移至相等，记移位数；再左移回去。或：当 `m < n`，`n = n & (n - 1)`。O(log n)。
 
-**Python:**
+**Python：**
 ```python
 def range_bitwise_and(m: int, n: int) -> int:
     while m < n:
@@ -3839,7 +3837,7 @@ def range_bitwise_and(m: int, n: int) -> int:
     return n
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function rangeBitwiseAnd(m: number, n: number): number {
   while (m < n) n &= n - 1;
@@ -3847,7 +3845,7 @@ function rangeBitwiseAnd(m: number, n: number): number {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 int rangeBitwiseAnd(int m, int n) {
   while (m < n) n &= n - 1;
@@ -3855,67 +3853,67 @@ int rangeBitwiseAnd(int m, int n) {
 }
 ```
 
-**Key points:**
-- `n & (n - 1)` clears the lowest set bit of `n`.
-- Repeating until `n <= m` leaves only the common high-bit prefix.
-- O(log n) — each iteration removes one set bit.
+**要点：**
+- `n & (n - 1)` 会清掉 `n` 最低位的 1。
+- 反复执行直到 `n <= m`，剩下的即两数的公共高位前缀。
+- 每轮去掉一个 1，复杂度 O(log n)。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 59. Power of Four
+### 59. 4 的幂
 
-**Difficulty:** Easy
-**Topics:** bit-manipulation, math
-**Position:** T2-3
-**Years:** T2
+**难度：** 简单
+**主题：** bit-manipulation, math
+**岗位：** T2-3
+**级别：** T2
 
-**Question:** Given an integer `n`, return true if it is a power of four.
+**问题：** 给定整数 `n`，判断是否为 4 的幂。
 
-**Approach:** `n > 0 && (n & (n-1)) == 0 && (n & 0x55555555) != 0`. First two ensure power of 2; mask ensures the single bit is in an odd position. O(1). Common bit-trick warm-up.
+**思路：** `n > 0 && (n & (n-1)) == 0 && (n & 0x55555555) != 0`。前两个条件保证是 2 的幂；掩码保证唯一的 1 在奇数位。O(1)。常见位技巧热身。
 
-**Python:**
+**Python：**
 ```python
 def is_power_of_four(n: int) -> bool:
     return n > 0 and (n & (n - 1)) == 0 and (n & 0x55555555) != 0
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function isPowerOfFour(n: number): boolean {
   return n > 0 && (n & (n - 1)) === 0 && (n & 0x55555555) !== 0;
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 boolean isPowerOfFour(int n) {
   return n > 0 && (n & (n - 1)) == 0 && (n & 0x55555555) != 0;
 }
 ```
 
-**Key points:**
-- First two checks: `n` is a positive power of 2.
-- Mask `0x55555555` has bits only at even positions (1, 4, 16, ...).
-- All three conditions are O(1) — no loops or divisions.
+**要点：**
+- 前两个条件保证 `n` 是正的 2 的幂。
+- 掩码 `0x55555555` 只在偶数位（1、4、16…）有 1。
+- 三个条件均 O(1)，无循环也无除法。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 60. Skill-Based Matchmaking (Balanced Team Split)
+### 60. 基于技术的匹配（均衡分队）
 
-**Difficulty:** Hard
-**Topics:** dp, partition, subset-sum, gaming
-**Position:** T3-1
-**Years:** T3-T4
+**难度：** 困难
+**主题：** dp, partition, subset-sum, gaming
+**岗位：** T3-1
+**级别：** T3-T4
 
-**Question:** Given an array of `2n` player skill ratings, split them into two teams of size `n` such that the absolute difference of team skill sums is minimized. This mirrors Honor of Kings matchmaking.
+**问题：** 给定 `2n` 个玩家技术评分的数组，分成两个大小为 `n` 的队，使队伍分差的绝对值最小。对应王者荣耀匹配。
 
-**Approach:** Subset-sum DP constrained to exactly `n` elements. `dp[k][s]` = achievable to pick `k` elements summing to `s`. After filling, find achievable `s` closest to `total / 2` with `k = n`. O(n * total). For larger inputs, heuristic / approximation. Bring up MMR variance, queue time vs match quality trade-off.
+**思路：** 限定恰选 `n` 个的子集和 DP。`dp[k][s]` = 能否选出 `k` 个之和为 `s`。填完后在 `k = n` 的可达 `s` 中找最接近 `total / 2`。O(n * total)。规模更大时启发式/近似。可顺势讨论 MMR 方差、排队时长 vs 匹配质量的权衡。
 
-**Python:**
+**Python：**
 ```python
 def min_team_diff(skills: list[int]) -> int:
     total = sum(skills)
@@ -3933,7 +3931,7 @@ def min_team_diff(skills: list[int]) -> int:
     return best
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function minTeamDiff(skills: number[]): number {
   const total = skills.reduce((a, b) => a + b, 0);
@@ -3951,7 +3949,7 @@ function minTeamDiff(skills: number[]): number {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 int minTeamDiff(int[] skills) {
   int total = 0;
@@ -3973,27 +3971,27 @@ int minTeamDiff(int[] skills) {
 }
 ```
 
-**Key points:**
-- Iterate `k` descending so each player contributes to at most one new state per round.
-- Final answer is the achievable team-1 sum closest to `total / 2`.
-- For larger inputs swap to bit-DP or randomized search for tractability.
+**要点：**
+- `k` 倒序遍历，避免同一玩家被重复纳入。
+- 最终在 `dp[n]` 中找最接近 `total / 2` 的可达和。
+- 数据规模更大时改用位图 DP 或随机化搜索。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 61. Minimum Spanning Tree for Game Server Topology
+### 61. 游戏服务器拓扑的最小生成树
 
-**Difficulty:** Medium
-**Topics:** graph, mst, kruskal, prim, union-find
-**Position:** T2-3
-**Years:** T2-T3
+**难度：** 中等
+**主题：** graph, mst, kruskal, prim, union-find
+**岗位：** T2-3
+**级别：** T2-T3
 
-**Question:** Given `n` game-server nodes and the cost of laying a dedicated link between each pair, return the minimum total cost to interconnect them all.
+**问题：** 给定 `n` 台游戏服务器节点和每对之间专线成本，求互联全部节点的最小总成本。
 
-**Approach:** MST via Kruskal: sort edges, union-find to add cheapest non-cycling edges until `n-1` chosen. O(E log E). Prim with min-heap is O(E log V) — preferable for dense graphs. Tencent infra angle: discuss latency-weighted vs cost-weighted edges.
+**思路：** Kruskal 求 MST：排序边，并查集逐条加入最便宜的非成环边，共 `n-1` 条。O(E log E)。Prim + 最小堆 O(E log V)——稠密图更优。腾讯基础设施视角：可讨论按延迟加权 vs 按成本加权。
 
-**Python:**
+**Python：**
 ```python
 def min_spanning_tree(n: int, edges: list[tuple[int, int, int]]) -> int:
     parent = list(range(n))
@@ -4015,7 +4013,7 @@ def min_spanning_tree(n: int, edges: list[tuple[int, int, int]]) -> int:
     return total if used == n - 1 else -1
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function minSpanningTree(n: number, edges: Array<[number, number, number]>): number {
   const parent = Array.from({ length: n }, (_, i) => i);
@@ -4037,7 +4035,7 @@ function minSpanningTree(n: number, edges: Array<[number, number, number]>): num
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 int[] parMST;
 
@@ -4063,27 +4061,27 @@ int findMST(int x) {
 }
 ```
 
-**Key points:**
-- Sort edges then add the smallest that joins two different components.
-- Stop early once `n - 1` edges are committed.
-- Return -1 when the graph is disconnected (fewer than `n - 1` valid unions).
+**要点：**
+- 排序边后，每次贪心选择最小且能连通新分量的边。
+- 选满 `n - 1` 条边即可提前结束。
+- 图不连通时（合并次数不足）返回 -1。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 62. Maximum Bipartite Matching (Player-to-Server Assignment)
+### 62. 二分图最大匹配（玩家到服务器分配）
 
-**Difficulty:** Hard
-**Topics:** graph, matching, hungarian, bipartite, dfs
-**Position:** T3-1
-**Years:** T3-T4
+**难度：** 困难
+**主题：** graph, matching, hungarian, bipartite, dfs
+**岗位：** T3-1
+**级别：** T3-T4
 
-**Question:** Given players and game servers with compatibility constraints (region, ping threshold), assign the maximum number of players to servers (1 player ↔ 1 server within capacity).
+**问题：** 给定玩家与游戏服务器及兼容性约束（区域、ping 阈值），最大化将玩家分配到服务器的数量（1 玩家 ↔ 1 服务器，容量内）。
 
-**Approach:** Bipartite matching via Hungarian algorithm (Kuhn's): for each unmatched player, DFS through unmatched/augmenting paths, swap matches along the path if augmenting path exists. O(V * E). For weighted maximum matching, Hungarian with potentials or min-cost max-flow. Discuss using Hopcroft–Karp for O(E√V) if scale demands.
+**思路：** 用匈牙利算法（Kuhn）做二分匹配：对每个未匹配玩家，沿增广路径 DFS 找未匹配/可增广路径，沿路径切换匹配。O(V * E)。带权最大匹配可用带势函数的匈牙利或最小费用最大流。规模大时讨论 Hopcroft–Karp 的 O(E√V)。
 
-**Python:**
+**Python：**
 ```python
 def max_bipartite_matching(num_players: int, num_servers: int, edges: list[tuple[int, int]]) -> int:
     graph: list[list[int]] = [[] for _ in range(num_players)]
@@ -4107,7 +4105,7 @@ def max_bipartite_matching(num_players: int, num_servers: int, edges: list[tuple
     return matched
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function maxBipartiteMatching(numPlayers: number, numServers: number, edges: Array<[number, number]>): number {
   const graph: number[][] = Array.from({ length: numPlayers }, () => []);
@@ -4133,7 +4131,7 @@ function maxBipartiteMatching(numPlayers: number, numServers: number, edges: Arr
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 List<List<Integer>> graphBM;
 int[] matchTo;
@@ -4162,27 +4160,27 @@ boolean tryAssign(int p, boolean[] seen) {
 }
 ```
 
-**Key points:**
-- Reset `seen` per player so each augmenting search is independent.
-- Augmenting: bump an existing match if it can shift to another server.
-- Hopcroft-Karp shaves to O(E sqrt(V)) for very large bipartite graphs.
+**要点：**
+- 每名玩家独立重置 `seen`，保证每次增广搜索互不干扰。
+- 增广路径：把已匹配的玩家换到其他服务器即可释放当前位置。
+- 数据规模极大时改用 Hopcroft-Karp，复杂度降至 O(E sqrt(V))。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-## Tips specific to Tencent
+## 腾讯特有的建议
 
-- **C++ is a real plus.** Many infra/game teams hire C++ first. Know C++11/14/17 idioms (move semantics, smart pointers, lambdas), the STL, and memory model basics.
-- **Networking depth.** TCP internals, kernel networking, custom UDP protocols — common interview material for game/IM teams.
-- **Know which BG you're applying to.** IEG (games), WXG (WeChat), CSIG (cloud + B2B), TEG (infra), PCG (content) — very different cultures and tech stacks.
-- **Open source involvement helps.** Tencent-led: TARS (microservice framework), ncnn (mobile neural network inference), Hippy (cross-platform framework). Mention concretely.
-- **Behavioral is lighter than US.** They probe cooperation and proactiveness. Don't over-rehearse STAR — feel natural.
+- **C++ 是真加分项。** 许多基础设施/游戏团队优先招 C++。掌握 C++11/14/17 惯用法（移动语义、智能指针、lambda）、STL、内存模型基础。
+- **网络深度。** TCP 内部、内核网络、自定义 UDP 协议——游戏/IM 团队常考。
+- **搞清楚你投的是哪个 BG。** IEG（游戏）、WXG（微信）、CSIG（云 + B2B）、TEG（基础设施）、PCG（内容）——文化和技术栈差别很大。
+- **开源参与有帮助。** 腾讯主导的：TARS（微服务框架）、ncnn（移动端神经网络推理）、Hippy（跨平台框架）。要具体提及。
+- **行为面试比美国轻。** 他们查协作和主动性。别过度排练 STAR——自然一些。
 
-## Resources
+## 参考资料
 
-- Tencent Cloud documentation (esp. game and IM services)
-- 牛客网 (NowCoder) Tencent interview thread
-- "TCP/IP Illustrated" — Stevens (essential for networking-heavy rounds)
-- Open-source: github.com/Tencent/TarsCpp, github.com/Tencent/ncnn, github.com/Tencent/Hippy
-- "Game Engine Architecture" — Gregory (for game backend roles)
+- 腾讯云文档（尤其游戏和 IM 相关服务）
+- 牛客网腾讯面经合集
+- 《TCP/IP Illustrated》—— Stevens（网络重头戏轮必备）
+- 开源：github.com/Tencent/TarsCpp、github.com/Tencent/ncnn、github.com/Tencent/Hippy
+- 《Game Engine Architecture》—— Gregory（游戏后端岗）

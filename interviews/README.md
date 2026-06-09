@@ -2,7 +2,7 @@
 
 A curated collection of real, publicly discussed interview questions for major tech companies. Each file is a quick-reference prep sheet covering coding, system design, behavioral, and domain questions that recur on Glassdoor, LeetCode Discuss, levels.fyi Blind, and engineering interview prep forums.
 
-These are **not insider leaks** — every question here has appeared in public interview reports. The value is curation: 20 high-signal questions per company, calibrated to that company's actual interview style.
+These are **not insider leaks** — every question here has appeared in public interview reports. The value is curation: each company file has ~50 algorithm questions (each shipped with Python, TypeScript, and Java solutions) plus ~12 non-algorithm questions (system design, behavioral, domain-knowledge), all calibrated to that company's actual interview style.
 
 ## Companies
 

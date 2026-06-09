@@ -1,37 +1,37 @@
-# Amazon
+# 亚马逊
 
 ```yaml
-company: Amazon (AWS, Retail, Devices)
-typical_rounds: 1 OA (online assessment) + 1 phone screen + 4-6 onsite "loop" (1 bar raiser, 2 coding, 1-2 system design, 1 hiring manager) — every round is part-behavioral
-focus_areas: OOD, data structures, system design, Leadership Principles (LPs)
-languages_allowed: any major language; Java/Python/C++ common
-duration: 60 min per loop round (split into ~25 behavioral + ~30 technical)
+company: 亚马逊（AWS、零售、Devices）
+typical_rounds: 1 轮 OA（在线测评）+ 1 轮电话面 + 4-6 轮 onsite "loop"（1 位 bar raiser、2 轮编码、1-2 轮系统设计、1 轮 hiring manager）—— 每一轮都有行为面试部分
+focus_areas: OOD、数据结构、系统设计、领导力准则（LP）
+languages_allowed: 任意主流语言；Java/Python/C++ 常见
+duration: 每轮 loop 60 分钟（约 25 分钟行为 + 30 分钟技术）
 notable_quirks:
-  - EVERY behavioral answer must explicitly tie to one (or more) of the 16 Leadership Principles
-  - "Bar raiser" is a trained interviewer from a different team who has veto power
-  - Two LP questions per round, asked at the start
-  - OA includes work-style assessment + 2 coding problems + work simulation
-sources: Glassdoor, LeetCode Discuss (amazon tag), Blind, leetcode.com/discuss/interview-experience
+  - 每个行为面试回答都必须明确对应到 16 条领导力准则中的一条（或多条）
+  - "Bar raiser" 是来自其他团队、经过培训的面试官，拥有一票否决权
+  - 每轮开头先问 2 个 LP 问题
+  - OA 包含工作风格测评 + 2 道编码题 + 工作模拟
+sources: Glassdoor、LeetCode Discuss（amazon 标签）、Blind、leetcode.com/discuss/interview-experience
 ```
 
-## Overview
+## 概述
 
-Amazon is unique in how heavily Leadership Principles are weighted — even the best technical performance can be vetoed by a weak LP showing. The 16 LPs (Customer Obsession, Ownership, Invent and Simplify, Are Right A Lot, Learn and Be Curious, Hire and Develop the Best, Insist on the Highest Standards, Think Big, Bias for Action, Frugality, Earn Trust, Dive Deep, Have Backbone, Deliver Results, Strive to be Earth's Best Employer, Success and Scale Bring Responsibility) need at least 2 stories each. Technical bar leans toward OOD (LRU, parking lot), graphs, and AWS-flavored system design.
+亚马逊的独特之处在于领导力准则的权重极高——再强的技术表现，也可能因为 LP 表现弱而被一票否决。16 条 LP（Customer Obsession、Ownership、Invent and Simplify、Are Right A Lot、Learn and Be Curious、Hire and Develop the Best、Insist on the Highest Standards、Think Big、Bias for Action、Frugality、Earn Trust、Dive Deep、Have Backbone、Deliver Results、Strive to be Earth's Best Employer、Success and Scale Bring Responsibility）每条都需要至少 2 个故事。技术上侧重 OOD（LRU、停车场）、图、以及带 AWS 味道的系统设计。
 
-## Questions
+## 题目
 
-### 1. LRU Cache
+### 1. LRU 缓存
 
-**Difficulty:** Medium
-**Topics:** ood, hashmap, linked-list, design
-**Position:** SWE
-**Years:** L4
+**难度：** 中等
+**主题：** ood, hashmap, linked-list, design
+**岗位：** SWE
+**级别：** L4
 
-**Question:** Design a data structure for Least Recently Used (LRU) cache with `get(key)` and `put(key, value)` in O(1) each. Capacity bounded; on overflow, evict the least recently used.
+**问题：** 设计一个 LRU（最近最少使用）缓存数据结构，`get(key)` 和 `put(key, value)` 各为 O(1)。容量有限；溢出时淘汰最近最少使用的。
 
-**Approach:** Hashmap `key -> node` + doubly linked list. On `get`, move node to head. On `put`, insert at head; if size > cap, drop tail and remove from map. Doubly linked is required for O(1) removal. Edge cases: update existing key, capacity 0. Follow-up: thread-safe (segment locks like ConcurrentHashMap), LFU instead.
+**思路：** 哈希表 `key -> node` + 双向链表。`get` 时把节点移到头部。`put` 时插入头部；若 size > cap，删除尾节点并从 map 移除。双向链表是 O(1) 删除的关键。边界：更新已有 key、容量为 0。追问：线程安全（类似 ConcurrentHashMap 的分段锁）、改成 LFU。
 
-**Python:**
+**Python：**
 ```python
 from collections import OrderedDict
 
@@ -54,7 +54,7 @@ class LRUCache:
             self.d.popitem(last=False)
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 class LRUCache {
   private cap: number;
@@ -77,7 +77,7 @@ class LRUCache {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 class LRUCache extends LinkedHashMap<Integer, Integer> {
     private final int cap;
@@ -94,27 +94,27 @@ class LRUCache extends LinkedHashMap<Integer, Integer> {
 }
 ```
 
-**Key points:**
-- `OrderedDict` / JS `Map` preserve insertion order — re-insert to mark MRU.
-- O(1) per `get` and `put`; O(capacity) space.
-- Evict from the oldest end only when strictly over capacity.
+**要点：**
+- `OrderedDict` / JS `Map` 保持插入顺序——重新插入即标记为最近使用。
+- 每次 `get`、`put` 均摊 O(1)；空间 O(capacity)。
+- 严格超容量时才从最旧端淘汰。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 2. Number of Islands
+### 2. 岛屿数量
 
-**Difficulty:** Medium
-**Topics:** graph, dfs, bfs, matrix
-**Position:** SWE
-**Years:** L4
+**难度：** 中等
+**主题：** graph, dfs, bfs, matrix
+**岗位：** SWE
+**级别：** L4
 
-**Question:** Given a 2D grid of '1's (land) and '0's (water), count the number of islands.
+**问题：** 给定由 '1'（陆地）和 '0'（水）组成的 2D 网格，统计岛屿数量。
 
-**Approach:** Iterate cells; on each unvisited '1', DFS to flood-fill the island, increment count. Mark visited in-place. O(m*n) time and space (stack). Common Amazon follow-up: "now imagine the grid is so big it's distributed across machines" → discuss row partitioning + boundary merging via union-find.
+**思路：** 遍历每个格子；遇到未访问的 '1' 就 DFS 染色整座岛屿，计数加一。原地标记已访问。时间和空间（栈）O(m*n)。亚马逊常见追问："如果网格大到必须分布在多台机器上呢？"→ 讨论按行分区 + 通过并查集合并边界。
 
-**Python:**
+**Python：**
 ```python
 def num_islands(grid: list[list[str]]) -> int:
     if not grid:
@@ -134,7 +134,7 @@ def num_islands(grid: list[list[str]]) -> int:
     return count
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function numIslands(grid: string[][]): number {
   if (!grid.length) return 0;
@@ -152,7 +152,7 @@ function numIslands(grid: string[][]): number {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 class Solution {
     private int m, n;
@@ -173,27 +173,27 @@ class Solution {
 }
 ```
 
-**Key points:**
-- Flip cells to "0" during DFS to avoid revisits without an extra set.
-- O(m*n) time and O(m*n) recursion stack worst case (one giant island).
-- BFS with a queue avoids deep recursion on huge grids.
+**要点：**
+- DFS 时把格子翻成 "0" 避免重访，不需额外集合。
+- 时间 O(m*n)；最坏（一整片大岛）递归栈 O(m*n)。
+- 用队列 BFS 可避免大网格上递归过深。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 3. Two Sum
+### 3. 两数之和
 
-**Difficulty:** Easy
-**Topics:** arrays, hashmap
-**Position:** SWE
-**Years:** L4
+**难度：** 简单
+**主题：** arrays, hashmap
+**岗位：** SWE
+**级别：** L4
 
-**Question:** Given an array of integers and a target, return indices of the two numbers that add up to target. Assume exactly one solution.
+**问题：** 给定整数数组和目标值，返回相加等于目标值的两个数的下标。假设恰好有一个解。
 
-**Approach:** One pass + hashmap `value -> index`. For each `num`, check if `target - num` is in map; else insert. O(n) time, O(n) space. Amazon OA staple.
+**思路：** 一次遍历 + 哈希表 `value -> index`。对每个 `num`，检查 `target - num` 是否在 map；否则插入。O(n) 时间，O(n) 空间。亚马逊 OA 常驻题。
 
-**Python:**
+**Python：**
 ```python
 def two_sum(nums: list[int], target: int) -> list[int]:
     seen: dict[int, int] = {}
@@ -204,7 +204,7 @@ def two_sum(nums: list[int], target: int) -> list[int]:
     return []
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function twoSum(nums: number[], target: number): number[] {
   const seen = new Map<number, number>();
@@ -217,7 +217,7 @@ function twoSum(nums: number[], target: number): number[] {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 class Solution {
     public int[] twoSum(int[] nums, int target) {
@@ -232,27 +232,27 @@ class Solution {
 }
 ```
 
-**Key points:**
-- Hash lookup turns the inner search from O(n) into O(1).
-- Insert after the check so the same index is not reused.
-- O(n) time, O(n) extra space.
+**要点：**
+- 哈希查找把内层搜索从 O(n) 降到 O(1)。
+- 先查再插，避免同一下标被复用。
+- O(n) 时间，O(n) 额外空间。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 4. Merge K Sorted Lists
+### 4. 合并 K 个有序链表
 
-**Difficulty:** Hard
-**Topics:** linked-list, heap, divide-and-conquer
-**Position:** SWE
-**Years:** L4
+**难度：** 困难
+**主题：** linked-list, heap, divide-and-conquer
+**岗位：** SWE
+**级别：** L4
 
-**Question:** Merge `k` sorted linked lists into one sorted list.
+**问题：** 把 `k` 个有序链表合并成一个有序链表。
 
-**Approach:** Min-heap of `(value, list_index, node)` size k; pop smallest, advance, push next from same list. O(N log k) where N = total nodes. Alternative: divide-and-conquer pairwise merge, same complexity, slightly better constant. Mind heap tie-breaks (don't compare nodes directly).
+**思路：** 大小为 k 的小顶堆，存 `(value, list_index, node)`；弹出最小，推进该链表，将下一个节点入堆。O(N log k)，N 为节点总数。备选：分治两两归并，同复杂度，常数稍优。注意堆的 tie-break（别直接比较节点）。
 
-**Python:**
+**Python：**
 ```python
 import heapq
 
@@ -272,7 +272,7 @@ def merge_k_lists(lists: list[ListNode | None]) -> ListNode | None:
     return dummy.next
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function mergeKLists(lists: Array<ListNode | null>): ListNode | null {
   const merge = (a: ListNode | null, b: ListNode | null): ListNode | null => {
@@ -291,7 +291,7 @@ function mergeKLists(lists: Array<ListNode | null>): ListNode | null {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 class Solution {
     public ListNode mergeKLists(ListNode[] lists) {
@@ -312,27 +312,27 @@ class Solution {
 }
 ```
 
-**Key points:**
-- Tie-break by list index so the heap never tries to compare nodes.
-- O(N log k) time, O(k) extra space for the heap.
-- Pairwise divide-and-conquer reaches the same bound without a heap.
+**要点：**
+- 用链表下标做 tie-break，堆永远不会比较节点本身。
+- 时间 O(N log k)，堆额外空间 O(k)。
+- 两两分治归并复杂度相同，且无需堆。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 5. Word Break
+### 5. 单词拆分
 
-**Difficulty:** Medium
-**Topics:** dp, strings, trie
-**Position:** SWE
-**Years:** L4
+**难度：** 中等
+**主题：** dp, strings, trie
+**岗位：** SWE
+**级别：** L4
 
-**Question:** Given a string `s` and a dictionary of words, return true if `s` can be segmented into a sequence of dictionary words.
+**问题：** 给定字符串 `s` 和单词字典，返回 `s` 是否能被切分为字典里的若干单词。
 
-**Approach:** DP — `dp[i]` = true if `s[0..i)` can be segmented. Transition: `dp[i] = any dp[j] && s[j..i) in dict`. O(n² * L) with hashset lookup. Trie speeds up the inner check. Follow-up: return all segmentations (memoized recursion).
+**思路：** DP——`dp[i]` 表示 `s[0..i)` 是否可切分。转移：`dp[i] = 任意 dp[j] && s[j..i) 在字典中`。配 hashset 查询为 O(n² * L)。Trie 可加速内层查找。追问：返回所有切分方式（带 memo 的递归）。
 
-**Python:**
+**Python：**
 ```python
 def word_break(s: str, word_dict: list[str]) -> bool:
     words = set(word_dict)
@@ -347,7 +347,7 @@ def word_break(s: str, word_dict: list[str]) -> bool:
     return dp[n]
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function wordBreak(s: string, wordDict: string[]): boolean {
   const words = new Set(wordDict);
@@ -363,7 +363,7 @@ function wordBreak(s: string, wordDict: string[]): boolean {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 class Solution {
     public boolean wordBreak(String s, List<String> wordDict) {
@@ -381,27 +381,27 @@ class Solution {
 }
 ```
 
-**Key points:**
-- `dp[0] = True` represents the empty prefix.
-- O(n^2) outer-inner with O(L) slice/hash; total O(n^2 * L).
-- Break early once `dp[i]` becomes true to cut the inner loop.
+**要点：**
+- `dp[0] = True` 表示空前缀。
+- 外层 O(n)，内层 O(n)，每次切片 O(L)，合计 O(n^2 * L)。
+- `dp[i]` 一旦为真即 break，缩短内循环。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 6. Trapping Rain Water
+### 6. 接雨水
 
-**Difficulty:** Hard
-**Topics:** arrays, two-pointer, dp
-**Position:** SWE
-**Years:** L5
+**难度：** 困难
+**主题：** arrays, two-pointer, dp
+**岗位：** SWE
+**级别：** L5
 
-**Question:** Given `n` non-negative integers representing an elevation map, compute how much water it can trap.
+**问题：** 给定 `n` 个非负整数表示地形高度，计算能接多少水。
 
-**Approach:** Two pointers from each end. Maintain `left_max`, `right_max`. Move whichever side is shorter; water at that index = `side_max - height[i]`. O(n) time, O(1) space. Alternative: precompute `left_max[]` and `right_max[]` arrays — clearer but O(n) space.
+**思路：** 两端双指针。维护 `left_max`、`right_max`。每次移动较短一侧；该位置接水 = `side_max - height[i]`。O(n) 时间，O(1) 空间。备选：预计算 `left_max[]` 和 `right_max[]` 数组——更清晰但 O(n) 空间。
 
-**Python:**
+**Python：**
 ```python
 def trap(height: list[int]) -> int:
     l, r = 0, len(height) - 1
@@ -418,7 +418,7 @@ def trap(height: list[int]) -> int:
     return total
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function trap(height: number[]): number {
   let l = 0, r = height.length - 1, lmax = 0, rmax = 0, total = 0;
@@ -437,7 +437,7 @@ function trap(height: number[]): number {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 class Solution {
     public int trap(int[] height) {
@@ -458,27 +458,27 @@ class Solution {
 }
 ```
 
-**Key points:**
-- The shorter side bounds water at its index, so move it inward.
-- O(n) time, O(1) extra space.
-- Precomputed left/right max arrays are easier to reason about but use O(n).
+**要点：**
+- 较短的一侧约束该位置的水位，因此移动较短侧。
+- O(n) 时间，O(1) 额外空间。
+- 预计算左右最大值数组思路更清晰但需要 O(n)。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 7. Top K Frequent Elements
+### 7. 前 K 个高频元素
 
-**Difficulty:** Medium
-**Topics:** hashmap, heap, bucket-sort
-**Position:** SWE
-**Years:** L4
+**难度：** 中等
+**主题：** hashmap, heap, bucket-sort
+**岗位：** SWE
+**级别：** L4
 
-**Question:** Given a non-empty array of integers, return the k most frequent elements.
+**问题：** 给定非空整数数组，返回出现频率最高的 k 个元素。
 
-**Approach:** Count frequencies in hashmap, then either (a) min-heap of size k by frequency → O(n log k), or (b) bucket sort by frequency (buckets[freq] = list) → O(n). Amazon often pairs with follow-up "what if data is streaming?" → Count-Min Sketch + heap.
+**思路：** 哈希表计频，然后两种思路：(a) 按频率维护大小为 k 的小顶堆 → O(n log k)，或 (b) 按频率桶排序（buckets[freq] = list）→ O(n)。亚马逊常追问"如果是数据流呢？"→ Count-Min Sketch + 堆。
 
-**Python:**
+**Python：**
 ```python
 from collections import Counter
 
@@ -496,7 +496,7 @@ def top_k_frequent(nums: list[int], k: int) -> list[int]:
     return out
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function topKFrequent(nums: number[], k: number): number[] {
   const cnt = new Map<number, number>();
@@ -510,7 +510,7 @@ function topKFrequent(nums: number[], k: number): number[] {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 class Solution {
     public int[] topKFrequent(int[] nums, int k) {
@@ -528,27 +528,27 @@ class Solution {
 }
 ```
 
-**Key points:**
-- Bucket sort exploits `freq <= n` for O(n) total.
-- Heap variant is O(n log k) and simpler when k is tiny vs n.
-- Walk buckets from high to low to collect k items.
+**要点：**
+- 桶排序利用 `freq <= n`，总体 O(n)。
+- 堆方案 O(n log k)，当 k 远小于 n 时更简洁。
+- 从高频桶向低频桶遍历，累计 k 个即可。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 8. Reorder Log Files
+### 8. 重新排序日志文件
 
-**Difficulty:** Easy
-**Topics:** strings, sorting, comparator
-**Position:** SWE
-**Years:** L3-L4
+**难度：** 简单
+**主题：** strings, sorting, comparator
+**岗位：** SWE
+**级别：** L3-L4
 
-**Question:** Reorder a list of log files so letter-logs come first (lexicographically by content, then by identifier as tiebreaker), then digit-logs in original order.
+**问题：** 对日志文件列表重排：字母日志在前（按内容字典序，标识符为 tie-break），然后数字日志按原顺序。
 
-**Approach:** Custom comparator: partition into letter-logs and digit-logs; sort letter-logs by `(content, identifier)`; concatenate. Test classifier on first char of post-identifier token. Amazon-classic OA question.
+**思路：** 自定义比较器：先划分字母日志和数字日志；字母日志按 `(content, identifier)` 排序；拼接。分类器看标识符之后第一个 token 的首字符。亚马逊经典 OA 题。
 
-**Python:**
+**Python：**
 ```python
 def reorder_log_files(logs: list[str]) -> list[str]:
     letters: list[str] = []
@@ -563,7 +563,7 @@ def reorder_log_files(logs: list[str]) -> list[str]:
     return letters + digits
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function reorderLogFiles(logs: string[]): string[] {
   const letters: string[] = [], digits: string[] = [];
@@ -582,7 +582,7 @@ function reorderLogFiles(logs: string[]): string[] {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 class Solution {
     public String[] reorderLogFiles(String[] logs) {
@@ -601,27 +601,27 @@ class Solution {
 }
 ```
 
-**Key points:**
-- Stable partition keeps digit-logs in original order.
-- Sort key is (content, identifier) for tie-break.
-- O(n * k log n) where k is average log length.
+**要点：**
+- 稳定划分保持数字日志原顺序。
+- 排序键为 (内容, 标识符) 以保证 tie-break。
+- 时间 O(n * k log n)，k 为日志平均长度。
 
-**Tags:** #coding
+**标签：** #coding
 
 ---
 
-### 9. Design a Parking Lot
+### 9. 设计停车场
 
-**Difficulty:** Medium
-**Topics:** ood, design
-**Position:** SWE
-**Years:** L4
+**难度：** 中等
+**主题：** ood, design
+**岗位：** SWE
+**级别：** L4
 
-**Question:** Design the classes for a multi-level parking lot supporting motorcycles, cars, and trucks with different spot sizes.
+**问题：** 设计一个多层停车场的类，支持摩托车、汽车和卡车三种车型，对应不同的车位大小。
 
-**Approach:** Classes: `ParkingLot` → `Level[]` → `ParkingSpot[]`. Spot has `size` enum (compact/large/motorcycle). `Vehicle` abstract → `Car/Truck/Motorcycle`, each declares which spot sizes they fit. `park()` finds first compatible spot; `leave()` frees. Show good encapsulation, polymorphism, and discuss extension (electric charging, monthly passes). Don't over-engineer — interviewers want clear class diagrams, not 50 classes.
+**思路：** 类：`ParkingLot` → `Level[]` → `ParkingSpot[]`。Spot 有 `size` 枚举（compact/large/motorcycle）。`Vehicle` 抽象类 → `Car/Truck/Motorcycle`，每个声明可停的车位尺寸。`park()` 找第一个兼容车位；`leave()` 释放。展示良好的封装、多态，并讨论扩展（电动充电、月卡）。别过度设计——面试官想要清晰的类图，不是 50 个类。
 
-**Python:**
+**Python：**
 ```python
 from enum import Enum
 
@@ -648,7 +648,7 @@ class ParkingLot:
         s.vehicle = None
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 enum Size { MOTO, COMPACT, LARGE }
 class Vehicle { constructor(public plate: string, public fits: Set<Size>) {} }
@@ -665,7 +665,7 @@ class ParkingLot {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 enum Size { MOTO, COMPACT, LARGE }
 
@@ -691,192 +691,192 @@ class ParkingLot {
 }
 ```
 
-**Key points:**
-- `Vehicle.fits` lets each type declare compatible spot sizes (open/closed principle).
-- Linear scan is fine for an interview; production groups free spots by size in queues.
-- Extend by adding `EVSpot extends Spot` rather than mutating enum.
+**要点：**
+- `Vehicle.fits` 让每种车型声明可停车位尺寸（开闭原则）。
+- 面试线性扫描即可；线上系统应按尺寸把空车位放进队列。
+- 扩展时新增 `EVSpot extends Spot` 而不是修改枚举。
 
-**Tags:** #coding
-
----
-
-### 10. Design Amazon Prime Video
-
-**Difficulty:** Hard
-**Topics:** system-design, cdn, video-streaming, drm, recommendation
-**Position:** Senior SWE
-**Years:** L5
-
-**Question:** Design a video streaming service like Prime Video.
-
-**Approach:** Upload → encoding pipeline (multiple bitrates, codecs, DRM-wrapped HLS/DASH chunks) → blob storage (S3) + CDN (CloudFront). Playback client requests manifest, adapts bitrate (ABR). Metadata in DynamoDB; recommendations from offline training (matrix factorization + content embeddings). Discuss DRM (Widevine/FairPlay/PlayReady), regional licensing, offline downloads, and CDN cost optimization (cache hit ratio). Mention Amazon's open-sourced bitmovin/encoding patterns where relevant.
-
-**Tags:** #system-design
+**标签：** #coding
 
 ---
 
-### 11. Design Amazon.com Product Page
+### 10. 设计 Amazon Prime Video
 
-**Difficulty:** Hard
-**Topics:** system-design, caching, microservices, search
-**Position:** Senior SWE
-**Years:** L5
+**难度：** 困难
+**主题：** system-design, cdn, video-streaming, drm, recommendation
+**岗位：** 高级 SWE
+**级别：** L5
 
-**Question:** Design the backend that powers an Amazon product detail page (title, price, inventory, reviews, recommendations) for millions of requests per second.
+**问题：** 设计一个类似 Prime Video 的视频流服务。
 
-**Approach:** Page is composed from many services: product info (cached, write-through), price (real-time, may vary per user), inventory (eventually consistent counter), reviews (paginated, sharded by product_id), recommendations (precomputed). BFF (backend-for-frontend) aggregates with fan-out + timeout per service; render with available data on timeout (graceful degradation). Heavy edge cache for read-mostly fields. Discuss eventual consistency on inventory ("only 2 left!" can over-promise) and Black Friday spikes (pre-warm cache, auto-scale).
+**思路：** 上传 → 编码管道（多码率、多编解码器、DRM 封装的 HLS/DASH 分片）→ 对象存储（S3）+ CDN（CloudFront）。播放客户端请求 manifest，自适应码率（ABR）。元数据存 DynamoDB；推荐由离线训练（矩阵分解 + 内容 embedding）得出。讨论 DRM（Widevine/FairPlay/PlayReady）、区域版权、离线下载、CDN 成本优化（缓存命中率）。如适用，可提亚马逊开源的 bitmovin/编码方案。
 
-**Tags:** #system-design
-
----
-
-### 12. Design Kindle Sync
-
-**Difficulty:** Hard
-**Topics:** system-design, sync, conflict-resolution, offline
-**Position:** Senior SWE
-**Years:** L5
-
-**Question:** Design how Kindle syncs reading position, highlights, and notes across a user's devices, even when devices are intermittently offline.
-
-**Approach:** Each device maintains local state + an op log. On reconnect, push ops to a per-user sync service. Server merges ops with last-write-wins for position (or "furthest read" for resilience to misclicks) and append-only for highlights/notes. Use vector clocks or HLC for ordering across devices. Store in DynamoDB sharded by user_id. Push notifications via SNS to peer devices. Discuss conflict cases (notes edited on two devices offline) and eventual convergence guarantees.
-
-**Tags:** #system-design
+**标签：** #system-design
 
 ---
 
-### 13. Design Amazon S3
+### 11. 设计 Amazon.com 商品页
 
-**Difficulty:** Hard
-**Topics:** system-design, blob-storage, consistency, replication
-**Position:** Senior SWE
-**Years:** L5
+**难度：** 困难
+**主题：** system-design, caching, microservices, search
+**岗位：** 高级 SWE
+**级别：** L5
 
-**Question:** Design Amazon S3 — a globally available object storage service with strong read-after-write consistency.
+**问题：** 设计支撑亚马逊商品详情页（标题、价格、库存、评论、推荐）的后端，每秒数百万请求。
 
-**Approach:** Frontend API gateways → request routed by hash(bucket+key) to a shard. Each shard has a metadata service (sharded relational/KV) + erasure-coded object data across many storage nodes (e.g., Reed-Solomon 10+4). Multi-AZ replication; cross-region async replication for DR. Strong consistency via metadata coordinator (Paxos-based). Lifecycle (S3 → Glacier) via background tier-down jobs. Discuss durability math (11 nines), large object multipart upload, and how versioning is implemented (immutable object IDs + version stack in metadata).
+**思路：** 页面由多个服务拼装：商品信息（写穿透缓存）、价格（实时，可能因人而异）、库存（最终一致的计数器）、评论（按 product_id 分片分页）、推荐（预计算）。BFF（backend-for-frontend）做扇出聚合，每个服务设超时；超时时用已有数据渲染（优雅降级）。读多写少字段重度走边缘缓存。讨论库存的最终一致性（"仅剩 2 件！"可能虚标）和黑五尖刺（预热缓存、自动扩容）。
 
-**Tags:** #system-design
-
----
-
-### 14. Design a Distributed Lock Service
-
-**Difficulty:** Hard
-**Topics:** system-design, consensus, paxos, zookeeper
-**Position:** Senior SWE
-**Years:** L5
-
-**Question:** Design a distributed lock service (like Chubby or ZooKeeper) for AWS-internal use.
-
-**Approach:** Raft/Paxos cluster of 5-7 nodes for consensus on lock state. Clients request lease-based locks (TTL) to handle client failure. Sessions/heartbeats: if client doesn't heartbeat, lock auto-releases. Discuss fencing tokens (monotonic counter passed to downstream service to reject stale lock holders — the famous Kleppmann argument). Trade-offs: strong consistency vs latency, single-region vs multi-region (don't put a lock service across regions without careful thought).
-
-**Tags:** #system-design
+**标签：** #system-design
 
 ---
 
-### 15. Tell me about a time you went above and beyond for a customer
+### 12. 设计 Kindle 同步
 
-**Difficulty:** Medium
-**Topics:** behavioral, customer-obsession
-**Position:** SWE
-**Years:** L4
+**难度：** 困难
+**主题：** system-design, sync, conflict-resolution, offline
+**岗位：** 高级 SWE
+**级别：** L5
 
-**Question:** Describe a time you went above and beyond to delight a customer.
+**问题：** 设计 Kindle 跨用户多设备同步阅读进度、高亮、笔记的方式，即使设备间歇性离线也能工作。
 
-**Approach:** STAR mapping to **Customer Obsession** (LP #1). "Customer" can be internal (another team) or external. Show: you proactively identified a need they hadn't articulated, you went outside your scope to fix it, and there was measurable customer impact. Avoid generic "I responded to a ticket quickly."
+**思路：** 每台设备维护本地状态 + 操作日志。重连时把操作推送到按用户分片的同步服务。服务端合并操作：阅读位置用 last-write-wins（或"读到最远位置"以抵御误点击），高亮/笔记则 append-only。用 vector clock 或 HLC 跨设备排序。存 DynamoDB 按 user_id 分片。通过 SNS 向其他设备推送通知。讨论冲突场景（两台设备离线编辑同一条笔记）和最终收敛保证。
 
-**Tags:** #behavioral
-
----
-
-### 16. Tell me about a time you took on something significant outside your responsibility
-
-**Difficulty:** Medium
-**Topics:** behavioral, ownership, bias-for-action
-**Position:** SWE
-**Years:** L4
-
-**Question:** Tell me about a time you took ownership of something that wasn't your job.
-
-**Approach:** STAR mapping to **Ownership** and **Bias for Action**. Show: (1) you saw a gap and didn't wait for someone to assign it, (2) you didn't ask for permission for everything, (3) impact was real. Bonus: you stayed long-term — "I owned it for 6 months until we hired someone." Don't pick a story where you were really just doing your assigned job.
-
-**Tags:** #behavioral
+**标签：** #system-design
 
 ---
 
-### 17. Tell me about a time you had to make a decision with incomplete information
+### 13. 设计 Amazon S3
 
-**Difficulty:** Medium
-**Topics:** behavioral, bias-for-action, are-right-a-lot
-**Position:** Senior SWE
-**Years:** L5
+**难度：** 困难
+**主题：** system-design, blob-storage, consistency, replication
+**岗位：** 高级 SWE
+**级别：** L5
 
-**Question:** Tell me about a time you had to make a quick decision without all the information you wanted.
+**问题：** 设计 Amazon S3——全球可用、保证写后读强一致的对象存储服务。
 
-**Approach:** STAR mapping to **Bias for Action** and **Are Right A Lot**. Show: (1) the cost of waiting was real and quantifiable, (2) you identified the smallest set of facts you needed, (3) you made the call and committed, (4) you had a rollback or course-correction plan. Decision being wrong is OK if you owned the recovery.
+**思路：** 前端 API 网关 → 按 hash(bucket+key) 路由到分片。每个分片有元数据服务（分片关系型/KV）+ 跨多个存储节点的纠删码对象数据（如 Reed-Solomon 10+4）。多 AZ 副本；跨区域异步复制做灾备。元数据协调器（基于 Paxos）保证强一致。生命周期（S3 → Glacier）由后台降级任务完成。讨论持久性数学（11 个 9）、大对象的分片上传、版本控制如何实现（不可变 object ID + 元数据中的版本栈）。
 
-**Tags:** #behavioral
-
----
-
-### 18. Tell me about your most challenging technical project
-
-**Difficulty:** Medium
-**Topics:** behavioral, dive-deep, deliver-results
-**Position:** Senior SWE
-**Years:** L5
-
-**Question:** Walk me through your most technically complex project. What made it hard and what was your role?
-
-**Approach:** STAR mapping to **Dive Deep** and **Deliver Results**. The bar raiser will grill you for 15-20 min on this one — be ready for "why that database?" / "what was the p99?" / "what would you redesign?" Pick a project you owned end-to-end with quantifiable outcome. If you can't speak to architecture trade-offs in detail, pick a different story.
-
-**Tags:** #behavioral
+**标签：** #system-design
 
 ---
 
-### 19. Leadership Principle deep-dive: Disagree and Commit
+### 14. 设计分布式锁服务
 
-**Difficulty:** Medium
-**Topics:** behavioral, have-backbone, earn-trust
-**Position:** Senior SWE
-**Years:** L5
+**难度：** 困难
+**主题：** system-design, consensus, paxos, zookeeper
+**岗位：** 高级 SWE
+**级别：** L5
 
-**Question:** Tell me about a time you respectfully disagreed with a decision but committed to it anyway and helped it succeed.
+**问题：** 设计 AWS 内部使用的分布式锁服务（类 Chubby 或 ZooKeeper）。
 
-**Approach:** This maps to **Have Backbone; Disagree and Commit** — one of the most-asked LPs at L5+. Two-part story: (1) you raised your disagreement clearly with data, in the right forum, before the decision was final; (2) once decided against you, you actively committed — not passive acceptance but you helped make it work. Bonus: it turned out the original decision was right and you learned from it.
+**思路：** 5-7 节点的 Raft/Paxos 集群对锁状态达成共识。客户端申请基于租约（TTL）的锁，处理客户端故障。会话/心跳：客户端不心跳就自动释放锁。讨论 fencing token（递增计数器传给下游服务，下游可拒绝陈旧锁持有者——著名的 Kleppmann 论证）。权衡：强一致 vs 延迟，单区域 vs 多区域（跨区域部署锁服务务必慎重）。
 
-**Tags:** #domain-knowledge
-
----
-
-### 20. Leadership Principle deep-dive: Frugality
-
-**Difficulty:** Medium
-**Topics:** behavioral, frugality, invent-and-simplify
-**Position:** SWE
-**Years:** L4
-
-**Question:** Tell me about a time you accomplished something significant with limited resources.
-
-**Approach:** Maps to **Frugality** ("accomplish more with less"). Resources can be people, time, money, or compute. Show: you didn't ask for more headcount/budget — you found a clever simplification (also touches **Invent and Simplify**). Concrete: "we needed real-time analytics but couldn't afford Snowflake — I built a Kinesis + DynamoDB streams pipeline for $200/month instead of $20k." Quantify the savings.
-
-**Tags:** #domain-knowledge
+**标签：** #system-design
 
 ---
 
-### 21. Trapping Rain Water II
+### 15. 讲一次你为客户超出预期付出的经历
 
-**Difficulty:** Hard
-**Topics:** heap, bfs, matrix
-**Position:** Senior SDE
-**Years:** L5-L6
+**难度：** 中等
+**主题：** behavioral, customer-obsession
+**岗位：** SWE
+**级别：** L4
 
-**Question:** Given an `m x n` integer matrix representing the elevation of each unit cell of a 2D map, compute how much rainwater it can trap.
+**问题：** 描述一次你为取悦客户而超出本职付出的经历。
 
-**Approach:** Min-heap seeded with all boundary cells. Pop the lowest cell, visit neighbors; trapped water at neighbor = `max(0, current_height - neighbor_height)`; push neighbor with `max(current, neighbor)`. O(m*n log(m*n)) time. Key insight: water level at any cell is bounded by the lowest "wall" surrounding it, processed lowest-first.
+**思路：** STAR 对应 **Customer Obsession**（LP #1）。"客户"可以是内部的（另一个团队）或外部的。展示：你主动识别了对方没说出口的需求，跳出本职去解决，并有可量化的客户影响。避免泛泛的"我快速回了工单"。
 
-**Python:**
+**标签：** #behavioral
+
+---
+
+### 16. 讲一次你担起了职责之外的重要工作
+
+**难度：** 中等
+**主题：** behavioral, ownership, bias-for-action
+**岗位：** SWE
+**级别：** L4
+
+**问题：** 讲一次你扛起了原本不属于你的工作的经历。
+
+**思路：** STAR 对应 **Ownership** 和 **Bias for Action**。展示：(1) 你看见了空白，没等别人分派，(2) 没事事请示，(3) 影响真实可见。加分：你长期扛下来——"我顶了 6 个月，直到我们招到人。"别挑那种其实只是你本职工作的故事。
+
+**标签：** #behavioral
+
+---
+
+### 17. 讲一次你在信息不足时做决策的经历
+
+**难度：** 中等
+**主题：** behavioral, bias-for-action, are-right-a-lot
+**岗位：** 高级 SWE
+**级别：** L5
+
+**问题：** 讲一次你在缺乏全部信息的情况下迅速做决定的经历。
+
+**思路：** STAR 对应 **Bias for Action** 和 **Are Right A Lot**。展示：(1) 等待的成本是真实可量化的，(2) 你识别了最小必要事实集，(3) 你做了决定并承诺，(4) 你有回滚或纠偏方案。决定错了没关系，只要你为善后负责。
+
+**标签：** #behavioral
+
+---
+
+### 18. 讲讲你最有挑战的技术项目
+
+**难度：** 中等
+**主题：** behavioral, dive-deep, deliver-results
+**岗位：** 高级 SWE
+**级别：** L5
+
+**问题：** 介绍你技术上最复杂的项目。难点在哪？你的角色是什么？
+
+**思路：** STAR 对应 **Dive Deep** 和 **Deliver Results**。Bar raiser 会就这道题追问 15-20 分钟——准备好回答"为什么选这个数据库？"/"p99 是多少？"/"重做你会怎么改？"。挑一个你端到端 owner 且结果可量化的项目。如果你说不清架构权衡，换个故事。
+
+**标签：** #behavioral
+
+---
+
+### 19. LP 深挖：Disagree and Commit
+
+**难度：** 中等
+**主题：** behavioral, have-backbone, earn-trust
+**岗位：** 高级 SWE
+**级别：** L5
+
+**问题：** 讲一次你不同意某个决定但仍然承诺并帮其成功的经历。
+
+**思路：** 对应 **Have Backbone; Disagree and Commit**——L5+ 最常问的 LP 之一。两段式：(1) 你在决定敲定前，在合适的场合用数据清楚表达了反对；(2) 决议不利于你时，你主动 commit——不是被动接受，而是主动去促成。加分：最终结果证明原决定是对的，你从中有所学习。
+
+**标签：** #domain-knowledge
+
+---
+
+### 20. LP 深挖：Frugality
+
+**难度：** 中等
+**主题：** behavioral, frugality, invent-and-simplify
+**岗位：** SWE
+**级别：** L4
+
+**问题：** 讲一次你用有限资源完成重大成果的经历。
+
+**思路：** 对应 **Frugality**（"用更少做更多"）。资源可以是人力、时间、预算或算力。展示：你没去要更多人头/预算——而是想出了巧妙的简化方案（也呼应 **Invent and Simplify**）。具体：例如"我们需要实时分析但用不起 Snowflake——我用 Kinesis + DynamoDB streams 搭了一条管道，每月 200 美元，而不是 2 万美元。"量化节省。
+
+**标签：** #domain-knowledge
+
+---
+
+### 21. 接雨水 II
+
+**难度：** 困难
+**主题：** heap, bfs, matrix
+**岗位：** Senior SDE
+**级别：** L5-L6
+
+**问题：** 给定一个 `m x n` 整数矩阵表示 2D 地图中每个单元格的高度，计算能接多少雨水。
+
+**思路：** 用所有边界格子初始化小顶堆。弹出最低格，访问其邻居；邻居处接水量 = `max(0, 当前高度 - 邻居高度)`；将邻居以 `max(当前, 邻居)` 入堆。时间 O(m*n log(m*n))。关键洞察：任意格子的水位被其周围最低的"墙"约束，按从低到高的顺序处理。
+
+**Python：**
 ```python
 import heapq
 
@@ -903,7 +903,7 @@ def trap_rain_water(height_map: list[list[int]]) -> int:
     return total
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function trapRainWater(heightMap: number[][]): number {
   const m = heightMap.length, n = heightMap[0]?.length ?? 0;
@@ -930,7 +930,7 @@ function trapRainWater(heightMap: number[][]): number {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 class Solution {
     public int trapRainWater(int[][] heightMap) {
@@ -959,27 +959,27 @@ class Solution {
 }
 ```
 
-**Key points:**
-- Process from the lowest boundary inward so each cell's bounding wall is known.
-- Push `max(current_wall, neighbor)` to model "raised" wall after flooding.
-- O(m*n log(m*n)) time; production TS should use a real heap.
+**要点：**
+- 从最低边界向内扩展，每格的约束墙已知。
+- 入堆时用 `max(当前墙, 邻居)`，模拟灌水后被"垫高"。
+- 时间 O(m*n log(m*n))；TS 生产环境应换真正的堆。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 22. LFU Cache
+### 22. LFU 缓存
 
-**Difficulty:** Hard
-**Topics:** ood, hashmap, linked-list, design
-**Position:** Senior SDE
-**Years:** L5
+**难度：** 困难
+**主题：** ood, hashmap, linked-list, design
+**岗位：** Senior SDE
+**级别：** L5
 
-**Question:** Design a Least Frequently Used (LFU) cache supporting `get` and `put` in O(1). On overflow, evict the least frequently used key; tie-break with least recently used among that frequency.
+**问题：** 设计一个最不经常使用（LFU）缓存，`get` 和 `put` 都是 O(1)。溢出时淘汰使用频率最低的键；同频率下淘汰最久未使用的。
 
-**Approach:** Two hashmaps: `key -> (value, freq, node)` and `freq -> DoublyLinkedList of nodes`. Track `min_freq`. On access, move node from its freq list to `freq+1` list. On `put` overflow, drop tail of `min_freq` list. Edge cases: freq list becoming empty must advance `min_freq` only on insert. Strictly harder than LRU due to bookkeeping.
+**思路：** 两个哈希表：`key -> (value, freq, node)` 和 `freq -> 双向链表`。跟踪 `min_freq`。访问时，把节点从原频率链表移到 `freq+1` 链表。`put` 溢出时，删除 `min_freq` 链表的尾节点。边界：频率链表变空时，仅在插入时推进 `min_freq`。由于簿记复杂度，明显比 LRU 难。
 
-**Python:**
+**Python：**
 ```python
 from collections import defaultdict, OrderedDict
 
@@ -1021,7 +1021,7 @@ class LFUCache:
         self.min_freq = 1
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 class LFUCache {
   private kv = new Map<number, number>();
@@ -1058,7 +1058,7 @@ class LFUCache {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 class LFUCache {
     private final int cap;
@@ -1093,27 +1093,27 @@ class LFUCache {
 }
 ```
 
-**Key points:**
-- Per-frequency ordered map preserves LRU order within a frequency bucket.
-- O(1) average for both `get` and `put`.
-- Reset `min_freq = 1` on every new insert; only advance it when its bucket empties via `bump`.
+**要点：**
+- 每个频率桶用有序 map，桶内保持 LRU 顺序。
+- `get`、`put` 均摊 O(1)。
+- 新插入时重置 `min_freq = 1`；只在 `bump` 把桶清空时才前进。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 23. Number of Provinces
+### 23. 省份数量
 
-**Difficulty:** Medium
-**Topics:** graph, union-find, dfs
-**Position:** SDE
-**Years:** L4
+**难度：** 中等
+**主题：** graph, union-find, dfs
+**岗位：** SDE
+**级别：** L4
 
-**Question:** Given an `n x n` adjacency matrix `isConnected[i][j] = 1` if cities `i` and `j` are directly connected, return the number of provinces (connected components).
+**问题：** 给定 `n x n` 邻接矩阵 `isConnected[i][j] = 1` 表示城市 `i` 和 `j` 直接相连，返回省份数量（连通分量数）。
 
-**Approach:** Either DFS/BFS marking visited nodes (O(n^2)) or Union-Find with path compression and union-by-rank (near O(n^2 alpha(n))). Count components = unique roots after processing all edges. Cleanly extends to dynamic connectivity follow-ups.
+**思路：** 要么 DFS/BFS 标记已访问节点（O(n^2)），要么用并查集 + 路径压缩 + 按秩合并（近似 O(n^2 alpha(n))）。处理完所有边后，唯一根的数量即分量数。便于扩展到动态连通性追问。
 
-**Python:**
+**Python：**
 ```python
 def find_circle_num(is_connected: list[list[int]]) -> int:
     n = len(is_connected)
@@ -1134,7 +1134,7 @@ def find_circle_num(is_connected: list[list[int]]) -> int:
     return sum(1 for i in range(n) if find(i) == i)
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function findCircleNum(isConnected: number[][]): number {
   const n = isConnected.length;
@@ -1152,7 +1152,7 @@ function findCircleNum(isConnected: number[][]): number {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 class Solution {
     private int[] parent;
@@ -1177,27 +1177,27 @@ class Solution {
 }
 ```
 
-**Key points:**
-- Union-Find with path compression is near-O(1) per op.
-- Only iterate upper triangle since matrix is symmetric.
-- O(n^2 * alpha(n)) time, O(n) space for parents.
+**要点：**
+- 并查集 + 路径压缩接近 O(1)/操作。
+- 矩阵对称，只需遍历上三角。
+- 时间 O(n^2 * alpha(n))，空间 O(n)。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 24. Course Schedule
+### 24. 课程表
 
-**Difficulty:** Medium
-**Topics:** graph, topological-sort, dfs, bfs
-**Position:** SDE
-**Years:** L4
+**难度：** 中等
+**主题：** graph, topological-sort, dfs, bfs
+**岗位：** SDE
+**级别：** L4
 
-**Question:** Given `numCourses` and a list of `[a, b]` prerequisite pairs (b must be taken before a), determine if you can finish all courses.
+**问题：** 给定 `numCourses` 和 `[a, b]` 先修课对列表（b 必须先于 a 修），判断能否修完所有课。
 
-**Approach:** Cycle detection in a directed graph. Kahn's algorithm: compute in-degrees, BFS from in-degree-0 nodes, count processed; if `< numCourses`, cycle exists. Alternative: DFS with three-color marking (white/gray/black). O(V+E). Follow-up `Course Schedule II` returns the actual order.
+**思路：** 有向图环检测。Kahn 算法：计算入度，从入度 0 的节点 BFS，统计已处理节点数；若 `< numCourses`，存在环。备选：DFS + 三色标记（白/灰/黑）。O(V+E)。追问《课程表 II》要求返回实际顺序。
 
-**Python:**
+**Python：**
 ```python
 from collections import defaultdict, deque
 
@@ -1219,7 +1219,7 @@ def can_finish(num_courses: int, prerequisites: list[list[int]]) -> bool:
     return taken == num_courses
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function canFinish(numCourses: number, prerequisites: number[][]): boolean {
   const indeg = new Array(numCourses).fill(0);
@@ -1237,7 +1237,7 @@ function canFinish(numCourses: number, prerequisites: number[][]): boolean {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 class Solution {
     public boolean canFinish(int numCourses, int[][] prerequisites) {
@@ -1257,27 +1257,27 @@ class Solution {
 }
 ```
 
-**Key points:**
-- Kahn's BFS naturally produces a topological order.
-- If any vertex stays with in-degree > 0, a cycle exists.
-- O(V + E) time and space.
+**要点：**
+- Kahn BFS 天然产生拓扑序。
+- 若任意节点入度仍 > 0，则存在环。
+- 时间和空间均为 O(V + E)。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 25. Word Ladder II
+### 25. 单词接龙 II
 
-**Difficulty:** Hard
-**Topics:** bfs, graph, backtracking, strings
-**Position:** Senior SDE
-**Years:** L5-L6
+**难度：** 困难
+**主题：** bfs, graph, backtracking, strings
+**岗位：** Senior SDE
+**级别：** L5-L6
 
-**Question:** Given `beginWord`, `endWord`, and a word list, return all shortest transformation sequences from `beginWord` to `endWord`, changing exactly one letter at a time, with each intermediate word in the list.
+**问题：** 给定 `beginWord`、`endWord` 和单词列表，返回所有从 `beginWord` 到 `endWord` 的最短变换序列，每次只改一个字母，每个中间词必须在列表中。
 
-**Approach:** Two-phase. Phase 1: BFS level by level, building parent-pointer DAG (only edges from level i to level i+1). Phase 2: DFS from `endWord` back through parents to enumerate all shortest paths. Generate neighbors by wildcard buckets (`h*t`) for O(L) per neighbor lookup. Tricky: only remove a word from the frontier after the entire level is processed.
+**思路：** 两阶段。阶段 1：逐层 BFS，构建父指针 DAG（仅保留第 i 层到第 i+1 层的边）。阶段 2：从 `endWord` 沿父指针 DFS 回溯，枚举所有最短路径。生成邻居用通配桶（`h*t`），每次邻居查找 O(L)。坑：必须在整层处理完后才从前沿中移除单词。
 
-**Python:**
+**Python：**
 ```python
 from collections import defaultdict, deque
 
@@ -1313,7 +1313,7 @@ def find_ladders(begin_word: str, end_word: str, word_list: list[str]) -> list[l
     return res
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function findLadders(beginWord: string, endWord: string, wordList: string[]): string[][] {
   const words = new Set(wordList);
@@ -1349,7 +1349,7 @@ function findLadders(beginWord: string, endWord: string, wordList: string[]): st
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 class Solution {
     public List<List<String>> findLadders(String beginWord, String endWord, List<String> wordList) {
@@ -1393,27 +1393,27 @@ class Solution {
 }
 ```
 
-**Key points:**
-- Remove the entire frontier from the word set only after processing the level.
-- BFS finds shortest length; DFS over parents reconstructs all such paths.
-- Worst case is exponential in number of paths but typically tractable.
+**要点：**
+- 只在整层处理完后才从词集中移除该层。
+- BFS 给出最短长度；DFS 沿父指针重建所有路径。
+- 最坏路径数指数级，但实际通常可行。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 26. Critical Connections in a Network
+### 26. 网络中的关键连接
 
-**Difficulty:** Hard
-**Topics:** graph, dfs, tarjan, bridges
-**Position:** Senior SDE
-**Years:** L5-L6
+**难度：** 困难
+**主题：** graph, dfs, tarjan, bridges
+**岗位：** Senior SDE
+**级别：** L5-L6
 
-**Question:** Given `n` servers and bidirectional `connections`, return all critical connections (bridges) whose removal disconnects some servers.
+**问题：** 给定 `n` 台服务器和双向 `connections`，返回所有关键连接（桥），即删除后会导致某些服务器断开的边。
 
-**Approach:** Tarjan's bridge-finding DFS. Track `disc[u]` (discovery time) and `low[u]` (min disc reachable via subtree). Edge `(u, v)` is a bridge if `low[v] > disc[u]`. O(V+E). Watch out: skip the direct parent edge (not all neighbors with smaller disc).
+**思路：** Tarjan 桥查找 DFS。跟踪 `disc[u]`（发现时间）和 `low[u]`（子树可达的最小 disc）。边 `(u, v)` 是桥当且仅当 `low[v] > disc[u]`。O(V+E)。坑：跳过直接父边（不是所有 disc 更小的邻居）。
 
-**Python:**
+**Python：**
 ```python
 from collections import defaultdict
 
@@ -1442,7 +1442,7 @@ def critical_connections(n: int, connections: list[list[int]]) -> list[list[int]
     return bridges
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function criticalConnections(n: number, connections: number[][]): number[][] {
   const graph: number[][] = Array.from({ length: n }, () => []);
@@ -1465,7 +1465,7 @@ function criticalConnections(n: number, connections: number[][]): number[][] {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 class Solution {
     private List<List<Integer>> graph;
@@ -1494,27 +1494,27 @@ class Solution {
 }
 ```
 
-**Key points:**
-- `low[v] > disc[u]` means there's no back-edge skipping (u, v).
-- Skip only the direct parent, not any older neighbor.
-- O(V + E) time; recursion depth equals DFS tree depth.
+**要点：**
+- `low[v] > disc[u]` 说明没有回边可以越过 (u, v)。
+- 只跳过直接父节点，而非所有更早的邻居。
+- 时间 O(V + E)；递归深度等于 DFS 树深度。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 27. Cut Off Trees for Golf Event
+### 27. 高尔夫赛事砍树
 
-**Difficulty:** Hard
-**Topics:** bfs, heap, matrix
-**Position:** Senior SDE
-**Years:** L5-L6
+**难度：** 困难
+**主题：** bfs, heap, matrix
+**岗位：** Senior SDE
+**级别：** L5-L6
 
-**Question:** Given a forest as a grid where each positive value is tree height, cut all trees in ascending height order. From `(0,0)`, return min steps to cut all, or -1 if any tree unreachable.
+**问题：** 给定一个森林网格，每个正值是树的高度，按高度升序砍掉所有树。从 `(0,0)` 出发，返回砍完所有树的最少步数，若有树不可达返回 -1。
 
-**Approach:** Sort trees by height. For each consecutive pair, run BFS for shortest path on the grid. Sum the distances. If any BFS fails, return -1. O(T * m*n) where T = number of trees. A* with Manhattan heuristic can speed it up but BFS suffices.
+**思路：** 按高度排序树。对每对相邻树跑网格 BFS 求最短路径。累加距离。若任何 BFS 失败返回 -1。O(T * m*n)，T 为树数。A* + Manhattan 启发可加速，但 BFS 已够用。
 
-**Python:**
+**Python：**
 ```python
 from collections import deque
 
@@ -1547,7 +1547,7 @@ def cut_off_tree(forest: list[list[int]]) -> int:
     return total
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function cutOffTree(forest: number[][]): number {
   const m = forest.length, n = forest[0].length;
@@ -1581,7 +1581,7 @@ function cutOffTree(forest: number[][]): number {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 class Solution {
     private int m, n;
@@ -1620,27 +1620,27 @@ class Solution {
 }
 ```
 
-**Key points:**
-- Sort trees by height; visit them in that order.
-- BFS gives unit-cost shortest path between consecutive trees.
-- O(T * m * n) total; encode visited as `r*n + c` for speed.
+**要点：**
+- 按高度升序排序后依次访问。
+- BFS 给出相邻两棵树之间的单位代价最短路径。
+- 总复杂度 O(T * m * n)；访问集用 `r*n + c` 编码以加速。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 28. The Maze II
+### 28. 迷宫 II
 
-**Difficulty:** Medium
-**Topics:** bfs, dijkstra, matrix
-**Position:** SDE
-**Years:** L4-L5
+**难度：** 中等
+**主题：** bfs, dijkstra, matrix
+**岗位：** SDE
+**级别：** L4-L5
 
-**Question:** A ball rolls in a maze until it hits a wall, then can change direction. Given start and destination, return the shortest distance (cells traveled) or -1 if unreachable.
+**问题：** 一个球在迷宫中滚动直到撞墙才能改变方向。给定起点和终点，返回最短距离（走过格子数）或 -1。
 
-**Approach:** Dijkstra with min-heap of `(dist, r, c)`. From each cell, simulate rolling in each of 4 directions until a wall; that's an edge. Relax neighbors. O(m*n * max(m,n) * log) due to roll cost. BFS doesn't suffice because edge costs differ.
+**思路：** Dijkstra + 小顶堆 `(dist, r, c)`。从每个格子模拟向 4 个方向滚动直到墙；这就是一条边。松弛邻居。O(m*n * max(m,n) * log)。BFS 不行，因为边权不等。
 
-**Python:**
+**Python：**
 ```python
 import heapq
 
@@ -1666,7 +1666,7 @@ def shortest_distance(maze: list[list[int]], start: list[int], destination: list
     return -1
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function shortestDistance(maze: number[][], start: number[], destination: number[]): number {
   const m = maze.length, n = maze[0].length;
@@ -1691,7 +1691,7 @@ function shortestDistance(maze: number[][], start: number[], destination: number
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 class Solution {
     public int shortestDistance(int[][] maze, int[] start, int[] destination) {
@@ -1722,27 +1722,27 @@ class Solution {
 }
 ```
 
-**Key points:**
-- Each "edge" is a roll until a wall, contributing variable cost.
-- Dijkstra needed because cell distances differ — BFS would be wrong.
-- Stale heap entries skipped via `d > dist[r][c]` check.
+**要点：**
+- 每条"边"是一次滚到墙的过程，代价不一。
+- 需要 Dijkstra；BFS 因边权不等而失效。
+- 用 `d > dist[r][c]` 跳过过期堆项。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 29. Robot Bounded in Circle
+### 29. 困于环中的机器人
 
-**Difficulty:** Medium
-**Topics:** simulation, math
-**Position:** SDE
-**Years:** L4
+**难度：** 中等
+**主题：** simulation, math
+**岗位：** SDE
+**级别：** L4
 
-**Question:** A robot starts at origin facing north and follows a string of instructions (`G`, `L`, `R`). Determine if the robot stays bounded after infinitely repeating instructions.
+**问题：** 机器人从原点出发面朝北，执行指令串（`G`、`L`、`R`）。判断无限重复指令后机器人是否被限定在有限区域内。
 
-**Approach:** Simulate one pass. The robot is bounded iff after one pass it's at origin OR not facing north. Reason: facing-not-north means after at most 4 passes it returns to origin (rotation forms a cycle of period 4). O(n).
+**思路：** 模拟一遍。机器人被限定 当且仅当 一遍后回到原点 或 不再面朝北。理由：不朝北意味着至多 4 遍后回原点（旋转周期为 4）。O(n)。
 
-**Python:**
+**Python：**
 ```python
 def is_robot_bounded(instructions: str) -> bool:
     x, y, dx, dy = 0, 0, 0, 1
@@ -1756,7 +1756,7 @@ def is_robot_bounded(instructions: str) -> bool:
     return (x, y) == (0, 0) or (dx, dy) != (0, 1)
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function isRobotBounded(instructions: string): boolean {
   let x = 0, y = 0, dx = 0, dy = 1;
@@ -1769,7 +1769,7 @@ function isRobotBounded(instructions: string): boolean {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 class Solution {
     public boolean isRobotBounded(String instructions) {
@@ -1784,27 +1784,27 @@ class Solution {
 }
 ```
 
-**Key points:**
-- Bounded iff at origin after one pass OR facing a non-north direction.
-- Non-north facing => after at most 4 passes back to origin.
-- O(n) time, O(1) space; no need to simulate multiple passes.
+**要点：**
+- 一遍后回到原点 或 不再朝北 即有界。
+- 不朝北意味着至多 4 遍回原点。
+- O(n) 时间，O(1) 空间；无需模拟多遍。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 30. Prison Cells After N Days
+### 30. N 天后的牢房
 
-**Difficulty:** Medium
-**Topics:** simulation, cycle-detection, bit-manipulation
-**Position:** SDE
-**Years:** L4
+**难度：** 中等
+**主题：** simulation, cycle-detection, bit-manipulation
+**岗位：** SDE
+**级别：** L4
 
-**Question:** 8 prison cells in a row. Each day, cell becomes 1 if both neighbors were equal, else 0. Endpoints become 0. Given initial state and N, return state after N days.
+**问题：** 一排 8 间牢房。每天，若两侧邻居相等则该房变 1，否则变 0。两端变 0。给定初始状态和 N，返回 N 天后的状态。
 
-**Approach:** State space has at most 256 patterns; cycle is inevitable. Simulate while caching `state -> day`. On hit, compute remaining days `% cycle_length` and finish. Encode state as an int (bitmask) for speed. O(min(N, 256)).
+**思路：** 状态空间最多 256 个模式；必然出现循环。模拟时缓存 `state -> day`。命中后用 `% cycle_length` 计算剩余天数。状态编码为整数（位掩码）加速。O(min(N, 256))。
 
-**Python:**
+**Python：**
 ```python
 def prison_after_n_days(cells: list[int], n: int) -> list[int]:
     def step(state: int) -> int:
@@ -1828,7 +1828,7 @@ def prison_after_n_days(cells: list[int], n: int) -> list[int]:
     return [(state >> i) & 1 for i in range(8)]
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function prisonAfterNDays(cells: number[], n: number): number[] {
   const step = (s: number): number => {
@@ -1849,7 +1849,7 @@ function prisonAfterNDays(cells: number[], n: number): number[] {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 class Solution {
     public int[] prisonAfterNDays(int[] cells, int n) {
@@ -1874,27 +1874,27 @@ class Solution {
 }
 ```
 
-**Key points:**
-- Bitmask packs 8 cells into a single int for fast equality.
-- Cycle detected via `state -> remaining_days` map.
-- O(min(N, 256)) — at most 256 distinct states.
+**要点：**
+- 位掩码把 8 个格子打包为整数，便于哈希。
+- 用 `状态 -> 剩余天数` 的 map 检测循环。
+- O(min(N, 256))——状态空间至多 256 种。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 31. Concatenated Words
+### 31. 连接词
 
-**Difficulty:** Hard
-**Topics:** dp, trie, strings
-**Position:** Senior SDE
-**Years:** L5
+**难度：** 困难
+**主题：** dp, trie, strings
+**岗位：** Senior SDE
+**级别：** L5
 
-**Question:** Given a list of words (no duplicates), return all words that are entirely concatenations of at least two other words from the list.
+**问题：** 给定无重复的单词列表，返回所有完全由列表中至少两个其他词拼接而成的单词。
 
-**Approach:** Build a set of all words. For each word, run a Word-Break-style DP: `dp[i]` true if `s[0..i)` splittable using OTHER words (require at least one split). Trie speeds up prefix scans. O(sum(L_i^2)). Sort by length first so shorter words are processed first if building incrementally.
+**思路：** 把所有词放入集合。对每个词跑类似 Word-Break 的 DP：`dp[i]` 表示 `s[0..i)` 可用其他词切分（至少一次切分）。Trie 加速前缀扫描。O(sum(L_i^2))。先按长度排序，便于增量构建。
 
-**Python:**
+**Python：**
 ```python
 def find_all_concatenated_words(words: list[str]) -> list[str]:
     word_set = set(words)
@@ -1913,7 +1913,7 @@ def find_all_concatenated_words(words: list[str]) -> list[str]:
     return [w for w in words if can_form(w)]
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function findAllConcatenatedWordsInADict(words: string[]): string[] {
   const set = new Set(words);
@@ -1933,7 +1933,7 @@ function findAllConcatenatedWordsInADict(words: string[]): string[] {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 class Solution {
     public List<String> findAllConcatenatedWordsInADict(String[] words) {
@@ -1957,27 +1957,27 @@ class Solution {
 }
 ```
 
-**Key points:**
-- The `(j > 0 || i < n)` guard rejects the word matching itself wholly.
-- O(sum L_i^2) per word; trie reduces inner cost further.
-- Same shape as Word Break with a "use at least one other word" rule.
+**要点：**
+- `(j > 0 || i < n)` 保证不允许整词匹配自己。
+- 每个词内层 O(L^2)；Trie 可进一步降低常数。
+- 结构与 Word Break 相同，多了"至少用其他词一次"。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 32. Substrings of Size Three with Distinct Characters
+### 32. 含 3 个不同字符的长度为 3 的子串
 
-**Difficulty:** Easy
-**Topics:** strings, sliding-window
-**Position:** SDE
-**Years:** L3-L4
+**难度：** 简单
+**主题：** strings, sliding-window
+**岗位：** SDE
+**级别：** L3-L4
 
-**Question:** Given a string, return the number of good substrings of length 3 with all distinct characters.
+**问题：** 给定字符串，返回所有 3 个字符均不同的长度为 3 的好子串数量。
 
-**Approach:** Sliding window of size 3; for each, check three chars all differ. O(n). Common Amazon OA warm-up; usually paired with a harder second problem.
+**思路：** 长度为 3 的滑窗；逐个检查三字符两两不同。O(n)。亚马逊 OA 常见的热身题，通常配一道更难的第二题。
 
-**Python:**
+**Python：**
 ```python
 def count_good_substrings(s: str) -> int:
     count = 0
@@ -1988,7 +1988,7 @@ def count_good_substrings(s: str) -> int:
     return count
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function countGoodSubstrings(s: string): number {
   let count = 0;
@@ -2000,7 +2000,7 @@ function countGoodSubstrings(s: string): number {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 class Solution {
     public int countGoodSubstrings(String s) {
@@ -2014,27 +2014,27 @@ class Solution {
 }
 ```
 
-**Key points:**
-- Window size is fixed, so no two-pointer bookkeeping needed.
-- Three distinct chars iff all three pairwise differ.
-- O(n) time, O(1) space.
+**要点：**
+- 窗口大小固定，无需双指针记账。
+- 三字符两两不同即三者皆不同。
+- O(n) 时间，O(1) 空间。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 33. Subtree of Another Tree
+### 33. 另一棵树的子树
 
-**Difficulty:** Easy
-**Topics:** tree, dfs, recursion
-**Position:** SDE
-**Years:** L4
+**难度：** 简单
+**主题：** tree, dfs, recursion
+**岗位：** SDE
+**级别：** L4
 
-**Question:** Given two binary trees `root` and `subRoot`, return true if there's a subtree of `root` identical in structure and node values to `subRoot`.
+**问题：** 给定两棵二叉树 `root` 和 `subRoot`，判断 `root` 是否存在与 `subRoot` 结构和节点值都完全相同的子树。
 
-**Approach:** Recursive: at each node of `root`, check if `sameTree(node, subRoot)`. `sameTree` recurses both sides. O(m*n) worst case. Faster: serialize both trees with null markers and use string `contains` (or KMP) — O(m+n).
+**思路：** 递归：在 `root` 的每个节点上检查 `sameTree(node, subRoot)`。`sameTree` 双侧递归。最坏 O(m*n)。更快：用 null 标记序列化两棵树，再用字符串 `contains`（或 KMP）—— O(m+n)。
 
-**Python:**
+**Python：**
 ```python
 def is_subtree(root: TreeNode | None, sub_root: TreeNode | None) -> bool:
     def same(a: TreeNode | None, b: TreeNode | None) -> bool:
@@ -2052,7 +2052,7 @@ def is_subtree(root: TreeNode | None, sub_root: TreeNode | None) -> bool:
     return is_subtree(root.left, sub_root) or is_subtree(root.right, sub_root)
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function isSubtree(root: TreeNode | null, subRoot: TreeNode | null): boolean {
   const same = (a: TreeNode | null, b: TreeNode | null): boolean => {
@@ -2067,7 +2067,7 @@ function isSubtree(root: TreeNode | null, subRoot: TreeNode | null): boolean {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 class Solution {
     public boolean isSubtree(TreeNode root, TreeNode subRoot) {
@@ -2084,27 +2084,27 @@ class Solution {
 }
 ```
 
-**Key points:**
-- Empty `subRoot` is trivially a subtree.
-- Worst case O(m * n) where m, n are tree sizes.
-- Serialization with null markers + KMP collapses it to O(m + n).
+**要点：**
+- 空 `subRoot` 平凡地是子树。
+- 最坏 O(m * n)，m、n 为两树节点数。
+- 用 null 标记序列化 + KMP 可降到 O(m + n)。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 34. Most Common Word
+### 34. 最常见单词
 
-**Difficulty:** Easy
-**Topics:** strings, hashmap, parsing
-**Position:** SDE
-**Years:** L3-L4
+**难度：** 简单
+**主题：** strings, hashmap, parsing
+**岗位：** SDE
+**级别：** L3-L4
 
-**Question:** Given a paragraph and a list of banned words, return the most frequent non-banned word. Words are case-insensitive; punctuation should be stripped.
+**问题：** 给定一段话和禁用词列表，返回出现频率最高的非禁用词。词不区分大小写；需去除标点。
 
-**Approach:** Normalize (lowercase, split on non-letters), count frequencies in a hashmap excluding banned set, return max. O(n). Watch the punctuation regex / manual char filter — most bugs live there.
+**思路：** 归一化（小写、按非字母分隔），用哈希表计频并排除禁用集，返回最大。O(n)。坑在标点正则 / 手工字符过滤——多数 bug 出在这。
 
-**Python:**
+**Python：**
 ```python
 import re
 from collections import Counter
@@ -2116,7 +2116,7 @@ def most_common_word(paragraph: str, banned: list[str]) -> str:
     return cnt.most_common(1)[0][0]
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function mostCommonWord(paragraph: string, banned: string[]): string {
   const bannedSet = new Set(banned);
@@ -2133,7 +2133,7 @@ function mostCommonWord(paragraph: string, banned: string[]): string {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 class Solution {
     public String mostCommonWord(String paragraph, String[] banned) {
@@ -2151,27 +2151,27 @@ class Solution {
 }
 ```
 
-**Key points:**
-- Lowercase before splitting to make banned compare case-insensitive.
-- Single regex handles punctuation, digits, whitespace at once.
-- O(n) over the paragraph length.
+**要点：**
+- 先 lower-case 再切分，禁用比较自动忽略大小写。
+- 单一正则一次处理标点、数字、空白。
+- O(n)，n 为段落长度。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 35. Copy List with Random Pointer
+### 35. 复制带随机指针的链表
 
-**Difficulty:** Medium
-**Topics:** linked-list, hashmap
-**Position:** SDE
-**Years:** L4
+**难度：** 中等
+**主题：** linked-list, hashmap
+**岗位：** SDE
+**级别：** L4
 
-**Question:** Deep-copy a linked list where each node has `next` and a `random` pointer to any node or null.
+**问题：** 深拷贝一个链表，每个节点有 `next` 和指向任意节点或 null 的 `random` 指针。
 
-**Approach:** Option A: hashmap `original -> copy`, two passes (build nodes, then wire `next`/`random`). O(n) time and space. Option B (O(1) extra): interleave copy nodes (`A -> A' -> B -> B' -> ...`), then `A'.random = A.random.next`, then split lists.
+**思路：** 方案 A：哈希表 `original -> copy`，两遍（建节点，再连 `next`/`random`）。O(n) 时空。方案 B（O(1) 额外空间）：交织拷贝节点（`A -> A' -> B -> B' -> ...`），然后 `A'.random = A.random.next`，再拆分两条链。
 
-**Python:**
+**Python：**
 ```python
 def copy_random_list(head: "Node | None") -> "Node | None":
     if not head:
@@ -2189,7 +2189,7 @@ def copy_random_list(head: "Node | None") -> "Node | None":
     return m[head]
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function copyRandomList(head: RNode | null): RNode | null {
   if (!head) return null;
@@ -2206,7 +2206,7 @@ function copyRandomList(head: RNode | null): RNode | null {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 class Solution {
     public Node copyRandomList(Node head) {
@@ -2222,27 +2222,27 @@ class Solution {
 }
 ```
 
-**Key points:**
-- Two passes separate node creation from pointer wiring cleanly.
-- Map handles `random` pointing forward, backward, or at self.
-- O(n) time and O(n) space; O(1)-space interleave variant exists but is trickier.
+**要点：**
+- 两遍分别处理"建节点"和"连指针"，逻辑清晰。
+- map 让 `random` 任意指向都成立。
+- O(n) 时间和空间；O(1) 额外空间的交织法更难写。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 36. Path with Maximum Probability
+### 36. 概率最大的路径
 
-**Difficulty:** Medium
-**Topics:** graph, dijkstra, heap
-**Position:** SDE
-**Years:** L4-L5
+**难度：** 中等
+**主题：** graph, dijkstra, heap
+**岗位：** SDE
+**级别：** L4-L5
 
-**Question:** Given an undirected weighted graph where weights are probabilities of success, return the maximum probability path from `start` to `end`.
+**问题：** 给定无向带权图，权值为成功概率，返回 `start` 到 `end` 的最大概率路径。
 
-**Approach:** Modified Dijkstra with max-heap (negate probs in languages with only min-heap). Multiply (not add) probabilities. Skip stale heap entries. O((V+E) log V). Note: log-transforming probs (`-log p`) converts to standard shortest-path; avoids underflow on long paths.
+**思路：** 改造的 Dijkstra + 大顶堆（仅有小顶堆的语言取负）。概率相乘（不是相加）。跳过堆中的过期项。O((V+E) log V)。注意：对概率取 `-log p` 可转化为标准最短路径，避免长路径下溢。
 
-**Python:**
+**Python：**
 ```python
 import heapq
 from collections import defaultdict
@@ -2269,7 +2269,7 @@ def max_probability(n: int, edges: list[list[int]], succ_prob: list[float], star
     return 0.0
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function maxProbability(n: number, edges: number[][], succProb: number[], start: number, end: number): number {
   const graph: Array<Array<[number, number]>> = Array.from({ length: n }, () => []);
@@ -2291,7 +2291,7 @@ function maxProbability(n: number, edges: number[][], succProb: number[], start:
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 class Solution {
     public double maxProbability(int n, int[][] edges, double[] succProb, int start, int end) {
@@ -2321,27 +2321,27 @@ class Solution {
 }
 ```
 
-**Key points:**
-- Multiply probabilities along the path; use max-heap by probability.
-- Negate to reuse a min-heap in Python.
-- Skip stale entries when `p < best[u]`; O((V + E) log V) time.
+**要点：**
+- 沿路径相乘概率；用按概率的大顶堆。
+- Python 通过取负在小顶堆上模拟大顶堆。
+- `p < best[u]` 时跳过过期项；时间 O((V + E) log V)。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 37. Number of Islands II
+### 37. 岛屿数量 II
 
-**Difficulty:** Hard
-**Topics:** union-find, graph
-**Position:** Senior SDE
-**Years:** L5-L6
+**难度：** 困难
+**主题：** union-find, graph
+**岗位：** Senior SDE
+**级别：** L5-L6
 
-**Question:** Given an `m x n` grid initially all water, process a stream of `addLand(r, c)` operations. After each op, return current island count.
+**问题：** 给定 `m x n` 初始全水的网格，处理一系列 `addLand(r, c)` 操作。每次操作后返回当前岛屿数。
 
-**Approach:** Union-Find with path compression and union-by-rank. On each add: count++; union with each of 4 land neighbors and decrement count for each successful union. O(k * alpha(m*n)) for k ops. Encode (r,c) as `r*n + c`.
+**思路：** 并查集 + 路径压缩 + 按秩合并。每次添加：count++；与 4 个陆地邻居 union，每次成功合并 count--。k 次操作 O(k * alpha(m*n))。把 (r,c) 编码为 `r*n + c`。
 
-**Python:**
+**Python：**
 ```python
 def num_islands2(m: int, n: int, positions: list[list[int]]) -> list[int]:
     parent: dict[int, int] = {}
@@ -2370,7 +2370,7 @@ def num_islands2(m: int, n: int, positions: list[list[int]]) -> list[int]:
     return res
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function numIslands2(m: number, n: number, positions: number[][]): number[] {
   const parent = new Map<number, number>();
@@ -2397,7 +2397,7 @@ function numIslands2(m: number, n: number, positions: number[][]): number[] {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 class Solution {
     private Map<Integer, Integer> parent;
@@ -2427,27 +2427,27 @@ class Solution {
 }
 ```
 
-**Key points:**
-- New land starts as its own component, incrementing count.
-- Each successful union with a neighbor decrements count.
-- O(k * alpha(m*n)) per op with path compression.
+**要点：**
+- 新增陆地自成一岛，count + 1。
+- 每次成功 union 邻居，count - 1。
+- 单步均摊 O(alpha(m*n))。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 38. Optimize Water Distribution in a Village
+### 38. 优化村庄供水分配
 
-**Difficulty:** Hard
-**Topics:** graph, mst, union-find
-**Position:** Senior SDE
-**Years:** L5-L6
+**难度：** 困难
+**主题：** graph, mst, union-find
+**岗位：** Senior SDE
+**级别：** L5-L6
 
-**Question:** `n` houses; can either build a well in house `i` (cost `wells[i]`) or connect two houses with a pipe of given cost. Find minimum total cost to supply water to every house.
+**问题：** `n` 户人家；要么在第 `i` 户打井（成本 `wells[i]`），要么用给定成本铺管道连接两户。求让所有家通水的最小总成本。
 
-**Approach:** Add a virtual node 0 connected to each house `i` with edge weight `wells[i]`. Now problem = MST on `n+1` nodes. Kruskal with union-find on sorted edges. O((E + n) log(E + n)). Elegant reduction trick worth memorizing.
+**思路：** 加一个虚拟节点 0，到每户 `i` 的边权为 `wells[i]`。问题转化为 `n+1` 节点上的最小生成树。Kruskal + 并查集对排序后的边处理。O((E + n) log(E + n))。值得记住的优雅归约。
 
-**Python:**
+**Python：**
 ```python
 def min_cost_to_supply_water(n: int, wells: list[int], pipes: list[list[int]]) -> int:
     edges: list[tuple[int, int, int]] = [(cost, 0, i + 1) for i, cost in enumerate(wells)]
@@ -2469,7 +2469,7 @@ def min_cost_to_supply_water(n: int, wells: list[int], pipes: list[list[int]]) -
     return total
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function minCostToSupplyWater(n: number, wells: number[], pipes: number[][]): number {
   const edges: Array<[number, number, number]> = wells.map((c, i) => [c, 0, i + 1]);
@@ -2489,7 +2489,7 @@ function minCostToSupplyWater(n: number, wells: number[], pipes: number[][]): nu
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 class Solution {
     private int[] parent;
@@ -2514,27 +2514,27 @@ class Solution {
 }
 ```
 
-**Key points:**
-- Virtual node 0 turns "build a well" into "edge to 0" — pure MST.
-- Kruskal + union-find: O((E + n) log(E + n)).
-- Each house ends up connected via either pipes or the well edge.
+**要点：**
+- 虚拟节点 0 把"打井"变成"到 0 的边"——纯 MST。
+- Kruskal + 并查集：O((E + n) log(E + n))。
+- 每户最终通过管道或井边连通。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 39. K Closest Points to Origin
+### 39. 最接近原点的 K 个点
 
-**Difficulty:** Medium
-**Topics:** heap, quickselect, sorting
-**Position:** SDE
-**Years:** L4
+**难度：** 中等
+**主题：** heap, quickselect, sorting
+**岗位：** SDE
+**级别：** L4
 
-**Question:** Given an array of points in 2D plane, return the `k` closest to origin.
+**问题：** 给定平面上一组点，返回距原点最近的 `k` 个。
 
-**Approach:** Max-heap of size k by squared distance — push, pop if size > k. O(n log k). Better: Quickselect partition around median — O(n) average, O(n^2) worst. Avoid sqrt; compare squared distances. Classic Amazon "closest delivery zones" framing.
+**思路：** 大小为 k 的大顶堆按平方距离——push，size > k 时 pop。O(n log k)。更优：Quickselect 按中位数划分——平均 O(n)，最坏 O(n^2)。避免开方；比较平方距离即可。亚马逊经典"最近配送区域"题面。
 
-**Python:**
+**Python：**
 ```python
 import heapq
 
@@ -2549,7 +2549,7 @@ def k_closest(points: list[list[int]], k: int) -> list[list[int]]:
     return [p for _, p in heap]
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function kClosest(points: number[][], k: number): number[][] {
   const heap: Array<[number, number[]]> = [];
@@ -2562,7 +2562,7 @@ function kClosest(points: number[][], k: number): number[][] {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 class Solution {
     public int[][] kClosest(int[][] points, int k) {
@@ -2579,27 +2579,27 @@ class Solution {
 }
 ```
 
-**Key points:**
-- Compare squared distances to avoid `sqrt`.
-- Heap of size k yields O(n log k); Quickselect averages O(n).
-- Python uses negative distance to simulate max-heap on a min-heap.
+**要点：**
+- 比较平方距离，避免开方。
+- 大小为 k 的堆 O(n log k)；Quickselect 均摊 O(n)。
+- Python 用取负在小顶堆上模拟大顶堆。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 40. Meeting Rooms II
+### 40. 会议室 II
 
-**Difficulty:** Medium
-**Topics:** heap, intervals, sorting
-**Position:** SDE
-**Years:** L4
+**难度：** 中等
+**主题：** heap, intervals, sorting
+**岗位：** SDE
+**级别：** L4
 
-**Question:** Given an array of meeting time intervals `[start, end)`, return the minimum number of conference rooms required.
+**问题：** 给定会议时间区间 `[start, end)` 数组，返回所需最少会议室数。
 
-**Approach:** Sort by start. Min-heap of end times. For each meeting, if `heap.top() <= start`, pop (room freed). Push current end. Heap size at any time = active rooms; answer = max size. O(n log n). Alternative: chronological sweep with +1/-1 events.
+**思路：** 按 start 排序。结束时间小顶堆。对每个会议，若 `heap.top() <= start` 则 pop（房间释放）。将当前 end 入堆。堆大小=当前活跃房间数；答案=最大堆大小。O(n log n)。备选：按时间扫描 +1/-1 事件。
 
-**Python:**
+**Python：**
 ```python
 import heapq
 
@@ -2615,7 +2615,7 @@ def min_meeting_rooms(intervals: list[list[int]]) -> int:
     return len(heap)
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function minMeetingRooms(intervals: number[][]): number {
   if (!intervals.length) return 0;
@@ -2630,7 +2630,7 @@ function minMeetingRooms(intervals: number[][]): number {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 class Solution {
     public int minMeetingRooms(int[][] intervals) {
@@ -2646,27 +2646,27 @@ class Solution {
 }
 ```
 
-**Key points:**
-- Sort by start time so meetings are processed in order.
-- Heap top = earliest-ending room; reuse it if free.
-- Final heap size = peak concurrent rooms; O(n log n).
+**要点：**
+- 按开始时间排序，依次处理会议。
+- 堆顶为最早结束的会议室，可复用。
+- 最终堆大小=最大同时使用房间数；O(n log n)。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 41. Find Median from Data Stream
+### 41. 数据流的中位数
 
-**Difficulty:** Hard
-**Topics:** heap, design, streaming
-**Position:** Senior SDE
-**Years:** L5
+**难度：** 困难
+**主题：** heap, design, streaming
+**岗位：** Senior SDE
+**级别：** L5
 
-**Question:** Design a class supporting `addNum(int)` and `findMedian()` returning the median of all numbers seen so far.
+**问题：** 设计一个类，支持 `addNum(int)` 和 `findMedian()`，返回当前所有数的中位数。
 
-**Approach:** Two heaps: max-heap `lo` (lower half) and min-heap `hi` (upper half). Maintain `|lo| - |hi| in {0, 1}`. `addNum`: push to `lo`, move `lo.top()` to `hi`, rebalance. `findMedian`: if sizes equal, average tops; else `lo.top()`. O(log n) add, O(1) median.
+**思路：** 两个堆：大顶堆 `lo`（较小一半）和小顶堆 `hi`（较大一半）。维持 `|lo| - |hi| in {0, 1}`。`addNum`：先入 `lo`，把 `lo.top()` 移到 `hi`，再平衡。`findMedian`：若大小相等取两个堆顶平均，否则取 `lo.top()`。添加 O(log n)，求中位 O(1)。
 
-**Python:**
+**Python：**
 ```python
 import heapq
 
@@ -2687,7 +2687,7 @@ class MedianFinder:
         return (-self.lo[0] + self.hi[0]) / 2
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 class MedianFinder {
   private lo: number[] = [];  // max-heap simulated by sort desc
@@ -2706,7 +2706,7 @@ class MedianFinder {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 class MedianFinder {
     private final PriorityQueue<Integer> lo = new PriorityQueue<>(Collections.reverseOrder());
@@ -2723,27 +2723,27 @@ class MedianFinder {
 }
 ```
 
-**Key points:**
-- Invariant: `|lo| - |hi| in {0, 1}` with `lo`'s top <= `hi`'s top.
-- O(log n) per insert; O(1) median lookup.
-- Push to lo then move top to hi enforces the ordering automatically.
+**要点：**
+- 不变式：`|lo| - |hi| in {0, 1}` 且 `lo` 顶 <= `hi` 顶。
+- 插入 O(log n)；中位数 O(1) 查找。
+- 先入 lo 再把顶移到 hi，自动维持顺序。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 42. Serialize and Deserialize Binary Tree
+### 42. 二叉树的序列化与反序列化
 
-**Difficulty:** Hard
-**Topics:** tree, dfs, bfs, design
-**Position:** Senior SDE
-**Years:** L5
+**难度：** 困难
+**主题：** tree, dfs, bfs, design
+**岗位：** Senior SDE
+**级别：** L5
 
-**Question:** Design an algorithm to serialize a binary tree to a string and deserialize it back.
+**问题：** 设计算法将二叉树序列化为字符串，并能反序列化回来。
 
-**Approach:** Preorder DFS with null markers: `"1,2,#,#,3,#,#"`. Deserialize via queue/iterator consuming tokens recursively. O(n) both ways. Level-order (BFS) also works and is more readable for debugging. Be explicit about delimiter and null sentinel.
+**思路：** 前序 DFS + null 标记：`"1,2,#,#,3,#,#"`。反序列化通过队列/迭代器递归消费 token。两端 O(n)。层序（BFS）也行，更便于调试。明确分隔符和 null 哨兵。
 
-**Python:**
+**Python：**
 ```python
 def serialize(root: TreeNode | None) -> str:
     parts: list[str] = []
@@ -2767,7 +2767,7 @@ def deserialize(data: str) -> TreeNode | None:
     return go()
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function serialize(root: TreeNode | null): string {
   const parts: string[] = [];
@@ -2794,7 +2794,7 @@ function deserialize(data: string): TreeNode | null {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 public class Codec {
     public String serialize(TreeNode root) {
@@ -2821,27 +2821,27 @@ public class Codec {
 }
 ```
 
-**Key points:**
-- Preorder with null markers reconstructs structure unambiguously.
-- O(n) tokens for serialize and deserialize.
-- Use a shared cursor/iterator to consume tokens in order.
+**要点：**
+- 前序 + null 标记可无歧义重建结构。
+- 序列化与反序列化各 O(n) token。
+- 用共享游标/迭代器按序消费 token。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 43. Word Search II
+### 43. 单词搜索 II
 
-**Difficulty:** Hard
-**Topics:** trie, backtracking, dfs, matrix
-**Position:** Senior SDE
-**Years:** L5
+**难度：** 困难
+**主题：** trie, backtracking, dfs, matrix
+**岗位：** Senior SDE
+**级别：** L5
 
-**Question:** Given a `m x n` board of characters and a list of words, return all words that exist in the board (adjacent cells, no reuse within a word).
+**问题：** 给定 `m x n` 字符板和单词列表，返回板上存在的所有词（4 邻接，单词内不可复用格子）。
 
-**Approach:** Build a trie of all words. DFS each cell, walking the trie in lockstep with the path. On reaching a trie node marking a word, collect it and clear the marker (avoid duplicates). Prune dead trie branches after exhaustion. O(m*n * 4^L). Trie is the trick — naive per-word DFS TLEs.
+**思路：** 构建所有词的 trie。对每个格子 DFS，同步沿 trie 行走。到达 trie 中标记单词的节点时，收集并清除标记（避免重复）。耗尽后剪除死分支。O(m*n * 4^L)。Trie 是关键——朴素逐词 DFS 会超时。
 
-**Python:**
+**Python：**
 ```python
 def find_words(board: list[list[str]], words: list[str]) -> list[str]:
     trie: dict = {}
@@ -2873,7 +2873,7 @@ def find_words(board: list[list[str]], words: list[str]) -> list[str]:
     return out
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function findWords(board: string[][], words: string[]): string[] {
   type Node = { [k: string]: Node | string };
@@ -2903,7 +2903,7 @@ function findWords(board: string[][], words: string[]): string[] {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 class Solution {
     static class Node { Map<Character, Node> kids = new HashMap<>(); String word; }
@@ -2934,27 +2934,27 @@ class Solution {
 }
 ```
 
-**Key points:**
-- Walk the trie in lockstep with the DFS so dead branches prune.
-- Pop `$` after collecting to avoid duplicates without an extra set.
-- Backtrack by restoring the original char after visiting children.
+**要点：**
+- DFS 与 trie 同步行走，死分支被剪除。
+- 命中后 pop `$` 标记，避免重复无需额外集合。
+- 回溯时还原格子原字符。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 44. Maximum Units on a Truck
+### 44. 卡车上的最大单元数
 
-**Difficulty:** Easy
-**Topics:** greedy, sorting
-**Position:** SDE
-**Years:** L3-L4
+**难度：** 简单
+**主题：** greedy, sorting
+**岗位：** SDE
+**级别：** L3-L4
 
-**Question:** Given box types `[count, unitsPerBox]` and a truck capacity `truckSize` boxes, return the max number of units.
+**问题：** 给定箱型 `[count, unitsPerBox]` 和卡车容量 `truckSize` 箱，返回最大单元数。
 
-**Approach:** Sort by `unitsPerBox` descending. Greedily take as many of the highest-unit boxes as fit. O(n log n). Amazon OA staple framed around delivery trucks.
+**思路：** 按 `unitsPerBox` 降序排序。贪心装尽可能多的高单元箱。O(n log n)。亚马逊 OA 常驻题，背景常是配送卡车。
 
-**Python:**
+**Python：**
 ```python
 def maximum_units(box_types: list[list[int]], truck_size: int) -> int:
     box_types.sort(key=lambda b: -b[1])
@@ -2968,7 +2968,7 @@ def maximum_units(box_types: list[list[int]], truck_size: int) -> int:
     return total
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function maximumUnits(boxTypes: number[][], truckSize: number): number {
   boxTypes.sort((a, b) => b[1] - a[1]);
@@ -2983,7 +2983,7 @@ function maximumUnits(boxTypes: number[][], truckSize: number): number {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 class Solution {
     public int maximumUnits(int[][] boxTypes, int truckSize) {
@@ -3000,27 +3000,27 @@ class Solution {
 }
 ```
 
-**Key points:**
-- Greedy by units-per-box descending; never beats taking high-density first.
-- O(n log n) for the sort dominates.
-- Break early once the truck is full.
+**要点：**
+- 按每箱单元数降序贪心，先装高密度。
+- 排序 O(n log n) 决定复杂度。
+- 卡车装满即可提前 break。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 45. Analyze User Website Visit Pattern
+### 45. 分析用户网站访问模式
 
-**Difficulty:** Medium
-**Topics:** hashmap, sorting, strings
-**Position:** SDE
-**Years:** L4
+**难度：** 中等
+**主题：** hashmap, sorting, strings
+**岗位：** SDE
+**级别：** L4
 
-**Question:** Given parallel arrays of users, timestamps, and websites, find the 3-sequence (ordered triple of sites) visited by the most users. Tie-break lexicographically.
+**问题：** 给定用户、时间戳、网站三个平行数组，找出被最多用户访问过的 3 元序列（有序三元组）。字典序作为 tie-break。
 
-**Approach:** Group visits by user, sort each user's by timestamp. For each user, enumerate all combinations of 3 distinct positions (use a set to dedupe per user). Count sequences across users. Return max with lexicographic tie-break. O(sum nCk * U). Watch the per-user dedupe carefully — otherwise one user dominates.
+**思路：** 按用户分组，每用户按时间戳排序。每用户枚举 3 个不同位置的所有组合（用集合按用户去重）。跨用户对序列计数。返回最大并按字典序破平。O(sum nCk * U)。逐用户去重要小心——否则一个用户能压倒结果。
 
-**Python:**
+**Python：**
 ```python
 from collections import defaultdict
 from itertools import combinations
@@ -3041,7 +3041,7 @@ def most_visited_pattern(username: list[str], timestamp: list[int], website: lis
     return list(best[1])
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function mostVisitedPattern(username: string[], timestamp: number[], website: string[]): string[] {
   const byUser = new Map<string, Array<[number, string]>>();
@@ -3068,7 +3068,7 @@ function mostVisitedPattern(username: string[], timestamp: number[], website: st
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 class Solution {
     public List<String> mostVisitedPattern(String[] username, int[] timestamp, String[] website) {
@@ -3099,27 +3099,27 @@ class Solution {
 }
 ```
 
-**Key points:**
-- Per-user dedupe via set so a chatty user can't inflate counts.
-- Sort visits by timestamp before enumerating ordered triples.
-- Tie-break by lexicographic order of the joined triple.
+**要点：**
+- 每用户去重，避免重度访问者一家独大。
+- 枚举有序三元组前先按时间戳排序。
+- 按拼接字符串的字典序破平。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 46. Min Cost to Connect Ropes
+### 46. 连接绳子的最小成本
 
-**Difficulty:** Medium
-**Topics:** heap, greedy
-**Position:** SDE
-**Years:** L4
+**难度：** 中等
+**主题：** heap, greedy
+**岗位：** SDE
+**级别：** L4
 
-**Question:** Given an array of rope lengths, the cost to connect two ropes equals their sum. Find the minimum total cost to connect all ropes into one.
+**问题：** 给定绳长数组，连接两根绳子的成本为它们之和。求把所有绳子连成一根的最小总成本。
 
-**Approach:** Min-heap. Repeatedly pop two smallest, push their sum, accumulate cost. Equivalent to Huffman tree construction. O(n log n). Greedy proof: combining smallest first delays large costs from being multiplied repeatedly.
+**思路：** 小顶堆。反复弹出两个最小，把它们的和压回堆，累加成本。等价于 Huffman 树构造。O(n log n)。贪心证明：先合并最小推迟了大成本被反复乘的次数。
 
-**Python:**
+**Python：**
 ```python
 import heapq
 
@@ -3134,7 +3134,7 @@ def min_cost_to_connect_ropes(ropes: list[int]) -> int:
     return total
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function minCostToConnectRopes(ropes: number[]): number {
   ropes.sort((a, b) => a - b);
@@ -3152,7 +3152,7 @@ function minCostToConnectRopes(ropes: number[]): number {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 class Solution {
     public int minCostToConnectRopes(int[] ropes) {
@@ -3169,27 +3169,27 @@ class Solution {
 }
 ```
 
-**Key points:**
-- Greedy Huffman-style: combine the two smallest first.
-- Each combined sum is added to all future operations, so delay big costs.
-- O(n log n) with a proper heap; production TS should use a heap library.
+**要点：**
+- 贪心 Huffman 风格：先合并两根最短。
+- 合并的和会进入后续运算，延后大代价。
+- 用真正的堆 O(n log n)；TS 生产环境建议用堆库。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 47. Find the Winner of the Circular Game
+### 47. 找出环形游戏的获胜者
 
-**Difficulty:** Medium
-**Topics:** simulation, recursion, math
-**Position:** SDE
-**Years:** L4
+**难度：** 中等
+**主题：** simulation, recursion, math
+**岗位：** SDE
+**级别：** L4
 
-**Question:** `n` friends in a circle numbered 1..n. Starting from 1, count k friends and eliminate the kth. Continue from the next friend. Return the last remaining.
+**问题：** `n` 个朋友站成一圈，编号 1..n。从 1 开始数 k 个，淘汰第 k 个。从下一个继续。返回最后剩下的人。
 
-**Approach:** Josephus problem. Recursive formula `J(1) = 0; J(n) = (J(n-1) + k) % n`. Return `J(n) + 1` for 1-indexed. O(n) time, O(1) iterative. Simulation with a queue/deque is O(n*k) and easier to derive on the fly.
+**思路：** 约瑟夫问题。递推 `J(1) = 0; J(n) = (J(n-1) + k) % n`。1 索引下返回 `J(n) + 1`。O(n) 时间，迭代 O(1)。用队列模拟为 O(n*k)，更容易临场推出。
 
-**Python:**
+**Python：**
 ```python
 def find_the_winner(n: int, k: int) -> int:
     winner = 0
@@ -3198,7 +3198,7 @@ def find_the_winner(n: int, k: int) -> int:
     return winner + 1
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function findTheWinner(n: number, k: number): number {
   let winner = 0;
@@ -3207,7 +3207,7 @@ function findTheWinner(n: number, k: number): number {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 class Solution {
     public int findTheWinner(int n, int k) {
@@ -3218,27 +3218,27 @@ class Solution {
 }
 ```
 
-**Key points:**
-- Iterative Josephus recurrence in O(n) with O(1) space.
-- Add 1 at the end to convert to 1-indexed.
-- Queue simulation is O(n*k) but easier to derive under pressure.
+**要点：**
+- 约瑟夫递推迭代 O(n)，O(1) 空间。
+- 末尾 +1 转回 1 索引。
+- 队列模拟 O(n*k)，临场更易推。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 48. Reorganize String
+### 48. 重构字符串
 
-**Difficulty:** Medium
-**Topics:** heap, greedy, strings
-**Position:** SDE
-**Years:** L4
+**难度：** 中等
+**主题：** heap, greedy, strings
+**岗位：** SDE
+**级别：** L4
 
-**Question:** Given a string, rearrange so no two adjacent chars are equal. Return "" if impossible.
+**问题：** 给定字符串，重排使相邻字符不同。若不可能返回 ""。
 
-**Approach:** Count frequencies; if max > (n+1)/2, impossible. Max-heap by frequency. Pop top two each step, append both, decrement counts, repush nonzero. O(n log k) with k = unique chars. Alternative: place most-frequent char at even indices first, then fill.
+**思路：** 统计频率；若最大频率 > (n+1)/2，不可能。按频率大顶堆。每步弹出最高两个，追加两字符，频率减一，非零再压回。O(n log k)，k 为唯一字符数。备选：先把最高频字符放偶数位，再填其余。
 
-**Python:**
+**Python：**
 ```python
 import heapq
 from collections import Counter
@@ -3261,7 +3261,7 @@ def reorganize_string(s: str) -> str:
     return "".join(out)
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function reorganizeString(s: string): string {
   const cnt = new Map<string, number>();
@@ -3284,7 +3284,7 @@ function reorganizeString(s: string): string {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 class Solution {
     public String reorganizeString(String s) {
@@ -3308,27 +3308,27 @@ class Solution {
 }
 ```
 
-**Key points:**
-- Infeasible iff most frequent char exceeds `(n+1)/2`.
-- Pop the two most frequent and alternate them — they cannot adjoin each other in the output.
-- O(n log k) with k distinct characters.
+**要点：**
+- 最高频字符 > `(n+1)/2` 则不可行。
+- 每步弹出两个最高频字符交替输出，保证彼此不相邻。
+- 时间 O(n log k)，k 为字符种类数。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 49. Sliding Window Maximum
+### 49. 滑动窗口最大值
 
-**Difficulty:** Hard
-**Topics:** deque, sliding-window
-**Position:** Senior SDE
-**Years:** L5
+**难度：** 困难
+**主题：** deque, sliding-window
+**岗位：** Senior SDE
+**级别：** L5
 
-**Question:** Given an array and window size k, return the max in each sliding window.
+**问题：** 给定数组和窗口大小 k，返回每个滑动窗口的最大值。
 
-**Approach:** Monotonic deque holding indices, front always the max in current window. For each i: pop from back while `nums[back] <= nums[i]` (they can never be max again), push i; pop front if out of window. Output deque front once `i >= k-1`. O(n).
+**思路：** 单调双端队列存索引，队首始终为当前窗口最大。每个 i：当 `nums[尾] <= nums[i]` 时 pop_back（它们永不再是最大），push i；若队首出窗就 pop_front。当 `i >= k-1` 时输出队首。O(n)。
 
-**Python:**
+**Python：**
 ```python
 from collections import deque
 
@@ -3346,7 +3346,7 @@ def max_sliding_window(nums: list[int], k: int) -> list[int]:
     return out
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function maxSlidingWindow(nums: number[], k: number): number[] {
   const dq: number[] = [];
@@ -3361,7 +3361,7 @@ function maxSlidingWindow(nums: number[], k: number): number[] {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 class Solution {
     public int[] maxSlidingWindow(int[] nums, int k) {
@@ -3378,27 +3378,27 @@ class Solution {
 }
 ```
 
-**Key points:**
-- Monotonic decreasing deque of indices keeps the front as the current max.
-- Each index is pushed and popped at most once — amortized O(n).
-- Drop the front when it falls outside the window.
+**要点：**
+- 单调递减双端队列存索引，队首即当前窗口最大。
+- 每个索引最多入队、出队各一次——均摊 O(n)。
+- 队首超出窗口范围时弹出。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 50. Group Anagrams
+### 50. 字母异位词分组
 
-**Difficulty:** Medium
-**Topics:** hashmap, strings, sorting
-**Position:** SDE
-**Years:** L4
+**难度：** 中等
+**主题：** hashmap, strings, sorting
+**岗位：** SDE
+**级别：** L4
 
-**Question:** Given an array of strings, group anagrams together.
+**问题：** 给定字符串数组，将字母异位词分组。
 
-**Approach:** Hashmap from canonical key to list. Key options: (a) sorted string — O(n * k log k); (b) char count tuple `[a-z]` length-26 array — O(n * k). Latter is faster on long words. Trivial Amazon screen but common warmup.
+**思路：** 哈希表从规范键到列表。键的方案：(a) 排序后的字符串——O(n * k log k)；(b) 长度 26 的字符计数元组 `[a-z]`——O(n * k)。长词时后者更快。简单题，常作热身。
 
-**Python:**
+**Python：**
 ```python
 def group_anagrams(strs: list[str]) -> list[list[str]]:
     groups: dict[str, list[str]] = {}
@@ -3408,7 +3408,7 @@ def group_anagrams(strs: list[str]) -> list[list[str]]:
     return list(groups.values())
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function groupAnagrams(strs: string[]): string[][] {
   const groups = new Map<string, string[]>();
@@ -3421,7 +3421,7 @@ function groupAnagrams(strs: string[]): string[][] {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 class Solution {
     public List<List<String>> groupAnagrams(String[] strs) {
@@ -3436,27 +3436,27 @@ class Solution {
 }
 ```
 
-**Key points:**
-- Sorted-string key is the simplest canonical form.
-- A 26-length char-count vector also works and is faster on long strings.
-- O(n * k log k) where k is average word length.
+**要点：**
+- 排序后的字符串是最简单的规范键。
+- 26 维字符计数键也可，长串更快。
+- 时间 O(n * k log k)，k 为平均词长。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 51. Maximum Subarray (Kadane's)
+### 51. 最大子数组和（Kadane）
 
-**Difficulty:** Medium
-**Topics:** dp, arrays
-**Position:** SDE
-**Years:** L4
+**难度：** 中等
+**主题：** dp, arrays
+**岗位：** SDE
+**级别：** L4
 
-**Question:** Find the contiguous subarray with the largest sum and return its sum.
+**问题：** 找出连续子数组中和最大的，并返回该和。
 
-**Approach:** Kadane's: `cur = max(num, cur + num); best = max(best, cur)`. O(n). Variant: return indices — track start when `cur` resets. Divide-and-conquer O(n log n) version exists but Kadane is canonical.
+**思路：** Kadane：`cur = max(num, cur + num); best = max(best, cur)`。O(n)。变体：返回下标——`cur` 重置时记录 start。也存在 O(n log n) 的分治版，但 Kadane 是标配。
 
-**Python:**
+**Python：**
 ```python
 def max_subarray(nums: list[int]) -> int:
     cur = best = nums[0]
@@ -3466,7 +3466,7 @@ def max_subarray(nums: list[int]) -> int:
     return best
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function maxSubArray(nums: number[]): number {
   let cur = nums[0], best = nums[0];
@@ -3478,7 +3478,7 @@ function maxSubArray(nums: number[]): number {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 class Solution {
     public int maxSubArray(int[] nums) {
@@ -3492,27 +3492,27 @@ class Solution {
 }
 ```
 
-**Key points:**
-- `cur` is the best sum ending at the current index.
-- Reset to `x` whenever extending makes things worse.
-- O(n) time, O(1) space; works on all-negative arrays.
+**要点：**
+- `cur` 表示当前位置结尾的最大子数组和。
+- 若延伸不利则重置为当前元素。
+- O(n) 时间，O(1) 空间；全负数组也适用。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 52. Lowest Common Ancestor of a Binary Tree
+### 52. 二叉树的最近公共祖先
 
-**Difficulty:** Medium
-**Topics:** tree, dfs, recursion
-**Position:** SDE
-**Years:** L4
+**难度：** 中等
+**主题：** tree, dfs, recursion
+**岗位：** SDE
+**级别：** L4
 
-**Question:** Given a binary tree and two nodes `p`, `q`, find their lowest common ancestor.
+**问题：** 给定二叉树和两个节点 `p`、`q`，找它们的最近公共祖先。
 
-**Approach:** Recursive: if root is null or p or q, return root. Recurse left and right. If both non-null, root is LCA; else return whichever is non-null. O(n). Works for BST too but BST has O(log n) by comparing values.
+**思路：** 递归：若 root 为空或为 p 或 q，返回 root。左右子树递归。若两侧都非空，root 即 LCA；否则返回非空那侧。O(n)。BST 上也可用，但 BST 可比较值做 O(log n)。
 
-**Python:**
+**Python：**
 ```python
 def lowest_common_ancestor(root: TreeNode | None, p: TreeNode, q: TreeNode) -> TreeNode | None:
     if root is None or root is p or root is q:
@@ -3524,7 +3524,7 @@ def lowest_common_ancestor(root: TreeNode | None, p: TreeNode, q: TreeNode) -> T
     return l or r
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function lowestCommonAncestor(root: TreeNode | null, p: TreeNode, q: TreeNode): TreeNode | null {
   if (!root || root === p || root === q) return root;
@@ -3535,7 +3535,7 @@ function lowestCommonAncestor(root: TreeNode | null, p: TreeNode, q: TreeNode): 
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 class Solution {
     public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
@@ -3548,27 +3548,27 @@ class Solution {
 }
 ```
 
-**Key points:**
-- A node equal to p or q is its own LCA.
-- If both sides return non-null, current node is the split point.
-- O(n) time, O(h) recursion depth.
+**要点：**
+- 等于 p 或 q 的节点可作为自身的 LCA。
+- 两侧都非空时当前节点即分叉点。
+- O(n) 时间，O(h) 递归深度。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 53. Maximum Profit in Job Scheduling
+### 53. 工作安排的最大利润
 
-**Difficulty:** Hard
-**Topics:** dp, binary-search, sorting
-**Position:** Senior SDE
-**Years:** L5
+**难度：** 困难
+**主题：** dp, binary-search, sorting
+**岗位：** Senior SDE
+**级别：** L5
 
-**Question:** Given `startTime[i]`, `endTime[i]`, `profit[i]` for n jobs, return the max profit achievable from a non-overlapping subset.
+**问题：** 给定 n 个工作的 `startTime[i]`、`endTime[i]`、`profit[i]`，返回不重叠子集可达到的最大利润。
 
-**Approach:** Sort by endTime. `dp[i]` = max profit using first i jobs. Transition: `dp[i] = max(dp[i-1], profit[i] + dp[j])` where j is the largest index with `endTime[j] <= startTime[i]` (binary search). O(n log n).
+**思路：** 按 endTime 排序。`dp[i]` = 用前 i 个工作的最大利润。转移：`dp[i] = max(dp[i-1], profit[i] + dp[j])`，j 是使 `endTime[j] <= startTime[i]` 的最大下标（二分查找）。O(n log n)。
 
-**Python:**
+**Python：**
 ```python
 from bisect import bisect_right
 
@@ -3583,7 +3583,7 @@ def job_scheduling(start_time: list[int], end_time: list[int], profit: list[int]
     return dp[n]
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function jobScheduling(startTime: number[], endTime: number[], profit: number[]): number {
   const jobs = startTime.map((s, i) => [endTime[i], s, profit[i]]).sort((a, b) => a[0] - b[0]);
@@ -3599,7 +3599,7 @@ function jobScheduling(startTime: number[], endTime: number[], profit: number[])
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 class Solution {
     public int jobScheduling(int[] startTime, int[] endTime, int[] profit) {
@@ -3622,27 +3622,27 @@ class Solution {
 }
 ```
 
-**Key points:**
-- Sort by end time so prior jobs always end no later than current.
-- Binary search finds the latest non-conflicting job.
-- O(n log n) time, O(n) space.
+**要点：**
+- 按结束时间排序，保证之前的工作结束不晚于当前。
+- 二分查找最近的不冲突工作。
+- 时间 O(n log n)，空间 O(n)。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 54. Min Stack
+### 54. 最小栈
 
-**Difficulty:** Medium
-**Topics:** stack, design
-**Position:** SDE
-**Years:** L4
+**难度：** 中等
+**主题：** stack, design
+**岗位：** SDE
+**级别：** L4
 
-**Question:** Design a stack supporting `push`, `pop`, `top`, and `getMin` all in O(1).
+**问题：** 设计一个栈，`push`、`pop`、`top`、`getMin` 都是 O(1)。
 
-**Approach:** Auxiliary stack of running minimums, pushed in lockstep with main stack (push `min(new, prev_min)`). Alternative: store `(val, current_min)` pairs in single stack. Tricky variant: only push to min stack on `val <= current_min`; pop only when equal.
+**思路：** 辅助栈记录当前最小值，与主栈同步推入（推 `min(新值, 上一最小)`）。备选：单栈中存 `(val, current_min)` 对。技巧变体：只在 `val <= current_min` 时推入最小栈；相等时才 pop。
 
-**Python:**
+**Python：**
 ```python
 class MinStack:
     def __init__(self) -> None:
@@ -3664,7 +3664,7 @@ class MinStack:
         return self.mins[-1]
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 class MinStack {
   private stack: number[] = [];
@@ -3679,7 +3679,7 @@ class MinStack {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 class MinStack {
     private final Deque<Integer> stack = new ArrayDeque<>();
@@ -3694,27 +3694,27 @@ class MinStack {
 }
 ```
 
-**Key points:**
-- Parallel min-stack stores the running minimum at every depth.
-- All operations are O(1).
-- Variant stores only strict-decrease entries to save space.
+**要点：**
+- 并行最小栈记录每层深度下的最小值。
+- 所有操作 O(1)。
+- 仅推入严格递减的优化变体可省空间。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 55. Validate Binary Search Tree
+### 55. 验证二叉搜索树
 
-**Difficulty:** Medium
-**Topics:** tree, dfs, recursion
-**Position:** SDE
-**Years:** L4
+**难度：** 中等
+**主题：** tree, dfs, recursion
+**岗位：** SDE
+**级别：** L4
 
-**Question:** Given a binary tree, determine if it's a valid BST.
+**问题：** 给定二叉树，判断是否为有效 BST。
 
-**Approach:** Recursive with `(min, max)` bounds passed down. Each node must satisfy `min < node.val < max`. Tightens bounds on recursion. O(n). Alternative: inorder traversal should yield strictly increasing sequence. Watch INT bounds — use long or Optional.
+**思路：** 递归传递 `(min, max)` 边界。每个节点须满足 `min < node.val < max`。递归时收紧边界。O(n)。备选：中序遍历应严格递增。注意 INT 边界——用 long 或 Optional。
 
-**Python:**
+**Python：**
 ```python
 def is_valid_bst(root: TreeNode | None) -> bool:
     def go(node: TreeNode | None, lo: float, hi: float) -> bool:
@@ -3726,7 +3726,7 @@ def is_valid_bst(root: TreeNode | None) -> bool:
     return go(root, float("-inf"), float("inf"))
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function isValidBST(root: TreeNode | null): boolean {
   const go = (n: TreeNode | null, lo: number, hi: number): boolean => {
@@ -3738,7 +3738,7 @@ function isValidBST(root: TreeNode | null): boolean {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 class Solution {
     public boolean isValidBST(TreeNode root) {
@@ -3752,27 +3752,27 @@ class Solution {
 }
 ```
 
-**Key points:**
-- Strict inequalities enforce uniqueness.
-- Pass bounds down, not up — values get tighter, never looser.
-- Inorder traversal must produce strictly increasing values.
+**要点：**
+- 严格不等号保证唯一性。
+- 边界向下传递，越深越紧。
+- 中序遍历应产生严格递增序列。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 56. Search in Rotated Sorted Array
+### 56. 搜索旋转排序数组
 
-**Difficulty:** Medium
-**Topics:** binary-search, arrays
-**Position:** SDE
-**Years:** L4
+**难度：** 中等
+**主题：** binary-search, arrays
+**岗位：** SDE
+**级别：** L4
 
-**Question:** Given a rotated sorted array (originally ascending, then rotated at some pivot) and a target, return its index or -1. O(log n) required.
+**问题：** 给定旋转排序数组（原升序，在某枢轴处旋转）和目标值，返回下标或 -1。要求 O(log n)。
 
-**Approach:** Modified binary search. At each step determine which half is sorted (compare `nums[lo]` and `nums[mid]`). If target lies in the sorted half's range, search there; else search the other half. O(log n). With duplicates, worst-case degrades to O(n).
+**思路：** 改造的二分。每步判断哪半边有序（比较 `nums[lo]` 和 `nums[mid]`）。若目标落在有序半边的范围内则搜该半边，否则搜另一半。O(log n)。有重复值时最坏退化为 O(n)。
 
-**Python:**
+**Python：**
 ```python
 def search(nums: list[int], target: int) -> int:
     lo, hi = 0, len(nums) - 1
@@ -3793,7 +3793,7 @@ def search(nums: list[int], target: int) -> int:
     return -1
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function search(nums: number[], target: number): number {
   let lo = 0, hi = nums.length - 1;
@@ -3812,7 +3812,7 @@ function search(nums: number[], target: number): number {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 class Solution {
     public int search(int[] nums, int target) {
@@ -3833,27 +3833,27 @@ class Solution {
 }
 ```
 
-**Key points:**
-- One half is always sorted — decide via `nums[lo] <= nums[mid]`.
-- Inclusive bound check matches the sorted side's endpoints.
-- O(log n) for unique values; degrades to O(n) with duplicates.
+**要点：**
+- 一半总是有序的——用 `nums[lo] <= nums[mid]` 判断。
+- 包含边界检查匹配有序侧端点。
+- 无重复时 O(log n)，有重复退化到 O(n)。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 57. Design Hit Counter
+### 57. 设计点击计数器
 
-**Difficulty:** Medium
-**Topics:** design, queue, hashmap
-**Position:** SDE
-**Years:** L4
+**难度：** 中等
+**主题：** design, queue, hashmap
+**岗位：** SDE
+**级别：** L4
 
-**Question:** Design a hit counter that records hits and returns the number of hits in the past 5 minutes. Hits are recorded in chronological order.
+**问题：** 设计一个点击计数器，记录点击并返回过去 5 分钟内的点击数。点击按时间顺序到达。
 
-**Approach:** Queue of timestamps; on `getHits(t)`, dequeue all with `ts <= t - 300`, return queue size. Memory grows with hit rate. For scale, use two arrays of size 300: `times[i]` and `hits[i]`, indexed by `t % 300`; reset bucket on stale timestamp. O(1) amortized.
+**思路：** 时间戳队列；`getHits(t)` 时弹出所有 `ts <= t - 300` 的项，返回队列大小。内存随点击率增长。为可扩展，用两个长度 300 的数组：`times[i]` 和 `hits[i]`，按 `t % 300` 索引；过期时间戳时重置桶。摊还 O(1)。
 
-**Python:**
+**Python：**
 ```python
 class HitCounter:
     def __init__(self) -> None:
@@ -3872,7 +3872,7 @@ class HitCounter:
         return sum(self.hits[i] for i in range(300) if timestamp - self.times[i] < 300)
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 class HitCounter {
   private times = new Array(300).fill(0);
@@ -3890,7 +3890,7 @@ class HitCounter {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 class HitCounter {
     private final int[] times = new int[300];
@@ -3908,27 +3908,27 @@ class HitCounter {
 }
 ```
 
-**Key points:**
-- Bucket per second within the 300s window; stale buckets are auto-reset on next hit.
-- O(1) `hit`, O(300) `getHits` regardless of hit rate.
-- Queue variant is simpler but unbounded under bursty traffic.
+**要点：**
+- 每秒一桶，过期桶在下次命中时自动重置。
+- `hit` O(1)，`getHits` O(300)，与点击率无关。
+- 队列方案简单但在突发流量下无界。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 58. Sliding Puzzle
+### 58. 滑动谜题
 
-**Difficulty:** Hard
-**Topics:** bfs, matrix, state-search
-**Position:** Senior SDE
-**Years:** L5-L6
+**难度：** 困难
+**主题：** bfs, matrix, state-search
+**岗位：** Senior SDE
+**级别：** L5-L6
 
-**Question:** A 2x3 board has tiles 1-5 and one empty (0). Each move swaps 0 with an adjacent tile. Given start board, return min moves to reach `[[1,2,3],[4,5,0]]` or -1.
+**问题：** 2x3 棋盘有 1-5 五块拼图和一个空（0）。每步把 0 与相邻拼图交换。给定初始棋盘，返回到达 `[[1,2,3],[4,5,0]]` 的最少步数或 -1。
 
-**Approach:** BFS over board states. Encode each state as a string of 6 chars. Precompute neighbor positions for each index of 0. Visited set on strings. O(6! * branching). A* with Manhattan-distance heuristic for follow-up larger boards.
+**思路：** 对棋盘状态做 BFS。状态编码为 6 字符串。预计算每个 0 位置的邻居位置。用字符串集做已访问。O(6! * 分支)。追问更大棋盘时用 Manhattan 距离启发的 A*。
 
-**Python:**
+**Python：**
 ```python
 from collections import deque
 
@@ -3954,7 +3954,7 @@ def sliding_puzzle(board: list[list[int]]) -> int:
     return -1
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function slidingPuzzle(board: number[][]): number {
   const target = "123450";
@@ -3977,7 +3977,7 @@ function slidingPuzzle(board: number[][]): number {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 class Solution {
     public int slidingPuzzle(int[][] board) {
@@ -4008,27 +4008,27 @@ class Solution {
 }
 ```
 
-**Key points:**
-- Encode the 2x3 board as a 6-char string for cheap hashing.
-- Precomputed neighbor table avoids row/col arithmetic per move.
-- O(6!) reachable states; BFS gives the shortest move count.
+**要点：**
+- 把 2x3 棋盘编码为 6 字符字符串便于哈希。
+- 预计算每个位置的邻居，避免运行时计算行列。
+- 总状态空间 6!；BFS 给出最少步数。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 59. Partition Labels
+### 59. 划分字母区间
 
-**Difficulty:** Medium
-**Topics:** greedy, strings, two-pointer
-**Position:** SDE
-**Years:** L4
+**难度：** 中等
+**主题：** greedy, strings, two-pointer
+**岗位：** SDE
+**级别：** L4
 
-**Question:** Partition a string into as many parts as possible so each letter appears in at most one part. Return the list of part sizes.
+**问题：** 将字符串划分为尽可能多的片段，使每个字母最多出现在一个片段中。返回各片段长度列表。
 
-**Approach:** Precompute `last[c]` = last index of char c. Walk with two pointers `start`, `end`; extend `end = max(end, last[s[i]])`; when `i == end`, cut a partition and reset `start = i+1`. O(n).
+**思路：** 预处理 `last[c]` = 字符 c 的最后位置。用双指针 `start`、`end` 扫描；扩张 `end = max(end, last[s[i]])`；当 `i == end` 时切一段并 `start = i+1`。O(n)。
 
-**Python:**
+**Python：**
 ```python
 def partition_labels(s: str) -> list[int]:
     last = {c: i for i, c in enumerate(s)}
@@ -4042,7 +4042,7 @@ def partition_labels(s: str) -> list[int]:
     return out
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function partitionLabels(s: string): number[] {
   const last = new Map<string, number>();
@@ -4057,7 +4057,7 @@ function partitionLabels(s: string): number[] {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 class Solution {
     public List<Integer> partitionLabels(String s) {
@@ -4074,27 +4074,27 @@ class Solution {
 }
 ```
 
-**Key points:**
-- A partition closes when `i` reaches the farthest last-index seen so far.
-- Two passes total; O(n) time, O(1) extra (26 entries for lowercase).
-- Greedy is provably optimal: extending end is mandatory.
+**要点：**
+- 当 `i` 抵达迄今最远的 last 索引时即可切段。
+- 共两次遍历；O(n) 时间，O(1) 额外空间。
+- 贪心可证最优：必须延伸 `end`。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 60. Design Tic-Tac-Toe
+### 60. 设计井字棋
 
-**Difficulty:** Medium
-**Topics:** design, ood, matrix
-**Position:** SDE
-**Years:** L4
+**难度：** 中等
+**主题：** design, ood, matrix
+**岗位：** SDE
+**级别：** L4
 
-**Question:** Design a Tic-Tac-Toe game on an `n x n` board supporting `move(row, col, player)` returning the winning player (0 if none).
+**问题：** 在 `n x n` 棋盘上设计井字棋，支持 `move(row, col, player)` 返回胜方（无则 0）。
 
-**Approach:** Track per-player counters: `rows[player][i]`, `cols[player][j]`, `diag[player]`, `anti_diag[player]`. On move, increment relevant counters; if any reaches n, player wins. O(1) per move, O(n) space. Beats the naive O(n) board scan.
+**思路：** 按玩家维护计数：`rows[player][i]`、`cols[player][j]`、`diag[player]`、`anti_diag[player]`。每步增对应计数；任一达到 n 即获胜。每步 O(1)，O(n) 空间。优于朴素 O(n) 扫描整盘。
 
-**Python:**
+**Python：**
 ```python
 class TicTacToe:
     def __init__(self, n: int) -> None:
@@ -4118,7 +4118,7 @@ class TicTacToe:
         return 0
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 class TicTacToe {
   private rows: number[][]; private cols: number[][];
@@ -4139,7 +4139,7 @@ class TicTacToe {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 class TicTacToe {
     private final int n;
@@ -4161,27 +4161,27 @@ class TicTacToe {
 }
 ```
 
-**Key points:**
-- Per-player counters give O(1) move and O(1) win check.
-- Diagonal: `row == col`; anti-diagonal: `row + col == n - 1`.
-- O(n) space, vastly better than scanning the board on each move.
+**要点：**
+- 每个玩家的计数器实现 O(1) move 和 O(1) 胜判。
+- 主对角线 `row == col`；副对角线 `row + col == n - 1`。
+- 空间 O(n)，远胜每次扫盘。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 61. Rotting Oranges
+### 61. 腐烂的橘子
 
-**Difficulty:** Medium
-**Topics:** bfs, matrix
-**Position:** SDE
-**Years:** L4
+**难度：** 中等
+**主题：** bfs, matrix
+**岗位：** SDE
+**级别：** L4
 
-**Question:** Grid of 0 (empty), 1 (fresh orange), 2 (rotten). Each minute, rotten infects 4-adjacent fresh. Return min minutes until no fresh remain, or -1.
+**问题：** 网格 0（空）、1（新鲜橘子）、2（腐烂）。每分钟，腐烂会感染 4 邻接的新鲜橘子。返回直到没有新鲜橘子的最少分钟数，或 -1。
 
-**Approach:** Multi-source BFS. Enqueue all initial rotten oranges. BFS by levels; each level = 1 minute. Track fresh count; decrement on infection. If fresh > 0 at end, return -1. O(m*n).
+**思路：** 多源 BFS。把所有初始腐烂橘子入队。按层 BFS；每层 = 1 分钟。跟踪新鲜数；感染时递减。结束时若 fresh > 0 返回 -1。O(m*n)。
 
-**Python:**
+**Python：**
 ```python
 from collections import deque
 
@@ -4209,7 +4209,7 @@ def oranges_rotting(grid: list[list[int]]) -> int:
     return -1 if fresh else minutes
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function orangesRotting(grid: number[][]): number {
   const m = grid.length, n = grid[0].length;
@@ -4238,7 +4238,7 @@ function orangesRotting(grid: number[][]): number {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 class Solution {
     public int orangesRotting(int[][] grid) {
@@ -4269,27 +4269,27 @@ class Solution {
 }
 ```
 
-**Key points:**
-- Multi-source BFS treats every initial rotten orange as level 0.
-- Each BFS level corresponds to one minute.
-- Return -1 if any fresh oranges remain unreachable.
+**要点：**
+- 多源 BFS：所有初始腐烂橘子作为第 0 层。
+- 每个 BFS 层对应一分钟。
+- 若仍有新鲜橘子不可达，返回 -1。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-### 62. Shortest Path in a Grid with Obstacles Elimination
+### 62. 带障碍消除的网格最短路径
 
-**Difficulty:** Hard
-**Topics:** bfs, matrix, state-search
-**Position:** Senior SDE
-**Years:** L5-L6
+**难度：** 困难
+**主题：** bfs, matrix, state-search
+**岗位：** Senior SDE
+**级别：** L5-L6
 
-**Question:** Given a grid (0 empty, 1 obstacle) and integer k, return min steps from `(0,0)` to `(m-1,n-1)`, allowed to eliminate at most k obstacles. -1 if unreachable.
+**问题：** 给定网格（0 空，1 障碍）和整数 k，返回 `(0,0)` 到 `(m-1,n-1)` 的最少步数，最多可消除 k 个障碍。不可达返回 -1。
 
-**Approach:** BFS over states `(r, c, remaining_k)`. Visited set keyed on tuple. Pruning: if `k >= m+n-2`, return Manhattan distance directly. O(m * n * k). Don't drop a state because the cell was visited with smaller remaining_k — different k values are different states.
+**思路：** 对状态 `(r, c, remaining_k)` 做 BFS。已访问集按元组键。剪枝：若 `k >= m+n-2`，直接返回 Manhattan 距离。O(m * n * k)。不要因为之前以更小 remaining_k 访问过该格子就跳过——不同 k 是不同状态。
 
-**Python:**
+**Python：**
 ```python
 from collections import deque
 
@@ -4313,7 +4313,7 @@ def shortest_path(grid: list[list[int]], k: int) -> int:
     return -1
 ```
 
-**TypeScript:**
+**TypeScript：**
 ```typescript
 function shortestPath(grid: number[][], k: number): number {
   const m = grid.length, n = grid[0].length;
@@ -4336,7 +4336,7 @@ function shortestPath(grid: number[][], k: number): number {
 }
 ```
 
-**Java:**
+**Java：**
 ```java
 class Solution {
     public int shortestPath(int[][] grid, int k) {
@@ -4366,26 +4366,26 @@ class Solution {
 }
 ```
 
-**Key points:**
-- State is `(row, col, remaining_eliminations)` — different `k` are different nodes.
-- Shortcut: if `k >= m+n-2`, the Manhattan distance is optimal.
-- O(m * n * k) time and space.
+**要点：**
+- 状态为 `(行, 列, 剩余消除次数)`——不同 k 是不同节点。
+- 捷径：若 `k >= m+n-2`，直接返回曼哈顿距离。
+- 时间和空间均为 O(m * n * k)。
 
-**Tags:** #algorithm
+**标签：** #algorithm
 
 ---
 
-## Tips specific to Amazon
+## 亚马逊特有的建议
 
-- **Memorize the 16 LPs.** You will be asked which LP a story demonstrates. Practice tagging your stories to LPs in advance.
-- **Have 2-3 stories per LP** — they'll cross-reference and detect re-use. Don't pull the same project for every question.
-- **The bar raiser is unfamiliar with your team.** Explain context concisely. They look for STAR rigor and LP fit, not technical depth on your domain.
-- **Behavioral comes FIRST in each round.** A weak behavioral can poison the technical eval. Don't rush through "Customer Obsession" to get to the algorithm.
-- **OOD shows up often.** Practice 3-4: parking lot, elevator, LRU/LFU cache, deck of cards, vending machine.
+- **背熟 16 条 LP。** 面试官会问你某个故事对应哪条 LP。提前把故事和 LP 做映射演练。
+- **每条 LP 备 2-3 个故事**——他们会交叉印证、识别复用。别每道题都拉同一个项目。
+- **Bar raiser 对你所在团队不熟悉。** 简洁说清上下文。他们看重 STAR 严谨度和 LP 契合度，不是你所在领域的技术深度。
+- **行为面试在每轮的开头。** 表现差的行为面试会毒化技术评估。别为了赶紧进算法题而草草过 "Customer Obsession"。
+- **OOD 出现频率高。** 练 3-4 道：停车场、电梯、LRU/LFU 缓存、扑克牌、自动售货机。
 
-## Resources
+## 参考资料
 
-- Amazon's published Leadership Principles page (memorize wording, not just headers)
-- LeetCode "Amazon" company tag — focus on the OOD problems
-- "Working Backwards" — Amazon's product development book; useful context
-- amazon.jobs interview prep page (official)
+- 亚马逊官方公布的领导力准则页面（背原文措辞，不只是标题）
+- LeetCode "Amazon" 公司标签——重点刷 OOD 题
+- 《Working Backwards》——亚马逊产品开发书，提供有用的上下文
+- amazon.jobs 面试准备页（官方）

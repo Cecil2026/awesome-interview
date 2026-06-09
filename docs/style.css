@@ -13,7 +13,7 @@
 }
 
 @media (prefers-color-scheme: light) {
-  :root {
+  :root:not([data-theme]) {
     --bg: #f8fafc;
     --bg-card: #ffffff;
     --border: #e2e8f0;
@@ -21,6 +21,24 @@
     --text-muted: #64748b;
     --badge-bg: #e2e8f0;
   }
+}
+
+:root[data-theme="light"] {
+  --bg: #f8fafc;
+  --bg-card: #ffffff;
+  --border: #e2e8f0;
+  --text: #0f172a;
+  --text-muted: #64748b;
+  --badge-bg: #e2e8f0;
+}
+
+:root[data-theme="dark"] {
+  --bg: #0f172a;
+  --bg-card: #1e293b;
+  --border: #334155;
+  --text: #e2e8f0;
+  --text-muted: #94a3b8;
+  --badge-bg: #334155;
 }
 
 * {

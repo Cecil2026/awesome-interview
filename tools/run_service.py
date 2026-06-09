@@ -12,8 +12,12 @@ import argparse
 import html
 import json
 import os
+import platform
+import socket
 import socketserver
+import subprocess
 import sys
+import time
 import webbrowser
 from http.server import HTTPServer, SimpleHTTPRequestHandler
 from pathlib import Path
@@ -97,6 +101,9 @@ PAGE_STRINGS = {
         "questions_link_suffix": "— generated question index",
         "readme_link_suffix": "— repo usage and module descriptions",
         "language_aria": "Select language",
+        "theme_aria": "Select theme",
+        "theme_light": "Light",
+        "theme_dark": "Dark",
     },
     "zh": {
         "page_title": "awesome-interview 本地服务",
@@ -108,11 +115,27 @@ PAGE_STRINGS = {
         "questions_link_suffix": "— 自动生成的题目索引",
         "readme_link_suffix": "— 仓库使用说明与模块介绍",
         "language_aria": "选择语言",
+        "theme_aria": "选择主题",
+        "theme_light": "浅色",
+        "theme_dark": "深色",
     },
 }
 
 
 class RootHandler(SimpleHTTPRequestHandler):
+    extensions_map = {
+        **SimpleHTTPRequestHandler.extensions_map,
+        ".md": "text/markdown; charset=utf-8",
+        ".js": "application/javascript; charset=utf-8",
+        ".css": "text/css; charset=utf-8",
+        ".json": "application/json; charset=utf-8",
+        ".html": "text/html; charset=utf-8",
+    }
+
+    def end_headers(self):
+        self.send_header("Cache-Control", "no-store, must-revalidate")
+        super().end_headers()
+
     def do_GET(self):
         if self.path in ("/", "/index.html"):
             self.send_response(200)
@@ -135,26 +158,36 @@ class RootHandler(SimpleHTTPRequestHandler):
             "  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />",
             f"  <title data-i18n=\"page_title\">{html.escape(en['page_title'])}</title>",
             "  <style>",
-            "    body{font-family:system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif;margin:0;padding:0;background:#f7f9fb;color:#111}",
+            "    :root{color-scheme:light dark;--bg:#f7f9fb;--text:#111;--card-bg:#fff;--card-border:#dae1e7;--card-shadow:0 12px 30px rgba(15,23,42,.08);--muted:#475569;--accent:#2563eb;--note-bg:#eef2ff;--note-border:#c7d2fe;--select-bg:#fff;--select-border:#cbd5e1;--select-text:#0f172a}",
+            "    :root[data-theme=\"dark\"]{color-scheme:dark;--bg:#0b1220;--text:#e2e8f0;--card-bg:#111a2e;--card-border:#1f2a44;--card-shadow:0 12px 30px rgba(0,0,0,.45);--muted:#94a3b8;--accent:#60a5fa;--note-bg:#172554;--note-border:#1e3a8a;--select-bg:#111a2e;--select-border:#334155;--select-text:#e2e8f0}",
+            "    body{font-family:system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif;margin:0;padding:0;background:var(--bg);color:var(--text)}",
             "    .page{max-width:960px;margin:0 auto;padding:32px}",
-            "    h1{margin-top:0} .card{background:#fff;border:1px solid #dae1e7;border-radius:12px;padding:20px;margin:16px 0;box-shadow:0 12px 30px rgba(15,23,42,.08)}",
-            "    .card a{color:#2563eb;text-decoration:none} .card a:hover{text-decoration:underline}",
+            "    h1{margin-top:0} .card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:12px;padding:20px;margin:16px 0;box-shadow:var(--card-shadow)}",
+            "    .card a{color:var(--accent);text-decoration:none} .card a:hover{text-decoration:underline}",
             "    .grid{display:grid;gap:16px;margin-top:24px}",
             "    .grid a{display:block;color:inherit;text-decoration:none}",
-            "    .meta{font-size:.95rem;color:#475569;margin-top:4px}",
-            "    .note{margin-top:24px;padding:16px;background:#eef2ff;border:1px solid #c7d2fe;border-radius:10px}",
+            "    .meta{font-size:.95rem;color:var(--muted);margin-top:4px}",
+            "    .note{margin-top:24px;padding:16px;background:var(--note-bg);border:1px solid var(--note-border);border-radius:10px}",
             "    .topbar{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:8px}",
-            "    .topbar select{padding:6px 10px;border-radius:8px;border:1px solid #cbd5e1;background:#fff;color:#0f172a;font-size:.9rem}",
+            "    .topbar-controls{display:flex;gap:8px;align-items:center}",
+            "    .topbar select{padding:6px 10px;border-radius:8px;border:1px solid var(--select-border);background:var(--select-bg);color:var(--select-text);font-size:.9rem}",
+            "    a{color:var(--accent)}",
             "  </style>",
             "</head>",
             "<body>",
             "  <div class=\"page\">",
             "    <div class=\"topbar\">",
             f"      <h1 data-i18n=\"heading\">{html.escape(en['heading'])}</h1>",
-            f"      <select id=\"language-select\" aria-label=\"{html.escape(en['language_aria'])}\">",
-            "        <option value=\"en\">English</option>",
-            "        <option value=\"zh\">简体中文</option>",
-            "      </select>",
+            "      <div class=\"topbar-controls\">",
+            f"        <select id=\"language-select\" aria-label=\"{html.escape(en['language_aria'])}\">",
+            "          <option value=\"en\">English</option>",
+            "          <option value=\"zh\">简体中文</option>",
+            "        </select>",
+            f"        <select id=\"theme-select\" aria-label=\"{html.escape(en['theme_aria'])}\">",
+            f"          <option value=\"light\">{html.escape(en['theme_light'])}</option>",
+            f"          <option value=\"dark\">{html.escape(en['theme_dark'])}</option>",
+            "        </select>",
+            "      </div>",
             "    </div>",
             f"    <p data-i18n=\"intro\">{html.escape(en['intro'])}</p>",
             "    <div class=\"note\">",
@@ -187,9 +220,21 @@ class RootHandler(SimpleHTTPRequestHandler):
             "  </div>",
             "  <script>",
             f"    const I18N = {json.dumps(PAGE_STRINGS, ensure_ascii=False)};",
-            "    const KEY = 'awesome-interview-language';",
-            "    const select = document.getElementById('language-select');",
-            "    function apply(lang) {",
+            "    const LANG_KEY = 'awesome-interview-language';",
+            "    const THEME_KEY = 'awesome-interview-theme';",
+            "    const VALID_THEMES = new Set(['light', 'dark']);",
+            "    const langSelect = document.getElementById('language-select');",
+            "    const themeSelect = document.getElementById('theme-select');",
+            "    function detectTheme() {",
+            "      return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';",
+            "    }",
+            "    function applyTheme(theme) {",
+            "      const next = VALID_THEMES.has(theme) ? theme : detectTheme();",
+            "      document.documentElement.setAttribute('data-theme', next);",
+            "      themeSelect.value = next;",
+            "      return next;",
+            "    }",
+            "    function applyLang(lang) {",
             "      const dict = I18N[lang] || I18N.en;",
             "      document.documentElement.lang = lang;",
             "      document.querySelectorAll('[data-i18n]').forEach((el) => {",
@@ -200,16 +245,26 @@ class RootHandler(SimpleHTTPRequestHandler):
             "        const value = el.getAttribute(lang === 'zh' ? 'data-i18n-zh' : 'data-i18n-en');",
             "        if (value != null) el.textContent = value;",
             "      });",
-            "      select.setAttribute('aria-label', dict.language_aria || 'Select language');",
-            "      select.value = lang;",
+            "      langSelect.setAttribute('aria-label', dict.language_aria || 'Select language');",
+            "      langSelect.value = lang;",
+            "      themeSelect.setAttribute('aria-label', dict.theme_aria || 'Select theme');",
+            "      const opts = themeSelect.options;",
+            "      for (let i = 0; i < opts.length; i++) {",
+            "        if (opts[i].value === 'light') opts[i].textContent = dict.theme_light || 'Light';",
+            "        if (opts[i].value === 'dark') opts[i].textContent = dict.theme_dark || 'Dark';",
+            "      }",
             "    }",
-            "    const saved = localStorage.getItem(KEY) || 'en';",
-            "    const initial = I18N[saved] ? saved : 'en';",
-            "    apply(initial);",
-            "    select.addEventListener('change', (e) => {",
+            "    const savedLang = localStorage.getItem(LANG_KEY) || 'en';",
+            "    applyLang(I18N[savedLang] ? savedLang : 'en');",
+            "    applyTheme(localStorage.getItem(THEME_KEY) || detectTheme());",
+            "    langSelect.addEventListener('change', (e) => {",
             "      const lang = I18N[e.target.value] ? e.target.value : 'en';",
-            "      localStorage.setItem(KEY, lang);",
-            "      apply(lang);",
+            "      localStorage.setItem(LANG_KEY, lang);",
+            "      applyLang(lang);",
+            "    });",
+            "    themeSelect.addEventListener('change', (e) => {",
+            "      const next = applyTheme(e.target.value);",
+            "      localStorage.setItem(THEME_KEY, next);",
             "    });",
             "  </script>",
             "</body>",
@@ -220,7 +275,9 @@ class RootHandler(SimpleHTTPRequestHandler):
 
 def category_for(path: Path) -> str:
     parts = path.relative_to(REPO_ROOT).parts
-    return parts[0] if parts else "misc"
+    if len(parts) <= 1:
+        return "overview"
+    return parts[0]
 
 
 def walk_markdown_files() -> list[Path]:
@@ -229,7 +286,9 @@ def walk_markdown_files() -> list[Path]:
         if any(part in SKIP_DIRS for part in path.relative_to(REPO_ROOT).parts):
             continue
         if path.name.lower() == "readme.md":
-            continue
+            # Include only the root README.md; skip module-level READMEs.
+            if len(path.relative_to(REPO_ROOT).parts) != 1:
+                continue
         if path.name.lower().endswith(".zh.md"):
             continue
         out.append(path)
@@ -267,12 +326,83 @@ def ensure_index(no_build: bool) -> None:
             build_md_index()
 
 
+def find_pid_on_port(host: str, port: int) -> int | None:
+    """Return the PID listening on host:port, or None if the port is free."""
+    if platform.system() == "Windows":
+        try:
+            output = subprocess.check_output(
+                ["netstat", "-ano"], text=True, stderr=subprocess.DEVNULL
+            )
+        except (subprocess.SubprocessError, FileNotFoundError):
+            return None
+        suffix = f":{port}"
+        for line in output.splitlines():
+            parts = line.split()
+            if len(parts) >= 5 and parts[0] == "TCP" and parts[-2] == "LISTENING":
+                local = parts[1]
+                if local.endswith(suffix) and (host == "0.0.0.0" or local.split(":")[0] in (host, "0.0.0.0", "[::]")):
+                    try:
+                        return int(parts[-1])
+                    except ValueError:
+                        continue
+        return None
+    try:
+        output = subprocess.check_output(
+            ["lsof", "-tiTCP:" + str(port), "-sTCP:LISTEN"],
+            text=True, stderr=subprocess.DEVNULL,
+        ).strip()
+        if output:
+            return int(output.splitlines()[0])
+    except (subprocess.SubprocessError, FileNotFoundError, ValueError):
+        pass
+    return None
+
+
+def kill_pid(pid: int) -> bool:
+    if platform.system() == "Windows":
+        result = subprocess.run(
+            ["taskkill", "/F", "/PID", str(pid)],
+            capture_output=True, text=True,
+        )
+        return result.returncode == 0
+    import signal as _signal
+    try:
+        os.kill(pid, _signal.SIGKILL)
+        return True
+    except (ProcessLookupError, PermissionError):
+        return False
+
+
+def ensure_port_free(host: str, port: int) -> None:
+    """If the port is already held, kill the holder and wait for release."""
+    pid = find_pid_on_port(host, port)
+    if pid is None:
+        return
+    if pid == os.getpid():
+        return
+    print(f"Port {port} is in use by PID {pid}; killing existing process...")
+    if not kill_pid(pid):
+        print(f"  failed to kill PID {pid} — bind will likely fail")
+        return
+    for _ in range(30):
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as probe:
+            probe.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+            try:
+                probe.bind((host, port))
+                print(f"  port {port} released")
+                return
+            except OSError:
+                time.sleep(0.1)
+    print(f"  port {port} still held after 3s — bind may fail")
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Start a local awesome-interview web service.")
     parser.add_argument("--host", default="127.0.0.1", help="Host to bind (default: 127.0.0.1)")
-    parser.add_argument("--port", type=int, default=8000, help="Port to use (default: 8000)")
+    parser.add_argument("--port", type=int, default=8099, help="Port to use (default: 8099)")
     parser.add_argument("--no-build", action="store_true", help="Do not regenerate docs/questions.json before starting")
     parser.add_argument("--open", action="store_true", help="Open the local service in the default browser")
+    parser.add_argument("--no-kill", action="store_true", help="Do not kill an existing process holding the port; fail instead")
     return parser.parse_args()
 
 
@@ -280,6 +410,8 @@ def main() -> None:
     args = parse_args()
     ensure_index(args.no_build)
     os.chdir(str(REPO_ROOT))
+    if not args.no_kill:
+        ensure_port_free(args.host, args.port)
     address = (args.host, args.port)
     with socketserver.ThreadingTCPServer(address, RootHandler) as httpd:
         url = f"http://{args.host}:{args.port}/"

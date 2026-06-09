@@ -5,7 +5,7 @@
 [![Daily question](https://img.shields.io/badge/daily-question-blue.svg)](.github/workflows/daily-question.yml)
 [![Pages](https://img.shields.io/badge/random-picker-blueviolet.svg)](docs/index.html)
 
-A curated, opinionated interview-prep workspace. Algorithm drills, framework deep dives, system design, behavioral STAR scaffolds, real-company question banks, week-by-week roadmaps, and a couple of scripts to keep you honest about practicing.
+A curated, opinionated interview-prep workspace. Algorithm drills with Python/TypeScript/Java solutions, framework deep dives, system design, AI/ML, behavioral STAR scaffolds, real-company question banks, week-by-week roadmaps, and a couple of scripts to keep you honest about practicing. Every page supports EN ↔ 中文 and light/dark theme.
 
 > If you only have ten minutes today, run `python tools/random_pick.py knowledge/` and answer whatever comes out.
 
@@ -13,15 +13,15 @@ A curated, opinionated interview-prep workspace. Algorithm drills, framework dee
 
 | Section | What it is | Count |
 |---|---|---|
-| [knowledge/](knowledge/) | Topic-organized Q&A banks (algorithms in Py+TS, frontend, backend, architecture, devops) | 500 |
-| [interviews/](interviews/) | Real, publicly known interview questions by company (Google, Meta, Amazon, Microsoft, Apple, ByteDance, Alibaba, Tencent) | 160 |
+| [knowledge/](knowledge/) | Topic-organized Q&A banks (algorithms in Py+TS+Java, AI/ML, frontend, backend, architecture, devops) | 600 |
+| [interviews/](interviews/) | Real, publicly known interview questions by company (Google, Meta, Amazon, Microsoft, Apple, ByteDance, Alibaba, Tencent) — ~50 algorithm + ~12 non-algorithm per company | 500 |
 | [mock-interviews/](mock-interviews/) | Full transcript-style mock interviews — system design and behavioral | 5 |
 | [roadmap/](roadmap/) | 8-10 week study plans for frontend, backend, fullstack + a universal week-of checklist | 4 |
 | [behavioral/](behavioral/) | 50 STAR questions across 8 themes + the 16 Amazon Leadership Principles | 66 |
-| [tools/](tools/) | Timer, random picker, streak tracker, index builder (stdlib Python only) | 4 |
-| [docs/](docs/) | GitHub Pages site — random question picker with filters | 1 |
+| [tools/](tools/) | Timer, random picker, streak tracker, index builder, local installer, translator (stdlib Python + one PowerShell) | 7 |
+| [docs/](docs/) | Static site — random question picker + markdown reader with tab-switchable code samples | 1 |
 
-Every Q&A entry uses the same `### N. Question` heading format, so the picker and the daily-question workflow can drill into any file uniformly.
+Every Q&A entry uses the same `### N. Question` heading format, so the picker and the daily-question workflow can drill into any file uniformly. Algorithm questions ship with Python, TypeScript, and Java implementations; the reader renders them as switchable tabs.
 
 ## Quick start
 
@@ -33,10 +33,10 @@ cd awesome-interview
 python tools/random_pick.py knowledge/
 
 # Start the local web service for module browsing, markdown reading, and the question picker:
-python tools/run_service.py
+python tools/run_service.py --open
 
 # Open the friendly markdown reader in your browser:
-http://127.0.0.1:8000/docs/reader.html
+http://127.0.0.1:8099/docs/reader.html
 
 # Drill it with a 25-minute coding-phase timer:
 python tools/timer.py 25 --coding
@@ -50,11 +50,14 @@ python tools/streak.py done
 `tools/run_service.py` starts a small browser-based service so you can read, browse, and drill questions without leaving the terminal.
 
 ```bash
-python tools/run_service.py                # serves on http://127.0.0.1:8000
+python tools/run_service.py                # serves on http://127.0.0.1:8099
 python tools/run_service.py --port 9000    # custom port
 python tools/run_service.py --open         # open the reader in your default browser
 python tools/run_service.py --no-build     # skip regenerating questions.json / md_files.json
+python tools/run_service.py --no-kill      # don't auto-kill an existing process holding the port
 ```
+
+By default the service auto-detects an existing process on the same port (via `netstat`/`lsof`) and kills it before binding, so re-running the command Just Works. Pass `--no-kill` to opt out.
 
 It serves three pages:
 
@@ -66,9 +69,26 @@ It serves three pages:
 
 On first run it generates `docs/questions.json` (via `tools/build_index.py`) and `docs/md_files.json` so the picker and reader have content to render. Pass `--no-build` to skip that step.
 
-### Language switching (EN ↔ 中文)
+### Language switching (EN ↔ 中文) and theme (Light / Dark)
 
-All three pages have an EN / 简体中文 toggle in the top-right. The choice is stored in `localStorage` and persists across pages and reloads.
+All three pages have an EN / 简体中文 toggle and a Light / Dark theme toggle in the top-right. Both choices are stored in `localStorage` and persist across pages and reloads. The theme defaults to your OS preference (`prefers-color-scheme`) on first visit.
+
+### Run as a service on Windows (autostart at boot)
+
+[`tools/install.ps1`](tools/install.ps1) registers a Scheduled Task on the local Windows machine that runs `run_service.py` at boot, restarts on failure, and adds a Windows Firewall inbound rule for the port.
+
+```powershell
+# Open PowerShell as Administrator, then:
+cd C:\path\to\awesome-interview
+
+.\tools\install.ps1                   # install on default port 8099
+.\tools\install.ps1 -Port 9000        # custom port
+.\tools\install.ps1 -Status           # task + port + firewall status
+.\tools\install.ps1 -Restart          # restart after editing markdown/code
+.\tools\install.ps1 -Uninstall        # stop + unregister + remove firewall rule
+```
+
+After install, the service is reachable at `http://localhost:8099/` and `http://<your-lan-ip>:8099/` (the script prints both URLs).
 
 ### Translating markdown content
 
@@ -110,7 +130,7 @@ Every question follows the same shape so it can be parsed, picked, and indexed:
 - bullet
 ```
 
-Algorithm entries additionally include `**Python:**` and `**TypeScript:**` code blocks. Company-interview entries add `**Position:**` and `**Years:**` fields.
+Algorithm entries additionally include `**Python:**`, `**TypeScript:**`, and `**Java:**` code blocks. The markdown reader renders consecutive `**Lang:**` + fenced-code pairs as switchable tabs, with the chosen language remembered in `localStorage` and applied across all questions. Company-interview entries add `**Position:**` and `**Years:**` fields.
 
 ## Contributing
 

@@ -1,21 +1,28 @@
 {
   "generated_by": "tools/run_service.py",
-  "total": 24,
+  "total": 26,
   "categories": [
     "behavioral",
     "interviews",
     "knowledge",
     "mock-interviews",
+    "overview",
     "roadmap"
   ],
   "files": [
     {
       "category": "behavioral",
-      "file": "behavioral/amazon-leadership-principles.md"
+      "file": "behavioral/amazon-leadership-principles.md",
+      "translations": {
+        "zh": "behavioral/amazon-leadership-principles.zh.md"
+      }
     },
     {
       "category": "behavioral",
-      "file": "behavioral/star-questions.md"
+      "file": "behavioral/star-questions.md",
+      "translations": {
+        "zh": "behavioral/star-questions.zh.md"
+      }
     },
     {
       "category": "interviews",
@@ -26,87 +33,164 @@
     },
     {
       "category": "interviews",
-      "file": "interviews/companies/alibaba.md"
+      "file": "interviews/companies/alibaba.md",
+      "translations": {
+        "zh": "interviews/companies/alibaba.zh.md"
+      }
     },
     {
       "category": "interviews",
-      "file": "interviews/companies/amazon.md"
+      "file": "interviews/companies/amazon.md",
+      "translations": {
+        "zh": "interviews/companies/amazon.zh.md"
+      }
     },
     {
       "category": "interviews",
-      "file": "interviews/companies/apple.md"
+      "file": "interviews/companies/apple.md",
+      "translations": {
+        "zh": "interviews/companies/apple.zh.md"
+      }
     },
     {
       "category": "interviews",
-      "file": "interviews/companies/bytedance.md"
+      "file": "interviews/companies/bytedance.md",
+      "translations": {
+        "zh": "interviews/companies/bytedance.zh.md"
+      }
     },
     {
       "category": "interviews",
-      "file": "interviews/companies/google.md"
+      "file": "interviews/companies/google.md",
+      "translations": {
+        "zh": "interviews/companies/google.zh.md"
+      }
     },
     {
       "category": "interviews",
-      "file": "interviews/companies/meta.md"
+      "file": "interviews/companies/meta.md",
+      "translations": {
+        "zh": "interviews/companies/meta.zh.md"
+      }
     },
     {
       "category": "interviews",
-      "file": "interviews/companies/microsoft.md"
+      "file": "interviews/companies/microsoft.md",
+      "translations": {
+        "zh": "interviews/companies/microsoft.zh.md"
+      }
     },
     {
       "category": "interviews",
-      "file": "interviews/companies/tencent.md"
+      "file": "interviews/companies/tencent.md",
+      "translations": {
+        "zh": "interviews/companies/tencent.zh.md"
+      }
     },
     {
       "category": "knowledge",
-      "file": "knowledge/algorithms.md"
+      "file": "knowledge/ai.md",
+      "translations": {
+        "zh": "knowledge/ai.zh.md"
+      }
     },
     {
       "category": "knowledge",
-      "file": "knowledge/architecture.md"
+      "file": "knowledge/algorithms.md",
+      "translations": {
+        "zh": "knowledge/algorithms.zh.md"
+      }
     },
     {
       "category": "knowledge",
-      "file": "knowledge/backend.md"
+      "file": "knowledge/architecture.md",
+      "translations": {
+        "zh": "knowledge/architecture.zh.md"
+      }
     },
     {
       "category": "knowledge",
-      "file": "knowledge/devops.md"
+      "file": "knowledge/backend.md",
+      "translations": {
+        "zh": "knowledge/backend.zh.md"
+      }
     },
     {
       "category": "knowledge",
-      "file": "knowledge/frontend.md"
+      "file": "knowledge/devops.md",
+      "translations": {
+        "zh": "knowledge/devops.zh.md"
+      }
+    },
+    {
+      "category": "knowledge",
+      "file": "knowledge/frontend.md",
+      "translations": {
+        "zh": "knowledge/frontend.zh.md"
+      }
     },
     {
       "category": "mock-interviews",
-      "file": "mock-interviews/behavioral-leadership-conflict.md"
+      "file": "mock-interviews/behavioral-leadership-conflict.md",
+      "translations": {
+        "zh": "mock-interviews/behavioral-leadership-conflict.zh.md"
+      }
     },
     {
       "category": "mock-interviews",
-      "file": "mock-interviews/system-design-chat-app.md"
+      "file": "mock-interviews/system-design-chat-app.md",
+      "translations": {
+        "zh": "mock-interviews/system-design-chat-app.zh.md"
+      }
     },
     {
       "category": "mock-interviews",
-      "file": "mock-interviews/system-design-rate-limiter.md"
+      "file": "mock-interviews/system-design-rate-limiter.md",
+      "translations": {
+        "zh": "mock-interviews/system-design-rate-limiter.zh.md"
+      }
     },
     {
       "category": "mock-interviews",
-      "file": "mock-interviews/system-design-url-shortener.md"
+      "file": "mock-interviews/system-design-url-shortener.md",
+      "translations": {
+        "zh": "mock-interviews/system-design-url-shortener.zh.md"
+      }
+    },
+    {
+      "category": "overview",
+      "file": "README.md",
+      "translations": {
+        "zh": "README.zh.md"
+      }
     },
     {
       "category": "roadmap",
-      "file": "roadmap/backend-engineer.md"
+      "file": "roadmap/backend-engineer.md",
+      "translations": {
+        "zh": "roadmap/backend-engineer.zh.md"
+      }
     },
     {
       "category": "roadmap",
-      "file": "roadmap/checklist.md"
+      "file": "roadmap/checklist.md",
+      "translations": {
+        "zh": "roadmap/checklist.zh.md"
+      }
     },
     {
       "category": "roadmap",
-      "file": "roadmap/frontend-engineer.md"
+      "file": "roadmap/frontend-engineer.md",
+      "translations": {
+        "zh": "roadmap/frontend-engineer.zh.md"
+      }
     },
     {
       "category": "roadmap",
-      "file": "roadmap/fullstack-engineer.md"
+      "file": "roadmap/fullstack-engineer.md",
+      "translations": {
+        "zh": "roadmap/fullstack-engineer.zh.md"
+      }
     }
   ]
 }
