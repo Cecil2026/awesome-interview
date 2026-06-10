@@ -96,6 +96,16 @@ static ListNode reverseList(ListNode head) {
 - `prev` becomes the new head when the loop ends.
 - Recursive variant is elegant but O(n) stack risks overflow on long lists.
 
+**Follow-ups:**
+- Reverse a *sublist* between indices m and n in one pass.
+- Reverse in groups of k (Reverse Nodes in k-Group).
+- Doubly linked list — fix `prev` pointers as well.
+- Detect a cycle first, then refuse to reverse — corruption avoidance.
+
+**Common Pitfalls:**
+- Forgetting to capture `next` before rewriting `cur.next` — truncates the list.
+- Returning `head` (old head) instead of `prev` (new head) after the loop.
+
 **Tags:** #algorithm
 
 ---
@@ -169,6 +179,16 @@ private static boolean go(TreeNode n, long lo, long hi) {
 - Bounds tighten as you descend; strict inequalities enforce uniqueness.
 - Empty tree is trivially a valid BST.
 - Naive parent-only check fails when distant ancestors are violated.
+
+**Follow-ups:**
+- Allow duplicates — redefine which side they go to and update inequalities.
+- Return the largest valid BST subtree (size + root) inside a non-BST tree.
+- Iterative in-order with a stack — avoids the recursion stack risk.
+- Values include `Integer.MIN_VALUE` / `MAX_VALUE` — must use `Long` bounds or null sentinels.
+
+**Common Pitfalls:**
+- Using `<=` / `>=` instead of strict `<` / `>` — fails on duplicates.
+- Comparing only to immediate parent — fails on `[5, 1, 6, null, null, 3, 7]`.
 
 **Tags:** #algorithm
 
@@ -269,6 +289,16 @@ private static TreeNode des(Deque<String> q) {
 - Shared cursor/iterator keeps deserialize O(n) without index math.
 - BFS variant is identical in spirit but uses a queue and produces level-order.
 
+**Follow-ups:**
+- Serialize a BST more compactly (no null markers needed if you store size).
+- N-ary tree — encode child count per node.
+- Streaming serialize — emit tokens as you go, no buffer.
+- Cross-version compatibility — add a header/version byte.
+
+**Common Pitfalls:**
+- Splitting by `,` but having values that contain `,` — escape or use length-prefixed encoding.
+- Forgetting the null marker for one of the children — deserialize gets misaligned.
+
 **Tags:** #algorithm
 
 ---
@@ -346,6 +376,16 @@ private static int quickselect(int[] a, int lo, int hi, int target) {
 - Random pivot makes O(n) expected, O(n^2) worst-case extremely unlikely.
 - Heap variant uses O(k) memory and is preferable when input is streamed.
 
+**Follow-ups:**
+- Top-k *distinct* elements — add a set check.
+- Streaming kth largest — maintain a min-heap of size k.
+- kth largest *frequency* (Top-K Frequent) — bucket sort gives O(n).
+- Median in a stream — two heaps pattern.
+
+**Common Pitfalls:**
+- Using a fixed pivot (first or last) — worst-case O(n^2) on sorted input.
+- Off-by-one when mapping "kth largest" → index `n - k` after sorting ascending.
+
 **Tags:** #algorithm
 
 ---
@@ -419,6 +459,16 @@ static List<Integer> spiralOrder(int[][] matrix) {
 - Guard the bottom row and left column to avoid duplicates on single-row/col layers.
 - Shrink all four boundaries by 1 after each ring.
 - O(m*n) time, O(1) extra space besides output.
+
+**Follow-ups:**
+- Generate the spiral matrix from 1..n^2 (Spiral Matrix II).
+- Spiral with arbitrary starting cell or direction.
+- Diagonal traversal order instead of spiral.
+- Spiral on a non-rectangular grid (jagged 2D array).
+
+**Common Pitfalls:**
+- Skipping the `top < bot && left < right` guards — duplicates on the last ring.
+- Incrementing boundaries before the row/col scans — misses cells.
 
 **Tags:** #algorithm
 
@@ -506,6 +556,16 @@ static RNode copyRandomList(RNode head) {
 - Map keys on identity, not value, since values may repeat.
 - Interleave-and-split trick achieves O(1) extra space but is trickier to get right.
 
+**Follow-ups:**
+- Clone a graph with random-edge semantics — same identity-keyed map.
+- Implement the O(1)-extra-space interleave variant from scratch.
+- Lists with cycles — detect and preserve them.
+- Persistent copy that shares structure with the original — immutable list variant.
+
+**Common Pitfalls:**
+- Using `cur.val` as the map key — wrong when values collide.
+- Forgetting to null-check `cur.next` / `cur.random` before map lookup.
+
 **Tags:** #algorithm
 
 ---
@@ -560,6 +620,16 @@ static int maxProfit(int[] prices) {
 - Buy must precede sell, so update `lo` before computing today's profit.
 - Returns 0 for monotonically decreasing prices.
 - Single-pass O(n) beats brute-force O(n^2) over all pairs.
+
+**Follow-ups:**
+- At most 2 transactions — 4-state DP.
+- Unlimited transactions — sum every positive day-to-day delta.
+- With cooldown / transaction fee — extra state in DP.
+- Return the *day indices* of the optimal buy/sell, not just the profit.
+
+**Common Pitfalls:**
+- Initializing `lo` to `prices[0]` and starting the loop at 0 — yields a transient profit of 0; fine but confusing.
+- Resetting `best` whenever a new `lo` is found — must keep the running maximum.
 
 **Tags:** #algorithm
 
@@ -636,6 +706,16 @@ private static boolean dfs(char[][] b, String w, int r, int c, int i) {
 - Restore the cell on backtrack so other start points stay valid.
 - Worst-case O(m*n*4^L); early character mismatch prunes aggressively.
 
+**Follow-ups:**
+- Word Search II — search a dictionary of words at once with a trie.
+- Allow diagonal moves — 8 directions instead of 4.
+- Reuse cells allowed — different problem (infinite paths possible).
+- Return *all* matching start positions, not just true/false.
+
+**Common Pitfalls:**
+- Forgetting to restore the cell on backtrack — only the first DFS works.
+- Marking with a letter that could appear in the word itself — use a non-alpha sentinel.
+
 **Tags:** #algorithm
 
 ---
@@ -651,6 +731,17 @@ private static boolean dfs(char[][] b, String w, int r, int c, int i) {
 
 **Approach:** WebSocket gateways (sticky per user) → message bus (Service Bus / Kafka). Per-channel topic for fanout. Storage: messages in Cosmos DB sharded by `channel_id`. Presence: in-memory store (Redis) per region with TTL'd entries; aggregate cross-region with eventual consistency. Discuss read receipts, typing indicators (throttle to 1/sec), and how large channels avoid fanout storms (lazy fetch on scroll). Bonus: mention compliance/eDiscovery requirements (Office 365 immutable archive).
 
+**Follow-ups:**
+- Channel with 10K+ members — fanout-on-write vs lazy pull on open.
+- Federation with external tenants — trust boundary, key exchange.
+- Compliance: retention, legal hold, eDiscovery search across years of messages.
+- Mobile push to a sleeping device — APNs/FCM bridge and dedup.
+- Read receipts at scale — batched, lossy, or strict per-recipient?
+
+**Common Pitfalls:**
+- Treating presence as strongly consistent — wastes a lot of write throughput.
+- Naive fanout-on-write for every channel — large channels collapse the system.
+
 **Tags:** #system-design
 
 ---
@@ -665,6 +756,17 @@ private static boolean dfs(char[][] b, String w, int r, int c, int i) {
 **Question:** Design Azure Blob Storage. Cover sharding, replication, durability, and the read/write path.
 
 **Approach:** Front-end layer (load-balanced) → partition layer (mapping blob name to storage server, sharded by account+container+blob) → stream layer (append-only, erasure-coded chunks distributed across nodes/racks/AZs). Partition layer uses a master (Paxos) for table assignment. Multi-AZ for durability, async geo-replication for DR. Discuss strong consistency within a region (partition has a single primary), large blob upload (block blobs with commit), and tiering (hot → cool → archive).
+
+**Follow-ups:**
+- Replication factor choice — 3-replica vs erasure code, when does each win?
+- Hot partition recovery — a single tenant saturates one storage node.
+- Append-only at the stream layer — how does delete / overwrite actually work?
+- Cross-region async geo-replication — RPO/RTO targets and conflict resolution.
+- Tier transition pipeline — when does hot → cool → archive run and how is read latency tagged?
+
+**Common Pitfalls:**
+- Assuming blob = single contiguous file — misses the block/append structure.
+- Mixing the partition and stream layers; their failure domains and consistency stories differ.
 
 **Tags:** #system-design
 
@@ -2456,6 +2558,8 @@ static int getSum(int a, int b) {
 - XOR yields sum without carry; AND-shift yields the carry.
 - Iterate until carry is zero (max 32 rounds for 32-bit ints).
 - Python needs a 32-bit mask to emulate fixed-width overflow.
+
+**Complexity:** O(1) — at most 32 carry-propagation rounds for a 32-bit integer; O(1) space.
 
 **Tags:** #algorithm
 

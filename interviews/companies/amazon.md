@@ -99,6 +99,31 @@ class LRUCache extends LinkedHashMap<Integer, Integer> {
 - O(1) per `get` and `put`; O(capacity) space.
 - Evict from the oldest end only when strictly over capacity.
 
+**Follow-ups:**
+- Make it thread-safe — lock the whole map vs. striped locks (`ConcurrentHashMap`-style segments).
+- Replace with LFU; discuss the two-hash-map + frequency list pattern (O(1) admission/eviction).
+- Add TTL per entry; how do you evict lazily vs. with a background sweeper?
+- Scale beyond one process — sharding strategy and consistency model for a distributed cache.
+
+**Common Pitfalls:**
+- Using a singly linked list — you can't remove in O(1) without the prev pointer.
+- Forgetting to update recency on `put` when the key already exists.
+- Evicting before insertion check, which breaks the invariant for `capacity == 0`.
+- Using `LinkedHashMap` in Java without `accessOrder=true`, which only tracks insertion order.
+
+**Strong Answer Points:**
+- State the O(1) target up front and justify both data structures from that constraint.
+- Call out the invariant clearly: "head = MRU, tail = LRU".
+- Mention concurrency and eviction policy trade-offs even before being asked.
+- Walk through a small trace (3-4 ops) to prove correctness.
+
+**Bad Answer Example:** Jumping straight to a `HashMap` + array and saying "we'll just delete from the array" — loses points for ignoring the O(1) requirement and never discussing eviction order or capacity edge cases.
+
+**References:**
+- LeetCode 146 — LRU Cache (problem + top-voted solutions)
+- Designing Data-Intensive Applications, Ch. 5 — caching invalidation discussion
+- Java `LinkedHashMap` JDK source (`accessOrder`, `removeEldestEntry`)
+
 **Tags:** #algorithm
 
 ---
@@ -178,6 +203,17 @@ class Solution {
 - O(m*n) time and O(m*n) recursion stack worst case (one giant island).
 - BFS with a queue avoids deep recursion on huge grids.
 
+**Follow-ups:**
+- Use BFS instead of DFS — when does the recursion stack blow up and how do you size the queue?
+- Return the size of the largest island, not just the count.
+- Streaming grid: rows arrive one at a time — maintain count incrementally.
+- Distributed grid sharded by rows; merge island IDs across shards with union-find.
+- Variant: count islands fully surrounded by water (no border cells).
+
+**Common Pitfalls:**
+- Recursing before bounds-checking; the stack explodes on the first invalid index.
+- Mutating the grid in place when the caller still needs it — clone first if not allowed.
+
 **Tags:** #algorithm
 
 ---
@@ -236,6 +272,16 @@ class Solution {
 - Hash lookup turns the inner search from O(n) into O(1).
 - Insert after the check so the same index is not reused.
 - O(n) time, O(n) extra space.
+
+**Follow-ups:**
+- Input is sorted — two-pointer in O(1) extra space.
+- Return all unique pairs (3Sum-style dedupe).
+- Streaming integers: design `add(num)` + `find(target)` continuous-query API.
+- Multiple solutions exist; return the pair with the smallest index sum.
+
+**Common Pitfalls:**
+- Inserting into the map before the check, which lets `nums[i] + nums[i] == target` reuse the same index.
+- Falling back to brute force O(n^2) despite the "exactly one solution" hint — fails performance bar.
 
 **Tags:** #algorithm
 
@@ -317,6 +363,17 @@ class Solution {
 - O(N log k) time, O(k) extra space for the heap.
 - Pairwise divide-and-conquer reaches the same bound without a heap.
 
+**Follow-ups:**
+- Lists are sharded across machines — sketch distributed k-way merge with sorted partitions.
+- Merge K sorted *streams* instead of arrays — design the interface and back-pressure.
+- Implement the heap manually (sift-up / sift-down) without `heapq` or `PriorityQueue`.
+- Memory pressure: reuse existing nodes vs. allocate new ones for the merged list.
+- Stability: equal values must keep their original list order.
+
+**Common Pitfalls:**
+- Pushing raw nodes into the heap — Python/Java try to compare nodes themselves and crash.
+- Forgetting to advance the source list after popping, causing an infinite loop.
+
 **Tags:** #algorithm
 
 ---
@@ -385,6 +442,16 @@ class Solution {
 - `dp[0] = True` represents the empty prefix.
 - O(n^2) outer-inner with O(L) slice/hash; total O(n^2 * L).
 - Break early once `dp[i]` becomes true to cut the inner loop.
+
+**Follow-ups:**
+- Return all valid segmentations (Word Break II) with memoization.
+- Dictionary at 10^6 entries — switch to a Trie to prune impossible splits early.
+- Online dictionary updates between queries; what gets invalidated?
+- Unicode / multi-byte words; how does runtime scale with average word length L?
+
+**Common Pitfalls:**
+- Missing `dp[0] = True`, which makes every segmentation evaluate to false.
+- Re-creating substrings on every inner iteration — use a Trie or substring index for hot dictionaries.
 
 **Tags:** #algorithm
 
@@ -463,6 +530,16 @@ class Solution {
 - O(n) time, O(1) extra space.
 - Precomputed left/right max arrays are easier to reason about but use O(n).
 
+**Follow-ups:**
+- Trapping Rain Water II (2D matrix) — switch to a min-heap starting from the border.
+- Heights arrive as a stream — can the total be updated incrementally?
+- Floating-point / negative heights; what changes in the invariant?
+- Print the actual water level at each index instead of only the total volume.
+
+**Common Pitfalls:**
+- Moving the taller pointer when heights tie — you overcount that index.
+- Off-by-one: forgetting that the leftmost/rightmost bars never trap water.
+
 **Tags:** #algorithm
 
 ---
@@ -532,6 +609,16 @@ class Solution {
 - Bucket sort exploits `freq <= n` for O(n) total.
 - Heap variant is O(n log k) and simpler when k is tiny vs n.
 - Walk buckets from high to low to collect k items.
+
+**Follow-ups:**
+- Streaming Top-K with Count-Min Sketch + min-heap; trade accuracy for memory.
+- Data does not fit in memory — external sort or MapReduce by hash partition.
+- Ties on frequency — define a deterministic ordering (insertion order, value, etc.).
+- k changes per query — keep a sorted bucket structure to answer all k values cheaply.
+
+**Common Pitfalls:**
+- Sorting every element O(n log n) when only top-k is needed.
+- Allocating `n + 1` buckets when distinct elements are sparse — wastes memory on huge inputs.
 
 **Tags:** #algorithm
 
@@ -605,6 +692,16 @@ class Solution {
 - Stable partition keeps digit-logs in original order.
 - Sort key is (content, identifier) for tie-break.
 - O(n * k log n) where k is average log length.
+
+**Follow-ups:**
+- 1B logs — parallelize with map-reduce, then merge-sort partitions.
+- Identifier collisions across multiple log streams — namespace by stream id.
+- Case sensitivity (`A` vs `a`) — normalize or document the rule explicitly.
+- Logs arrive as a stream — maintain order without full re-sort on every batch.
+
+**Common Pitfalls:**
+- Using a non-stable sort — destroys the required original order of digit-logs.
+- Splitting on every space instead of only the first one; mishandles logs whose content contains spaces.
 
 **Tags:** #coding
 
@@ -696,6 +793,19 @@ class ParkingLot {
 - Linear scan is fine for an interview; production groups free spots by size in queues.
 - Extend by adding `EVSpot extends Spot` rather than mutating enum.
 
+**Complexity:** `park` is O(S) for a linear scan of S spots (O(1) if free spots are bucketed by size); `leave` is O(1).
+
+**Follow-ups:**
+- Multi-level lot — how do you balance utilization across levels?
+- Electric charging spots with queueing and charge-time tracking.
+- Pricing (hourly / daily / monthly) integrated with a payment service.
+- Real-time availability board — pub/sub vs polling, eventual consistency trade-offs.
+- Reservations with overbooking strategy and no-show timeout.
+
+**Common Pitfalls:**
+- Over-engineering with too many classes; the interviewer wants clear boundaries, not 50 abstractions.
+- Hardcoding spot-vs-vehicle compatibility in `ParkingLot` instead of declaring it on the vehicle type.
+
 **Tags:** #coding
 
 ---
@@ -710,6 +820,17 @@ class ParkingLot {
 **Question:** Design a video streaming service like Prime Video.
 
 **Approach:** Upload → encoding pipeline (multiple bitrates, codecs, DRM-wrapped HLS/DASH chunks) → blob storage (S3) + CDN (CloudFront). Playback client requests manifest, adapts bitrate (ABR). Metadata in DynamoDB; recommendations from offline training (matrix factorization + content embeddings). Discuss DRM (Widevine/FairPlay/PlayReady), regional licensing, offline downloads, and CDN cost optimization (cache hit ratio). Mention Amazon's open-sourced bitmovin/encoding patterns where relevant.
+
+**Follow-ups:**
+- DRM key rotation and license expiry; how do clients refresh mid-playback?
+- Resume playback at exact timestamp across devices (continue watching).
+- Geo-blocking and regional licensing windows — enforce at manifest or CDN edge?
+- Live event streaming vs on-demand — what changes in encoding and CDN strategy?
+- Recommendation cold-start for new users or new titles.
+
+**Common Pitfalls:**
+- Treating it like generic file storage and missing the encoding pipeline + ABR layer.
+- Ignoring CDN egress cost — typically the largest line item in real streaming systems.
 
 **Tags:** #system-design
 

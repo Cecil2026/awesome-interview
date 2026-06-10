@@ -113,6 +113,16 @@ public int ladderLength(String begin, String end, List<String> wordList) {
 - BFS guarantees shortest path; mark visited on enqueue to avoid re-expansion.
 - Bidirectional BFS from both ends cuts the explored frontier exponentially.
 
+**Follow-ups:**
+- Bidirectional BFS from both ends — quantify the speedup in big-O.
+- Word Ladder II — return one (or all) shortest transformation sequences.
+- Dictionary changes between queries — maintain the pattern index incrementally.
+- Compare BFS to A* with a heuristic distance to the target word.
+
+**Common Pitfalls:**
+- Rebuilding the wildcard pattern index inside the BFS loop instead of once up front.
+- Marking visited only at dequeue, allowing exponential re-expansion of the same node.
+
 **Tags:** #algorithm
 
 ---
@@ -191,6 +201,16 @@ private void dfs(char[][] g, int r, int c, int m, int n) {
 - Each cell is visited at most once, giving O(m*n) overall.
 - BFS variant avoids deep recursion stacks on large islands.
 
+**Follow-ups:**
+- Streaming grid: rows arrive one at a time — switch to union-find with row-by-row merge.
+- Compute largest island size, perimeter, or count of fully-enclosed islands.
+- Diagonal adjacency counts as connected — generalize the neighbor set.
+- Grid sharded across machines — union-find by global coordinates to merge boundaries.
+
+**Common Pitfalls:**
+- Not flipping the cell before recursing into neighbors — infinite recursion.
+- DFS recursion depth blows the stack on giant grids — fall back to an explicit BFS queue.
+
 **Tags:** #algorithm
 
 ---
@@ -253,6 +273,16 @@ public int lengthOfLongestSubstring(String s) {
 - Only advance `left`, never move it backward.
 - Map stores most recent index of each character.
 - O(n) time, O(min(n, alphabet)) space.
+
+**Follow-ups:**
+- Return the substring itself, not just its length.
+- Generalize to "longest substring with at most k duplicates".
+- Streaming characters — maintain the answer online.
+- Compare a hashmap (any chars) version to a fixed-size array (ASCII / a-z).
+
+**Common Pitfalls:**
+- Setting `left = last[c] + 1` even when the duplicate is already outside the window.
+- Using `r - l` instead of `r - l + 1` — the length is off by one.
 
 **Tags:** #algorithm
 
@@ -318,6 +348,16 @@ public int minMeetingRooms(int[][] intervals) {
 - Heap top = earliest-finishing meeting, the only candidate for reuse.
 - Sorting by start ensures we consider meetings in chronological order.
 - O(n log n) dominated by sort and heap ops.
+
+**Follow-ups:**
+- Assign each meeting a concrete room id, not just the count.
+- Multi-day scheduling with room capacities and equipment constraints.
+- Streaming arrivals and cancellations — maintain the minimum rooms dynamically.
+- Allow shifting any meeting by ±Δ minutes to minimize the room count.
+
+**Common Pitfalls:**
+- Sorting by end time only — loses the chronological reuse logic.
+- Treating `end == start` as overlap; the problem normally allows back-to-back meetings.
 
 **Tags:** #algorithm
 
@@ -405,6 +445,16 @@ public String decodeString(String s) {
 - Multi-digit numbers accumulate via `k = k*10 + digit`.
 - On `]`, the current string is the inner expansion repeated `k` times, appended to the saved outer string.
 
+**Follow-ups:**
+- Arbitrary nesting depth — stress-test for stack-vs-recursion robustness.
+- Counts overflow 32-bit ints — discuss BigInt or capping with explicit error.
+- Streaming input — emit decoded characters as parsing progresses.
+- Reverse direction: encode an arbitrary string with the minimum encoded length.
+
+**Common Pitfalls:**
+- Handling only single-digit `k` — must accumulate multi-digit counts.
+- Pushing string and count separately so they get misaligned across nested `]`.
+
 **Tags:** #algorithm
 
 ---
@@ -482,6 +532,16 @@ class MedianFinder {
 - Two heaps split the stream so each top is the boundary candidate.
 - Invariant `len(lo) >= len(hi)` keeps median in O(1) at `lo`'s top.
 - Cross-push-then-rebalance handles both new elements correctly.
+
+**Follow-ups:**
+- Median over a sliding window of size k — different problem class, different data structure.
+- 99th percentile (or arbitrary percentile) in O(log n) per query.
+- Bounded memory for a huge stream — reservoir sampling or t-digest approximation.
+- Concurrent writers — how do you keep the two heaps consistent without serializing every write?
+
+**Common Pitfalls:**
+- Forgetting to negate values when simulating a max-heap in Python `heapq`.
+- Pushing to `hi` first; balance logic then leaves `lo` empty after the very first insert.
 
 **Tags:** #algorithm
 
@@ -568,6 +628,16 @@ private int dfs(int[][] g, int r, int c, int m, int n, int[][] memo) {
 - Memoization gives O(m*n) overall — each cell solved once.
 - Each cell explores up to 4 neighbors, constant per cell.
 
+**Follow-ups:**
+- Return the path itself, not just its length — store a predecessor in memo.
+- Diagonal moves allowed — generalize the neighbor set.
+- Strict-increase relaxed to non-decreasing — now you need cycle detection.
+- Very large matrix — topological order over the DAG instead of recursive DFS.
+
+**Common Pitfalls:**
+- Treating it as a generic graph and adding visited tracking, which destroys complexity.
+- Recursing without the strict-greater check — equal cells cause infinite recursion.
+
 **Tags:** #algorithm
 
 ---
@@ -642,6 +712,16 @@ public int jobScheduling(int[] start, int[] end, int[] profit) {
 - `dp[i]` decision is binary: take or skip job `i`.
 - O(n log n) overall — sort + n binary searches.
 
+**Follow-ups:**
+- Allow at most k overlapping jobs — generalizes to multi-machine scheduling.
+- Add setup time between consecutive jobs.
+- Maximize number of jobs instead of profit — classic activity selection.
+- Stream of jobs arriving — maintain best profit dynamically.
+
+**Common Pitfalls:**
+- Sorting by start time instead of end time; the binary search target then makes no sense.
+- Binary searching `start[j]` instead of `end[j]` for the last compatible job.
+
 **Tags:** #algorithm
 
 ---
@@ -657,6 +737,17 @@ public int jobScheduling(int[] start, int[] end, int[] profit) {
 
 **Approach:** Core problem is concurrent edits with eventual consistency. Two main techniques: Operational Transformation (OT — what Google Docs actually uses) or CRDTs. Client sends operations to a per-document server (sticky session via consistent hashing on doc ID). Server serializes ops, broadcasts via WebSocket to all collaborators. Persist op log + periodic snapshots in a distributed store (Bigtable/Spanner). Trade-offs: OT needs a central server but compact ops; CRDTs are peer-to-peer-friendly but metadata-heavy. Discuss cursor presence, offline editing, undo.
 
+**Follow-ups:**
+- OT vs CRDT — when do you pick each and what are the trade-offs?
+- Mobile offline editing — how do you reconcile diverged histories on reconnect?
+- Real-time presence (cursors, selections) — separate channel or piggy-back on the op stream?
+- Undo/redo in a multi-user setting — semantic undo vs sequential undo.
+- Permissions and access control changing while users are editing.
+
+**Common Pitfalls:**
+- Last-write-wins per character — produces garbled text under any concurrent edit.
+- Skipping the persisted op log; a server restart loses in-flight concurrent edits.
+
 **Tags:** #system-design
 
 ---
@@ -671,6 +762,17 @@ public int jobScheduling(int[] start, int[] end, int[] profit) {
 **Question:** Design the typeahead suggestion service that powers Google Search's search box for billions of users.
 
 **Approach:** Trie of prefixes with top-k completions cached at each node (precomputed offline from query logs). Shard by prefix range across many servers. CDN/edge cache for popular prefixes (Zipfian). Fresh queries flow into a streaming pipeline (Dataflow) that updates trie weights hourly. Discuss latency budget (<100ms), personalization (re-rank top-k with user signals), spell correction, profanity filter, and how to update without rebuilding the whole trie.
+
+**Follow-ups:**
+- Personalization from signed-in user history — where in the stack does it run?
+- Multi-language and IME input — when are suggestions even valid?
+- Fresh trends within an hour — what changes in the streaming pipeline?
+- Typo tolerance / spell correction — in-trie vs separate ranking service?
+- Safety and profanity filtering — at the CDN edge or origin?
+
+**Common Pitfalls:**
+- Treating it as a single global trie; ignores sharding and cache locality.
+- Recomputing top-k at query time instead of precomputing at trie nodes.
 
 **Tags:** #system-design
 

@@ -15,7 +15,7 @@ A curated, opinionated interview-prep workspace. Algorithm drills with Python/Ty
 |---|---|---|
 | [knowledge/](knowledge/) | Topic-organized Q&A banks (algorithms in Py+TS+Java, AI/ML, frontend, backend, architecture, devops) | 600 |
 | [interviews/](interviews/) | Real, publicly known interview questions by company (Google, Meta, Amazon, Microsoft, Apple, ByteDance, Alibaba, Tencent) — ~50 algorithm + ~12 non-algorithm per company | 500 |
-| [mock-interviews/](mock-interviews/) | Full transcript-style mock interviews — system design and behavioral | 5 |
+| [mock-interviews/](mock-interviews/) | Full transcript-style mock interviews — system design and behavioral | 6 |
 | [roadmap/](roadmap/) | 8-10 week study plans for frontend, backend, fullstack + a universal week-of checklist | 4 |
 | [behavioral/](behavioral/) | 50 STAR questions across 8 themes + the 16 Amazon Leadership Principles | 66 |
 | [tools/](tools/) | Timer, random picker, streak tracker, index builder, local installer, translator (stdlib Python + one PowerShell) | 7 |
@@ -134,11 +134,14 @@ Algorithm entries additionally include `**Python:**`, `**TypeScript:**`, and `**
 
 ## Contributing
 
+See [CONTRIBUTING.md](CONTRIBUTING.md) for the full guide. The short version:
+
 Add or correct anything you like. The numbering inside each file is a guide, not a contract — renumber freely.
 
 1. Add or edit a `### N. Question` entry.
 2. Run `python tools/build_index.py` to refresh `docs/questions.json`.
-3. Commit both files. CI will block the PR if you forget to refresh the index.
+3. Run `python tools/validate.py` and resolve anything it reports.
+4. Commit both files. CI will block the PR if you forget to refresh the index.
 
 ## License
 

@@ -85,6 +85,16 @@ boolean isAlienSorted(String[] words, String order) {
 - Prefix rule: shorter word must come first when one is a prefix of the other.
 - O(total chars) time, O(alphabet) space.
 
+**Follow-ups:**
+- Build the alien alphabet itself from a list of sorted words (topological sort).
+- Online lookups: words arrive in a stream and each must be classified.
+- Multi-character "letters" (digraphs) — generalize the comparison loop.
+- Case-insensitive or accented characters — discuss normalization.
+
+**Common Pitfalls:**
+- Missing the prefix rule: equal-prefix words must be ordered by length.
+- Re-building the rank map inside the comparison loop instead of once up front.
+
 **Tags:** #algorithm
 
 ---
@@ -162,6 +172,16 @@ private boolean isPal(String s, int l, int r) {
 - O(n) time, O(1) space — palindrome check is single-pass.
 - Edge case: empty/single-char string trivially valid.
 
+**Follow-ups:**
+- Allow up to k deletions instead of just 1.
+- Return the actual palindrome string you produced after the deletion.
+- Ignore case and punctuation — layer in Valid Palindrome I logic.
+- Streaming characters — decide as the input arrives.
+
+**Common Pitfalls:**
+- Skipping once per side (two total) instead of one skip overall.
+- Re-scanning the entire string after a skip instead of the remaining slice.
+
 **Tags:** #algorithm
 
 ---
@@ -222,6 +242,16 @@ int subarraySum(int[] nums, int k) {
 - Seed `{0: 1}` to count subarrays starting at index 0.
 - Update count AFTER adding to answer to avoid double-counting.
 - O(n) time, O(n) space; works with negatives unlike sliding window.
+
+**Follow-ups:**
+- Return one (or all) qualifying subarrays, not just the count.
+- 2D version: count submatrices with sum equal to k.
+- Streaming nums — but deletion becomes the hard part.
+- Count subarrays whose sum is divisible by k (different transform).
+
+**Common Pitfalls:**
+- Forgetting the `{0: 1}` seed entry — misses subarrays starting at index 0.
+- Updating prefix count before adding to ans — double-counts zero-sum subarrays.
 
 **Tags:** #algorithm
 
@@ -302,6 +332,16 @@ List<Integer> rightSideView(TreeNode root) {
 - DFS right-first also works: record first node at each depth.
 - O(n) time, O(width) queue space.
 
+**Follow-ups:**
+- Left-side view — mirror direction, same approach.
+- Top view / bottom view — needs column-indexed BFS with horizontal distance.
+- Boundary view (left edge + leaves + right edge in order).
+- Generalize to N-ary trees.
+
+**Common Pitfalls:**
+- Using `i == len(q)` after popping in Python; capture `size = len(q)` up front instead.
+- DFS left-first then overwriting per depth — traversal order must be right-first.
+
 **Tags:** #algorithm
 
 ---
@@ -359,6 +399,16 @@ int[][] kClosest(int[][] points, int k) {
 - Compare squared distance to skip sqrt.
 - Heap variant gives O(n log k); Quickselect averages O(n).
 - Negate for max-heap when using Python's min-heap.
+
+**Follow-ups:**
+- Streaming points — maintain top-k online with a bounded heap.
+- Distance metric changes (Manhattan, Chebyshev) — swap the comparator.
+- 3D points or weighted points — generalize distance function.
+- K farthest points instead of closest — invert the heap.
+
+**Common Pitfalls:**
+- Calling `sqrt` — slower with no effect on ordering.
+- Using a min-heap and popping smallest, ending up with the k *farthest* points.
 
 **Tags:** #algorithm
 
@@ -446,6 +496,16 @@ class WeightedRandom {
 - Use lower-bound search to land in the correct bucket.
 - O(n) build, O(log n) per pick.
 
+**Follow-ups:**
+- Weights change at runtime — use a Fenwick tree for O(log n) updates instead of rebuilding.
+- Floating-point weights — what precision issues arise?
+- Sample k items without replacement.
+- Billions of buckets — alias method for O(1) draws after O(n) build.
+
+**Common Pitfalls:**
+- `randint(0, total)` instead of `randint(1, total)` biases the first index.
+- Upper-bound search instead of lower-bound — picks the wrong bucket on the boundary.
+
 **Tags:** #algorithm
 
 ---
@@ -511,6 +571,16 @@ int[][] mergeIntervals(int[][] intervals) {
 - Extend end with max in case of nested intervals.
 - O(n log n) time, O(n) output.
 
+**Follow-ups:**
+- Insert a single interval into an already-sorted list (Insert Interval).
+- Compute common free time across multiple employee calendars.
+- Streaming intervals — maintain the merged set online with a balanced BST.
+- Intervals carry a payload — define merge semantics for the payload.
+
+**Common Pitfalls:**
+- Sorting by end instead of start — the overlap test no longer works.
+- Reusing input interval references instead of cloning — mutates the caller's data.
+
 **Tags:** #algorithm
 
 ---
@@ -565,6 +635,16 @@ TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
 - Both sides non-null means current node splits p and q.
 - O(n) time, O(h) recursion stack.
 
+**Follow-ups:**
+- Parent pointers are available — use the two-pointer / cycle-detection trick.
+- `p` may not exist in the tree — detect and return null.
+- LCA of a set of k nodes, not just two.
+- BST variant — use ordering to prune in O(h).
+
+**Common Pitfalls:**
+- Returning early on the first found side without checking the other.
+- Confusing reference identity with value equality on TreeNode (`is` vs `==`).
+
 **Tags:** #algorithm
 
 ---
@@ -580,6 +660,17 @@ TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
 
 **Approach:** Two models: **push (fanout-on-write)** — when X posts, write to all X's followers' inboxes; great read latency, breaks for celebrities. **Pull (fanout-on-read)** — on feed load, pull recent posts from each followee, merge, rank; expensive for active users. **Hybrid** — push for normal users, pull for celebrities, merge at read. Ranking: candidate generation (recent + relevant) → ML ranker (engagement signals). Cache top-N per user in Redis with TTL. Discuss write amplification, cold cache, and ranking model freshness.
 
+**Follow-ups:**
+- Cold-start users with no follows — recommendation-driven feed.
+- Real-time signals (just-now likes) influencing rank — where do they flow?
+- Feed personalization on low-end devices and poor networks.
+- Ad insertion budget per feed and pacing across sessions.
+- "Why am I seeing this?" transparency — what gets logged at ranking time.
+
+**Common Pitfalls:**
+- Pure fanout-on-write — write amplification destroys storage cost for celebrity accounts.
+- Caching ranked feeds for too long — misses fresh viral content and feels stale.
+
 **Tags:** #system-design
 
 ---
@@ -594,6 +685,17 @@ TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
 **Question:** Design Instagram: photo upload, profile, feed, search by hashtag.
 
 **Approach:** Photos → blob storage (S3-like) + CDN. Metadata sharded by user_id in a relational store. Feed: hybrid push/pull (same as News Feed). Hashtag search: inverted index from hashtag → recent post ids in a search-optimized store (Elasticsearch). Likes/comments: counters with write-back cache (eventual consistency OK). Discuss: image resizing pipeline (async on upload, generate thumbnails), CDN cache invalidation on deletion, and how to handle viral posts (CDN edge cache + read-only replica).
+
+**Follow-ups:**
+- Stories (24h expiry) — TTL-based store and ephemeral feed.
+- Direct messages on the same infra — pivots toward a messaging design.
+- Reels / video ingestion — transcoding pipeline + adaptive bitrate streaming.
+- Profile privacy and shadow-banning — where do filters get applied?
+- Compliance: copyright take-downs and global CDN invalidation.
+
+**Common Pitfalls:**
+- Storing image bytes and metadata in the same row — they grow at very different rates.
+- Synchronous resize on upload — makes the write path slow and brittle.
 
 **Tags:** #system-design
 
@@ -2201,6 +2303,8 @@ class Reader {
 - Keep buf4 + ptr + cnt as instance state to preserve leftovers.
 - Refill via read4 only when buffer is drained.
 - Break when read4 returns 0 (EOF).
+
+**Complexity:** O(n) per `read(buf, n)` call; O(1) extra state (the 4-char buffer plus two indices) is carried across calls.
 
 **Tags:** #algorithm
 

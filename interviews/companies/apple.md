@@ -109,6 +109,16 @@ class Solution {
 - Skip duplicates at the fixed index and after each match to avoid repeated triplets.
 - Early break when `nums[i] > 0` since remaining elements cannot sum to zero.
 
+**Follow-ups:**
+- 4Sum / kSum — generalize with recursion + two-pointer base case.
+- Closest triplet to a target (3SumClosest) — same scan, different tracking.
+- Count triplets summing to target instead of listing them.
+- Streaming nums with bounded memory — can you still answer?
+
+**Common Pitfalls:**
+- Forgetting to skip duplicates *after* a match — produces duplicate triplets.
+- Returning indices instead of values, or vice versa — confirm the contract.
+
 **Tags:** #algorithm
 
 ---
@@ -175,6 +185,16 @@ class Solution {
 - Output array doubles as the prefix-product buffer to keep extra space at O(1).
 - A single running scalar holds the suffix product on the second pass.
 - Zero values are handled naturally without any special branching.
+
+**Follow-ups:**
+- Modulo a large prime instead of raw product — division becomes modular inverse.
+- Allow division, but handle zeros explicitly (count + position trick).
+- 2D version: product of all matrix elements except the current cell.
+- Streaming nums — update on insert/delete with prefix/suffix product maintenance.
+
+**Common Pitfalls:**
+- Using division and crashing on a zero element.
+- Overflowing `int` on long arrays — mention `long`/BigInt for the running products.
 
 **Tags:** #algorithm
 
@@ -258,6 +278,16 @@ class Solution {
 - Append the non-null tail in O(1) once one list is consumed.
 - Stable ordering between equal values preserves list semantics.
 
+**Follow-ups:**
+- Merge K sorted lists — heap of heads, or pairwise merge in O(N log K).
+- Lists too large for memory — external merge on disk.
+- Lists are doubly linked — fix `prev` pointers without re-traversing.
+- In-place merge without dummy node — careful first-node selection.
+
+**Common Pitfalls:**
+- Forgetting to advance `tail` after attaching — builds a self-loop.
+- Not attaching the leftover tail (`tail.next = a or b`) — truncates the result.
+
 **Tags:** #algorithm
 
 ---
@@ -325,6 +355,16 @@ class Solution {
 - Two center types cover odd and even palindromes uniformly.
 - Track the best window by length difference, not by recomputing slices.
 - Manacher's algorithm reaches O(n) but the constant factor and code length rarely pay off.
+
+**Follow-ups:**
+- Count *all* palindromic substrings, not just the longest.
+- Palindrome partitioning — split `s` into minimum palindrome pieces.
+- Longest palindromic *subsequence* (different problem, LCS-style DP).
+- Apple-specific: implement Manacher's and explain why O(n) matters.
+
+**Common Pitfalls:**
+- Returning `r - l` length without the `+ 1`.
+- Forgetting the even-center expansion — misses palindromes like "abba".
 
 **Tags:** #algorithm
 
@@ -413,6 +453,16 @@ class Solution {
 - The `lps` (longest proper prefix that is also a suffix) table encodes the fallback positions.
 - Empty needle returns 0 by convention; mirror C's `strstr` semantics.
 
+**Follow-ups:**
+- Return *all* occurrences, not just the first — same scan, append on match.
+- Multi-pattern search across the same haystack — Aho-Corasick automaton.
+- Wildcard or `?`-style fuzzy matching — different DP entirely.
+- Compare KMP vs Rabin-Karp vs Boyer-Moore — when does each win?
+
+**Common Pitfalls:**
+- Off-by-one in the `lps` construction (start `i` at 1, not 0).
+- Returning the *end* index instead of the *start* (`i - j + 1`, not `i`).
+
 **Tags:** #algorithm
 
 ---
@@ -497,6 +547,16 @@ class LRUCache extends LinkedHashMap<Integer, Integer> {
 - Eviction is just popping the first key in O(1).
 - Production code uses a hashmap + custom doubly linked list to keep pointers stable under concurrency.
 
+**Follow-ups:**
+- Make it thread-safe — lock per bucket vs single lock; discuss contention.
+- LFU (Least Frequently Used) variant — different data structures, harder eviction.
+- TTL-expiring entries layered on top of LRU.
+- Distributed LRU across nodes — consistent hashing + per-node local cache.
+
+**Common Pitfalls:**
+- Using a plain dict and scanning for the oldest — O(n) `put`, not O(1).
+- Forgetting to move on `get`, so reads don't count as recency.
+
 **Tags:** #algorithm
 
 ---
@@ -572,6 +632,16 @@ class Solution {
 - The "best" candidate at each node uses both children; the return value uses only one.
 - Initial best is `-Infinity` to handle all-negative trees correctly.
 
+**Follow-ups:**
+- Return the actual path (list of node values), not just the sum.
+- Maximum path sum that *must* go through the root.
+- Generalize to N-ary trees or DAGs.
+- Apple iOS quirk: deeply skewed trees blow the recursion stack — propose an iterative variant.
+
+**Common Pitfalls:**
+- Initializing `best` to 0 — wrong for all-negative trees.
+- Returning `node.val + l + r` to the parent instead of `node.val + max(l, r)` — produces invalid paths.
+
 **Tags:** #algorithm
 
 ---
@@ -638,6 +708,16 @@ class Solution {
 - Order coins inner, amount outer for the unbounded knapsack pattern.
 - Greedy only works when the denomination set is canonical (e.g., USD); always validate.
 
+**Follow-ups:**
+- Count the *number of ways* to make the amount (Coin Change II) — different DP order.
+- Each coin usable at most once — classic 0/1 knapsack.
+- Reconstruct one optimal coin set, not just the count.
+- Huge `amount` with small coin set — BFS-on-graph variant may be faster.
+
+**Common Pitfalls:**
+- Swapping the loop order produces "count of combinations" rather than "min coins".
+- Returning `dp[amount]` when it's still `INF` — must remap to -1.
+
 **Tags:** #algorithm
 
 ---
@@ -653,6 +733,17 @@ class Solution {
 
 **Approach:** Audio files in blob storage + CDN, multiple bitrates (AAC 256kbps, lossless ALAC). DRM via FairPlay. Metadata sharded by track_id; user library (playlists, likes) sharded by user_id. Recommendations: offline two-tower embedding model + on-device re-ranking (Apple privacy lean). Offline downloads: client manages local cache with DRM license refresh. Discuss: cross-device sync (CloudKit), lossless streaming bandwidth, and how to preserve privacy by doing personalization on-device.
 
+**Follow-ups:**
+- Lossless streaming over a metered cellular plan — adaptive bitrate strategy.
+- Personalization without sending listen history to the server — federated learning?
+- Live radio / Apple Music Live — how does ingest + fanout change?
+- Spatial audio metadata pipeline and decoder negotiation.
+- DRM license server failure mode — how does playback degrade?
+
+**Common Pitfalls:**
+- Treating the recommendation pipeline as a single service — misses the offline/online split.
+- Skipping DRM entirely — unrealistic for a music service.
+
 **Tags:** #system-design
 
 ---
@@ -667,6 +758,17 @@ class Solution {
 **Question:** Design iMessage: end-to-end encrypted, multi-device delivery, fallback to SMS.
 
 **Approach:** Each device has its own keypair registered with Apple Push Service. Sender encrypts message N times (once per recipient device) and posts via APNS. Server stores ciphertext briefly until delivery, then deletes. Discuss: Identity Service maps phone/email → device list (this is the trust anchor, hence the Contact Key Verification feature), large group keys (sender key model), media (S3-like blob + per-message key), and graceful SMS fallback when recipient not on iMessage.
+
+**Follow-ups:**
+- New device added to a recipient's account — how does key distribution handle it?
+- Large group chats (>100) — sender keys vs pairwise; failure modes when a member rotates keys.
+- Message edit / unsend semantics under E2E — server can't enforce them.
+- Backup and restore — iCloud Backup contains keys, but you can opt out (Advanced Data Protection).
+- Spam / abuse detection without reading plaintext — metadata-only signals.
+
+**Common Pitfalls:**
+- Storing plaintext server-side "for delivery" — breaks E2E.
+- Assuming a single key per user — must handle a fan-out per device list.
 
 **Tags:** #system-design
 
@@ -3615,6 +3717,8 @@ class SPSCQueue<T> {
 - Real lock-free SPSC requires C++ `std::atomic` with acquire/release ordering; Python/JS lack such primitives in pure code.
 - Cache-line pad `head` and `tail` separately to eliminate false sharing.
 
+**Complexity:** `push` and `pop` are O(1) and lock-free; a single producer and single consumer coordinate through two atomic indices with no mutex.
+
 **Tags:** #algorithm
 
 ---
@@ -3706,6 +3810,8 @@ class Solution {
 - Process B x B tiles so both rows and columns of each tile fit in L1 cache.
 - Iterate only over `jj >= ii` to avoid double-swapping symmetric off-diagonal tiles.
 - Diagonal tiles need an in-tile swap; off-diagonal tiles swap with their mirror tile.
+
+**Complexity:** O(n²) work — every element is touched once, same as the naive transpose; tiling only improves the constant factor via cache locality. O(1) extra space.
 
 **Tags:** #algorithm
 

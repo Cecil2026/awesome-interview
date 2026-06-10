@@ -98,6 +98,16 @@ ListNode addTwoNumbers(ListNode l1, ListNode l2) {
 - Treat missing digits as 0 when one list is shorter.
 - Output is also in reverse order — no extra reversal needed.
 
+**Follow-ups:**
+- Digits stored most-significant first — reverse, add, reverse back, or use stacks.
+- Subtract two numbers in linked-list form — borrow instead of carry.
+- Multiply two numbers in list form.
+- Use a doubly linked list to support both forward and backward traversal.
+
+**Common Pitfalls:**
+- Forgetting the final carry node when both lists end.
+- Treating the shorter list's missing nodes as `null` errors instead of 0.
+
 **Tags:** #algorithm
 
 ---
@@ -166,6 +176,16 @@ String addStrings(String num1, String num2) {
 - Iterate while either index or carry remains.
 - Use char code arithmetic to avoid `parseInt` per digit.
 - Append digits in reverse, then reverse the buffer once at the end.
+
+**Follow-ups:**
+- Multiply strings without using big-int.
+- Add two non-negative integers represented in arbitrary base (binary, hex).
+- Add two strings that may contain a decimal point.
+- Support negative numbers — dispatch to subtract.
+
+**Common Pitfalls:**
+- Forgetting to handle the final carry after the loop.
+- Using `Integer.parseInt` per digit — slow and unnecessary.
 
 **Tags:** #algorithm
 
@@ -236,6 +256,16 @@ ListNode detectCycle(ListNode head) {
 - After meeting, head-to-start equals meeting-to-start modulo cycle length.
 - Works when the cycle starts at head — both pointers stay aligned.
 - O(1) space beats a visited-set; both pointers chase at most one full loop.
+
+**Follow-ups:**
+- Detect cycle existence only (Linked List Cycle I) — simpler.
+- Find the length of the cycle.
+- Find the cycle entry in a directed graph using Floyd's algorithm.
+- Repair the list by setting the last node's `next` to `null`.
+
+**Common Pitfalls:**
+- Advancing `slow` and `fast` before checking equality — may miss the meeting at start.
+- Using `slow == fast` for the first check before any move — trivially true and breaks the algorithm.
 
 **Tags:** #algorithm
 
@@ -313,6 +343,16 @@ void go(int[] nums, int start, List<List<Integer>> out) {
 - Always undo the swap on the way back to preserve the array.
 - Snapshot via `slice`/`[:]` so later mutations don't corrupt outputs.
 
+**Follow-ups:**
+- Permutations II — input has duplicates, dedupe via sort + skip.
+- Next Permutation — in-place transformation to the next lex order.
+- kth permutation — factoradic, no enumeration.
+- Permutations with constraints (no two adjacent equal, etc.).
+
+**Common Pitfalls:**
+- Forgetting to take a copy of `nums` before adding to output — later swaps overwrite results.
+- Sort-based dedupe but the input was mutated by the swap — invariant lost.
+
 **Tags:** #algorithm
 
 ---
@@ -366,6 +406,16 @@ int maxSubArray(int[] nums) {
 - `cur` is the best sum ending at the current index.
 - Initialize both to `nums[0]` so all-negative arrays still return the max element.
 - Divide-and-conquer also works at O(n log n) but is overkill.
+
+**Follow-ups:**
+- Return the actual subarray (start/end indices), not just the sum.
+- Maximum *product* subarray — track min and max because of negatives.
+- Circular maximum subarray.
+- Maximum sum subarray with at most k elements.
+
+**Common Pitfalls:**
+- Initializing `cur` and `best` to 0 — fails for all-negative input.
+- Adding `nums[0]` twice when the loop starts at index 0 — use `nums[0]` as init and start at 1.
 
 **Tags:** #algorithm
 
@@ -437,6 +487,16 @@ void rev(char[] a, int l, int r) {
 - Reverse the whole buffer first, then reverse each word in place.
 - Strings in Python/JS are immutable, so the input is a mutable `list`/`array` of chars.
 - O(1) extra space — only index variables are added.
+
+**Follow-ups:**
+- Reverse Words in a String (LeetCode 151) — collapse multiple spaces.
+- Reverse only the vowels in a string.
+- Reverse a sentence in-place but preserve trailing punctuation positions.
+- Reverse a string of UTF-8 bytes safely (don't split multi-byte chars).
+
+**Common Pitfalls:**
+- Using `s[::-1]` when interviewer asked for in-place — O(n) extra space.
+- Splitting on a single space and missing multi-space separators.
 
 **Tags:** #coding
 
@@ -512,6 +572,16 @@ TreeNode lowestCommonAncestorBST(TreeNode root, TreeNode p, TreeNode q) {
 - Iterative form is O(1) extra space.
 - Equality (one target equals current) also makes current the LCA.
 
+**Follow-ups:**
+- LCA of a general binary tree (no BST property) — recursive O(n).
+- LCA when nodes have parent pointers — two-pointer like LL intersection.
+- LCA of multiple nodes, not just two.
+- LCA queries in batches — Tarjan offline algorithm.
+
+**Common Pitfalls:**
+- Confirming both nodes are actually in the tree — if not, return value is undefined.
+- Treating BST LCA the same as general binary tree LCA — BST property allows O(h) without recursion.
+
 **Tags:** #algorithm
 
 ---
@@ -580,6 +650,16 @@ class MinStack {
 - Alternative two-stack design saves space when many duplicates of min are pushed.
 - Empty-stack handling depends on the problem contract; here methods assume non-empty.
 
+**Follow-ups:**
+- Max Stack (return max in O(1)) and `popMax` in O(log n).
+- Queue using two stacks — amortized O(1) per op.
+- Min/Max in a sliding window — monotonic deque.
+- Thread-safe Min Stack — synchronize or lock-free.
+
+**Common Pitfalls:**
+- Storing only the global min in a separate single variable — wrong after `pop` of the min element.
+- Off-by-one when accessing the previous min after a pop — always carry running min per entry.
+
 **Tags:** #coding
 
 ---
@@ -595,6 +675,17 @@ class MinStack {
 
 **Approach:** Persistent TCP/MQTT connection from each client to nearest access gateway (sharded by user_id). Messages flow gateway → routing service (looks up recipient's gateway via online registry) → recipient gateway → device. Offline messages persisted to KV store; pushed on reconnect. Group chat: fan-out at the per-group routing service; for 500 members, that's tractable. Presence: in-memory store per region, gossip globally with TTL'd entries (eventual consistency OK). Persist messages 7 days in hot store + 90 days cold. Discuss: end-to-end encryption (Tencent historically not E2E for compliance with Chinese law — call this out honestly), message ordering within a chat (sequence numbers per chat), multi-device sync, and very large group support (broadcast groups have different design).
 
+**Follow-ups:**
+- Multi-device sync — logged in on phone + laptop, same message arrives consistently.
+- Message ordering across devices — server-issued sequence per chat.
+- Very large groups (broadcast "公众号"-style) — push goes pull, with cursor.
+- Offline-to-online catch-up — stream window vs full pull.
+- Cross-region latency for international users — anycast gateway or per-region routing?
+
+**Common Pitfalls:**
+- Promising E2E encryption when the design actually mirrors / archives messages.
+- Naive fan-out for large groups — doesn't scale beyond ~500 members.
+
 **Tags:** #system-design
 
 ---
@@ -609,6 +700,17 @@ class MinStack {
 **Question:** Design WeChat Moments — friends-only feed where posts are visible only to mutual friends, with strict privacy controls.
 
 **Approach:** Closed-graph feed (unlike Twitter/Weibo) — only mutual friends see posts. Hybrid push/pull as in News Feed. Critical privacy property: comments and likes on a post are visible only to mutual friends of the *poster*. So when displaying a post, server filters comments to those by people the viewer is also friends with — done at read time via friend-graph intersection (cache the intersection result). Photos in CDN with signed short-lived URLs (no public discoverable URL). Discuss: "三天可见" (visible-for-3-days) implemented as a per-post TTL flag, message-style notification on comment/like (via the IM system from Q9), and how to handle a viral post (rare in closed graph, but possible — cache aggressively).
+
+**Follow-ups:**
+- "仅三天可见" (3-day visibility) — store as TTL or filter at read?
+- Block / un-friend invalidation — cached feed must update immediately.
+- Photo URL re-share via screenshot — add visible watermark or accept the leak?
+- Cross-region replication — user travels abroad, where is the feed served from?
+- Friend-graph intersection cost at read time — cache, precompute, or both?
+
+**Common Pitfalls:**
+- Showing comments from non-mutual friends — privacy violation, very visible bug.
+- Hot post in a closed graph — still possible if one friend is influential, plan for it.
 
 **Tags:** #system-design
 
@@ -2885,6 +2987,8 @@ String countOfAtoms(String formula) {
 - Stack of count maps mirrors nested groups exactly.
 - An atom token is one uppercase letter followed by zero or more lowercase letters.
 - Final output sorts atoms alphabetically and omits the count when it equals 1.
+
+**Complexity:** O(n) single pass to parse the formula (the stack of count maps holds at most O(n) atoms), plus O(k log k) to sort the k distinct atoms for output.
 
 **Tags:** #algorithm
 

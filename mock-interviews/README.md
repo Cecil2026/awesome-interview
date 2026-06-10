@@ -27,12 +27,19 @@ The candidates in these transcripts are not perfect. They get pushed back on, th
 | [system-design-url-shortener.md](./system-design-url-shortener.md) | Design a TinyURL/bit.ly clone. Candidate pivots from MD5 hashing to base62 counter encoding after pushback. | L4 |
 | [system-design-chat-app.md](./system-design-chat-app.md) | Design WhatsApp/Slack. Group chats, presence, read receipts, end-to-end delivery guarantees. | L5 |
 | [system-design-rate-limiter.md](./system-design-rate-limiter.md) | Design a distributed rate limiter at the API gateway layer. Token bucket vs sliding window, Redis vs in-memory. | L4/L5 |
+| [system-design-rag-qa.md](./system-design-rag-qa.md) | Design a RAG-based enterprise document Q&A assistant. Permission-filtered hybrid retrieval, grounding, freshness, and RAG evaluation. | L5 |
 
 ### Behavioral
 
 | File | Teaser | Difficulty |
 | --- | --- | --- |
 | [behavioral-leadership-conflict.md](./behavioral-leadership-conflict.md) | Five STAR questions on leadership, conflict, disagreement, failure, and influence. Hiring manager loop for a Staff Engineer role. | L6 |
+
+### Rubrics
+
+| File | What it's for |
+| --- | --- |
+| [system-design-rubric.md](./system-design-rubric.md) | 8-dimension scorecard for grading system design rounds. Map total + per-dimension profile to L3–L6. Apply it after every mock. |
 
 ## Conventions
 

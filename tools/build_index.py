@@ -13,87 +13,54 @@ from __future__ import annotations
 
 import argparse
 import json
-import re
 import sys
 from pathlib import Path
 
+from _md import (
+    REPO_ROOT,
+    HEADING_RE,
+    category_for,
+    parse_file as parse_entries_file,
+    read_text,
+    walk_markdown,
+)
 
-HEADING_RE = re.compile(r"^### (\d+)\.\s+(.+?)\s*$", re.MULTILINE)
-TOPICS_RE = re.compile(r"^\*\*Topics:\*\*\s*(.+?)\s*$", re.MULTILINE)
-DIFFICULTY_RE = re.compile(r"^\*\*Difficulty:\*\*\s*(.+?)\s*$", re.MULTILINE)
-
-REPO_ROOT = Path(__file__).resolve().parent.parent
 OUTPUT = REPO_ROOT / "docs" / "questions.json"
 
 
-SKIP_DIRS = {".git", "node_modules", ".github", "docs"}
-
-
-def category_for(path: Path) -> str:
-    parts = path.relative_to(REPO_ROOT).parts
-    if not parts:
-        return "misc"
-    return parts[0]
-
-
 def parse_zh_titles(zh_path: Path) -> dict[int, str]:
-    try:
-        text = zh_path.read_text(encoding="utf-8")
-    except (UnicodeDecodeError, OSError):
+    text = read_text(zh_path)
+    if text is None:
         return {}
     return {int(m.group(1)): m.group(2) for m in HEADING_RE.finditer(text)}
 
 
 def parse_file(path: Path) -> list[dict]:
-    try:
-        text = path.read_text(encoding="utf-8")
-    except (UnicodeDecodeError, OSError):
-        return []
-    matches = list(HEADING_RE.finditer(text))
-    if not matches:
+    entries = parse_entries_file(path)
+    if not entries:
         return []
     zh_path = path.with_suffix(".zh.md")
     zh_titles = parse_zh_titles(zh_path) if zh_path.exists() else {}
     zh_rel = zh_path.relative_to(REPO_ROOT).as_posix() if zh_path.exists() else None
+    rel = path.relative_to(REPO_ROOT).as_posix()
     out = []
-    for i, m in enumerate(matches):
-        start = m.end()
-        end = matches[i + 1].start() if i + 1 < len(matches) else len(text)
-        body = text[start:end]
-        topics_match = TOPICS_RE.search(body)
-        difficulty_match = DIFFICULTY_RE.search(body)
-        rel = path.relative_to(REPO_ROOT).as_posix()
-        line = text.count("\n", 0, m.start()) + 1
-        number = int(m.group(1))
+    for e in entries:
         entry = {
-            "id": f"{rel}#{number}",
-            "number": number,
-            "title": m.group(2),
+            "id": f"{rel}#{e.number}",
+            "number": e.number,
+            "title": e.title,
             "file": rel,
-            "line": line,
+            "line": e.line,
             "category": category_for(path),
-            "topics": [t.strip() for t in topics_match.group(1).split(",")] if topics_match else [],
-            "difficulty": difficulty_match.group(1) if difficulty_match else None,
+            "topics": e.topics,
+            "difficulty": e.difficulty,
         }
-        if number in zh_titles:
-            entry["title_zh"] = zh_titles[number]
+        if e.number in zh_titles:
+            entry["title_zh"] = zh_titles[e.number]
         if zh_rel:
             entry["file_zh"] = zh_rel
         out.append(entry)
     return out
-
-
-def walk_markdown() -> list[Path]:
-    out = []
-    for path in REPO_ROOT.rglob("*.md"):
-        if any(part in SKIP_DIRS for part in path.relative_to(REPO_ROOT).parts):
-            continue
-        if path.name.lower() == "readme.md":
-            continue
-        if path.name.lower().endswith(".zh.md"):
-            continue
-        out.append(path)
-    return sorted(out)
 
 
 def build() -> dict:

@@ -16,6 +16,12 @@
   const navMarkdownEl = document.getElementById('nav-markdown');
   const navQuestionPickerEl = document.getElementById('nav-question-picker');
   const navReadmeEl = document.getElementById('nav-readme');
+  const navKnowledgeEl = document.getElementById('nav-knowledge');
+  const navInterviewsEl = document.getElementById('nav-interviews');
+  const navMockEl = document.getElementById('nav-mock');
+  const navBehavioralEl = document.getElementById('nav-behavioral');
+  const navRoadmapEl = document.getElementById('nav-roadmap');
+  const navBrowseEl = document.getElementById('nav-browse');
 
   let files = [];
   let activePath = '';
@@ -29,6 +35,12 @@
       navMarkdown: 'Markdown reader',
       navQuestionPicker: 'Question picker',
       navReadme: 'README',
+      navKnowledge: 'Knowledge',
+      navInterviews: 'Interviews',
+      navMock: 'Mock interviews',
+      navBehavioral: 'Behavioral',
+      navRoadmap: 'Roadmap',
+      navBrowse: 'Browse',
       intro: 'Reader for all markdown-based modules. Click a document on the left to render it here.',
       searchPlaceholder: 'Search by file, category, or keyword',
       fileLabel: 'Files:',
@@ -54,11 +66,20 @@
       themeDark: 'Dark',
       translationFallback: 'Chinese translation not available for this file — showing the original.',
       translationShown: 'Showing Chinese translation ({path}).',
+      copyCode: 'Copy',
+      copiedCode: 'Copied',
+      copyFailed: 'Copy failed',
     },
     zh: {
       navMarkdown: 'Markdown 阅读器',
       navQuestionPicker: '问题选择器',
       navReadme: '项目说明',
+      navKnowledge: '知识库',
+      navInterviews: '面试题',
+      navMock: '模拟面试',
+      navBehavioral: '行为面试',
+      navRoadmap: '路线图',
+      navBrowse: '浏览',
       intro: '阅读所有基于 Markdown 的模块。点击左侧文档即可在此呈现。',
       searchPlaceholder: '按文件、类别或关键词搜索',
       fileLabel: '文件数：',
@@ -84,6 +105,9 @@
       themeDark: '深色',
       translationFallback: '该文件暂无中文翻译，已显示原文。',
       translationShown: '已显示中文翻译（{path}）。',
+      copyCode: '复制',
+      copiedCode: '已复制',
+      copyFailed: '复制失败',
     },
   };
 
@@ -103,6 +127,12 @@
     if (navMarkdownEl) navMarkdownEl.textContent = t('navMarkdown');
     if (navQuestionPickerEl) navQuestionPickerEl.textContent = t('navQuestionPicker');
     if (navReadmeEl) navReadmeEl.textContent = t('navReadme');
+    if (navKnowledgeEl) navKnowledgeEl.textContent = t('navKnowledge');
+    if (navInterviewsEl) navInterviewsEl.textContent = t('navInterviews');
+    if (navMockEl) navMockEl.textContent = t('navMock');
+    if (navBehavioralEl) navBehavioralEl.textContent = t('navBehavioral');
+    if (navRoadmapEl) navRoadmapEl.textContent = t('navRoadmap');
+    if (navBrowseEl) navBrowseEl.textContent = t('navBrowse');
     document.title = `awesome-interview · ${t('pageTitle')}`;
     if (introEl) introEl.textContent = t('intro');
     searchEl.placeholder = t('searchPlaceholder');
@@ -459,6 +489,7 @@
         }
         readerEl.innerHTML = banner + `<h2>${path}</h2>` + html;
         applyPreferredCodeLang();
+        addCopyButtons();
         renderToc(headings);
         observeHeadings();
         if (pendingFragment) {
@@ -487,6 +518,16 @@
   }
 
   readerEl.addEventListener('click', (event) => {
+    const copyBtn = event.target.closest('.copy-btn');
+    if (copyBtn) {
+      const code = copyBtn.closest('pre') && copyBtn.closest('pre').querySelector('code');
+      if (code) {
+        copyText(code.textContent || '')
+          .then(() => flashCopyButton(copyBtn, 'copiedCode', true))
+          .catch(() => flashCopyButton(copyBtn, 'copyFailed', false));
+      }
+      return;
+    }
     const tab = event.target.closest('.code-tab');
     if (tab) {
       const container = tab.closest('.code-tabs');
@@ -525,6 +566,11 @@
 
   searchEl.addEventListener('input', filterFiles);
   languageSelect.addEventListener('change', (event) => setLanguage(event.target.value));
+  document.addEventListener('click', (event) => {
+    document.querySelectorAll('details.nav-menu[open]').forEach((menu) => {
+      if (!menu.contains(event.target)) menu.removeAttribute('open');
+    });
+  });
   if (window.AwesomeTheme) {
     window.AwesomeTheme.wire(themeSelect);
   }
@@ -596,6 +642,49 @@
       p.classList.toggle('active', p.dataset.lang === lang);
     });
   }
+
+  function addCopyButtons() {
+    readerEl.querySelectorAll('pre').forEach((pre) => {
+      if (pre.querySelector('.copy-btn') || !pre.querySelector('code')) return;
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'copy-btn';
+      button.textContent = t('copyCode');
+      pre.appendChild(button);
+    });
+  }
+
+  function copyText(text) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      return navigator.clipboard.writeText(text);
+    }
+    return new Promise((resolve, reject) => {
+      try {
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        const ok = document.execCommand('copy');
+        document.body.removeChild(ta);
+        ok ? resolve() : reject(new Error('execCommand copy failed'));
+      } catch (e) {
+        reject(e);
+      }
+    });
+  }
+
+  function flashCopyButton(button, labelKey, copied) {
+    button.textContent = t(labelKey);
+    button.classList.toggle('copied', copied);
+    clearTimeout(button._copyResetTimer);
+    button._copyResetTimer = setTimeout(() => {
+      button.textContent = t('copyCode');
+      button.classList.remove('copied');
+    }, 1500);
+  }
+
 
   function scrollToQuestionNumber(n) {
     const headings = readerEl.querySelectorAll('h1[id], h2[id], h3[id], h4[id], h5[id], h6[id]');

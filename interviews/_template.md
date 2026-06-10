@@ -29,6 +29,25 @@ sources: <e.g., "Glassdoor, LeetCode Discuss, Blind, 1point3acres">
 
 **Approach:** <3-6 lines. For algorithms: key insight + time/space. For system design: major components + 2-3 trade-offs. For behavioral: STAR-structure hint + the trait being probed.>
 
+**Follow-ups:**
+- <Follow-up 1: what interviewers commonly drill into next>
+- <Follow-up 2>
+- <Follow-up 3>
+
+**Common Pitfalls:**
+- <Pitfall 1: a typical mistake that loses points>
+- <Pitfall 2>
+
+**Strong Answer Points:**
+- <Point 1: signal interviewers look for>
+- <Point 2>
+
+**Bad Answer Example:** <One sentence describing a weak response and exactly why it loses points (no quantified result, missed trade-off, vague ownership, etc.).>
+
+**References:**
+- <Link or book chapter 1>
+- <Link 2>
+
 **Tags:** #algorithm | #coding | #system-design | #behavioral | #domain-knowledge
 
 ---
@@ -43,6 +62,20 @@ sources: <e.g., "Glassdoor, LeetCode Discuss, Blind, 1point3acres">
 **Question:**
 
 **Approach:**
+
+**Follow-ups:**
+-
+
+**Common Pitfalls:**
+-
+
+**Strong Answer Points:**
+-
+
+**Bad Answer Example:**
+
+**References:**
+-
 
 **Tags:**
 
@@ -65,6 +98,20 @@ sources: <e.g., "Glassdoor, LeetCode Discuss, Blind, 1point3acres">
 **Question:**
 
 **Approach:**
+
+**Follow-ups:**
+-
+
+**Common Pitfalls:**
+-
+
+**Strong Answer Points:**
+-
+
+**Bad Answer Example:**
+
+**References:**
+-
 
 **Tags:**
 

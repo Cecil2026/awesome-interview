@@ -102,6 +102,16 @@ ListNode reverseKGroup(ListNode head, int k) {
 - Recursion stack depth is O(n/k); convert to iterative if k is small and n large.
 - The old head becomes the new tail of the reversed block.
 
+**Follow-ups:**
+- Iterative version with a dummy head — O(1) extra space.
+- Reverse the *last* incomplete group instead of leaving it as-is.
+- Rotate the list by k positions (different but related pointer choreography).
+- Reverse alternate groups of k — even groups reversed, odd left alone.
+
+**Common Pitfalls:**
+- Reversing the tail group of fewer than k nodes — the problem says leave it.
+- Forgetting to wire `head.next` to the recursive result — list ends prematurely.
+
 **Tags:** #algorithm
 
 ---
@@ -182,6 +192,16 @@ int[] findOrder(int numCourses, int[][] prerequisites) {
 - DFS with three colors (white/gray/black) is an alternative.
 - Multiple valid orders exist; any one is accepted.
 
+**Follow-ups:**
+- Course Schedule I — only return whether it's possible.
+- Return *all* valid topological orders.
+- Alien Dictionary — derive ordering constraints from sorted strings, then topo-sort.
+- Detect the cycle and return one of its nodes for the error message.
+
+**Common Pitfalls:**
+- Using DFS without three-color marking — fails to detect self-revisits within the recursion.
+- Returning a partial order on cycle — the problem wants an empty array.
+
 **Tags:** #algorithm
 
 ---
@@ -257,6 +277,16 @@ int longestSubstringKDistinct(String s, int k) {
 - Each character is added and removed at most once → amortized O(n).
 - Delete zero-count keys to keep `len(cnt)` accurate.
 - `k == 0` is a special case returning 0.
+
+**Follow-ups:**
+- Longest substring with *exactly* K distinct characters.
+- Longest substring with at most 2 distinct (special case).
+- Smallest substring containing all of `t` (Minimum Window Substring).
+- Return the actual substring, not just its length.
+
+**Common Pitfalls:**
+- Not deleting zero-count keys — `cnt.size()` overstates distinct count.
+- Shrinking on `cnt.size() >= k` instead of `> k` — off-by-one.
 
 **Tags:** #algorithm
 
@@ -395,6 +425,16 @@ class LFUCache {
 - `min_freq` only grows or resets to 1 on a fresh insert.
 - Capacity 0 must be handled or `put` crashes on evict.
 
+**Follow-ups:**
+- LRU cache — same data structure family, simpler invariant.
+- LFU with TTL on each entry.
+- Distributed LFU — how do you sync frequencies across replicas?
+- Aging: decay freq over time so old hot items don't pin forever.
+
+**Common Pitfalls:**
+- Not removing the empty frequency bucket — the iteration grows unbounded.
+- Bumping `min_freq` on `get` even when the bumped key wasn't the only one at `min_freq`.
+
 **Tags:** #algorithm
 
 ---
@@ -481,6 +521,16 @@ class MedianFinder {
 - Use negation to simulate a max-heap when only min-heap is built-in.
 - Find is O(1); add is O(log n) amortized.
 
+**Follow-ups:**
+- Sliding-window median — add removal/expiration support.
+- 99th percentile in a stream — t-digest or HDR histogram.
+- Distributed median across shards — binary search on candidate values.
+- Memory-bounded stream median (approximate) — reservoir sampling.
+
+**Common Pitfalls:**
+- Letting heap sizes drift by more than 1 — median wanders off.
+- Forgetting to balance after the initial offer — the first median is wrong.
+
 **Tags:** #algorithm
 
 ---
@@ -560,6 +610,16 @@ private int sort(int[] nums, int l, int r) {
 - Count before merging so both halves are still individually sorted.
 - Use `2 * nums[j]` carefully — beware integer overflow in lower-level languages.
 - BIT with compression gives the same O(n log n) with smaller constant for sums.
+
+**Follow-ups:**
+- Count Smaller Numbers After Self — same merge-sort trick.
+- Count of Range Sum — prefix sums + merge sort or BIT.
+- Count inversions in linked list — same algorithm, awkward access.
+- Use a Fenwick tree with value compression instead.
+
+**Common Pitfalls:**
+- Counting *after* merging — lose the ordering invariant.
+- Integer overflow on `2 * nums[j]` — cast to long.
 
 **Tags:** #algorithm
 
@@ -662,6 +722,19 @@ class RedisLock {
 - UUID token prevents accidentally releasing someone else's lock after TTL expiry.
 - Lua script makes GET-compare-DEL atomic on the server side.
 - TTL must exceed worst-case critical section, or add a watchdog renewal.
+
+**Complexity:** `acquire` and `release` are each a single O(1) Redis round-trip; the Lua unlock runs GET-compare-DEL atomically server-side.
+
+**Follow-ups:**
+- Redlock (multi-master) — trade-offs vs single-instance.
+- Watchdog/renewal pattern — Redisson-style.
+- Fair lock (FIFO) — add a queue, not just a flag.
+- Reentrant lock — token includes thread/call-stack identity, refcount in Lua.
+- ZooKeeper / etcd ephemeral nodes as an alternative — when do you choose each?
+
+**Common Pitfalls:**
+- Releasing without checking the token — one client can unlock another's lock after TTL.
+- Setting TTL shorter than the critical section — lock auto-expires while you're still inside.
 
 **Tags:** #coding
 
@@ -770,6 +843,18 @@ class BoundedQueue<T> {
 - Use two distinct conditions to avoid spurious wake-ups of the wrong party.
 - Built-in `ArrayBlockingQueue` (Java) / `asyncio.Queue` (Python) is preferred in real code.
 
+**Complexity:** `put` and `take` are O(1) each; blocked threads wait on a condition variable instead of spinning, so no CPU is burned while full/empty.
+
+**Follow-ups:**
+- Multiple producers + multiple consumers — does anything change?
+- Bounded queue with timed `offer`/`poll` (return false vs throw).
+- Lock-free MPSC ring buffer (Disruptor pattern).
+- Backpressure: producers slow down when consumers fall behind.
+
+**Common Pitfalls:**
+- Using `if` instead of `while` around `await` — spurious wakeup bug.
+- Signaling the *same* condition for both producers and consumers — wakes the wrong side.
+
 **Tags:** #coding
 
 ---
@@ -785,6 +870,17 @@ class BoundedQueue<T> {
 
 **Approach:** Layered defense: (1) Client throttle + CAPTCHA on hot pages. (2) CDN caches the product page; the "buy" button is enabled by client-side timer (don't trust). (3) API gateway with Sentinel for global rate limiting. (4) Redis holds inventory counter; `DECR` is atomic, return -1 if oversold → reject. (5) Successful "lock" pushed to RocketMQ for async order creation (this prevents DB hot-row contention; downgrade to "order pending" UI). (6) Order service writes to sharded MySQL (shard by user_id), reconciles with the locked inventory. Discuss: idempotency tokens (user retries shouldn't double-order), cache warming (load inventory into Redis before sale), and graceful degradation (sell out → static page).
 
+**Follow-ups:**
+- What if Redis goes down mid-sale — single point of failure?
+- Cold-cache moment at T=0 — thundering herd protection.
+- Anti-cheating: how do you stop bots from grabbing 90% of inventory?
+- Per-user limit (1 per ID, 1 per phone, 1 per device) — where do you enforce?
+- Real-time inventory dashboard for ops — how do you read without contention?
+
+**Common Pitfalls:**
+- Decrementing inventory in MySQL on the hot path — row-lock contention kills throughput.
+- Trusting the client timer to gate "buy" — attackers send requests early.
+
 **Tags:** #system-design
 
 ---
@@ -799,6 +895,17 @@ class BoundedQueue<T> {
 **Question:** Design the payment flow when a user pays for an order on Taobao via Alipay. Cover failure cases.
 
 **Approach:** Saga pattern across services: Order → Payment Account → Bank/Card. Each step is an idempotent local transaction; on failure, run compensating actions. Idempotency token (out_trade_no) prevents double-charges on retry. Use Seata or self-built TCC (Try-Confirm-Cancel) framework: Try reserves funds, Confirm captures, Cancel releases. Asynchronous bank callback updates final state. Discuss: reconciliation (daily batch matches our records vs bank's), eventual consistency window (user sees "processing" not "paid"), fraud signals, and PCI scope.
+
+**Follow-ups:**
+- TCC vs Saga vs 2PC — when does each fit?
+- Compensating transaction that itself fails — how do you recover?
+- Bank callback arrives twice / out-of-order — idempotency design.
+- Cross-border payments — FX risk and settlement windows.
+- Refund flow — partial refund, days later, original transaction archived.
+
+**Common Pitfalls:**
+- Treating the bank call as synchronous — timeouts make the order status undefined.
+- No idempotency token — user retries double-charge.
 
 **Tags:** #system-design
 
@@ -3120,6 +3227,8 @@ private void backtrack(String w, String begin, Map<String, List<String>> parents
 - BFS finds shortest length; DFS enumerates all paths via the parent graph.
 - Remove visited words layer-by-layer, not word-by-word, to keep parallel branches alive.
 - Stop BFS as soon as `end` is found in a layer.
+
+**Complexity:** O(N · L²) for BFS over N words of length L (each neighbor probe costs O(L)); backtracking then adds time proportional to the number of shortest paths emitted.
 
 **Tags:** #algorithm
 

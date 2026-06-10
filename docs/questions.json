@@ -1,10 +1,11 @@
 {
   "generated_by": "tools/build_index.py",
-  "total": 1149,
+  "total": 1157,
   "categories": [
     "behavioral",
     "interviews",
-    "knowledge"
+    "knowledge",
+    "mock-interviews"
   ],
   "questions": [
     {
@@ -626,7 +627,7 @@
       "number": 2,
       "title": "<Question title>",
       "file": "interviews/_template.md",
-      "line": 36,
+      "line": 55,
       "category": "interviews",
       "topics": [
         "**Position:**"
@@ -640,7 +641,7 @@
       "number": 20,
       "title": "<Question title>",
       "file": "interviews/_template.md",
-      "line": 58,
+      "line": 91,
       "category": "interviews",
       "topics": [
         "**Position:**"
@@ -669,7 +670,7 @@
       "number": 2,
       "title": "Course Schedule II",
       "file": "interviews/companies/alibaba.md",
-      "line": 109,
+      "line": 119,
       "category": "interviews",
       "topics": [
         "graph",
@@ -685,7 +686,7 @@
       "number": 3,
       "title": "Longest Substring with At Most K Distinct Characters",
       "file": "interviews/companies/alibaba.md",
-      "line": 189,
+      "line": 209,
       "category": "interviews",
       "topics": [
         "sliding-window",
@@ -701,7 +702,7 @@
       "number": 4,
       "title": "LFU Cache",
       "file": "interviews/companies/alibaba.md",
-      "line": 265,
+      "line": 295,
       "category": "interviews",
       "topics": [
         "ood",
@@ -718,7 +719,7 @@
       "number": 5,
       "title": "Find Median from Data Stream",
       "file": "interviews/companies/alibaba.md",
-      "line": 402,
+      "line": 442,
       "category": "interviews",
       "topics": [
         "heap",
@@ -734,7 +735,7 @@
       "number": 6,
       "title": "Reverse Pairs",
       "file": "interviews/companies/alibaba.md",
-      "line": 488,
+      "line": 538,
       "category": "interviews",
       "topics": [
         "merge-sort",
@@ -750,7 +751,7 @@
       "number": 7,
       "title": "Implement a Distributed Lock (in Java)",
       "file": "interviews/companies/alibaba.md",
-      "line": 568,
+      "line": 628,
       "category": "interviews",
       "topics": [
         "concurrency",
@@ -766,7 +767,7 @@
       "number": 8,
       "title": "Producer-Consumer with BlockingQueue",
       "file": "interviews/companies/alibaba.md",
-      "line": 670,
+      "line": 743,
       "category": "interviews",
       "topics": [
         "concurrency",
@@ -782,7 +783,7 @@
       "number": 9,
       "title": "Design Taobao Flash Sale (秒杀)",
       "file": "interviews/companies/alibaba.md",
-      "line": 777,
+      "line": 862,
       "category": "interviews",
       "topics": [
         "system-design",
@@ -800,7 +801,7 @@
       "number": 10,
       "title": "Design Alipay Payment Flow",
       "file": "interviews/companies/alibaba.md",
-      "line": 792,
+      "line": 888,
       "category": "interviews",
       "topics": [
         "system-design",
@@ -817,7 +818,7 @@
       "number": 11,
       "title": "Design RocketMQ-style Message Queue",
       "file": "interviews/companies/alibaba.md",
-      "line": 807,
+      "line": 914,
       "category": "interviews",
       "topics": [
         "system-design",
@@ -834,7 +835,7 @@
       "number": 12,
       "title": "Design a Distributed Configuration Center (Nacos-like)",
       "file": "interviews/companies/alibaba.md",
-      "line": 822,
+      "line": 929,
       "category": "interviews",
       "topics": [
         "system-design",
@@ -851,7 +852,7 @@
       "number": 13,
       "title": "Design Cainiao Logistics Tracking",
       "file": "interviews/companies/alibaba.md",
-      "line": 837,
+      "line": 944,
       "category": "interviews",
       "topics": [
         "system-design",
@@ -868,7 +869,7 @@
       "number": 14,
       "title": "Design an E-commerce Coupon / Promotion System",
       "file": "interviews/companies/alibaba.md",
-      "line": 852,
+      "line": 959,
       "category": "interviews",
       "topics": [
         "system-design",
@@ -885,7 +886,7 @@
       "number": 15,
       "title": "客户第一: Tell me about a time you prioritized the customer over internal pressure",
       "file": "interviews/companies/alibaba.md",
-      "line": 867,
+      "line": 974,
       "category": "interviews",
       "topics": [
         "behavioral",
@@ -901,7 +902,7 @@
       "number": 16,
       "title": "拥抱变化: Tell me about a time your project pivoted",
       "file": "interviews/companies/alibaba.md",
-      "line": 882,
+      "line": 989,
       "category": "interviews",
       "topics": [
         "behavioral",
@@ -917,7 +918,7 @@
       "number": 17,
       "title": "团队合作: Time you helped a colleague succeed",
       "file": "interviews/companies/alibaba.md",
-      "line": 897,
+      "line": 1004,
       "category": "interviews",
       "topics": [
         "behavioral",
@@ -933,7 +934,7 @@
       "number": 18,
       "title": "Toughest technical problem you've solved",
       "file": "interviews/companies/alibaba.md",
-      "line": 912,
+      "line": 1019,
       "category": "interviews",
       "topics": [
         "behavioral",
@@ -949,7 +950,7 @@
       "number": 19,
       "title": "JVM tuning: troubleshoot full GC storms in a Java service",
       "file": "interviews/companies/alibaba.md",
-      "line": 927,
+      "line": 1034,
       "category": "interviews",
       "topics": [
         "java",
@@ -966,7 +967,7 @@
       "number": 20,
       "title": "Distributed transaction: 2PC vs TCC vs Saga vs Seata",
       "file": "interviews/companies/alibaba.md",
-      "line": 942,
+      "line": 1049,
       "category": "interviews",
       "topics": [
         "distributed-systems",
@@ -983,7 +984,7 @@
       "number": 21,
       "title": "Edit Distance",
       "file": "interviews/companies/alibaba.md",
-      "line": 957,
+      "line": 1064,
       "category": "interviews",
       "topics": [
         "dp",
@@ -998,7 +999,7 @@
       "number": 22,
       "title": "Longest Common Subsequence",
       "file": "interviews/companies/alibaba.md",
-      "line": 1029,
+      "line": 1136,
       "category": "interviews",
       "topics": [
         "dp",
@@ -1013,7 +1014,7 @@
       "number": 23,
       "title": "Distinct Subsequences",
       "file": "interviews/companies/alibaba.md",
-      "line": 1093,
+      "line": 1200,
       "category": "interviews",
       "topics": [
         "dp",
@@ -1028,7 +1029,7 @@
       "number": 24,
       "title": "Interleaving String",
       "file": "interviews/companies/alibaba.md",
-      "line": 1164,
+      "line": 1271,
       "category": "interviews",
       "topics": [
         "dp",
@@ -1043,7 +1044,7 @@
       "number": 25,
       "title": "Wildcard Matching",
       "file": "interviews/companies/alibaba.md",
-      "line": 1235,
+      "line": 1342,
       "category": "interviews",
       "topics": [
         "dp",
@@ -1059,7 +1060,7 @@
       "number": 26,
       "title": "Scramble String",
       "file": "interviews/companies/alibaba.md",
-      "line": 1308,
+      "line": 1415,
       "category": "interviews",
       "topics": [
         "dp",
@@ -1075,7 +1076,7 @@
       "number": 27,
       "title": "Russian Doll Envelopes",
       "file": "interviews/companies/alibaba.md",
-      "line": 1394,
+      "line": 1501,
       "category": "interviews",
       "topics": [
         "dp",
@@ -1091,7 +1092,7 @@
       "number": 28,
       "title": "Longest Increasing Subsequence",
       "file": "interviews/companies/alibaba.md",
-      "line": 1466,
+      "line": 1573,
       "category": "interviews",
       "topics": [
         "dp",
@@ -1106,7 +1107,7 @@
       "number": 29,
       "title": "Number of Longest Increasing Subsequence",
       "file": "interviews/companies/alibaba.md",
-      "line": 1534,
+      "line": 1641,
       "category": "interviews",
       "topics": [
         "dp"
@@ -1120,7 +1121,7 @@
       "number": 30,
       "title": "Maximum Length of Pair Chain",
       "file": "interviews/companies/alibaba.md",
-      "line": 1615,
+      "line": 1722,
       "category": "interviews",
       "topics": [
         "greedy",
@@ -1136,7 +1137,7 @@
       "number": 31,
       "title": "Best Time to Buy and Sell Stock IV",
       "file": "interviews/companies/alibaba.md",
-      "line": 1672,
+      "line": 1779,
       "category": "interviews",
       "topics": [
         "dp",
@@ -1151,7 +1152,7 @@
       "number": 32,
       "title": "Maximum Subarray",
       "file": "interviews/companies/alibaba.md",
-      "line": 1753,
+      "line": 1860,
       "category": "interviews",
       "topics": [
         "dp",
@@ -1166,7 +1167,7 @@
       "number": 33,
       "title": "Maximum Sum Circular Subarray",
       "file": "interviews/companies/alibaba.md",
-      "line": 1807,
+      "line": 1914,
       "category": "interviews",
       "topics": [
         "dp",
@@ -1181,7 +1182,7 @@
       "number": 34,
       "title": "Decode Ways",
       "file": "interviews/companies/alibaba.md",
-      "line": 1880,
+      "line": 1987,
       "category": "interviews",
       "topics": [
         "dp",
@@ -1196,7 +1197,7 @@
       "number": 35,
       "title": "Unique Binary Search Trees",
       "file": "interviews/companies/alibaba.md",
-      "line": 1951,
+      "line": 2058,
       "category": "interviews",
       "topics": [
         "dp",
@@ -1212,7 +1213,7 @@
       "number": 36,
       "title": "Regular Expression Matching",
       "file": "interviews/companies/alibaba.md",
-      "line": 2007,
+      "line": 2114,
       "category": "interviews",
       "topics": [
         "dp",
@@ -1228,7 +1229,7 @@
       "number": 37,
       "title": "Palindrome Partitioning II",
       "file": "interviews/companies/alibaba.md",
-      "line": 2091,
+      "line": 2198,
       "category": "interviews",
       "topics": [
         "dp",
@@ -1243,7 +1244,7 @@
       "number": 38,
       "title": "Burst Balloons",
       "file": "interviews/companies/alibaba.md",
-      "line": 2174,
+      "line": 2281,
       "category": "interviews",
       "topics": [
         "dp",
@@ -1258,7 +1259,7 @@
       "number": 39,
       "title": "Remove Boxes",
       "file": "interviews/companies/alibaba.md",
-      "line": 2251,
+      "line": 2358,
       "category": "interviews",
       "topics": [
         "dp",
@@ -1273,7 +1274,7 @@
       "number": 40,
       "title": "Stone Game",
       "file": "interviews/companies/alibaba.md",
-      "line": 2344,
+      "line": 2451,
       "category": "interviews",
       "topics": [
         "dp",
@@ -1289,7 +1290,7 @@
       "number": 41,
       "title": "Predict the Winner",
       "file": "interviews/companies/alibaba.md",
-      "line": 2410,
+      "line": 2517,
       "category": "interviews",
       "topics": [
         "dp",
@@ -1305,7 +1306,7 @@
       "number": 42,
       "title": "Network Delay Time",
       "file": "interviews/companies/alibaba.md",
-      "line": 2478,
+      "line": 2585,
       "category": "interviews",
       "topics": [
         "graph",
@@ -1321,7 +1322,7 @@
       "number": 43,
       "title": "Cheapest Flights Within K Stops",
       "file": "interviews/companies/alibaba.md",
-      "line": 2572,
+      "line": 2679,
       "category": "interviews",
       "topics": [
         "graph",
@@ -1337,7 +1338,7 @@
       "number": 44,
       "title": "Path with Minimum Effort",
       "file": "interviews/companies/alibaba.md",
-      "line": 2638,
+      "line": 2745,
       "category": "interviews",
       "topics": [
         "graph",
@@ -1354,7 +1355,7 @@
       "number": 45,
       "title": "Minimum Cost to Make at Least One Valid Path in a Grid",
       "file": "interviews/companies/alibaba.md",
-      "line": 2734,
+      "line": 2841,
       "category": "interviews",
       "topics": [
         "graph",
@@ -1370,7 +1371,7 @@
       "number": 46,
       "title": "Find the City With the Smallest Number of Neighbors at a Threshold Distance",
       "file": "interviews/companies/alibaba.md",
-      "line": 2832,
+      "line": 2939,
       "category": "interviews",
       "topics": [
         "graph",
@@ -1386,7 +1387,7 @@
       "number": 47,
       "title": "Reconstruct Itinerary",
       "file": "interviews/companies/alibaba.md",
-      "line": 2917,
+      "line": 3024,
       "category": "interviews",
       "topics": [
         "graph",
@@ -1403,7 +1404,7 @@
       "number": 48,
       "title": "Word Ladder II",
       "file": "interviews/companies/alibaba.md",
-      "line": 2993,
+      "line": 3100,
       "category": "interviews",
       "topics": [
         "graph",
@@ -1419,7 +1420,7 @@
       "number": 49,
       "title": "Surrounded Regions",
       "file": "interviews/companies/alibaba.md",
-      "line": 3128,
+      "line": 3237,
       "category": "interviews",
       "topics": [
         "graph",
@@ -1436,7 +1437,7 @@
       "number": 50,
       "title": "Number of Islands II",
       "file": "interviews/companies/alibaba.md",
-      "line": 3227,
+      "line": 3336,
       "category": "interviews",
       "topics": [
         "union-find",
@@ -1451,7 +1452,7 @@
       "number": 51,
       "title": "Accounts Merge",
       "file": "interviews/companies/alibaba.md",
-      "line": 3336,
+      "line": 3445,
       "category": "interviews",
       "topics": [
         "union-find",
@@ -1467,7 +1468,7 @@
       "number": 52,
       "title": "Most Stones Removed with Same Row or Column",
       "file": "interviews/companies/alibaba.md",
-      "line": 3439,
+      "line": 3548,
       "category": "interviews",
       "topics": [
         "union-find",
@@ -1482,7 +1483,7 @@
       "number": 53,
       "title": "Redundant Connection",
       "file": "interviews/companies/alibaba.md",
-      "line": 3512,
+      "line": 3621,
       "category": "interviews",
       "topics": [
         "union-find",
@@ -1497,7 +1498,7 @@
       "number": 54,
       "title": "Range Sum Query - Mutable (Segment Tree)",
       "file": "interviews/companies/alibaba.md",
-      "line": 3587,
+      "line": 3696,
       "category": "interviews",
       "topics": [
         "segment-tree",
@@ -1513,7 +1514,7 @@
       "number": 55,
       "title": "My Calendar I",
       "file": "interviews/companies/alibaba.md",
-      "line": 3696,
+      "line": 3805,
       "category": "interviews",
       "topics": [
         "design",
@@ -1529,7 +1530,7 @@
       "number": 56,
       "title": "My Calendar II",
       "file": "interviews/companies/alibaba.md",
-      "line": 3768,
+      "line": 3877,
       "category": "interviews",
       "topics": [
         "design",
@@ -1545,7 +1546,7 @@
       "number": 57,
       "title": "Falling Squares",
       "file": "interviews/companies/alibaba.md",
-      "line": 3839,
+      "line": 3948,
       "category": "interviews",
       "topics": [
         "segment-tree",
@@ -1560,7 +1561,7 @@
       "number": 58,
       "title": "The Skyline Problem",
       "file": "interviews/companies/alibaba.md",
-      "line": 3920,
+      "line": 4029,
       "category": "interviews",
       "topics": [
         "sweep-line",
@@ -1576,7 +1577,7 @@
       "number": 59,
       "title": "Insert Delete GetRandom O(1)",
       "file": "interviews/companies/alibaba.md",
-      "line": 4020,
+      "line": 4129,
       "category": "interviews",
       "topics": [
         "design",
@@ -1592,7 +1593,7 @@
       "number": 60,
       "title": "Design Twitter",
       "file": "interviews/companies/alibaba.md",
-      "line": 4127,
+      "line": 4236,
       "category": "interviews",
       "topics": [
         "design",
@@ -1609,7 +1610,7 @@
       "number": 61,
       "title": "Consistent Hashing Ring Simulation",
       "file": "interviews/companies/alibaba.md",
-      "line": 4256,
+      "line": 4365,
       "category": "interviews",
       "topics": [
         "design",
@@ -1626,7 +1627,7 @@
       "number": 62,
       "title": "Top-K Frequent Elements in a Stream",
       "file": "interviews/companies/alibaba.md",
-      "line": 4386,
+      "line": 4495,
       "category": "interviews",
       "topics": [
         "design",
@@ -1660,7 +1661,7 @@
       "number": 2,
       "title": "Number of Islands",
       "file": "interviews/companies/amazon.md",
-      "line": 106,
+      "line": 131,
       "category": "interviews",
       "topics": [
         "graph",
@@ -1677,7 +1678,7 @@
       "number": 3,
       "title": "Two Sum",
       "file": "interviews/companies/amazon.md",
-      "line": 185,
+      "line": 221,
       "category": "interviews",
       "topics": [
         "arrays",
@@ -1692,7 +1693,7 @@
       "number": 4,
       "title": "Merge K Sorted Lists",
       "file": "interviews/companies/amazon.md",
-      "line": 244,
+      "line": 290,
       "category": "interviews",
       "topics": [
         "linked-list",
@@ -1708,7 +1709,7 @@
       "number": 5,
       "title": "Word Break",
       "file": "interviews/companies/amazon.md",
-      "line": 324,
+      "line": 381,
       "category": "interviews",
       "topics": [
         "dp",
@@ -1724,7 +1725,7 @@
       "number": 6,
       "title": "Trapping Rain Water",
       "file": "interviews/companies/amazon.md",
-      "line": 393,
+      "line": 460,
       "category": "interviews",
       "topics": [
         "arrays",
@@ -1740,7 +1741,7 @@
       "number": 7,
       "title": "Top K Frequent Elements",
       "file": "interviews/companies/amazon.md",
-      "line": 470,
+      "line": 547,
       "category": "interviews",
       "topics": [
         "hashmap",
@@ -1756,7 +1757,7 @@
       "number": 8,
       "title": "Reorder Log Files",
       "file": "interviews/companies/amazon.md",
-      "line": 540,
+      "line": 627,
       "category": "interviews",
       "topics": [
         "strings",
@@ -1772,7 +1773,7 @@
       "number": 9,
       "title": "Design a Parking Lot",
       "file": "interviews/companies/amazon.md",
-      "line": 613,
+      "line": 710,
       "category": "interviews",
       "topics": [
         "ood",
@@ -1787,7 +1788,7 @@
       "number": 10,
       "title": "Design Amazon Prime Video",
       "file": "interviews/companies/amazon.md",
-      "line": 703,
+      "line": 813,
       "category": "interviews",
       "topics": [
         "system-design",
@@ -1805,7 +1806,7 @@
       "number": 11,
       "title": "Design Amazon.com Product Page",
       "file": "interviews/companies/amazon.md",
-      "line": 718,
+      "line": 839,
       "category": "interviews",
       "topics": [
         "system-design",
@@ -1822,7 +1823,7 @@
       "number": 12,
       "title": "Design Kindle Sync",
       "file": "interviews/companies/amazon.md",
-      "line": 733,
+      "line": 854,
       "category": "interviews",
       "topics": [
         "system-design",
@@ -1839,7 +1840,7 @@
       "number": 13,
       "title": "Design Amazon S3",
       "file": "interviews/companies/amazon.md",
-      "line": 748,
+      "line": 869,
       "category": "interviews",
       "topics": [
         "system-design",
@@ -1856,7 +1857,7 @@
       "number": 14,
       "title": "Design a Distributed Lock Service",
       "file": "interviews/companies/amazon.md",
-      "line": 763,
+      "line": 884,
       "category": "interviews",
       "topics": [
         "system-design",
@@ -1873,7 +1874,7 @@
       "number": 15,
       "title": "Tell me about a time you went above and beyond for a customer",
       "file": "interviews/companies/amazon.md",
-      "line": 778,
+      "line": 899,
       "category": "interviews",
       "topics": [
         "behavioral",
@@ -1888,7 +1889,7 @@
       "number": 16,
       "title": "Tell me about a time you took on something significant outside your responsibility",
       "file": "interviews/companies/amazon.md",
-      "line": 793,
+      "line": 914,
       "category": "interviews",
       "topics": [
         "behavioral",
@@ -1904,7 +1905,7 @@
       "number": 17,
       "title": "Tell me about a time you had to make a decision with incomplete information",
       "file": "interviews/companies/amazon.md",
-      "line": 808,
+      "line": 929,
       "category": "interviews",
       "topics": [
         "behavioral",
@@ -1920,7 +1921,7 @@
       "number": 18,
       "title": "Tell me about your most challenging technical project",
       "file": "interviews/companies/amazon.md",
-      "line": 823,
+      "line": 944,
       "category": "interviews",
       "topics": [
         "behavioral",
@@ -1936,7 +1937,7 @@
       "number": 19,
       "title": "Leadership Principle deep-dive: Disagree and Commit",
       "file": "interviews/companies/amazon.md",
-      "line": 838,
+      "line": 959,
       "category": "interviews",
       "topics": [
         "behavioral",
@@ -1952,7 +1953,7 @@
       "number": 20,
       "title": "Leadership Principle deep-dive: Frugality",
       "file": "interviews/companies/amazon.md",
-      "line": 853,
+      "line": 974,
       "category": "interviews",
       "topics": [
         "behavioral",
@@ -1968,7 +1969,7 @@
       "number": 21,
       "title": "Trapping Rain Water II",
       "file": "interviews/companies/amazon.md",
-      "line": 868,
+      "line": 989,
       "category": "interviews",
       "topics": [
         "heap",
@@ -1984,7 +1985,7 @@
       "number": 22,
       "title": "LFU Cache",
       "file": "interviews/companies/amazon.md",
-      "line": 971,
+      "line": 1092,
       "category": "interviews",
       "topics": [
         "ood",
@@ -2001,7 +2002,7 @@
       "number": 23,
       "title": "Number of Provinces",
       "file": "interviews/companies/amazon.md",
-      "line": 1105,
+      "line": 1226,
       "category": "interviews",
       "topics": [
         "graph",
@@ -2017,7 +2018,7 @@
       "number": 24,
       "title": "Course Schedule",
       "file": "interviews/companies/amazon.md",
-      "line": 1189,
+      "line": 1310,
       "category": "interviews",
       "topics": [
         "graph",
@@ -2034,7 +2035,7 @@
       "number": 25,
       "title": "Word Ladder II",
       "file": "interviews/companies/amazon.md",
-      "line": 1269,
+      "line": 1390,
       "category": "interviews",
       "topics": [
         "bfs",
@@ -2051,7 +2052,7 @@
       "number": 26,
       "title": "Critical Connections in a Network",
       "file": "interviews/companies/amazon.md",
-      "line": 1405,
+      "line": 1526,
       "category": "interviews",
       "topics": [
         "graph",
@@ -2068,7 +2069,7 @@
       "number": 27,
       "title": "Cut Off Trees for Golf Event",
       "file": "interviews/companies/amazon.md",
-      "line": 1506,
+      "line": 1627,
       "category": "interviews",
       "topics": [
         "bfs",
@@ -2084,7 +2085,7 @@
       "number": 28,
       "title": "The Maze II",
       "file": "interviews/companies/amazon.md",
-      "line": 1632,
+      "line": 1753,
       "category": "interviews",
       "topics": [
         "bfs",
@@ -2100,7 +2101,7 @@
       "number": 29,
       "title": "Robot Bounded in Circle",
       "file": "interviews/companies/amazon.md",
-      "line": 1734,
+      "line": 1855,
       "category": "interviews",
       "topics": [
         "simulation",
@@ -2115,7 +2116,7 @@
       "number": 30,
       "title": "Prison Cells After N Days",
       "file": "interviews/companies/amazon.md",
-      "line": 1796,
+      "line": 1917,
       "category": "interviews",
       "topics": [
         "simulation",
@@ -2131,7 +2132,7 @@
       "number": 31,
       "title": "Concatenated Words",
       "file": "interviews/companies/amazon.md",
-      "line": 1886,
+      "line": 2007,
       "category": "interviews",
       "topics": [
         "dp",
@@ -2147,7 +2148,7 @@
       "number": 32,
       "title": "Substrings of Size Three with Distinct Characters",
       "file": "interviews/companies/amazon.md",
-      "line": 1969,
+      "line": 2090,
       "category": "interviews",
       "topics": [
         "strings",
@@ -2162,7 +2163,7 @@
       "number": 33,
       "title": "Subtree of Another Tree",
       "file": "interviews/companies/amazon.md",
-      "line": 2026,
+      "line": 2147,
       "category": "interviews",
       "topics": [
         "tree",
@@ -2178,7 +2179,7 @@
       "number": 34,
       "title": "Most Common Word",
       "file": "interviews/companies/amazon.md",
-      "line": 2096,
+      "line": 2217,
       "category": "interviews",
       "topics": [
         "strings",
@@ -2194,7 +2195,7 @@
       "number": 35,
       "title": "Copy List with Random Pointer",
       "file": "interviews/companies/amazon.md",
-      "line": 2163,
+      "line": 2284,
       "category": "interviews",
       "topics": [
         "linked-list",
@@ -2209,7 +2210,7 @@
       "number": 36,
       "title": "Path with Maximum Probability",
       "file": "interviews/companies/amazon.md",
-      "line": 2234,
+      "line": 2355,
       "category": "interviews",
       "topics": [
         "graph",
@@ -2225,7 +2226,7 @@
       "number": 37,
       "title": "Number of Islands II",
       "file": "interviews/companies/amazon.md",
-      "line": 2333,
+      "line": 2454,
       "category": "interviews",
       "topics": [
         "union-find",
@@ -2240,7 +2241,7 @@
       "number": 38,
       "title": "Optimize Water Distribution in a Village",
       "file": "interviews/companies/amazon.md",
-      "line": 2439,
+      "line": 2560,
       "category": "interviews",
       "topics": [
         "graph",
@@ -2256,7 +2257,7 @@
       "number": 39,
       "title": "K Closest Points to Origin",
       "file": "interviews/companies/amazon.md",
-      "line": 2526,
+      "line": 2647,
       "category": "interviews",
       "topics": [
         "heap",
@@ -2272,7 +2273,7 @@
       "number": 40,
       "title": "Meeting Rooms II",
       "file": "interviews/companies/amazon.md",
-      "line": 2591,
+      "line": 2712,
       "category": "interviews",
       "topics": [
         "heap",
@@ -2288,7 +2289,7 @@
       "number": 41,
       "title": "Find Median from Data Stream",
       "file": "interviews/companies/amazon.md",
-      "line": 2658,
+      "line": 2779,
       "category": "interviews",
       "topics": [
         "heap",
@@ -2304,7 +2305,7 @@
       "number": 42,
       "title": "Serialize and Deserialize Binary Tree",
       "file": "interviews/companies/amazon.md",
-      "line": 2735,
+      "line": 2856,
       "category": "interviews",
       "topics": [
         "tree",
@@ -2321,7 +2322,7 @@
       "number": 43,
       "title": "Word Search II",
       "file": "interviews/companies/amazon.md",
-      "line": 2833,
+      "line": 2954,
       "category": "interviews",
       "topics": [
         "trie",
@@ -2338,7 +2339,7 @@
       "number": 44,
       "title": "Maximum Units on a Truck",
       "file": "interviews/companies/amazon.md",
-      "line": 2946,
+      "line": 3067,
       "category": "interviews",
       "topics": [
         "greedy",
@@ -2353,7 +2354,7 @@
       "number": 45,
       "title": "Analyze User Website Visit Pattern",
       "file": "interviews/companies/amazon.md",
-      "line": 3012,
+      "line": 3133,
       "category": "interviews",
       "topics": [
         "hashmap",
@@ -2369,7 +2370,7 @@
       "number": 46,
       "title": "Min Cost to Connect Ropes",
       "file": "interviews/companies/amazon.md",
-      "line": 3111,
+      "line": 3232,
       "category": "interviews",
       "topics": [
         "heap",
@@ -2384,7 +2385,7 @@
       "number": 47,
       "title": "Find the Winner of the Circular Game",
       "file": "interviews/companies/amazon.md",
-      "line": 3181,
+      "line": 3302,
       "category": "interviews",
       "topics": [
         "simulation",
@@ -2400,7 +2401,7 @@
       "number": 48,
       "title": "Reorganize String",
       "file": "interviews/companies/amazon.md",
-      "line": 3230,
+      "line": 3351,
       "category": "interviews",
       "topics": [
         "heap",
@@ -2416,7 +2417,7 @@
       "number": 49,
       "title": "Sliding Window Maximum",
       "file": "interviews/companies/amazon.md",
-      "line": 3320,
+      "line": 3441,
       "category": "interviews",
       "topics": [
         "deque",
@@ -2431,7 +2432,7 @@
       "number": 50,
       "title": "Group Anagrams",
       "file": "interviews/companies/amazon.md",
-      "line": 3390,
+      "line": 3511,
       "category": "interviews",
       "topics": [
         "hashmap",
@@ -2447,7 +2448,7 @@
       "number": 51,
       "title": "Maximum Subarray (Kadane's)",
       "file": "interviews/companies/amazon.md",
-      "line": 3448,
+      "line": 3569,
       "category": "interviews",
       "topics": [
         "dp",
@@ -2462,7 +2463,7 @@
       "number": 52,
       "title": "Lowest Common Ancestor of a Binary Tree",
       "file": "interviews/companies/amazon.md",
-      "line": 3504,
+      "line": 3625,
       "category": "interviews",
       "topics": [
         "tree",
@@ -2478,7 +2479,7 @@
       "number": 53,
       "title": "Maximum Profit in Job Scheduling",
       "file": "interviews/companies/amazon.md",
-      "line": 3560,
+      "line": 3681,
       "category": "interviews",
       "topics": [
         "dp",
@@ -2494,7 +2495,7 @@
       "number": 54,
       "title": "Min Stack",
       "file": "interviews/companies/amazon.md",
-      "line": 3634,
+      "line": 3755,
       "category": "interviews",
       "topics": [
         "stack",
@@ -2509,7 +2510,7 @@
       "number": 55,
       "title": "Validate Binary Search Tree",
       "file": "interviews/companies/amazon.md",
-      "line": 3706,
+      "line": 3827,
       "category": "interviews",
       "topics": [
         "tree",
@@ -2525,7 +2526,7 @@
       "number": 56,
       "title": "Search in Rotated Sorted Array",
       "file": "interviews/companies/amazon.md",
-      "line": 3764,
+      "line": 3885,
       "category": "interviews",
       "topics": [
         "binary-search",
@@ -2540,7 +2541,7 @@
       "number": 57,
       "title": "Design Hit Counter",
       "file": "interviews/companies/amazon.md",
-      "line": 3845,
+      "line": 3966,
       "category": "interviews",
       "topics": [
         "design",
@@ -2556,7 +2557,7 @@
       "number": 58,
       "title": "Sliding Puzzle",
       "file": "interviews/companies/amazon.md",
-      "line": 3920,
+      "line": 4041,
       "category": "interviews",
       "topics": [
         "bfs",
@@ -2572,7 +2573,7 @@
       "number": 59,
       "title": "Partition Labels",
       "file": "interviews/companies/amazon.md",
-      "line": 4020,
+      "line": 4141,
       "category": "interviews",
       "topics": [
         "greedy",
@@ -2588,7 +2589,7 @@
       "number": 60,
       "title": "Design Tic-Tac-Toe",
       "file": "interviews/companies/amazon.md",
-      "line": 4086,
+      "line": 4207,
       "category": "interviews",
       "topics": [
         "design",
@@ -2604,7 +2605,7 @@
       "number": 61,
       "title": "Rotting Oranges",
       "file": "interviews/companies/amazon.md",
-      "line": 4173,
+      "line": 4294,
       "category": "interviews",
       "topics": [
         "bfs",
@@ -2619,7 +2620,7 @@
       "number": 62,
       "title": "Shortest Path in a Grid with Obstacles Elimination",
       "file": "interviews/companies/amazon.md",
-      "line": 4281,
+      "line": 4402,
       "category": "interviews",
       "topics": [
         "bfs",
@@ -2651,7 +2652,7 @@
       "number": 2,
       "title": "Product of Array Except Self",
       "file": "interviews/companies/apple.md",
-      "line": 116,
+      "line": 126,
       "category": "interviews",
       "topics": [
         "arrays",
@@ -2666,7 +2667,7 @@
       "number": 3,
       "title": "Merge Two Sorted Lists",
       "file": "interviews/companies/apple.md",
-      "line": 183,
+      "line": 203,
       "category": "interviews",
       "topics": [
         "linked-list",
@@ -2681,7 +2682,7 @@
       "number": 4,
       "title": "Longest Palindromic Substring",
       "file": "interviews/companies/apple.md",
-      "line": 265,
+      "line": 295,
       "category": "interviews",
       "topics": [
         "strings",
@@ -2697,7 +2698,7 @@
       "number": 5,
       "title": "Implement strStr() / Find Substring",
       "file": "interviews/companies/apple.md",
-      "line": 333,
+      "line": 373,
       "category": "interviews",
       "topics": [
         "strings",
@@ -2713,7 +2714,7 @@
       "number": 6,
       "title": "LRU Cache",
       "file": "interviews/companies/apple.md",
-      "line": 420,
+      "line": 470,
       "category": "interviews",
       "topics": [
         "ood",
@@ -2729,7 +2730,7 @@
       "number": 7,
       "title": "Binary Tree Maximum Path Sum",
       "file": "interviews/companies/apple.md",
-      "line": 504,
+      "line": 564,
       "category": "interviews",
       "topics": [
         "tree",
@@ -2745,7 +2746,7 @@
       "number": 8,
       "title": "Coin Change",
       "file": "interviews/companies/apple.md",
-      "line": 579,
+      "line": 649,
       "category": "interviews",
       "topics": [
         "dp",
@@ -2760,7 +2761,7 @@
       "number": 9,
       "title": "Design Apple Music (or Spotify-like)",
       "file": "interviews/companies/apple.md",
-      "line": 645,
+      "line": 725,
       "category": "interviews",
       "topics": [
         "system-design",
@@ -2778,7 +2779,7 @@
       "number": 10,
       "title": "Design iMessage",
       "file": "interviews/companies/apple.md",
-      "line": 660,
+      "line": 751,
       "category": "interviews",
       "topics": [
         "system-design",
@@ -2795,7 +2796,7 @@
       "number": 11,
       "title": "Design iCloud Photo Library",
       "file": "interviews/companies/apple.md",
-      "line": 675,
+      "line": 777,
       "category": "interviews",
       "topics": [
         "system-design",
@@ -2812,7 +2813,7 @@
       "number": 12,
       "title": "Design a Notification Service (APNS-like)",
       "file": "interviews/companies/apple.md",
-      "line": 690,
+      "line": 792,
       "category": "interviews",
       "topics": [
         "system-design",
@@ -2829,7 +2830,7 @@
       "number": 13,
       "title": "Design Find My (offline finding)",
       "file": "interviews/companies/apple.md",
-      "line": 705,
+      "line": 807,
       "category": "interviews",
       "topics": [
         "system-design",
@@ -2846,7 +2847,7 @@
       "number": 14,
       "title": "Design a CDN",
       "file": "interviews/companies/apple.md",
-      "line": 720,
+      "line": 822,
       "category": "interviews",
       "topics": [
         "system-design",
@@ -2863,7 +2864,7 @@
       "number": 15,
       "title": "Tell me about a time you obsessed over a detail",
       "file": "interviews/companies/apple.md",
-      "line": 735,
+      "line": 837,
       "category": "interviews",
       "topics": [
         "behavioral",
@@ -2879,7 +2880,7 @@
       "number": 16,
       "title": "Time you had to balance speed and quality",
       "file": "interviews/companies/apple.md",
-      "line": 750,
+      "line": 852,
       "category": "interviews",
       "topics": [
         "behavioral",
@@ -2895,7 +2896,7 @@
       "number": 17,
       "title": "Time you collaborated with a difficult cross-functional partner",
       "file": "interviews/companies/apple.md",
-      "line": 765,
+      "line": 867,
       "category": "interviews",
       "topics": [
         "behavioral",
@@ -2911,7 +2912,7 @@
       "number": 18,
       "title": "Why do you want to work at Apple",
       "file": "interviews/companies/apple.md",
-      "line": 780,
+      "line": 882,
       "category": "interviews",
       "topics": [
         "behavioral",
@@ -2927,7 +2928,7 @@
       "number": 19,
       "title": "Frontend / web perf: optimize Largest Contentful Paint",
       "file": "interviews/companies/apple.md",
-      "line": 795,
+      "line": 897,
       "category": "interviews",
       "topics": [
         "web-perf",
@@ -2943,7 +2944,7 @@
       "number": 20,
       "title": "On-device ML vs cloud ML trade-offs",
       "file": "interviews/companies/apple.md",
-      "line": 810,
+      "line": 912,
       "category": "interviews",
       "topics": [
         "ml",
@@ -2960,7 +2961,7 @@
       "number": 21,
       "title": "Search in Rotated Sorted Array",
       "file": "interviews/companies/apple.md",
-      "line": 825,
+      "line": 927,
       "category": "interviews",
       "topics": [
         "arrays",
@@ -2975,7 +2976,7 @@
       "number": 22,
       "title": "Find Minimum in Rotated Sorted Array",
       "file": "interviews/companies/apple.md",
-      "line": 906,
+      "line": 1008,
       "category": "interviews",
       "topics": [
         "arrays",
@@ -2990,7 +2991,7 @@
       "number": 23,
       "title": "First Bad Version",
       "file": "interviews/companies/apple.md",
-      "line": 967,
+      "line": 1069,
       "category": "interviews",
       "topics": [
         "binary-search",
@@ -3005,7 +3006,7 @@
       "number": 24,
       "title": "Sqrt(x)",
       "file": "interviews/companies/apple.md",
-      "line": 1032,
+      "line": 1134,
       "category": "interviews",
       "topics": [
         "binary-search",
@@ -3020,7 +3021,7 @@
       "number": 25,
       "title": "Pow(x, n)",
       "file": "interviews/companies/apple.md",
-      "line": 1094,
+      "line": 1196,
       "category": "interviews",
       "topics": [
         "math",
@@ -3036,7 +3037,7 @@
       "number": 26,
       "title": "Container With Most Water",
       "file": "interviews/companies/apple.md",
-      "line": 1159,
+      "line": 1261,
       "category": "interviews",
       "topics": [
         "arrays",
@@ -3051,7 +3052,7 @@
       "number": 27,
       "title": "4Sum",
       "file": "interviews/companies/apple.md",
-      "line": 1221,
+      "line": 1323,
       "category": "interviews",
       "topics": [
         "arrays",
@@ -3067,7 +3068,7 @@
       "number": 28,
       "title": "Remove Duplicates from Sorted Array",
       "file": "interviews/companies/apple.md",
-      "line": 1323,
+      "line": 1425,
       "category": "interviews",
       "topics": [
         "arrays",
@@ -3082,7 +3083,7 @@
       "number": 29,
       "title": "Remove Nth Node from End of List",
       "file": "interviews/companies/apple.md",
-      "line": 1385,
+      "line": 1487,
       "category": "interviews",
       "topics": [
         "linked-list",
@@ -3097,7 +3098,7 @@
       "number": 30,
       "title": "Add Two Numbers (Linked List)",
       "file": "interviews/companies/apple.md",
-      "line": 1446,
+      "line": 1548,
       "category": "interviews",
       "topics": [
         "linked-list",
@@ -3112,7 +3113,7 @@
       "number": 31,
       "title": "Copy List with Random Pointer",
       "file": "interviews/companies/apple.md",
-      "line": 1518,
+      "line": 1620,
       "category": "interviews",
       "topics": [
         "linked-list",
@@ -3127,7 +3128,7 @@
       "number": 32,
       "title": "Linked List Cycle",
       "file": "interviews/companies/apple.md",
-      "line": 1605,
+      "line": 1707,
       "category": "interviews",
       "topics": [
         "linked-list",
@@ -3142,7 +3143,7 @@
       "number": 33,
       "title": "Intersection of Two Linked Lists",
       "file": "interviews/companies/apple.md",
-      "line": 1677,
+      "line": 1779,
       "category": "interviews",
       "topics": [
         "linked-list",
@@ -3157,7 +3158,7 @@
       "number": 34,
       "title": "Reorder List",
       "file": "interviews/companies/apple.md",
-      "line": 1737,
+      "line": 1839,
       "category": "interviews",
       "topics": [
         "linked-list",
@@ -3172,7 +3173,7 @@
       "number": 35,
       "title": "Binary Tree Level Order Traversal",
       "file": "interviews/companies/apple.md",
-      "line": 1815,
+      "line": 1917,
       "category": "interviews",
       "topics": [
         "tree",
@@ -3188,7 +3189,7 @@
       "number": 36,
       "title": "Binary Tree Zigzag Level Order Traversal",
       "file": "interviews/companies/apple.md",
-      "line": 1905,
+      "line": 2007,
       "category": "interviews",
       "topics": [
         "tree",
@@ -3204,7 +3205,7 @@
       "number": 37,
       "title": "Binary Tree Right Side View",
       "file": "interviews/companies/apple.md",
-      "line": 1998,
+      "line": 2100,
       "category": "interviews",
       "topics": [
         "tree",
@@ -3220,7 +3221,7 @@
       "number": 38,
       "title": "Populating Next Right Pointers in Each Node",
       "file": "interviews/companies/apple.md",
-      "line": 2063,
+      "line": 2165,
       "category": "interviews",
       "topics": [
         "tree",
@@ -3236,7 +3237,7 @@
       "number": 39,
       "title": "Recover Binary Search Tree",
       "file": "interviews/companies/apple.md",
-      "line": 2150,
+      "line": 2252,
       "category": "interviews",
       "topics": [
         "tree",
@@ -3252,7 +3253,7 @@
       "number": 40,
       "title": "Kth Smallest Element in a BST",
       "file": "interviews/companies/apple.md",
-      "line": 2236,
+      "line": 2338,
       "category": "interviews",
       "topics": [
         "tree",
@@ -3268,7 +3269,7 @@
       "number": 41,
       "title": "Inorder Successor in BST",
       "file": "interviews/companies/apple.md",
-      "line": 2306,
+      "line": 2408,
       "category": "interviews",
       "topics": [
         "tree",
@@ -3283,7 +3284,7 @@
       "number": 42,
       "title": "Same Tree",
       "file": "interviews/companies/apple.md",
-      "line": 2381,
+      "line": 2483,
       "category": "interviews",
       "topics": [
         "tree",
@@ -3299,7 +3300,7 @@
       "number": 43,
       "title": "Sum Root to Leaf Numbers",
       "file": "interviews/companies/apple.md",
-      "line": 2431,
+      "line": 2533,
       "category": "interviews",
       "topics": [
         "tree",
@@ -3315,7 +3316,7 @@
       "number": 44,
       "title": "Path Sum",
       "file": "interviews/companies/apple.md",
-      "line": 2490,
+      "line": 2592,
       "category": "interviews",
       "topics": [
         "tree",
@@ -3331,7 +3332,7 @@
       "number": 45,
       "title": "Convert Sorted Array to Binary Search Tree",
       "file": "interviews/companies/apple.md",
-      "line": 2543,
+      "line": 2645,
       "category": "interviews",
       "topics": [
         "tree",
@@ -3348,7 +3349,7 @@
       "number": 46,
       "title": "Number of 1 Bits",
       "file": "interviews/companies/apple.md",
-      "line": 2607,
+      "line": 2709,
       "category": "interviews",
       "topics": [
         "bit-manipulation"
@@ -3362,7 +3363,7 @@
       "number": 47,
       "title": "Counting Bits",
       "file": "interviews/companies/apple.md",
-      "line": 2660,
+      "line": 2762,
       "category": "interviews",
       "topics": [
         "bit-manipulation",
@@ -3377,7 +3378,7 @@
       "number": 48,
       "title": "Single Number",
       "file": "interviews/companies/apple.md",
-      "line": 2711,
+      "line": 2813,
       "category": "interviews",
       "topics": [
         "bit-manipulation",
@@ -3392,7 +3393,7 @@
       "number": 49,
       "title": "Missing Number",
       "file": "interviews/companies/apple.md",
-      "line": 2760,
+      "line": 2862,
       "category": "interviews",
       "topics": [
         "bit-manipulation",
@@ -3407,7 +3408,7 @@
       "number": 50,
       "title": "Find All Numbers Disappeared in an Array",
       "file": "interviews/companies/apple.md",
-      "line": 2811,
+      "line": 2913,
       "category": "interviews",
       "topics": [
         "arrays",
@@ -3422,7 +3423,7 @@
       "number": 51,
       "title": "Majority Element",
       "file": "interviews/companies/apple.md",
-      "line": 2874,
+      "line": 2976,
       "category": "interviews",
       "topics": [
         "arrays",
@@ -3437,7 +3438,7 @@
       "number": 52,
       "title": "Maximum Product Subarray",
       "file": "interviews/companies/apple.md",
-      "line": 2932,
+      "line": 3034,
       "category": "interviews",
       "topics": [
         "arrays",
@@ -3452,7 +3453,7 @@
       "number": 53,
       "title": "Jump Game",
       "file": "interviews/companies/apple.md",
-      "line": 2997,
+      "line": 3099,
       "category": "interviews",
       "topics": [
         "arrays",
@@ -3467,7 +3468,7 @@
       "number": 54,
       "title": "Jump Game II",
       "file": "interviews/companies/apple.md",
-      "line": 3054,
+      "line": 3156,
       "category": "interviews",
       "topics": [
         "arrays",
@@ -3483,7 +3484,7 @@
       "number": 55,
       "title": "Unique Paths",
       "file": "interviews/companies/apple.md",
-      "line": 3118,
+      "line": 3220,
       "category": "interviews",
       "topics": [
         "dp",
@@ -3498,7 +3499,7 @@
       "number": 56,
       "title": "Minimum Path Sum",
       "file": "interviews/companies/apple.md",
-      "line": 3175,
+      "line": 3277,
       "category": "interviews",
       "topics": [
         "dp",
@@ -3513,7 +3514,7 @@
       "number": 57,
       "title": "Triangle",
       "file": "interviews/companies/apple.md",
-      "line": 3242,
+      "line": 3344,
       "category": "interviews",
       "topics": [
         "dp",
@@ -3528,7 +3529,7 @@
       "number": 58,
       "title": "Word Pattern",
       "file": "interviews/companies/apple.md",
-      "line": 3303,
+      "line": 3405,
       "category": "interviews",
       "topics": [
         "strings",
@@ -3543,7 +3544,7 @@
       "number": 59,
       "title": "Isomorphic Strings",
       "file": "interviews/companies/apple.md",
-      "line": 3379,
+      "line": 3481,
       "category": "interviews",
       "topics": [
         "strings",
@@ -3558,7 +3559,7 @@
       "number": 60,
       "title": "Valid Anagram",
       "file": "interviews/companies/apple.md",
-      "line": 3450,
+      "line": 3552,
       "category": "interviews",
       "topics": [
         "strings",
@@ -3574,7 +3575,7 @@
       "number": 61,
       "title": "Lock-Free Bounded Single-Producer Single-Consumer Queue",
       "file": "interviews/companies/apple.md",
-      "line": 3511,
+      "line": 3613,
       "category": "interviews",
       "topics": [
         "concurrency",
@@ -3591,7 +3592,7 @@
       "number": 62,
       "title": "Cache-Friendly Matrix Transpose",
       "file": "interviews/companies/apple.md",
-      "line": 3622,
+      "line": 3726,
       "category": "interviews",
       "topics": [
         "arrays",
@@ -3623,7 +3624,7 @@
       "number": 2,
       "title": "Edit Distance",
       "file": "interviews/companies/bytedance.md",
-      "line": 95,
+      "line": 105,
       "category": "interviews",
       "topics": [
         "dp",
@@ -3638,7 +3639,7 @@
       "number": 3,
       "title": "Maximum Sum Rectangle in 2D Matrix",
       "file": "interviews/companies/bytedance.md",
-      "line": 171,
+      "line": 191,
       "category": "interviews",
       "topics": [
         "dp",
@@ -3654,7 +3655,7 @@
       "number": 4,
       "title": "Burst Balloons",
       "file": "interviews/companies/bytedance.md",
-      "line": 251,
+      "line": 281,
       "category": "interviews",
       "topics": [
         "dp",
@@ -3669,7 +3670,7 @@
       "number": 5,
       "title": "Sliding Window Maximum",
       "file": "interviews/companies/bytedance.md",
-      "line": 323,
+      "line": 363,
       "category": "interviews",
       "topics": [
         "sliding-window",
@@ -3685,7 +3686,7 @@
       "number": 6,
       "title": "Word Ladder II",
       "file": "interviews/companies/bytedance.md",
-      "line": 393,
+      "line": 443,
       "category": "interviews",
       "topics": [
         "graph",
@@ -3701,7 +3702,7 @@
       "number": 7,
       "title": "Regular Expression Matching",
       "file": "interviews/companies/bytedance.md",
-      "line": 532,
+      "line": 592,
       "category": "interviews",
       "topics": [
         "dp",
@@ -3717,7 +3718,7 @@
       "number": 8,
       "title": "Number of Connected Components in Undirected Graph",
       "file": "interviews/companies/bytedance.md",
-      "line": 616,
+      "line": 686,
       "category": "interviews",
       "topics": [
         "union-find",
@@ -3733,7 +3734,7 @@
       "number": 9,
       "title": "Design TikTok Feed / Recommendation",
       "file": "interviews/companies/bytedance.md",
-      "line": 705,
+      "line": 785,
       "category": "interviews",
       "topics": [
         "system-design",
@@ -3750,7 +3751,7 @@
       "number": 10,
       "title": "Design TikTok Video Upload + Encoding",
       "file": "interviews/companies/bytedance.md",
-      "line": 720,
+      "line": 811,
       "category": "interviews",
       "topics": [
         "system-design",
@@ -3767,7 +3768,7 @@
       "number": 11,
       "title": "Design a Real-Time Comment / Danmaku System",
       "file": "interviews/companies/bytedance.md",
-      "line": 735,
+      "line": 837,
       "category": "interviews",
       "topics": [
         "system-design",
@@ -3784,7 +3785,7 @@
       "number": 12,
       "title": "Design a Distributed ID Generator (Snowflake-style)",
       "file": "interviews/companies/bytedance.md",
-      "line": 750,
+      "line": 852,
       "category": "interviews",
       "topics": [
         "system-design",
@@ -3800,7 +3801,7 @@
       "number": 13,
       "title": "Design Lark / Feishu Document Search",
       "file": "interviews/companies/bytedance.md",
-      "line": 765,
+      "line": 867,
       "category": "interviews",
       "topics": [
         "system-design",
@@ -3817,7 +3818,7 @@
       "number": 14,
       "title": "Design a Live Streaming Platform",
       "file": "interviews/companies/bytedance.md",
-      "line": 780,
+      "line": 882,
       "category": "interviews",
       "topics": [
         "system-design",
@@ -3835,7 +3836,7 @@
       "number": 15,
       "title": "Tell me about a time you delivered something faster than expected",
       "file": "interviews/companies/bytedance.md",
-      "line": 795,
+      "line": 897,
       "category": "interviews",
       "topics": [
         "behavioral",
@@ -3851,7 +3852,7 @@
       "number": 16,
       "title": "Time you owned an end-to-end project",
       "file": "interviews/companies/bytedance.md",
-      "line": 810,
+      "line": 912,
       "category": "interviews",
       "topics": [
         "behavioral",
@@ -3867,7 +3868,7 @@
       "number": 17,
       "title": "Time you handled fast-changing requirements",
       "file": "interviews/companies/bytedance.md",
-      "line": 825,
+      "line": 927,
       "category": "interviews",
       "topics": [
         "behavioral",
@@ -3883,7 +3884,7 @@
       "number": 18,
       "title": "Why do you want to work at ByteDance / TikTok",
       "file": "interviews/companies/bytedance.md",
-      "line": 840,
+      "line": 942,
       "category": "interviews",
       "topics": [
         "behavioral",
@@ -3899,7 +3900,7 @@
       "number": 19,
       "title": "Recommendation systems: collaborative filtering vs deep learning",
       "file": "interviews/companies/bytedance.md",
-      "line": 855,
+      "line": 957,
       "category": "interviews",
       "topics": [
         "recommendation",
@@ -3915,7 +3916,7 @@
       "number": 20,
       "title": "Video encoding trade-offs: H.264 vs H.265 vs AV1",
       "file": "interviews/companies/bytedance.md",
-      "line": 870,
+      "line": 972,
       "category": "interviews",
       "topics": [
         "video",
@@ -3931,7 +3932,7 @@
       "number": 21,
       "title": "Longest Consecutive Sequence",
       "file": "interviews/companies/bytedance.md",
-      "line": 885,
+      "line": 987,
       "category": "interviews",
       "topics": [
         "hash-set",
@@ -3947,7 +3948,7 @@
       "number": 22,
       "title": "Two Sum",
       "file": "interviews/companies/bytedance.md",
-      "line": 953,
+      "line": 1055,
       "category": "interviews",
       "topics": [
         "hash-map",
@@ -3962,7 +3963,7 @@
       "number": 23,
       "title": "Add Two Numbers",
       "file": "interviews/companies/bytedance.md",
-      "line": 1012,
+      "line": 1114,
       "category": "interviews",
       "topics": [
         "linked-list",
@@ -3977,7 +3978,7 @@
       "number": 24,
       "title": "Longest Substring Without Repeating Characters",
       "file": "interviews/companies/bytedance.md",
-      "line": 1101,
+      "line": 1203,
       "category": "interviews",
       "topics": [
         "sliding-window",
@@ -3993,7 +3994,7 @@
       "number": 25,
       "title": "Median of Two Sorted Arrays",
       "file": "interviews/companies/bytedance.md",
-      "line": 1166,
+      "line": 1268,
       "category": "interviews",
       "topics": [
         "binary-search",
@@ -4009,7 +4010,7 @@
       "number": 26,
       "title": "Longest Palindromic Substring",
       "file": "interviews/companies/bytedance.md",
-      "line": 1258,
+      "line": 1360,
       "category": "interviews",
       "topics": [
         "dp",
@@ -4025,7 +4026,7 @@
       "number": 27,
       "title": "Container With Most Water",
       "file": "interviews/companies/bytedance.md",
-      "line": 1329,
+      "line": 1431,
       "category": "interviews",
       "topics": [
         "two-pointers",
@@ -4041,7 +4042,7 @@
       "number": 28,
       "title": "3Sum",
       "file": "interviews/companies/bytedance.md",
-      "line": 1389,
+      "line": 1491,
       "category": "interviews",
       "topics": [
         "two-pointers",
@@ -4057,7 +4058,7 @@
       "number": 29,
       "title": "Letter Combinations of a Phone Number",
       "file": "interviews/companies/bytedance.md",
-      "line": 1485,
+      "line": 1587,
       "category": "interviews",
       "topics": [
         "backtracking",
@@ -4073,7 +4074,7 @@
       "number": 30,
       "title": "Generate Parentheses",
       "file": "interviews/companies/bytedance.md",
-      "line": 1571,
+      "line": 1673,
       "category": "interviews",
       "topics": [
         "backtracking",
@@ -4089,7 +4090,7 @@
       "number": 31,
       "title": "Merge K Sorted Lists",
       "file": "interviews/companies/bytedance.md",
-      "line": 1638,
+      "line": 1742,
       "category": "interviews",
       "topics": [
         "heap",
@@ -4105,7 +4106,7 @@
       "number": 32,
       "title": "Trapping Rain Water",
       "file": "interviews/companies/bytedance.md",
-      "line": 1721,
+      "line": 1825,
       "category": "interviews",
       "topics": [
         "two-pointers",
@@ -4121,7 +4122,7 @@
       "number": 33,
       "title": "Permutations",
       "file": "interviews/companies/bytedance.md",
-      "line": 1797,
+      "line": 1901,
       "category": "interviews",
       "topics": [
         "backtracking",
@@ -4137,7 +4138,7 @@
       "number": 34,
       "title": "Rotate Image",
       "file": "interviews/companies/bytedance.md",
-      "line": 1884,
+      "line": 1988,
       "category": "interviews",
       "topics": [
         "matrix",
@@ -4153,7 +4154,7 @@
       "number": 35,
       "title": "Group Anagrams",
       "file": "interviews/companies/bytedance.md",
-      "line": 1947,
+      "line": 2051,
       "category": "interviews",
       "topics": [
         "hash-map",
@@ -4169,7 +4170,7 @@
       "number": 36,
       "title": "Pow(x, n)",
       "file": "interviews/companies/bytedance.md",
-      "line": 2005,
+      "line": 2109,
       "category": "interviews",
       "topics": [
         "math",
@@ -4185,7 +4186,7 @@
       "number": 37,
       "title": "N-Queens",
       "file": "interviews/companies/bytedance.md",
-      "line": 2070,
+      "line": 2174,
       "category": "interviews",
       "topics": [
         "backtracking",
@@ -4200,7 +4201,7 @@
       "number": 38,
       "title": "Spiral Matrix",
       "file": "interviews/companies/bytedance.md",
-      "line": 2171,
+      "line": 2275,
       "category": "interviews",
       "topics": [
         "matrix",
@@ -4215,7 +4216,7 @@
       "number": 39,
       "title": "Merge Intervals",
       "file": "interviews/companies/bytedance.md",
-      "line": 2265,
+      "line": 2369,
       "category": "interviews",
       "topics": [
         "sorting",
@@ -4231,7 +4232,7 @@
       "number": 40,
       "title": "Minimum Window Substring",
       "file": "interviews/companies/bytedance.md",
-      "line": 2332,
+      "line": 2436,
       "category": "interviews",
       "topics": [
         "sliding-window",
@@ -4247,7 +4248,7 @@
       "number": 41,
       "title": "Largest Rectangle in Histogram",
       "file": "interviews/companies/bytedance.md",
-      "line": 2431,
+      "line": 2535,
       "category": "interviews",
       "topics": [
         "monotonic-stack",
@@ -4262,7 +4263,7 @@
       "number": 42,
       "title": "Maximal Rectangle",
       "file": "interviews/companies/bytedance.md",
-      "line": 2505,
+      "line": 2609,
       "category": "interviews",
       "topics": [
         "dp",
@@ -4278,7 +4279,7 @@
       "number": 43,
       "title": "Word Break",
       "file": "interviews/companies/bytedance.md",
-      "line": 2574,
+      "line": 2678,
       "category": "interviews",
       "topics": [
         "dp",
@@ -4294,7 +4295,7 @@
       "number": 44,
       "title": "Word Break II",
       "file": "interviews/companies/bytedance.md",
-      "line": 2649,
+      "line": 2753,
       "category": "interviews",
       "topics": [
         "dp",
@@ -4311,7 +4312,7 @@
       "number": 45,
       "title": "Linked List Cycle II",
       "file": "interviews/companies/bytedance.md",
-      "line": 2740,
+      "line": 2846,
       "category": "interviews",
       "topics": [
         "linked-list",
@@ -4327,7 +4328,7 @@
       "number": 46,
       "title": "Sort List",
       "file": "interviews/companies/bytedance.md",
-      "line": 2810,
+      "line": 2916,
       "category": "interviews",
       "topics": [
         "linked-list",
@@ -4343,7 +4344,7 @@
       "number": 47,
       "title": "Maximum Product Subarray",
       "file": "interviews/companies/bytedance.md",
-      "line": 2896,
+      "line": 3002,
       "category": "interviews",
       "topics": [
         "dp",
@@ -4358,7 +4359,7 @@
       "number": 48,
       "title": "Min Stack",
       "file": "interviews/companies/bytedance.md",
-      "line": 2959,
+      "line": 3065,
       "category": "interviews",
       "topics": [
         "stack",
@@ -4373,7 +4374,7 @@
       "number": 49,
       "title": "Find Peak Element",
       "file": "interviews/companies/bytedance.md",
-      "line": 3033,
+      "line": 3139,
       "category": "interviews",
       "topics": [
         "binary-search",
@@ -4388,7 +4389,7 @@
       "number": 50,
       "title": "House Robber II",
       "file": "interviews/companies/bytedance.md",
-      "line": 3092,
+      "line": 3198,
       "category": "interviews",
       "topics": [
         "dp",
@@ -4403,7 +4404,7 @@
       "number": 51,
       "title": "Course Schedule",
       "file": "interviews/companies/bytedance.md",
-      "line": 3160,
+      "line": 3266,
       "category": "interviews",
       "topics": [
         "graph",
@@ -4420,7 +4421,7 @@
       "number": 52,
       "title": "Implement Trie (Prefix Tree)",
       "file": "interviews/companies/bytedance.md",
-      "line": 3246,
+      "line": 3352,
       "category": "interviews",
       "topics": [
         "trie",
@@ -4436,7 +4437,7 @@
       "number": 53,
       "title": "Top K Frequent Elements",
       "file": "interviews/companies/bytedance.md",
-      "line": 3358,
+      "line": 3464,
       "category": "interviews",
       "topics": [
         "heap",
@@ -4452,7 +4453,7 @@
       "number": 54,
       "title": "Kth Largest Element in an Array",
       "file": "interviews/companies/bytedance.md",
-      "line": 3436,
+      "line": 3542,
       "category": "interviews",
       "topics": [
         "heap",
@@ -4468,7 +4469,7 @@
       "number": 55,
       "title": "LFU Cache",
       "file": "interviews/companies/bytedance.md",
-      "line": 3510,
+      "line": 3616,
       "category": "interviews",
       "topics": [
         "design",
@@ -4484,7 +4485,7 @@
       "number": 56,
       "title": "Serialize and Deserialize Binary Tree",
       "file": "interviews/companies/bytedance.md",
-      "line": 3665,
+      "line": 3771,
       "category": "interviews",
       "topics": [
         "tree",
@@ -4501,7 +4502,7 @@
       "number": 57,
       "title": "Binary Tree Maximum Path Sum",
       "file": "interviews/companies/bytedance.md",
-      "line": 3792,
+      "line": 3898,
       "category": "interviews",
       "topics": [
         "tree",
@@ -4517,7 +4518,7 @@
       "number": 58,
       "title": "LRU Cache",
       "file": "interviews/companies/bytedance.md",
-      "line": 3863,
+      "line": 3971,
       "category": "interviews",
       "topics": [
         "design",
@@ -4533,7 +4534,7 @@
       "number": 59,
       "title": "Decode Ways",
       "file": "interviews/companies/bytedance.md",
-      "line": 3948,
+      "line": 4056,
       "category": "interviews",
       "topics": [
         "dp",
@@ -4548,7 +4549,7 @@
       "number": 60,
       "title": "Coin Change",
       "file": "interviews/companies/bytedance.md",
-      "line": 4019,
+      "line": 4127,
       "category": "interviews",
       "topics": [
         "dp",
@@ -4563,7 +4564,7 @@
       "number": 61,
       "title": "Number of Islands",
       "file": "interviews/companies/bytedance.md",
-      "line": 4084,
+      "line": 4192,
       "category": "interviews",
       "topics": [
         "dfs",
@@ -4580,7 +4581,7 @@
       "number": 62,
       "title": "Design Twitter / Short-Video Feed",
       "file": "interviews/companies/bytedance.md",
-      "line": 4165,
+      "line": 4273,
       "category": "interviews",
       "topics": [
         "design",
@@ -4613,7 +4614,7 @@
       "number": 2,
       "title": "Number of Islands",
       "file": "interviews/companies/google.md",
-      "line": 120,
+      "line": 130,
       "category": "interviews",
       "topics": [
         "graph",
@@ -4631,7 +4632,7 @@
       "number": 3,
       "title": "Longest Substring Without Repeating Characters",
       "file": "interviews/companies/google.md",
-      "line": 198,
+      "line": 218,
       "category": "interviews",
       "topics": [
         "strings",
@@ -4647,7 +4648,7 @@
       "number": 4,
       "title": "Meeting Rooms II",
       "file": "interviews/companies/google.md",
-      "line": 261,
+      "line": 291,
       "category": "interviews",
       "topics": [
         "heap",
@@ -4664,7 +4665,7 @@
       "number": 5,
       "title": "Decode String",
       "file": "interviews/companies/google.md",
-      "line": 326,
+      "line": 366,
       "category": "interviews",
       "topics": [
         "stack",
@@ -4680,7 +4681,7 @@
       "number": 6,
       "title": "Find Median from Data Stream",
       "file": "interviews/companies/google.md",
-      "line": 412,
+      "line": 462,
       "category": "interviews",
       "topics": [
         "heap",
@@ -4696,7 +4697,7 @@
       "number": 7,
       "title": "Longest Increasing Path in a Matrix",
       "file": "interviews/companies/google.md",
-      "line": 490,
+      "line": 550,
       "category": "interviews",
       "topics": [
         "dp",
@@ -4713,7 +4714,7 @@
       "number": 8,
       "title": "Maximum Profit in Job Scheduling",
       "file": "interviews/companies/google.md",
-      "line": 575,
+      "line": 645,
       "category": "interviews",
       "topics": [
         "dp",
@@ -4730,7 +4731,7 @@
       "number": 9,
       "title": "Design Google Docs (collaborative editor)",
       "file": "interviews/companies/google.md",
-      "line": 649,
+      "line": 729,
       "category": "interviews",
       "topics": [
         "system-design",
@@ -4748,7 +4749,7 @@
       "number": 10,
       "title": "Design Google Search Autocomplete",
       "file": "interviews/companies/google.md",
-      "line": 664,
+      "line": 755,
       "category": "interviews",
       "topics": [
         "system-design",
@@ -4766,7 +4767,7 @@
       "number": 11,
       "title": "Design YouTube",
       "file": "interviews/companies/google.md",
-      "line": 679,
+      "line": 781,
       "category": "interviews",
       "topics": [
         "system-design",
@@ -4784,7 +4785,7 @@
       "number": 12,
       "title": "Design a Distributed Key-Value Store",
       "file": "interviews/companies/google.md",
-      "line": 694,
+      "line": 796,
       "category": "interviews",
       "topics": [
         "system-design",
@@ -4802,7 +4803,7 @@
       "number": 13,
       "title": "Design Google Drive",
       "file": "interviews/companies/google.md",
-      "line": 709,
+      "line": 811,
       "category": "interviews",
       "topics": [
         "system-design",
@@ -4820,7 +4821,7 @@
       "number": 14,
       "title": "Design Google Calendar",
       "file": "interviews/companies/google.md",
-      "line": 724,
+      "line": 826,
       "category": "interviews",
       "topics": [
         "system-design",
@@ -4838,7 +4839,7 @@
       "number": 15,
       "title": "Tell me about a time you disagreed with a teammate",
       "file": "interviews/companies/google.md",
-      "line": 739,
+      "line": 841,
       "category": "interviews",
       "topics": [
         "behavioral",
@@ -4854,7 +4855,7 @@
       "number": 16,
       "title": "Most challenging project you've worked on",
       "file": "interviews/companies/google.md",
-      "line": 754,
+      "line": 856,
       "category": "interviews",
       "topics": [
         "behavioral",
@@ -4870,7 +4871,7 @@
       "number": 17,
       "title": "Time you handled ambiguous requirements",
       "file": "interviews/companies/google.md",
-      "line": 769,
+      "line": 871,
       "category": "interviews",
       "topics": [
         "behavioral",
@@ -4886,7 +4887,7 @@
       "number": 18,
       "title": "Time you failed",
       "file": "interviews/companies/google.md",
-      "line": 784,
+      "line": 886,
       "category": "interviews",
       "topics": [
         "behavioral",
@@ -4902,7 +4903,7 @@
       "number": 19,
       "title": "Design a rate limiter for the Google API gateway",
       "file": "interviews/companies/google.md",
-      "line": 799,
+      "line": 901,
       "category": "interviews",
       "topics": [
         "system-design",
@@ -4919,7 +4920,7 @@
       "number": 20,
       "title": "Optimize a slow query in a distributed SQL system",
       "file": "interviews/companies/google.md",
-      "line": 814,
+      "line": 916,
       "category": "interviews",
       "topics": [
         "databases",
@@ -4936,7 +4937,7 @@
       "number": 21,
       "title": "Trapping Rain Water",
       "file": "interviews/companies/google.md",
-      "line": 829,
+      "line": 931,
       "category": "interviews",
       "topics": [
         "array",
@@ -4953,7 +4954,7 @@
       "number": 22,
       "title": "Serialize and Deserialize Binary Tree",
       "file": "interviews/companies/google.md",
-      "line": 905,
+      "line": 1007,
       "category": "interviews",
       "topics": [
         "tree",
@@ -4971,7 +4972,7 @@
       "number": 23,
       "title": "Alien Dictionary",
       "file": "interviews/companies/google.md",
-      "line": 1009,
+      "line": 1111,
       "category": "interviews",
       "topics": [
         "graph",
@@ -4989,7 +4990,7 @@
       "number": 24,
       "title": "Word Break II",
       "file": "interviews/companies/google.md",
-      "line": 1123,
+      "line": 1225,
       "category": "interviews",
       "topics": [
         "dp",
@@ -5007,7 +5008,7 @@
       "number": 25,
       "title": "Regular Expression Matching",
       "file": "interviews/companies/google.md",
-      "line": 1210,
+      "line": 1312,
       "category": "interviews",
       "topics": [
         "dp",
@@ -5023,7 +5024,7 @@
       "number": 26,
       "title": "Course Schedule II",
       "file": "interviews/companies/google.md",
-      "line": 1294,
+      "line": 1396,
       "category": "interviews",
       "topics": [
         "graph",
@@ -5040,7 +5041,7 @@
       "number": 27,
       "title": "Median of Two Sorted Arrays",
       "file": "interviews/companies/google.md",
-      "line": 1374,
+      "line": 1476,
       "category": "interviews",
       "topics": [
         "binary-search",
@@ -5056,7 +5057,7 @@
       "number": 28,
       "title": "LRU Cache",
       "file": "interviews/companies/google.md",
-      "line": 1463,
+      "line": 1565,
       "category": "interviews",
       "topics": [
         "design",
@@ -5072,7 +5073,7 @@
       "number": 29,
       "title": "The Skyline Problem",
       "file": "interviews/companies/google.md",
-      "line": 1546,
+      "line": 1648,
       "category": "interviews",
       "topics": [
         "heap",
@@ -5089,7 +5090,7 @@
       "number": 30,
       "title": "Sliding Window Maximum",
       "file": "interviews/companies/google.md",
-      "line": 1628,
+      "line": 1730,
       "category": "interviews",
       "topics": [
         "sliding-window",
@@ -5106,7 +5107,7 @@
       "number": 31,
       "title": "Edit Distance",
       "file": "interviews/companies/google.md",
-      "line": 1697,
+      "line": 1799,
       "category": "interviews",
       "topics": [
         "dp",
@@ -5121,7 +5122,7 @@
       "number": 32,
       "title": "Longest Palindromic Substring",
       "file": "interviews/companies/google.md",
-      "line": 1767,
+      "line": 1869,
       "category": "interviews",
       "topics": [
         "strings",
@@ -5137,7 +5138,7 @@
       "number": 33,
       "title": "Burst Balloons",
       "file": "interviews/companies/google.md",
-      "line": 1837,
+      "line": 1939,
       "category": "interviews",
       "topics": [
         "dp",
@@ -5153,7 +5154,7 @@
       "number": 34,
       "title": "Cherry Pickup",
       "file": "interviews/companies/google.md",
-      "line": 1917,
+      "line": 2019,
       "category": "interviews",
       "topics": [
         "dp",
@@ -5169,7 +5170,7 @@
       "number": 35,
       "title": "Russian Doll Envelopes",
       "file": "interviews/companies/google.md",
-      "line": 1999,
+      "line": 2101,
       "category": "interviews",
       "topics": [
         "dp",
@@ -5186,7 +5187,7 @@
       "number": 36,
       "title": "Merge k Sorted Lists",
       "file": "interviews/companies/google.md",
-      "line": 2067,
+      "line": 2169,
       "category": "interviews",
       "topics": [
         "heap",
@@ -5202,7 +5203,7 @@
       "number": 37,
       "title": "Word Search II",
       "file": "interviews/companies/google.md",
-      "line": 2159,
+      "line": 2261,
       "category": "interviews",
       "topics": [
         "trie",
@@ -5220,7 +5221,7 @@
       "number": 38,
       "title": "Find Kth Smallest in Sorted Matrix",
       "file": "interviews/companies/google.md",
-      "line": 2267,
+      "line": 2369,
       "category": "interviews",
       "topics": [
         "binary-search",
@@ -5236,7 +5237,7 @@
       "number": 39,
       "title": "Split Array Largest Sum",
       "file": "interviews/companies/google.md",
-      "line": 2350,
+      "line": 2452,
       "category": "interviews",
       "topics": [
         "binary-search",
@@ -5253,7 +5254,7 @@
       "number": 40,
       "title": "Minimum Window Substring",
       "file": "interviews/companies/google.md",
-      "line": 2432,
+      "line": 2534,
       "category": "interviews",
       "topics": [
         "sliding-window",
@@ -5269,7 +5270,7 @@
       "number": 41,
       "title": "Number of Connected Components in Graph",
       "file": "interviews/companies/google.md",
-      "line": 2523,
+      "line": 2625,
       "category": "interviews",
       "topics": [
         "graph",
@@ -5286,7 +5287,7 @@
       "number": 42,
       "title": "Range Sum Query 2D - Mutable",
       "file": "interviews/companies/google.md",
-      "line": 2611,
+      "line": 2713,
       "category": "interviews",
       "topics": [
         "binary-indexed-tree",
@@ -5303,7 +5304,7 @@
       "number": 43,
       "title": "Find Critical Connections in Network",
       "file": "interviews/companies/google.md",
-      "line": 2729,
+      "line": 2831,
       "category": "interviews",
       "topics": [
         "graph",
@@ -5320,7 +5321,7 @@
       "number": 44,
       "title": "Maximum Rectangle in Histogram",
       "file": "interviews/companies/google.md",
-      "line": 2835,
+      "line": 2937,
       "category": "interviews",
       "topics": [
         "stack",
@@ -5336,7 +5337,7 @@
       "number": 45,
       "title": "Maximal Rectangle in Binary Matrix",
       "file": "interviews/companies/google.md",
-      "line": 2907,
+      "line": 3009,
       "category": "interviews",
       "topics": [
         "dp",
@@ -5352,7 +5353,7 @@
       "number": 46,
       "title": "Reconstruct Itinerary",
       "file": "interviews/companies/google.md",
-      "line": 3010,
+      "line": 3112,
       "category": "interviews",
       "topics": [
         "graph",
@@ -5369,7 +5370,7 @@
       "number": 47,
       "title": "Coin Change",
       "file": "interviews/companies/google.md",
-      "line": 3084,
+      "line": 3186,
       "category": "interviews",
       "topics": [
         "dp",
@@ -5384,7 +5385,7 @@
       "number": 48,
       "title": "Decode Ways",
       "file": "interviews/companies/google.md",
-      "line": 3145,
+      "line": 3247,
       "category": "interviews",
       "topics": [
         "dp",
@@ -5399,7 +5400,7 @@
       "number": 49,
       "title": "Find All Anagrams in a String",
       "file": "interviews/companies/google.md",
-      "line": 3214,
+      "line": 3316,
       "category": "interviews",
       "topics": [
         "sliding-window",
@@ -5415,7 +5416,7 @@
       "number": 50,
       "title": "Longest Consecutive Sequence",
       "file": "interviews/companies/google.md",
-      "line": 3287,
+      "line": 3389,
       "category": "interviews",
       "topics": [
         "hash",
@@ -5431,7 +5432,7 @@
       "number": 51,
       "title": "Number of Distinct Islands",
       "file": "interviews/companies/google.md",
-      "line": 3354,
+      "line": 3456,
       "category": "interviews",
       "topics": [
         "dfs",
@@ -5447,7 +5448,7 @@
       "number": 52,
       "title": "Shortest Path in Binary Matrix",
       "file": "interviews/companies/google.md",
-      "line": 3449,
+      "line": 3551,
       "category": "interviews",
       "topics": [
         "bfs",
@@ -5463,7 +5464,7 @@
       "number": 53,
       "title": "Word Ladder II",
       "file": "interviews/companies/google.md",
-      "line": 3545,
+      "line": 3647,
       "category": "interviews",
       "topics": [
         "bfs",
@@ -5480,7 +5481,7 @@
       "number": 54,
       "title": "Insert/Delete/GetRandom O(1)",
       "file": "interviews/companies/google.md",
-      "line": 3682,
+      "line": 3784,
       "category": "interviews",
       "topics": [
         "design",
@@ -5496,7 +5497,7 @@
       "number": 55,
       "title": "Best Time to Buy and Sell Stock with Cooldown",
       "file": "interviews/companies/google.md",
-      "line": 3785,
+      "line": 3887,
       "category": "interviews",
       "topics": [
         "dp",
@@ -5511,7 +5512,7 @@
       "number": 56,
       "title": "Frog Jump",
       "file": "interviews/companies/google.md",
-      "line": 3847,
+      "line": 3949,
       "category": "interviews",
       "topics": [
         "dp",
@@ -5526,7 +5527,7 @@
       "number": 57,
       "title": "Robot Room Cleaner",
       "file": "interviews/companies/google.md",
-      "line": 3918,
+      "line": 4020,
       "category": "interviews",
       "topics": [
         "dfs",
@@ -5542,7 +5543,7 @@
       "number": 58,
       "title": "Concatenated Words",
       "file": "interviews/companies/google.md",
-      "line": 4027,
+      "line": 4129,
       "category": "interviews",
       "topics": [
         "dp",
@@ -5559,7 +5560,7 @@
       "number": 59,
       "title": "Largest Number",
       "file": "interviews/companies/google.md",
-      "line": 4122,
+      "line": 4224,
       "category": "interviews",
       "topics": [
         "sorting",
@@ -5575,7 +5576,7 @@
       "number": 60,
       "title": "Basic Calculator II",
       "file": "interviews/companies/google.md",
-      "line": 4173,
+      "line": 4275,
       "category": "interviews",
       "topics": [
         "stack",
@@ -5592,7 +5593,7 @@
       "number": 61,
       "title": "Longest Valid Parentheses",
       "file": "interviews/companies/google.md",
-      "line": 4263,
+      "line": 4365,
       "category": "interviews",
       "topics": [
         "stack",
@@ -5608,7 +5609,7 @@
       "number": 62,
       "title": "Maximum Sum of 3 Non-Overlapping Subarrays",
       "file": "interviews/companies/google.md",
-      "line": 4335,
+      "line": 4437,
       "category": "interviews",
       "topics": [
         "dp",
@@ -5639,7 +5640,7 @@
       "number": 2,
       "title": "Valid Palindrome II",
       "file": "interviews/companies/meta.md",
-      "line": 92,
+      "line": 102,
       "category": "interviews",
       "topics": [
         "strings",
@@ -5655,7 +5656,7 @@
       "number": 3,
       "title": "Subarray Sum Equals K",
       "file": "interviews/companies/meta.md",
-      "line": 169,
+      "line": 189,
       "category": "interviews",
       "topics": [
         "arrays",
@@ -5671,7 +5672,7 @@
       "number": 4,
       "title": "Binary Tree Right Side View",
       "file": "interviews/companies/meta.md",
-      "line": 230,
+      "line": 260,
       "category": "interviews",
       "topics": [
         "tree",
@@ -5687,7 +5688,7 @@
       "number": 5,
       "title": "K Closest Points to Origin",
       "file": "interviews/companies/meta.md",
-      "line": 309,
+      "line": 349,
       "category": "interviews",
       "topics": [
         "heap",
@@ -5703,7 +5704,7 @@
       "number": 6,
       "title": "Random Pick with Weight",
       "file": "interviews/companies/meta.md",
-      "line": 367,
+      "line": 417,
       "category": "interviews",
       "topics": [
         "binary-search",
@@ -5719,7 +5720,7 @@
       "number": 7,
       "title": "Merge Intervals",
       "file": "interviews/companies/meta.md",
-      "line": 453,
+      "line": 513,
       "category": "interviews",
       "topics": [
         "arrays",
@@ -5735,7 +5736,7 @@
       "number": 8,
       "title": "Lowest Common Ancestor of a Binary Tree",
       "file": "interviews/companies/meta.md",
-      "line": 518,
+      "line": 588,
       "category": "interviews",
       "topics": [
         "tree",
@@ -5751,7 +5752,7 @@
       "number": 9,
       "title": "Design News Feed",
       "file": "interviews/companies/meta.md",
-      "line": 572,
+      "line": 652,
       "category": "interviews",
       "topics": [
         "system-design",
@@ -5768,7 +5769,7 @@
       "number": 10,
       "title": "Design Instagram",
       "file": "interviews/companies/meta.md",
-      "line": 587,
+      "line": 678,
       "category": "interviews",
       "topics": [
         "system-design",
@@ -5786,7 +5787,7 @@
       "number": 11,
       "title": "Design Messenger / WhatsApp",
       "file": "interviews/companies/meta.md",
-      "line": 602,
+      "line": 704,
       "category": "interviews",
       "topics": [
         "system-design",
@@ -5804,7 +5805,7 @@
       "number": 12,
       "title": "Design a URL Shortener (bit.ly)",
       "file": "interviews/companies/meta.md",
-      "line": 617,
+      "line": 719,
       "category": "interviews",
       "topics": [
         "system-design",
@@ -5821,7 +5822,7 @@
       "number": 13,
       "title": "Design Facebook Live / Live Comments",
       "file": "interviews/companies/meta.md",
-      "line": 632,
+      "line": 734,
       "category": "interviews",
       "topics": [
         "system-design",
@@ -5839,7 +5840,7 @@
       "number": 14,
       "title": "Design Top K Trending Hashtags",
       "file": "interviews/companies/meta.md",
-      "line": 647,
+      "line": 749,
       "category": "interviews",
       "topics": [
         "system-design",
@@ -5856,7 +5857,7 @@
       "number": 15,
       "title": "Tell me about a project where you had the most impact",
       "file": "interviews/companies/meta.md",
-      "line": 662,
+      "line": 764,
       "category": "interviews",
       "topics": [
         "behavioral",
@@ -5872,7 +5873,7 @@
       "number": 16,
       "title": "Time you disagreed with your manager",
       "file": "interviews/companies/meta.md",
-      "line": 677,
+      "line": 779,
       "category": "interviews",
       "topics": [
         "behavioral",
@@ -5888,7 +5889,7 @@
       "number": 17,
       "title": "Time you took a risk",
       "file": "interviews/companies/meta.md",
-      "line": 692,
+      "line": 794,
       "category": "interviews",
       "topics": [
         "behavioral",
@@ -5904,7 +5905,7 @@
       "number": 18,
       "title": "Time you mentored someone or improved a team",
       "file": "interviews/companies/meta.md",
-      "line": 707,
+      "line": 809,
       "category": "interviews",
       "topics": [
         "behavioral",
@@ -5920,7 +5921,7 @@
       "number": 19,
       "title": "Web performance: optimize Time to Interactive",
       "file": "interviews/companies/meta.md",
-      "line": 722,
+      "line": 824,
       "category": "interviews",
       "topics": [
         "web-perf",
@@ -5937,7 +5938,7 @@
       "number": 20,
       "title": "Product sense: how would you design a feature for new Instagram users?",
       "file": "interviews/companies/meta.md",
-      "line": 737,
+      "line": 839,
       "category": "interviews",
       "topics": [
         "product-sense",
@@ -5953,7 +5954,7 @@
       "number": 21,
       "title": "Insert Interval",
       "file": "interviews/companies/meta.md",
-      "line": 752,
+      "line": 854,
       "category": "interviews",
       "topics": [
         "arrays",
@@ -5969,7 +5970,7 @@
       "number": 22,
       "title": "Move Zeroes",
       "file": "interviews/companies/meta.md",
-      "line": 820,
+      "line": 922,
       "category": "interviews",
       "topics": [
         "arrays",
@@ -5984,7 +5985,7 @@
       "number": 23,
       "title": "Minimum Remove to Make Valid Parentheses",
       "file": "interviews/companies/meta.md",
-      "line": 878,
+      "line": 980,
       "category": "interviews",
       "topics": [
         "strings",
@@ -6000,7 +6001,7 @@
       "number": 24,
       "title": "Binary Tree Vertical Order Traversal",
       "file": "interviews/companies/meta.md",
-      "line": 951,
+      "line": 1053,
       "category": "interviews",
       "topics": [
         "tree",
@@ -6016,7 +6017,7 @@
       "number": 25,
       "title": "Diameter of Binary Tree",
       "file": "interviews/companies/meta.md",
-      "line": 1034,
+      "line": 1136,
       "category": "interviews",
       "topics": [
         "tree",
@@ -6032,7 +6033,7 @@
       "number": 26,
       "title": "Lowest Common Ancestor of a Binary Tree III",
       "file": "interviews/companies/meta.md",
-      "line": 1102,
+      "line": 1204,
       "category": "interviews",
       "topics": [
         "tree",
@@ -6048,7 +6049,7 @@
       "number": 27,
       "title": "Pow(x, n)",
       "file": "interviews/companies/meta.md",
-      "line": 1165,
+      "line": 1267,
       "category": "interviews",
       "topics": [
         "math",
@@ -6064,7 +6065,7 @@
       "number": 28,
       "title": "Range Sum of BST",
       "file": "interviews/companies/meta.md",
-      "line": 1229,
+      "line": 1331,
       "category": "interviews",
       "topics": [
         "tree",
@@ -6080,7 +6081,7 @@
       "number": 29,
       "title": "Convert Binary Search Tree to Sorted Doubly Linked List",
       "file": "interviews/companies/meta.md",
-      "line": 1281,
+      "line": 1383,
       "category": "interviews",
       "topics": [
         "tree",
@@ -6096,7 +6097,7 @@
       "number": 30,
       "title": "Buildings With an Ocean View",
       "file": "interviews/companies/meta.md",
-      "line": 1360,
+      "line": 1462,
       "category": "interviews",
       "topics": [
         "arrays",
@@ -6112,7 +6113,7 @@
       "number": 31,
       "title": "Continuous Subarray Sum",
       "file": "interviews/companies/meta.md",
-      "line": 1424,
+      "line": 1526,
       "category": "interviews",
       "topics": [
         "arrays",
@@ -6129,7 +6130,7 @@
       "number": 32,
       "title": "Valid Word Abbreviation",
       "file": "interviews/companies/meta.md",
-      "line": 1494,
+      "line": 1596,
       "category": "interviews",
       "topics": [
         "strings",
@@ -6144,7 +6145,7 @@
       "number": 33,
       "title": "Add Strings",
       "file": "interviews/companies/meta.md",
-      "line": 1581,
+      "line": 1683,
       "category": "interviews",
       "topics": [
         "strings",
@@ -6160,7 +6161,7 @@
       "number": 34,
       "title": "Find Peak Element",
       "file": "interviews/companies/meta.md",
-      "line": 1652,
+      "line": 1754,
       "category": "interviews",
       "topics": [
         "binary search",
@@ -6175,7 +6176,7 @@
       "number": 35,
       "title": "Kth Largest Element in an Array",
       "file": "interviews/companies/meta.md",
-      "line": 1711,
+      "line": 1813,
       "category": "interviews",
       "topics": [
         "arrays",
@@ -6191,7 +6192,7 @@
       "number": 36,
       "title": "Group Shifted Strings",
       "file": "interviews/companies/meta.md",
-      "line": 1765,
+      "line": 1867,
       "category": "interviews",
       "topics": [
         "strings",
@@ -6206,7 +6207,7 @@
       "number": 37,
       "title": "Clone Graph",
       "file": "interviews/companies/meta.md",
-      "line": 1826,
+      "line": 1928,
       "category": "interviews",
       "topics": [
         "graph",
@@ -6223,7 +6224,7 @@
       "number": 38,
       "title": "Number of Islands",
       "file": "interviews/companies/meta.md",
-      "line": 1907,
+      "line": 2009,
       "category": "interviews",
       "topics": [
         "graph",
@@ -6240,7 +6241,7 @@
       "number": 39,
       "title": "Word Break",
       "file": "interviews/companies/meta.md",
-      "line": 1981,
+      "line": 2083,
       "category": "interviews",
       "topics": [
         "dp",
@@ -6256,7 +6257,7 @@
       "number": 40,
       "title": "Longest Substring Without Repeating Characters",
       "file": "interviews/companies/meta.md",
-      "line": 2057,
+      "line": 2159,
       "category": "interviews",
       "topics": [
         "strings",
@@ -6272,7 +6273,7 @@
       "number": 41,
       "title": "Read N Characters Given Read4 II - Call Multiple Times",
       "file": "interviews/companies/meta.md",
-      "line": 2120,
+      "line": 2222,
       "category": "interviews",
       "topics": [
         "strings",
@@ -6288,7 +6289,7 @@
       "number": 42,
       "title": "Trapping Rain Water",
       "file": "interviews/companies/meta.md",
-      "line": 2209,
+      "line": 2313,
       "category": "interviews",
       "topics": [
         "arrays",
@@ -6305,7 +6306,7 @@
       "number": 43,
       "title": "Word Ladder",
       "file": "interviews/companies/meta.md",
-      "line": 2284,
+      "line": 2388,
       "category": "interviews",
       "topics": [
         "graph",
@@ -6321,7 +6322,7 @@
       "number": 44,
       "title": "Word Search II",
       "file": "interviews/companies/meta.md",
-      "line": 2388,
+      "line": 2492,
       "category": "interviews",
       "topics": [
         "trie",
@@ -6337,7 +6338,7 @@
       "number": 45,
       "title": "Median of Two Sorted Arrays",
       "file": "interviews/companies/meta.md",
-      "line": 2501,
+      "line": 2605,
       "category": "interviews",
       "topics": [
         "binary search",
@@ -6352,7 +6353,7 @@
       "number": 46,
       "title": "Regular Expression Matching",
       "file": "interviews/companies/meta.md",
-      "line": 2591,
+      "line": 2695,
       "category": "interviews",
       "topics": [
         "dp",
@@ -6368,7 +6369,7 @@
       "number": 47,
       "title": "Minimum Window Substring",
       "file": "interviews/companies/meta.md",
-      "line": 2676,
+      "line": 2780,
       "category": "interviews",
       "topics": [
         "strings",
@@ -6384,7 +6385,7 @@
       "number": 48,
       "title": "Merge K Sorted Lists",
       "file": "interviews/companies/meta.md",
-      "line": 2773,
+      "line": 2877,
       "category": "interviews",
       "topics": [
         "linked list",
@@ -6400,7 +6401,7 @@
       "number": 49,
       "title": "Serialize and Deserialize Binary Tree",
       "file": "interviews/companies/meta.md",
-      "line": 2866,
+      "line": 2970,
       "category": "interviews",
       "topics": [
         "tree",
@@ -6417,7 +6418,7 @@
       "number": 50,
       "title": "Binary Tree Maximum Path Sum",
       "file": "interviews/companies/meta.md",
-      "line": 2968,
+      "line": 3072,
       "category": "interviews",
       "topics": [
         "tree",
@@ -6433,7 +6434,7 @@
       "number": 51,
       "title": "Alien Dictionary",
       "file": "interviews/companies/meta.md",
-      "line": 3037,
+      "line": 3141,
       "category": "interviews",
       "topics": [
         "graph",
@@ -6449,7 +6450,7 @@
       "number": 52,
       "title": "Find First and Last Position of Element in Sorted Array",
       "file": "interviews/companies/meta.md",
-      "line": 3158,
+      "line": 3262,
       "category": "interviews",
       "topics": [
         "binary search",
@@ -6464,7 +6465,7 @@
       "number": 53,
       "title": "Next Permutation",
       "file": "interviews/companies/meta.md",
-      "line": 3225,
+      "line": 3329,
       "category": "interviews",
       "topics": [
         "arrays",
@@ -6479,7 +6480,7 @@
       "number": 54,
       "title": "Longest Increasing Subsequence",
       "file": "interviews/companies/meta.md",
-      "line": 3293,
+      "line": 3397,
       "category": "interviews",
       "topics": [
         "dp",
@@ -6494,7 +6495,7 @@
       "number": 55,
       "title": "Course Schedule II",
       "file": "interviews/companies/meta.md",
-      "line": 3364,
+      "line": 3468,
       "category": "interviews",
       "topics": [
         "graph",
@@ -6511,7 +6512,7 @@
       "number": 56,
       "title": "Accounts Merge",
       "file": "interviews/companies/meta.md",
-      "line": 3449,
+      "line": 3553,
       "category": "interviews",
       "topics": [
         "union find",
@@ -6527,7 +6528,7 @@
       "number": 57,
       "title": "Maximum Swap",
       "file": "interviews/companies/meta.md",
-      "line": 3559,
+      "line": 3663,
       "category": "interviews",
       "topics": [
         "arrays",
@@ -6543,7 +6544,7 @@
       "number": 58,
       "title": "Exclusive Time of Functions",
       "file": "interviews/companies/meta.md",
-      "line": 3629,
+      "line": 3733,
       "category": "interviews",
       "topics": [
         "stack",
@@ -6558,7 +6559,7 @@
       "number": 59,
       "title": "Stickers to Spell Word",
       "file": "interviews/companies/meta.md",
-      "line": 3713,
+      "line": 3817,
       "category": "interviews",
       "topics": [
         "dp",
@@ -6574,7 +6575,7 @@
       "number": 60,
       "title": "Robot Room Cleaner",
       "file": "interviews/companies/meta.md",
-      "line": 3834,
+      "line": 3938,
       "category": "interviews",
       "topics": [
         "backtracking",
@@ -6589,7 +6590,7 @@
       "number": 61,
       "title": "Shortest Path in a Grid with Obstacles Elimination",
       "file": "interviews/companies/meta.md",
-      "line": 3942,
+      "line": 4046,
       "category": "interviews",
       "topics": [
         "bfs",
@@ -6604,7 +6605,7 @@
       "number": 62,
       "title": "Basic Calculator II",
       "file": "interviews/companies/meta.md",
-      "line": 4042,
+      "line": 4146,
       "category": "interviews",
       "topics": [
         "stack",
@@ -6636,7 +6637,7 @@
       "number": 2,
       "title": "Validate Binary Search Tree",
       "file": "interviews/companies/microsoft.md",
-      "line": 103,
+      "line": 113,
       "category": "interviews",
       "topics": [
         "tree",
@@ -6653,7 +6654,7 @@
       "number": 3,
       "title": "Serialize and Deserialize Binary Tree",
       "file": "interviews/companies/microsoft.md",
-      "line": 177,
+      "line": 197,
       "category": "interviews",
       "topics": [
         "tree",
@@ -6670,7 +6671,7 @@
       "number": 4,
       "title": "Find Kth Largest in Array",
       "file": "interviews/companies/microsoft.md",
-      "line": 276,
+      "line": 306,
       "category": "interviews",
       "topics": [
         "heap",
@@ -6686,7 +6687,7 @@
       "number": 5,
       "title": "Spiral Matrix",
       "file": "interviews/companies/microsoft.md",
-      "line": 353,
+      "line": 393,
       "category": "interviews",
       "topics": [
         "matrix",
@@ -6701,7 +6702,7 @@
       "number": 6,
       "title": "Copy List with Random Pointer",
       "file": "interviews/companies/microsoft.md",
-      "line": 427,
+      "line": 477,
       "category": "interviews",
       "topics": [
         "linked-list",
@@ -6717,7 +6718,7 @@
       "number": 7,
       "title": "Best Time to Buy and Sell Stock",
       "file": "interviews/companies/microsoft.md",
-      "line": 513,
+      "line": 573,
       "category": "interviews",
       "topics": [
         "arrays",
@@ -6733,7 +6734,7 @@
       "number": 8,
       "title": "Word Search",
       "file": "interviews/companies/microsoft.md",
-      "line": 568,
+      "line": 638,
       "category": "interviews",
       "topics": [
         "backtracking",
@@ -6749,7 +6750,7 @@
       "number": 9,
       "title": "Design Microsoft Teams Chat",
       "file": "interviews/companies/microsoft.md",
-      "line": 643,
+      "line": 723,
       "category": "interviews",
       "topics": [
         "system-design",
@@ -6766,7 +6767,7 @@
       "number": 10,
       "title": "Design Azure Blob Storage",
       "file": "interviews/companies/microsoft.md",
-      "line": 658,
+      "line": 749,
       "category": "interviews",
       "topics": [
         "system-design",
@@ -6783,7 +6784,7 @@
       "number": 11,
       "title": "Design Office 365 Document Co-Authoring",
       "file": "interviews/companies/microsoft.md",
-      "line": 673,
+      "line": 775,
       "category": "interviews",
       "topics": [
         "system-design",
@@ -6800,7 +6801,7 @@
       "number": 12,
       "title": "Design a Job Scheduler (Azure Functions backend)",
       "file": "interviews/companies/microsoft.md",
-      "line": 688,
+      "line": 790,
       "category": "interviews",
       "topics": [
         "system-design",
@@ -6817,7 +6818,7 @@
       "number": 13,
       "title": "Design an API Rate Limiter",
       "file": "interviews/companies/microsoft.md",
-      "line": 703,
+      "line": 805,
       "category": "interviews",
       "topics": [
         "system-design",
@@ -6834,7 +6835,7 @@
       "number": 14,
       "title": "Design Xbox Live Matchmaking",
       "file": "interviews/companies/microsoft.md",
-      "line": 718,
+      "line": 820,
       "category": "interviews",
       "topics": [
         "system-design",
@@ -6851,7 +6852,7 @@
       "number": 15,
       "title": "Tell me about a time you learned something new quickly",
       "file": "interviews/companies/microsoft.md",
-      "line": 733,
+      "line": 835,
       "category": "interviews",
       "topics": [
         "behavioral",
@@ -6867,7 +6868,7 @@
       "number": 16,
       "title": "Tell me about a time you got harsh feedback",
       "file": "interviews/companies/microsoft.md",
-      "line": 748,
+      "line": 850,
       "category": "interviews",
       "topics": [
         "behavioral",
@@ -6883,7 +6884,7 @@
       "number": 17,
       "title": "Tell me about a project that didn't go well",
       "file": "interviews/companies/microsoft.md",
-      "line": 763,
+      "line": 865,
       "category": "interviews",
       "topics": [
         "behavioral",
@@ -6899,7 +6900,7 @@
       "number": 18,
       "title": "Tell me about a time you led without authority",
       "file": "interviews/companies/microsoft.md",
-      "line": 778,
+      "line": 880,
       "category": "interviews",
       "topics": [
         "behavioral",
@@ -6915,7 +6916,7 @@
       "number": 19,
       "title": "Azure cost optimization on a service",
       "file": "interviews/companies/microsoft.md",
-      "line": 793,
+      "line": 895,
       "category": "interviews",
       "topics": [
         "cloud",
@@ -6931,7 +6932,7 @@
       "number": 20,
       "title": "Debug a high-CPU .NET service",
       "file": "interviews/companies/microsoft.md",
-      "line": 808,
+      "line": 910,
       "category": "interviews",
       "topics": [
         "dotnet",
@@ -6947,7 +6948,7 @@
       "number": 21,
       "title": "Reverse Linked List II",
       "file": "interviews/companies/microsoft.md",
-      "line": 823,
+      "line": 925,
       "category": "interviews",
       "topics": [
         "linked-list",
@@ -6962,7 +6963,7 @@
       "number": 22,
       "title": "Set Matrix Zeroes",
       "file": "interviews/companies/microsoft.md",
-      "line": 893,
+      "line": 995,
       "category": "interviews",
       "topics": [
         "matrix",
@@ -6977,7 +6978,7 @@
       "number": 23,
       "title": "Rotate Image",
       "file": "interviews/companies/microsoft.md",
-      "line": 967,
+      "line": 1069,
       "category": "interviews",
       "topics": [
         "matrix",
@@ -6992,7 +6993,7 @@
       "number": 24,
       "title": "Maximum Subarray",
       "file": "interviews/companies/microsoft.md",
-      "line": 1028,
+      "line": 1130,
       "category": "interviews",
       "topics": [
         "arrays",
@@ -7008,7 +7009,7 @@
       "number": 25,
       "title": "Excel Sheet Column Title",
       "file": "interviews/companies/microsoft.md",
-      "line": 1082,
+      "line": 1184,
       "category": "interviews",
       "topics": [
         "math",
@@ -7023,7 +7024,7 @@
       "number": 26,
       "title": "Palindromic Substrings",
       "file": "interviews/companies/microsoft.md",
-      "line": 1139,
+      "line": 1241,
       "category": "interviews",
       "topics": [
         "string",
@@ -7039,7 +7040,7 @@
       "number": 27,
       "title": "Group Anagrams",
       "file": "interviews/companies/microsoft.md",
-      "line": 1199,
+      "line": 1301,
       "category": "interviews",
       "topics": [
         "string",
@@ -7055,7 +7056,7 @@
       "number": 28,
       "title": "Implement Trie (Prefix Tree)",
       "file": "interviews/companies/microsoft.md",
-      "line": 1255,
+      "line": 1357,
       "category": "interviews",
       "topics": [
         "trie",
@@ -7071,7 +7072,7 @@
       "number": 29,
       "title": "Add and Search Word - Data Structure",
       "file": "interviews/companies/microsoft.md",
-      "line": 1357,
+      "line": 1459,
       "category": "interviews",
       "topics": [
         "trie",
@@ -7087,7 +7088,7 @@
       "number": 30,
       "title": "Design Hit Counter",
       "file": "interviews/companies/microsoft.md",
-      "line": 1458,
+      "line": 1560,
       "category": "interviews",
       "topics": [
         "design",
@@ -7103,7 +7104,7 @@
       "number": 31,
       "title": "Find Peak Element",
       "file": "interviews/companies/microsoft.md",
-      "line": 1535,
+      "line": 1637,
       "category": "interviews",
       "topics": [
         "binary-search",
@@ -7118,7 +7119,7 @@
       "number": 32,
       "title": "Merge K Sorted Lists",
       "file": "interviews/companies/microsoft.md",
-      "line": 1594,
+      "line": 1696,
       "category": "interviews",
       "topics": [
         "linked-list",
@@ -7134,7 +7135,7 @@
       "number": 33,
       "title": "Word Search II",
       "file": "interviews/companies/microsoft.md",
-      "line": 1674,
+      "line": 1776,
       "category": "interviews",
       "topics": [
         "trie",
@@ -7151,7 +7152,7 @@
       "number": 34,
       "title": "House Robber",
       "file": "interviews/companies/microsoft.md",
-      "line": 1789,
+      "line": 1891,
       "category": "interviews",
       "topics": [
         "dp",
@@ -7166,7 +7167,7 @@
       "number": 35,
       "title": "Coin Change",
       "file": "interviews/companies/microsoft.md",
-      "line": 1844,
+      "line": 1946,
       "category": "interviews",
       "topics": [
         "dp",
@@ -7181,7 +7182,7 @@
       "number": 36,
       "title": "Decode Ways",
       "file": "interviews/companies/microsoft.md",
-      "line": 1903,
+      "line": 2005,
       "category": "interviews",
       "topics": [
         "dp",
@@ -7196,7 +7197,7 @@
       "number": 37,
       "title": "Climbing Stairs",
       "file": "interviews/companies/microsoft.md",
-      "line": 1974,
+      "line": 2076,
       "category": "interviews",
       "topics": [
         "dp",
@@ -7211,7 +7212,7 @@
       "number": 38,
       "title": "Path Sum II",
       "file": "interviews/companies/microsoft.md",
-      "line": 2025,
+      "line": 2127,
       "category": "interviews",
       "topics": [
         "tree",
@@ -7227,7 +7228,7 @@
       "number": 39,
       "title": "Construct Binary Tree from Preorder and Inorder",
       "file": "interviews/companies/microsoft.md",
-      "line": 2104,
+      "line": 2206,
       "category": "interviews",
       "topics": [
         "tree",
@@ -7243,7 +7244,7 @@
       "number": 40,
       "title": "Flatten Binary Tree to Linked List",
       "file": "interviews/companies/microsoft.md",
-      "line": 2179,
+      "line": 2281,
       "category": "interviews",
       "topics": [
         "tree",
@@ -7259,7 +7260,7 @@
       "number": 41,
       "title": "Symmetric Tree",
       "file": "interviews/companies/microsoft.md",
-      "line": 2250,
+      "line": 2352,
       "category": "interviews",
       "topics": [
         "tree",
@@ -7275,7 +7276,7 @@
       "number": 42,
       "title": "Maximum Depth of Binary Tree",
       "file": "interviews/companies/microsoft.md",
-      "line": 2307,
+      "line": 2409,
       "category": "interviews",
       "topics": [
         "tree",
@@ -7292,7 +7293,7 @@
       "number": 43,
       "title": "Single Number III",
       "file": "interviews/companies/microsoft.md",
-      "line": 2351,
+      "line": 2453,
       "category": "interviews",
       "topics": [
         "bit-manipulation",
@@ -7307,7 +7308,7 @@
       "number": 44,
       "title": "Sum of Two Integers (no + operator)",
       "file": "interviews/companies/microsoft.md",
-      "line": 2410,
+      "line": 2512,
       "category": "interviews",
       "topics": [
         "bit-manipulation",
@@ -7322,7 +7323,7 @@
       "number": 45,
       "title": "Power of Two",
       "file": "interviews/companies/microsoft.md",
-      "line": 2464,
+      "line": 2568,
       "category": "interviews",
       "topics": [
         "bit-manipulation",
@@ -7337,7 +7338,7 @@
       "number": 46,
       "title": "Reverse Bits",
       "file": "interviews/companies/microsoft.md",
-      "line": 2504,
+      "line": 2608,
       "category": "interviews",
       "topics": [
         "bit-manipulation"
@@ -7351,7 +7352,7 @@
       "number": 47,
       "title": "Number of 1 Bits (Hamming Weight)",
       "file": "interviews/companies/microsoft.md",
-      "line": 2558,
+      "line": 2662,
       "category": "interviews",
       "topics": [
         "bit-manipulation"
@@ -7365,7 +7366,7 @@
       "number": 48,
       "title": "Lowest Common Ancestor of a BST",
       "file": "interviews/companies/microsoft.md",
-      "line": 2612,
+      "line": 2716,
       "category": "interviews",
       "topics": [
         "tree",
@@ -7381,7 +7382,7 @@
       "number": 49,
       "title": "Binary Tree Zigzag Level Order Traversal",
       "file": "interviews/companies/microsoft.md",
-      "line": 2672,
+      "line": 2776,
       "category": "interviews",
       "topics": [
         "tree",
@@ -7397,7 +7398,7 @@
       "number": 50,
       "title": "Longest Palindromic Substring",
       "file": "interviews/companies/microsoft.md",
-      "line": 2764,
+      "line": 2868,
       "category": "interviews",
       "topics": [
         "string",
@@ -7413,7 +7414,7 @@
       "number": 51,
       "title": "KMP Pattern Matching",
       "file": "interviews/companies/microsoft.md",
-      "line": 2834,
+      "line": 2938,
       "category": "interviews",
       "topics": [
         "string",
@@ -7428,7 +7429,7 @@
       "number": 52,
       "title": "Generate Parentheses",
       "file": "interviews/companies/microsoft.md",
-      "line": 2922,
+      "line": 3026,
       "category": "interviews",
       "topics": [
         "backtracking",
@@ -7444,7 +7445,7 @@
       "number": 53,
       "title": "Subsets",
       "file": "interviews/companies/microsoft.md",
-      "line": 2991,
+      "line": 3095,
       "category": "interviews",
       "topics": [
         "backtracking",
@@ -7459,7 +7460,7 @@
       "number": 54,
       "title": "Permutations",
       "file": "interviews/companies/microsoft.md",
-      "line": 3062,
+      "line": 3166,
       "category": "interviews",
       "topics": [
         "backtracking",
@@ -7474,7 +7475,7 @@
       "number": 55,
       "title": "Combination Sum",
       "file": "interviews/companies/microsoft.md",
-      "line": 3144,
+      "line": 3248,
       "category": "interviews",
       "topics": [
         "backtracking",
@@ -7489,7 +7490,7 @@
       "number": 56,
       "title": "Longest Increasing Subsequence",
       "file": "interviews/companies/microsoft.md",
-      "line": 3226,
+      "line": 3330,
       "category": "interviews",
       "topics": [
         "dp",
@@ -7504,7 +7505,7 @@
       "number": 57,
       "title": "Edit Distance",
       "file": "interviews/companies/microsoft.md",
-      "line": 3295,
+      "line": 3399,
       "category": "interviews",
       "topics": [
         "dp",
@@ -7519,7 +7520,7 @@
       "number": 58,
       "title": "LRU Cache",
       "file": "interviews/companies/microsoft.md",
-      "line": 3363,
+      "line": 3467,
       "category": "interviews",
       "topics": [
         "design",
@@ -7535,7 +7536,7 @@
       "number": 59,
       "title": "Min Stack",
       "file": "interviews/companies/microsoft.md",
-      "line": 3450,
+      "line": 3554,
       "category": "interviews",
       "topics": [
         "stack",
@@ -7550,7 +7551,7 @@
       "number": 60,
       "title": "Sliding Window Maximum",
       "file": "interviews/companies/microsoft.md",
-      "line": 3532,
+      "line": 3636,
       "category": "interviews",
       "topics": [
         "deque",
@@ -7566,7 +7567,7 @@
       "number": 61,
       "title": "Find Median from Data Stream",
       "file": "interviews/companies/microsoft.md",
-      "line": 3600,
+      "line": 3704,
       "category": "interviews",
       "topics": [
         "heap",
@@ -7581,7 +7582,7 @@
       "number": 62,
       "title": "Design Tic-Tac-Toe",
       "file": "interviews/companies/microsoft.md",
-      "line": 3687,
+      "line": 3791,
       "category": "interviews",
       "topics": [
         "design",
@@ -7611,7 +7612,7 @@
       "number": 2,
       "title": "Add Strings",
       "file": "interviews/companies/tencent.md",
-      "line": 105,
+      "line": 115,
       "category": "interviews",
       "topics": [
         "strings",
@@ -7626,7 +7627,7 @@
       "number": 3,
       "title": "Linked List Cycle II",
       "file": "interviews/companies/tencent.md",
-      "line": 174,
+      "line": 194,
       "category": "interviews",
       "topics": [
         "linked-list",
@@ -7642,7 +7643,7 @@
       "number": 4,
       "title": "Permutations",
       "file": "interviews/companies/tencent.md",
-      "line": 244,
+      "line": 274,
       "category": "interviews",
       "topics": [
         "backtracking",
@@ -7657,7 +7658,7 @@
       "number": 5,
       "title": "Maximum Subarray (Kadane)",
       "file": "interviews/companies/tencent.md",
-      "line": 320,
+      "line": 360,
       "category": "interviews",
       "topics": [
         "dp",
@@ -7673,7 +7674,7 @@
       "number": 6,
       "title": "Reverse a String In-Place",
       "file": "interviews/companies/tencent.md",
-      "line": 374,
+      "line": 424,
       "category": "interviews",
       "topics": [
         "strings",
@@ -7688,7 +7689,7 @@
       "number": 7,
       "title": "Lowest Common Ancestor of BST",
       "file": "interviews/companies/tencent.md",
-      "line": 445,
+      "line": 505,
       "category": "interviews",
       "topics": [
         "tree",
@@ -7704,7 +7705,7 @@
       "number": 8,
       "title": "Min Stack",
       "file": "interviews/companies/tencent.md",
-      "line": 519,
+      "line": 589,
       "category": "interviews",
       "topics": [
         "stack",
@@ -7719,7 +7720,7 @@
       "number": 9,
       "title": "Design WeChat Messaging Backend",
       "file": "interviews/companies/tencent.md",
-      "line": 587,
+      "line": 667,
       "category": "interviews",
       "topics": [
         "system-design",
@@ -7737,7 +7738,7 @@
       "number": 10,
       "title": "Design WeChat Moments (朋友圈)",
       "file": "interviews/companies/tencent.md",
-      "line": 602,
+      "line": 693,
       "category": "interviews",
       "topics": [
         "system-design",
@@ -7754,7 +7755,7 @@
       "number": 11,
       "title": "Design a Multiplayer Game Server (Honor of Kings-style)",
       "file": "interviews/companies/tencent.md",
-      "line": 617,
+      "line": 719,
       "category": "interviews",
       "topics": [
         "system-design",
@@ -7771,7 +7772,7 @@
       "number": 12,
       "title": "Design QQ / WeChat Voice & Video Call",
       "file": "interviews/companies/tencent.md",
-      "line": 632,
+      "line": 734,
       "category": "interviews",
       "topics": [
         "system-design",
@@ -7789,7 +7790,7 @@
       "number": 13,
       "title": "Design Tencent Cloud Object Storage (COS)",
       "file": "interviews/companies/tencent.md",
-      "line": 647,
+      "line": 749,
       "category": "interviews",
       "topics": [
         "system-design",
@@ -7806,7 +7807,7 @@
       "number": 14,
       "title": "Design a Live Streaming Gift / Bullet-Comment System",
       "file": "interviews/companies/tencent.md",
-      "line": 662,
+      "line": 764,
       "category": "interviews",
       "topics": [
         "system-design",
@@ -7823,7 +7824,7 @@
       "number": 15,
       "title": "Tell me about a time you collaborated across teams",
       "file": "interviews/companies/tencent.md",
-      "line": 677,
+      "line": 779,
       "category": "interviews",
       "topics": [
         "behavioral",
@@ -7839,7 +7840,7 @@
       "number": 16,
       "title": "Time you proactively fixed something not in your scope",
       "file": "interviews/companies/tencent.md",
-      "line": 692,
+      "line": 794,
       "category": "interviews",
       "topics": [
         "behavioral",
@@ -7855,7 +7856,7 @@
       "number": 17,
       "title": "Time you handled a production incident",
       "file": "interviews/companies/tencent.md",
-      "line": 707,
+      "line": 809,
       "category": "interviews",
       "topics": [
         "behavioral",
@@ -7871,7 +7872,7 @@
       "number": 18,
       "title": "Why Tencent",
       "file": "interviews/companies/tencent.md",
-      "line": 722,
+      "line": 824,
       "category": "interviews",
       "topics": [
         "behavioral",
@@ -7887,7 +7888,7 @@
       "number": 19,
       "title": "TCP deep dive: why does TCP throughput drop on a high-RTT link?",
       "file": "interviews/companies/tencent.md",
-      "line": 737,
+      "line": 839,
       "category": "interviews",
       "topics": [
         "networking",
@@ -7903,7 +7904,7 @@
       "number": 20,
       "title": "Anti-cheat in a real-time multiplayer game",
       "file": "interviews/companies/tencent.md",
-      "line": 752,
+      "line": 854,
       "category": "interviews",
       "topics": [
         "gaming",
@@ -7919,7 +7920,7 @@
       "number": 21,
       "title": "Network Delay Time",
       "file": "interviews/companies/tencent.md",
-      "line": 767,
+      "line": 869,
       "category": "interviews",
       "topics": [
         "graph",
@@ -7935,7 +7936,7 @@
       "number": 22,
       "title": "Cheapest Flights Within K Stops",
       "file": "interviews/companies/tencent.md",
-      "line": 849,
+      "line": 951,
       "category": "interviews",
       "topics": [
         "graph",
@@ -7952,7 +7953,7 @@
       "number": 23,
       "title": "Path with Maximum Probability",
       "file": "interviews/companies/tencent.md",
-      "line": 919,
+      "line": 1021,
       "category": "interviews",
       "topics": [
         "graph",
@@ -7968,7 +7969,7 @@
       "number": 24,
       "title": "Minimum Number of Refueling Stops",
       "file": "interviews/companies/tencent.md",
-      "line": 1014,
+      "line": 1116,
       "category": "interviews",
       "topics": [
         "greedy",
@@ -7984,7 +7985,7 @@
       "number": 25,
       "title": "Bus Routes",
       "file": "interviews/companies/tencent.md",
-      "line": 1087,
+      "line": 1189,
       "category": "interviews",
       "topics": [
         "graph",
@@ -7999,7 +8000,7 @@
       "number": 26,
       "title": "Critical Connections in a Network",
       "file": "interviews/companies/tencent.md",
-      "line": 1188,
+      "line": 1290,
       "category": "interviews",
       "topics": [
         "graph",
@@ -8016,7 +8017,7 @@
       "number": 27,
       "title": "Number of Connected Components in an Undirected Graph",
       "file": "interviews/companies/tencent.md",
-      "line": 1292,
+      "line": 1394,
       "category": "interviews",
       "topics": [
         "graph",
@@ -8032,7 +8033,7 @@
       "number": 28,
       "title": "Number of Provinces (Friend Circles)",
       "file": "interviews/companies/tencent.md",
-      "line": 1368,
+      "line": 1470,
       "category": "interviews",
       "topics": [
         "graph",
@@ -8048,7 +8049,7 @@
       "number": 29,
       "title": "Redundant Connection",
       "file": "interviews/companies/tencent.md",
-      "line": 1445,
+      "line": 1547,
       "category": "interviews",
       "topics": [
         "graph",
@@ -8064,7 +8065,7 @@
       "number": 30,
       "title": "Course Schedule",
       "file": "interviews/companies/tencent.md",
-      "line": 1520,
+      "line": 1622,
       "category": "interviews",
       "topics": [
         "graph",
@@ -8081,7 +8082,7 @@
       "number": 31,
       "title": "Course Schedule II",
       "file": "interviews/companies/tencent.md",
-      "line": 1599,
+      "line": 1701,
       "category": "interviews",
       "topics": [
         "graph",
@@ -8096,7 +8097,7 @@
       "number": 32,
       "title": "Alien Dictionary",
       "file": "interviews/companies/tencent.md",
-      "line": 1679,
+      "line": 1781,
       "category": "interviews",
       "topics": [
         "graph",
@@ -8112,7 +8113,7 @@
       "number": 33,
       "title": "Stone Game",
       "file": "interviews/companies/tencent.md",
-      "line": 1791,
+      "line": 1893,
       "category": "interviews",
       "topics": [
         "dp",
@@ -8128,7 +8129,7 @@
       "number": 34,
       "title": "Nim Game",
       "file": "interviews/companies/tencent.md",
-      "line": 1857,
+      "line": 1959,
       "category": "interviews",
       "topics": [
         "game-theory",
@@ -8143,7 +8144,7 @@
       "number": 35,
       "title": "Predict the Winner",
       "file": "interviews/companies/tencent.md",
-      "line": 1897,
+      "line": 1999,
       "category": "interviews",
       "topics": [
         "dp",
@@ -8160,7 +8161,7 @@
       "number": 36,
       "title": "Can I Win",
       "file": "interviews/companies/tencent.md",
-      "line": 1956,
+      "line": 2058,
       "category": "interviews",
       "topics": [
         "dp",
@@ -8177,7 +8178,7 @@
       "number": 37,
       "title": "Flip Game II",
       "file": "interviews/companies/tencent.md",
-      "line": 2040,
+      "line": 2142,
       "category": "interviews",
       "topics": [
         "game-theory",
@@ -8194,7 +8195,7 @@
       "number": 38,
       "title": "Guess Number Higher or Lower II",
       "file": "interviews/companies/tencent.md",
-      "line": 2112,
+      "line": 2214,
       "category": "interviews",
       "topics": [
         "dp",
@@ -8210,7 +8211,7 @@
       "number": 39,
       "title": "Wildcard Matching",
       "file": "interviews/companies/tencent.md",
-      "line": 2179,
+      "line": 2281,
       "category": "interviews",
       "topics": [
         "dp",
@@ -8225,7 +8226,7 @@
       "number": 40,
       "title": "Regular Expression Matching",
       "file": "interviews/companies/tencent.md",
-      "line": 2252,
+      "line": 2354,
       "category": "interviews",
       "topics": [
         "dp",
@@ -8241,7 +8242,7 @@
       "number": 41,
       "title": "Longest Palindromic Substring",
       "file": "interviews/companies/tencent.md",
-      "line": 2336,
+      "line": 2438,
       "category": "interviews",
       "topics": [
         "strings",
@@ -8257,7 +8258,7 @@
       "number": 42,
       "title": "Longest Palindromic Subsequence",
       "file": "interviews/companies/tencent.md",
-      "line": 2408,
+      "line": 2510,
       "category": "interviews",
       "topics": [
         "dp",
@@ -8272,7 +8273,7 @@
       "number": 43,
       "title": "Palindrome Partitioning",
       "file": "interviews/companies/tencent.md",
-      "line": 2479,
+      "line": 2581,
       "category": "interviews",
       "topics": [
         "backtracking",
@@ -8288,7 +8289,7 @@
       "number": 44,
       "title": "Word Break II",
       "file": "interviews/companies/tencent.md",
-      "line": 2577,
+      "line": 2679,
       "category": "interviews",
       "topics": [
         "dp",
@@ -8305,7 +8306,7 @@
       "number": 45,
       "title": "Concatenated Words",
       "file": "interviews/companies/tencent.md",
-      "line": 2667,
+      "line": 2769,
       "category": "interviews",
       "topics": [
         "dp",
@@ -8321,7 +8322,7 @@
       "number": 46,
       "title": "Number of Atoms",
       "file": "interviews/companies/tencent.md",
-      "line": 2765,
+      "line": 2867,
       "category": "interviews",
       "topics": [
         "stack",
@@ -8338,7 +8339,7 @@
       "number": 47,
       "title": "Basic Calculator II",
       "file": "interviews/companies/tencent.md",
-      "line": 2893,
+      "line": 2997,
       "category": "interviews",
       "topics": [
         "stack",
@@ -8354,7 +8355,7 @@
       "number": 48,
       "title": "Decode String",
       "file": "interviews/companies/tencent.md",
-      "line": 2979,
+      "line": 3083,
       "category": "interviews",
       "topics": [
         "stack",
@@ -8371,7 +8372,7 @@
       "number": 49,
       "title": "Mini Parser (Flatten Nested List Iterator)",
       "file": "interviews/companies/tencent.md",
-      "line": 3056,
+      "line": 3160,
       "category": "interviews",
       "topics": [
         "stack",
@@ -8388,7 +8389,7 @@
       "number": 50,
       "title": "Reverse Pairs",
       "file": "interviews/companies/tencent.md",
-      "line": 3153,
+      "line": 3257,
       "category": "interviews",
       "topics": [
         "merge-sort",
@@ -8404,7 +8405,7 @@
       "number": 51,
       "title": "Count of Smaller Numbers After Self",
       "file": "interviews/companies/tencent.md",
-      "line": 3238,
+      "line": 3342,
       "category": "interviews",
       "topics": [
         "bit",
@@ -8420,7 +8421,7 @@
       "number": 52,
       "title": "Count of Range Sum",
       "file": "interviews/companies/tencent.md",
-      "line": 3350,
+      "line": 3454,
       "category": "interviews",
       "topics": [
         "merge-sort",
@@ -8436,7 +8437,7 @@
       "number": 53,
       "title": "Find Median from Data Stream",
       "file": "interviews/companies/tencent.md",
-      "line": 3446,
+      "line": 3550,
       "category": "interviews",
       "topics": [
         "heap",
@@ -8452,7 +8453,7 @@
       "number": 54,
       "title": "Sliding Window Median",
       "file": "interviews/companies/tencent.md",
-      "line": 3524,
+      "line": 3628,
       "category": "interviews",
       "topics": [
         "heap",
@@ -8468,7 +8469,7 @@
       "number": 55,
       "title": "Smallest Range Covering Elements from K Lists",
       "file": "interviews/companies/tencent.md",
-      "line": 3615,
+      "line": 3719,
       "category": "interviews",
       "topics": [
         "heap",
@@ -8483,7 +8484,7 @@
       "number": 56,
       "title": "Single Number II",
       "file": "interviews/companies/tencent.md",
-      "line": 3703,
+      "line": 3807,
       "category": "interviews",
       "topics": [
         "bit-manipulation",
@@ -8498,7 +8499,7 @@
       "number": 57,
       "title": "Single Number III",
       "file": "interviews/companies/tencent.md",
-      "line": 3757,
+      "line": 3861,
       "category": "interviews",
       "topics": [
         "bit-manipulation",
@@ -8513,7 +8514,7 @@
       "number": 58,
       "title": "Bitwise AND of Numbers Range",
       "file": "interviews/companies/tencent.md",
-      "line": 3823,
+      "line": 3927,
       "category": "interviews",
       "topics": [
         "bit-manipulation",
@@ -8528,7 +8529,7 @@
       "number": 59,
       "title": "Power of Four",
       "file": "interviews/companies/tencent.md",
-      "line": 3867,
+      "line": 3971,
       "category": "interviews",
       "topics": [
         "bit-manipulation",
@@ -8543,7 +8544,7 @@
       "number": 60,
       "title": "Skill-Based Matchmaking (Balanced Team Split)",
       "file": "interviews/companies/tencent.md",
-      "line": 3907,
+      "line": 4011,
       "category": "interviews",
       "topics": [
         "dp",
@@ -8560,7 +8561,7 @@
       "number": 61,
       "title": "Minimum Spanning Tree for Game Server Topology",
       "file": "interviews/companies/tencent.md",
-      "line": 3985,
+      "line": 4089,
       "category": "interviews",
       "topics": [
         "graph",
@@ -8578,7 +8579,7 @@
       "number": 62,
       "title": "Maximum Bipartite Matching (Player-to-Server Assignment)",
       "file": "interviews/companies/tencent.md",
-      "line": 4075,
+      "line": 4179,
       "category": "interviews",
       "topics": [
         "graph",
@@ -15790,6 +15791,102 @@
       "difficulty": null,
       "title_zh": "PWA：SW 生命周期、离线策略、安装提示",
       "file_zh": "knowledge/frontend.zh.md"
+    },
+    {
+      "id": "mock-interviews/system-design-rubric.md#1",
+      "number": 1,
+      "title": "Requirements & Scope",
+      "file": "mock-interviews/system-design-rubric.md",
+      "line": 18,
+      "category": "mock-interviews",
+      "topics": [],
+      "difficulty": null,
+      "title_zh": "需求与范围",
+      "file_zh": "mock-interviews/system-design-rubric.zh.md"
+    },
+    {
+      "id": "mock-interviews/system-design-rubric.md#2",
+      "number": 2,
+      "title": "Scale Estimation",
+      "file": "mock-interviews/system-design-rubric.md",
+      "line": 31,
+      "category": "mock-interviews",
+      "topics": [],
+      "difficulty": null,
+      "title_zh": "规模估算",
+      "file_zh": "mock-interviews/system-design-rubric.zh.md"
+    },
+    {
+      "id": "mock-interviews/system-design-rubric.md#3",
+      "number": 3,
+      "title": "High-Level Architecture",
+      "file": "mock-interviews/system-design-rubric.md",
+      "line": 44,
+      "category": "mock-interviews",
+      "topics": [],
+      "difficulty": null,
+      "title_zh": "高层架构",
+      "file_zh": "mock-interviews/system-design-rubric.zh.md"
+    },
+    {
+      "id": "mock-interviews/system-design-rubric.md#4",
+      "number": 4,
+      "title": "Data Model & Storage",
+      "file": "mock-interviews/system-design-rubric.md",
+      "line": 57,
+      "category": "mock-interviews",
+      "topics": [],
+      "difficulty": null,
+      "title_zh": "数据模型与存储",
+      "file_zh": "mock-interviews/system-design-rubric.zh.md"
+    },
+    {
+      "id": "mock-interviews/system-design-rubric.md#5",
+      "number": 5,
+      "title": "Scalability & Performance",
+      "file": "mock-interviews/system-design-rubric.md",
+      "line": 70,
+      "category": "mock-interviews",
+      "topics": [],
+      "difficulty": null,
+      "title_zh": "可扩展与性能",
+      "file_zh": "mock-interviews/system-design-rubric.zh.md"
+    },
+    {
+      "id": "mock-interviews/system-design-rubric.md#6",
+      "number": 6,
+      "title": "Reliability & Trade-offs",
+      "file": "mock-interviews/system-design-rubric.md",
+      "line": 83,
+      "category": "mock-interviews",
+      "topics": [],
+      "difficulty": null,
+      "title_zh": "可靠性与权衡",
+      "file_zh": "mock-interviews/system-design-rubric.zh.md"
+    },
+    {
+      "id": "mock-interviews/system-design-rubric.md#7",
+      "number": 7,
+      "title": "Deep Dives",
+      "file": "mock-interviews/system-design-rubric.md",
+      "line": 96,
+      "category": "mock-interviews",
+      "topics": [],
+      "difficulty": null,
+      "title_zh": "深入展开",
+      "file_zh": "mock-interviews/system-design-rubric.zh.md"
+    },
+    {
+      "id": "mock-interviews/system-design-rubric.md#8",
+      "number": 8,
+      "title": "Operational Concerns",
+      "file": "mock-interviews/system-design-rubric.md",
+      "line": 109,
+      "category": "mock-interviews",
+      "topics": [],
+      "difficulty": null,
+      "title_zh": "工程运维",
+      "file_zh": "mock-interviews/system-design-rubric.zh.md"
     }
   ]
 }

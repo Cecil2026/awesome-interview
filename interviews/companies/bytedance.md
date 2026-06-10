@@ -88,6 +88,16 @@ int lengthOfLIS(int[] nums) {
 - Binary search gives O(n log n) vs O(n^2) DP.
 - For non-strict increasing, use `bisect_right` instead.
 
+**Follow-ups:**
+- Reconstruct one valid LIS, not just the length.
+- Count the number of LIS (LeetCode 673).
+- Longest *bitonic* subsequence — LIS forward + LIS backward.
+- 2D LIS / Russian doll envelopes — sort by one axis then LIS on the other.
+
+**Common Pitfalls:**
+- Confusing the `tails` array with the actual LIS sequence — it's not.
+- Using `bisect_left` for non-strict increasing — you'll undercount duplicates.
+
 **Tags:** #algorithm
 
 ---
@@ -163,6 +173,16 @@ int minDistance(String word1, String word2) {
 - Three transitions correspond to delete, insert, replace.
 - Initialize first row/column to identity costs.
 - Rolling array reduces to O(min(m, n)) space.
+
+**Follow-ups:**
+- Different operation costs (insert vs delete vs replace each have their own weight).
+- Reconstruct the actual edit script, not just the distance.
+- One Edit Distance — detect if distance is exactly 1 in O(n) time.
+- Word-level edit distance for diff tools.
+
+**Common Pitfalls:**
+- Forgetting the `dp[i-1][j-1]` term — only treating insert/delete and missing replace.
+- Initializing the first row/column to 0 instead of `i`/`j` — silently wrong.
 
 **Tags:** #algorithm
 
@@ -244,6 +264,16 @@ int maxSumRectangle(int[][] matrix) {
 - Iterating outer rows in O(rows^2) and inner Kadane in O(cols) gives O(rows^2 * cols).
 - All-negative matrices return the single largest element.
 
+**Follow-ups:**
+- Return the four corners of the optimal rectangle, not just the sum.
+- Constrain rectangle to be ≤ K in sum (max sum no larger than K).
+- Find the *smallest* rectangle whose sum is ≥ K.
+- 3D extension: max-sum cuboid in 3D matrix.
+
+**Common Pitfalls:**
+- Choosing the outer loop on columns instead of rows when cols >> rows — picks the wrong dimension to square.
+- Forgetting that all-negative inputs still must return the largest single element, not 0.
+
 **Tags:** #algorithm
 
 ---
@@ -316,6 +346,16 @@ int maxCoins(int[] nums) {
 - Padding with 1s sidesteps boundary checks.
 - O(n^3) time, O(n^2) space.
 
+**Follow-ups:**
+- Min cost to merge stones — same interval-DP shape.
+- Matrix Chain Multiplication — classic interval DP.
+- Print the optimal burst order, not just the score.
+- Multi-color balloon variant with adjacency rules.
+
+**Common Pitfalls:**
+- Iterating "first" balloon to burst instead of last — the subproblem isn't well-defined.
+- Forgetting the boundary 1s — off-by-one when balloon is at edge.
+
 **Tags:** #algorithm
 
 ---
@@ -385,6 +425,16 @@ int[] maxSlidingWindow(int[] nums, int k) {
 - Deque holds indices, not values, so window expiration is O(1).
 - Each index is pushed and popped at most once: amortized O(n).
 - Front of deque is always the window's max.
+
+**Follow-ups:**
+- Sliding window *minimum* — flip the comparison.
+- Sliding window median — two heaps with lazy deletion, or order statistics tree.
+- Variable-size window: smallest window with sum ≥ K.
+- Streaming top-K within last N events.
+
+**Common Pitfalls:**
+- Storing values instead of indices — can't tell when an entry has expired out of the window.
+- Using `<` instead of `<=` when popping the back — lets stale equal values linger.
 
 **Tags:** #algorithm
 
@@ -525,6 +575,16 @@ void backtrack(String w, String begin, Map<String, List<String>> parents, Deque<
 - Remove layer from `words` to prevent revisiting at same or later depth.
 - Stop BFS at the layer where `end` first appears.
 
+**Follow-ups:**
+- Bidirectional BFS — search from both ends, halve the branching exponent.
+- Word Ladder I (just the length) — simpler single-pass BFS.
+- Return the count of shortest paths instead of all the paths.
+- Allow insertions/deletions in addition to substitutions — different neighbor function.
+
+**Common Pitfalls:**
+- Removing words *during* the current BFS layer — can miss alternative parents at the same depth.
+- Not stopping at the layer where `end` first appears — explodes runtime on dense dictionaries.
+
 **Tags:** #algorithm
 
 ---
@@ -608,6 +668,16 @@ boolean isMatch(String s, String p) {
 - `*` represents zero or more of the preceding character.
 - Empty string can match patterns like `a*b*c*` (handled by row 0 init).
 - Always evaluate the `*` case via two branches: zero copies vs one-more copy.
+
+**Follow-ups:**
+- Wildcard matching with `?` and `*` (LeetCode 44) — different semantics, no preceding-char rule.
+- Compile the regex to an NFA / Thompson construction.
+- Support `+` and `{n,m}` quantifiers.
+- Return the matched groups, not just true/false.
+
+**Common Pitfalls:**
+- Treating `*` as wildcard for any character — it only repeats the *preceding* char.
+- Off-by-one on `dp[0][j]` init for patterns like `a*b*c*`.
 
 **Tags:** #algorithm
 
@@ -698,6 +768,16 @@ int find(int[] parent, int x) {
 - Decrement count only on a real merge.
 - Inverse Ackermann factor makes this effectively O(E).
 
+**Follow-ups:**
+- Size of each connected component, not just the count.
+- Dynamic connectivity — edges are added and removed online.
+- Connected components in a *directed* graph — Tarjan / Kosaraju SCC instead.
+- Union-find with rollback for offline queries.
+
+**Common Pitfalls:**
+- Decrementing the count on every `union` call regardless of whether roots differ — over-counts.
+- Forgetting either path compression or union by rank — risk of O(n) per find on adversarial input.
+
 **Tags:** #algorithm
 
 ---
@@ -713,6 +793,17 @@ int find(int[] parent, int x) {
 
 **Approach:** Two-stage ranker: (1) **Candidate generation** — pull a few hundred candidates from multiple sources: collaborative filtering embeddings (user vector lookup → ANN search via FAISS/HNSW), recent uploads from followed creators, trending in your geo/language, "exploration" cold-start items. (2) **Ranking** — multi-task DNN scoring P(like), P(watch_to_completion), P(share), P(comment) given user features + video features + context. Combine with a weighted objective. Diversity rerank (don't show 5 cooking videos in a row). Online learning loop: every interaction streamed to Flink → updates user state in real-time (Kafka → user embedding store). Discuss cold start, cache layers, A/B framework, and inference latency budget.
 
+**Follow-ups:**
+- Cold-start for a brand-new user with zero history.
+- Filter bubble / echo chamber mitigation in the ranker.
+- Real-time signal: how fast does a "like" feed back into the next recommendation?
+- Model retraining cadence — hourly vs daily vs continuous online learning.
+- Inference latency budget — how do you stay under 200ms with multi-task DNN scoring?
+
+**Common Pitfalls:**
+- Mixing up candidate generation and ranking — they have very different latency budgets.
+- Ignoring diversity rerank — the FYP collapses into a single topic.
+
 **Tags:** #system-design
 
 ---
@@ -727,6 +818,17 @@ int find(int[] parent, int x) {
 **Question:** Design the upload + encoding pipeline for TikTok. A user records a 60s vertical video and posts it; how does it become playable globally in seconds?
 
 **Approach:** Client uploads to nearest edge (regional ingest) via resumable multipart. Original stored in cold blob; transcoding job enqueued. Transcoder fleet (autoscaled, GPU for some codecs) generates multiple bitrates (HLS chunks). Thumbnails extracted. ML moderation runs in parallel (NSFW classifier, copyrighted audio detection). Metadata + URLs written to a sharded DB. CDN preheat for high-engagement creators (push to PoPs in target geos). Discuss: parallel chunked encoding to keep latency low, fallback on encoding failure, and how the post enters the recommendation candidate pool only after moderation passes.
+
+**Follow-ups:**
+- Resumable upload on flaky mobile networks — chunk size, retry, dedupe.
+- DRM / watermarking pipeline — where in the flow does it sit?
+- Cost: cold blob vs warm blob vs CDN — how do you tier as engagement decays?
+- Live moderation appeal: what if a video is incorrectly flagged?
+- Multi-region storage placement — where do you keep the master copy?
+
+**Common Pitfalls:**
+- Encoding the full video before allowing playback — hide playback behind the first chunk being ready instead.
+- Letting unmoderated content into the FYP candidate pool — brand-safety disaster.
 
 **Tags:** #system-design
 
@@ -1630,6 +1732,8 @@ void back(StringBuilder buf, int op, int cl, int n, List<String> out) {
 - Pruning by `op < n` and `cl < op` guarantees validity.
 - Output size = C(n), the n-th Catalan number.
 - String concatenation is fine since each path is independent.
+
+**Complexity:** O(4ⁿ / √n) — the n-th Catalan number of valid strings, each of length 2n. Recursion depth is O(n).
 
 **Tags:** #algorithm
 
@@ -2732,6 +2836,8 @@ List<String> solve(String s, int i, Set<String> words, Map<Integer, List<String>
 - Memoization keys by start index so each suffix is solved once.
 - Base case returns `[""]` so prepending a word gives just the word.
 - Output may still be exponential; memo only helps shared sub-suffixes.
+
+**Complexity:** O(n²) distinct subproblems with memoization, but the answer set can be exponential, so total time is O(n² + |output|).
 
 **Tags:** #algorithm
 
@@ -3855,6 +3961,8 @@ int gain(TreeNode n) {
 - Negative subtree contributions clamp to 0.
 - Candidate path through a node uses BOTH children; return value to parent uses only ONE.
 - Global `best` is updated post-order at every node.
+
+**Complexity:** O(n) — one post-order visit per node; O(h) recursion-stack space where h is the tree height.
 
 **Tags:** #algorithm
 

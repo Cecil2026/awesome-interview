@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Contribution guide
+    url: https://github.com/Cecil2026/awesome-interview/blob/main/CONTRIBUTING.md
+    about: How entries are structured, how to run the validator, and how to open a PR.

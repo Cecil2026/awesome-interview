@@ -96,6 +96,16 @@ static ListNode reverseList(ListNode head) {
 - 循环结束时 `prev` 即为新头。
 - 递归版优雅但 O(n) 栈深，长链表存在栈溢出风险。
 
+**常见追问：**
+- 在下标 m 到 n 之间反转子链表，单遍。
+- 按 k 个一组反转（Reverse Nodes in k-Group）。
+- 双向链表——还要修 `prev` 指针。
+- 先检环再拒绝反转——避免指针损坏。
+
+**常见坑：**
+- 重写 `cur.next` 前没先抓 `next`——链表被截断。
+- 循环结束后返 `head`（旧头）而不是 `prev`（新头）。
+
 **标签：** #algorithm
 
 ---
@@ -169,6 +179,16 @@ private static boolean go(TreeNode n, long lo, long hi) {
 - 边界随下行收紧；严格不等式保证值唯一。
 - 空树天然是合法 BST。
 - 仅比较父子会漏掉远祖被破坏的情况。
+
+**常见追问：**
+- 允许重复值——重定义放哪侧并调整不等式。
+- 在非 BST 树里返回最大的合法 BST 子树（大小 + 根）。
+- 栈迭代中序——避免递归栈风险。
+- 值包含 `Integer.MIN_VALUE` / `MAX_VALUE`——必须用 `Long` 边界或 null 哨兵。
+
+**常见坑：**
+- 用 `<=` / `>=` 而不是严格 `<` / `>`——重复值会漏。
+- 只比邻接父节点——`[5, 1, 6, null, null, 3, 7]` 会误过。
 
 **标签：** #algorithm
 
@@ -269,6 +289,16 @@ private static TreeNode des(Deque<String> q) {
 - 共享游标/迭代器让反序列化 O(n) 且无需下标运算。
 - BFS 版本思路一致，用队列产生层序序列。
 
+**常见追问：**
+- BST 更紧凑的序列化（存大小后不需 null 标记）。
+- N 叉树——每节点编码子节点数。
+- 流式序列化——边走边输出 token。
+- 跨版本兼容——加头/版本字节。
+
+**常见坑：**
+- 按 `,` 切分但值本身含 `,`——转义或改用长度前缀编码。
+- 某个子节点的 null 标记漏写——反序列化错位。
+
 **标签：** #algorithm
 
 ---
@@ -346,6 +376,16 @@ private static int quickselect(int[] a, int lo, int hi, int target) {
 - 随机 pivot 让期望 O(n)，O(n^2) 最坏极不可能。
 - 堆解法用 O(k) 内存，更适合流式输入。
 
+**常见追问：**
+- top-k **不重复**元素——加 set 去重。
+- 流式 kth largest——维护大小 k 的小顶堆。
+- top-k 频次（Top-K Frequent）——桶排序可 O(n)。
+- 数据流中位数——双堆模型。
+
+**常见坑：**
+- 用固定 pivot（首或尾）——有序输入上最坏 O(n^2)。
+- “kth largest” 映射到升序下标 `n - k` 时 off-by-one。
+
 **标签：** #algorithm
 
 ---
@@ -419,6 +459,16 @@ static List<Integer> spiralOrder(int[][] matrix) {
 - 单行/单列时跳过下行与左列扫描，避免重复元素。
 - 每完成一圈，四个边界各收 1。
 - O(m*n) 时间，O(1) 额外空间（不含输出）。
+
+**常见追问：**
+- 从 1..n^2 构造螺旋矩阵（Spiral Matrix II）。
+- 任意起始位置或方向的螺旋。
+- 改为对角线顺序遍历。
+- 非矩形网格（锐齿 2D 数组）上的螺旋。
+
+**常见坑：**
+- 跳过 `top < bot && left < right` 护栏——最后一圈会重复。
+- 跳过行/列扫描前先调边界——遗漏元素。
 
 **标签：** #algorithm
 
@@ -506,6 +556,16 @@ static RNode copyRandomList(RNode head) {
 - 用节点身份作 key，而非值（值可能重复）。
 - 交错-拆分技巧能 O(1) 额外空间，但代码细节更易写错。
 
+**常见追问：**
+- 克隆带随机边的图——同样身份键 map。
+- 从零实现 O(1) 额外空间的交错变体。
+- 带环的链表——检测并保留环。
+- 与原链共享结构的持久拷贝——不可变链表变体。
+
+**常见坑：**
+- 用 `cur.val` 作 map key——值重复时会错。
+- map 查找前忘了 null 判定 `cur.next` / `cur.random`。
+
 **标签：** #algorithm
 
 ---
@@ -560,6 +620,16 @@ static int maxProfit(int[] prices) {
 - 买在卖之前，所以先更新 `lo` 再算今天的收益。
 - 单调下跌数组正确返回 0。
 - 一次遍历 O(n)，胜过两两枚举的 O(n^2)。
+
+**常见追问：**
+- 最多 2 笔交易——四状态 DP。
+- 无限笔——所有正的逐日差叠加。
+- 带冷冻期 / 手续费——DP 加额外状态。
+- 返回最优买卖的 *天子下标*，而非收益。
+
+**常见坑：**
+- `lo` 初为 `prices[0]` 且从 0 开始遍历——产生一个瞬时 0 收益，本身无害但迷惑。
+- 遇到新 `lo` 就重置 `best`——必须保持走动最大值。
 
 **标签：** #algorithm
 
@@ -636,6 +706,16 @@ private static boolean dfs(char[][] b, String w, int r, int c, int i) {
 - 回溯时复原，保证其他起点仍可用。
 - 最坏 O(m*n*4^L)；字符不匹配能尽早剪枝。
 
+**常见追问：**
+- Word Search II——一次查询多个单词，trie + DFS。
+- 允许对角移动——从 4 方向变 8 方向。
+- 可复用单元——另一类问题（可能无限路径）。
+- 返回所有匹配的起点，而非仅 true/false。
+
+**常见坑：**
+- 回溯时忘了复原——只能走首次 DFS。
+- 用可能出现在词里的字母作哨兵——选非字母哨兵。
+
 **标签：** #algorithm
 
 ---
@@ -651,6 +731,17 @@ private static boolean dfs(char[][] b, String w, int r, int c, int i) {
 
 **思路：** WebSocket 网关（按用户粘性）→ 消息总线（Service Bus / Kafka）。按 channel 的 topic 做扇出。存储：Cosmos DB 按 `channel_id` 分片存消息。在线状态：每区域 Redis 带 TTL；跨区域最终一致聚合。讨论已读回执、输入提示（限流 1/秒）、大 channel 如何避免扇出风暴（滚动时懒拉取）。加分：合规/eDiscovery 要求（Office 365 不可变归档）。
 
+**常见追问：**
+- 成员超过 1 万的 channel——写时扇出 vs 打开时懒拉。
+- 与外部租户联邦——信任边界、密钥交换。
+- 合规：保留、法律冻结、多年消息的 eDiscovery 检索。
+- 休眠设备的移动推送——APNs/FCM 桥接与去重。
+- 大规模已读回执——批处理、允许丢失还是严格逐人执行？
+
+**常见坑：**
+- 把在线状态当强一致——浪费大量写吞吐。
+- 所有 channel 都写时扇出——大 channel 会压垮系统。
+
 **标签：** #system-design
 
 ---
@@ -665,6 +756,17 @@ private static boolean dfs(char[][] b, String w, int r, int c, int i) {
 **问题：** 设计 Azure Blob 存储。覆盖分片、复制、持久性、读写路径。
 
 **思路：** 前端层（负载均衡）→ 分区层（blob 名映射到存储服务器，按 account+container+blob 分片）→ stream 层（append-only、纠删码 chunk 分布在节点/机架/AZ 间）。分区层用 master（Paxos）做表分配。多 AZ 保证持久性，跨区域异步复制做灾备。讨论单区域内的强一致（分区单 primary）、大 blob 上传（block blob 提交模型）、分层（hot → cool → archive）。
+
+**常见追问：**
+- 复制因子选择——3 副本 vs 纠删码，各自什么场景胜出？
+- 热分区恢复——单个租户压满一个存储节点。
+- Stream 层 append-only——删除/覆写是怎么实现的？
+- 跨区域异步复制——RPO/RTO 目标与冲突解决。
+- 分层转换管道——hot → cool → archive 如何调度，读延迟如何标记？
+
+**常见坑：**
+- 把 blob 看作单一连续文件——遗漏了 block/append 结构。
+- 混淆分区层与 stream 层；二者的故障域与一致性模型不同。
 
 **标签：** #system-design
 
@@ -2456,6 +2558,8 @@ static int getSum(int a, int b) {
 - XOR 得无进位和，AND 左移得进位。
 - 进位为 0 时结束（32 位最多 32 轮）。
 - Python 需要 32 位掩码模拟定宽溢出。
+
+**复杂度：** O(1)——对 32 位整数最多 32 轮进位传播；O(1) 空间。
 
 **标签：** #algorithm
 

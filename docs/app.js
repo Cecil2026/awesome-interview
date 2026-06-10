@@ -29,9 +29,25 @@
     navGitHub: document.getElementById('nav-github'),
     navKnowledge: document.getElementById('nav-knowledge'),
     navInterviews: document.getElementById('nav-interviews'),
+    navMock: document.getElementById('nav-mock'),
+    navBehavioral: document.getElementById('nav-behavioral'),
     navRoadmap: document.getElementById('nav-roadmap'),
+    navBrowse: document.getElementById('nav-browse'),
     tagline: document.getElementById('tagline'),
     footerText: document.getElementById('footer-text'),
+    sectionsHeading: document.getElementById('sections-heading'),
+    cardKnowledgeTitle: document.getElementById('card-knowledge-title'),
+    cardKnowledgeDesc: document.getElementById('card-knowledge-desc'),
+    cardInterviewsTitle: document.getElementById('card-interviews-title'),
+    cardInterviewsDesc: document.getElementById('card-interviews-desc'),
+    cardMockTitle: document.getElementById('card-mock-title'),
+    cardMockDesc: document.getElementById('card-mock-desc'),
+    cardBehavioralTitle: document.getElementById('card-behavioral-title'),
+    cardBehavioralDesc: document.getElementById('card-behavioral-desc'),
+    cardRoadmapTitle: document.getElementById('card-roadmap-title'),
+    cardRoadmapDesc: document.getElementById('card-roadmap-desc'),
+    cardReadmeTitle: document.getElementById('card-readme-title'),
+    cardReadmeDesc: document.getElementById('card-readme-desc'),
   };
 
   let questions = [];
@@ -48,7 +64,17 @@
       github: 'README',
       knowledge: 'Knowledge',
       interviews: 'Interviews',
+      mock: 'Mock interviews',
+      behavioral: 'Behavioral',
       roadmap: 'Roadmap',
+      browse: 'Browse',
+      sectionsHeading: 'Explore',
+      cardKnowledgeDesc: 'Topic-organized Q&A banks',
+      cardInterviewsDesc: 'Real company question banks',
+      cardMockDesc: 'Full transcript-style sessions',
+      cardBehavioralDesc: 'STAR questions & principles',
+      cardRoadmapDesc: 'Week-by-week study plans',
+      cardReadmeDesc: 'Project overview & usage',
       category: 'Category',
       all: 'All',
       difficulty: 'Difficulty',
@@ -77,7 +103,17 @@
       github: '项目说明',
       knowledge: '知识库',
       interviews: '面试题',
+      mock: '模拟面试',
+      behavioral: '行为面试',
       roadmap: '路线图',
+      browse: '浏览',
+      sectionsHeading: '探索板块',
+      cardKnowledgeDesc: '按主题组织的问答题库',
+      cardInterviewsDesc: '真实公司面试题库',
+      cardMockDesc: '完整对话脚本式模拟',
+      cardBehavioralDesc: 'STAR 题目与领导力准则',
+      cardRoadmapDesc: '逐周学习计划',
+      cardReadmeDesc: '项目概览与使用说明',
       category: '类别',
       all: '全部',
       difficulty: '难度',
@@ -115,7 +151,23 @@
     if (els.navGitHub) els.navGitHub.textContent = t('github');
     if (els.navKnowledge) els.navKnowledge.textContent = t('knowledge');
     if (els.navInterviews) els.navInterviews.textContent = t('interviews');
+    if (els.navMock) els.navMock.textContent = t('mock');
+    if (els.navBehavioral) els.navBehavioral.textContent = t('behavioral');
     if (els.navRoadmap) els.navRoadmap.textContent = t('roadmap');
+    if (els.navBrowse) els.navBrowse.textContent = t('browse');
+    if (els.sectionsHeading) els.sectionsHeading.textContent = t('sectionsHeading');
+    if (els.cardKnowledgeTitle) els.cardKnowledgeTitle.textContent = t('knowledge');
+    if (els.cardKnowledgeDesc) els.cardKnowledgeDesc.textContent = t('cardKnowledgeDesc');
+    if (els.cardInterviewsTitle) els.cardInterviewsTitle.textContent = t('interviews');
+    if (els.cardInterviewsDesc) els.cardInterviewsDesc.textContent = t('cardInterviewsDesc');
+    if (els.cardMockTitle) els.cardMockTitle.textContent = t('mock');
+    if (els.cardMockDesc) els.cardMockDesc.textContent = t('cardMockDesc');
+    if (els.cardBehavioralTitle) els.cardBehavioralTitle.textContent = t('behavioral');
+    if (els.cardBehavioralDesc) els.cardBehavioralDesc.textContent = t('cardBehavioralDesc');
+    if (els.cardRoadmapTitle) els.cardRoadmapTitle.textContent = t('roadmap');
+    if (els.cardRoadmapDesc) els.cardRoadmapDesc.textContent = t('cardRoadmapDesc');
+    if (els.cardReadmeTitle) els.cardReadmeTitle.textContent = t('github');
+    if (els.cardReadmeDesc) els.cardReadmeDesc.textContent = t('cardReadmeDesc');
     if (els.languageSelect) els.languageSelect.setAttribute('aria-label', t('languageSelectAria'));
     if (els.themeSelect) {
       els.themeSelect.setAttribute('aria-label', t('themeSelectAria'));
@@ -232,5 +284,10 @@
   }
   setLanguage(currentLanguage);
   els.pick.addEventListener("click", pick);
+  document.addEventListener('click', (event) => {
+    document.querySelectorAll('details.nav-menu[open]').forEach((menu) => {
+      if (!menu.contains(event.target)) menu.removeAttribute('open');
+    });
+  });
   load();
 })();

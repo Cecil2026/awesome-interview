@@ -4,8 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>awesome-interview · Random Question Picker</title>
-  <link rel="stylesheet" href="style.css?v=7" />
-  <script src="theme.js?v=7"></script>
+  <link rel="stylesheet" href="style.css?v=8" />
+  <script src="theme.js?v=8"></script>
 </head>
 <body>
   <header>
@@ -13,9 +13,16 @@
     <p class="tagline" id="tagline">Pick a random question from the bank and start drilling.</p>
     <nav>
       <a id="nav-github" href="reader.html?file=README.md">README</a>
-      <a id="nav-knowledge" href="reader.html?file=knowledge/algorithms.md">Knowledge</a>
-      <a id="nav-interviews" href="reader.html?file=interviews/companies/google.md">Interviews</a>
-      <a id="nav-roadmap" href="reader.html?file=roadmap/fullstack-engineer.md">Roadmap</a>
+      <details class="nav-menu">
+        <summary id="nav-browse">Browse</summary>
+        <div class="nav-menu-items">
+          <a id="nav-knowledge" href="reader.html?file=knowledge/algorithms.md">Knowledge</a>
+          <a id="nav-interviews" href="reader.html?file=interviews/companies/google.md">Interviews</a>
+          <a id="nav-mock" href="reader.html?file=mock-interviews/README.md">Mock interviews</a>
+          <a id="nav-behavioral" href="reader.html?file=behavioral/README.md">Behavioral</a>
+          <a id="nav-roadmap" href="reader.html?file=roadmap/fullstack-engineer.md">Roadmap</a>
+        </div>
+      </details>
       <select id="language-select" aria-label="Select language">
         <option value="en">English</option>
         <option value="zh">简体中文</option>
@@ -64,6 +71,54 @@
     </section>
 
     <p id="status" class="status">Loading questions…</p>
+
+    <section class="sections" aria-labelledby="sections-heading">
+      <h2 id="sections-heading" class="sections-heading">Explore</h2>
+      <div class="section-cards">
+        <a class="section-card" href="reader.html?file=knowledge/algorithms.md">
+          <svg class="section-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+          <span class="section-card-text">
+            <span class="section-card-title" id="card-knowledge-title">Knowledge</span>
+            <span class="section-card-desc" id="card-knowledge-desc">Topic-organized Q&amp;A banks</span>
+          </span>
+        </a>
+        <a class="section-card" href="reader.html?file=interviews/companies/google.md">
+          <svg class="section-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18"></path><path d="M5 21V7l8-4v18"></path><path d="M19 21V11l-6-4"></path></svg>
+          <span class="section-card-text">
+            <span class="section-card-title" id="card-interviews-title">Interviews</span>
+            <span class="section-card-desc" id="card-interviews-desc">Real company question banks</span>
+          </span>
+        </a>
+        <a class="section-card" href="reader.html?file=mock-interviews/README.md">
+          <svg class="section-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+          <span class="section-card-text">
+            <span class="section-card-title" id="card-mock-title">Mock interviews</span>
+            <span class="section-card-desc" id="card-mock-desc">Full transcript-style sessions</span>
+          </span>
+        </a>
+        <a class="section-card" href="reader.html?file=behavioral/README.md">
+          <svg class="section-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+          <span class="section-card-text">
+            <span class="section-card-title" id="card-behavioral-title">Behavioral</span>
+            <span class="section-card-desc" id="card-behavioral-desc">STAR questions &amp; principles</span>
+          </span>
+        </a>
+        <a class="section-card" href="reader.html?file=roadmap/fullstack-engineer.md">
+          <svg class="section-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18l6-6-6-6"></path><path d="M3 6h2"></path><path d="M3 12h2"></path><path d="M3 18h2"></path></svg>
+          <span class="section-card-text">
+            <span class="section-card-title" id="card-roadmap-title">Roadmap</span>
+            <span class="section-card-desc" id="card-roadmap-desc">Week-by-week study plans</span>
+          </span>
+        </a>
+        <a class="section-card" href="reader.html?file=README.md">
+          <svg class="section-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><path d="M14 2v6h6"></path><path d="M16 13H8"></path><path d="M16 17H8"></path><path d="M10 9H8"></path></svg>
+          <span class="section-card-text">
+            <span class="section-card-title" id="card-readme-title">README</span>
+            <span class="section-card-desc" id="card-readme-desc">Project overview &amp; usage</span>
+          </span>
+        </a>
+      </div>
+    </section>
   </main>
 
   <footer>
@@ -73,6 +128,6 @@
     </p>
   </footer>
 
-  <script src="app.js?v=7"></script>
+  <script src="app.js?v=8"></script>
 </body>
 </html>

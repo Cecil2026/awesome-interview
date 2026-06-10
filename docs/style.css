@@ -90,6 +90,52 @@ nav a:hover {
   text-decoration: underline;
 }
 
+.nav-menu {
+  position: relative;
+}
+
+.nav-menu > summary {
+  cursor: pointer;
+  list-style: none;
+  color: var(--accent);
+  font-size: 0.9rem;
+}
+
+.nav-menu > summary::-webkit-details-marker {
+  display: none;
+}
+
+.nav-menu > summary::after {
+  content: " \25BE";
+  font-size: 0.8em;
+}
+
+.nav-menu[open] > summary::after {
+  content: " \25B4";
+}
+
+.nav-menu-items {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-top: 0.6rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  min-width: 170px;
+  padding: 0.75rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.18);
+  z-index: 20;
+}
+
+.nav-menu-items a {
+  white-space: nowrap;
+}
+
 main {
   flex: 1;
   max-width: 720px;
@@ -208,6 +254,67 @@ main {
   text-align: center;
   color: var(--text-muted);
   font-size: 0.9rem;
+}
+
+.sections {
+  margin-top: 2.5rem;
+}
+
+.sections-heading {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--text-muted);
+  text-align: center;
+  margin: 0 0 1rem;
+}
+
+.section-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 0.85rem;
+}
+
+.section-card {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 1rem 1.1rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  text-decoration: none;
+  color: var(--text);
+  transition: border-color 0.2s, transform 0.1s;
+}
+
+.section-card:hover {
+  border-color: var(--accent);
+  transform: translateY(-2px);
+}
+
+.section-card-icon {
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  color: var(--accent);
+}
+
+.section-card-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  min-width: 0;
+}
+
+.section-card-title {
+  font-weight: 600;
+  color: var(--accent);
+}
+
+.section-card-desc {
+  font-size: 0.85rem;
+  color: var(--text-muted);
 }
 
 footer {
