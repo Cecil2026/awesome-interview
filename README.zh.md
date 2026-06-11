@@ -146,7 +146,7 @@ cd C:\path\to\awesome-interview
 
 ## 许可证
 
-Copyright (C) 2026 Eric Jin。
+Copyright (C) 2026 Cecil2026。
 
 本项目采用 **GNU Affero 通用公共许可证 v3.0（AGPL-3.0）** — 完整条款见
 [LICENSE](LICENSE)。简而言之：你可以使用、研究、修改和再分发，但衍生作品

@@ -149,7 +149,7 @@ Add or correct anything you like. The numbering inside each file is a guide, not
 
 ## License
 
-Copyright (C) 2026 Eric Jin.
+Copyright (C) 2026 Cecil2026.
 
 This project is licensed under the **GNU Affero General Public License v3.0** — see
 [LICENSE](LICENSE) for the full text. In short: you may use, study, modify, and
