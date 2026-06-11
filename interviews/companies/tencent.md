@@ -749,7 +749,7 @@ class MinStack {
 ### 13. Design Tencent Cloud Object Storage (COS)
 
 **Difficulty:** Hard
-**Topics:** system-design, blob-storage, replication, consistency
+**Topics:** system-design, blob-storage, replication, consistency, cloud
 **Position:** Senior SWE
 **Years:** T3-T4
 
@@ -764,7 +764,7 @@ class MinStack {
 ### 14. Design a Live Streaming Gift / Bullet-Comment System
 
 **Difficulty:** Hard
-**Topics:** system-design, real-time, fanout, monetization
+**Topics:** system-design, real-time, fanout, monetization, big-data
 **Position:** Senior SWE
 **Years:** T3-T4
 
@@ -809,7 +809,7 @@ class MinStack {
 ### 17. Time you handled a production incident
 
 **Difficulty:** Medium
-**Topics:** behavioral, incident-response, ownership
+**Topics:** behavioral, incident-response, ownership, ops
 **Position:** Senior SWE
 **Years:** T3-T4
 

@@ -944,7 +944,7 @@ class BoundedQueue<T> {
 ### 13. Design Cainiao Logistics Tracking
 
 **Difficulty:** Hard
-**Topics:** system-design, time-series, geospatial, ingestion
+**Topics:** system-design, time-series, geospatial, ingestion, big-data
 **Position:** Senior SWE
 **Years:** P7
 
@@ -4495,7 +4495,7 @@ class ConsistentHash {
 ### 62. Top-K Frequent Elements in a Stream
 
 **Difficulty:** Hard
-**Topics:** design, heap, streaming, hashmap
+**Topics:** design, heap, streaming, hashmap, big-data
 **Position:** P7
 **Years:** P7-P8
 

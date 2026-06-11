@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>awesome-interview · Company Comparison</title>
+  <link rel="stylesheet" href="style.css?v=13" />
+  <script src="theme.js?v=10"></script>
+  <style>
+    .compare-wrap { max-width: 1100px; margin: 0 auto; padding: 2rem 1.5rem; width: 100%; }
+    .compare-table { width: 100%; border-collapse: collapse; font-size: 0.92rem; }
+    .compare-table th, .compare-table td { border: 1px solid var(--border); padding: 0.7rem 0.8rem; text-align: left; vertical-align: top; }
+    .compare-table th { background: var(--bg-card); position: sticky; top: 0; }
+    .compare-table tbody tr:hover { background: var(--bg-card); }
+    .compare-company { font-weight: 700; }
+    .compare-company a { color: var(--accent); text-decoration: none; }
+    .compare-company a:hover { text-decoration: underline; }
+    .diff-bar { display: flex; height: 12px; border-radius: 999px; overflow: hidden; min-width: 120px; background: var(--badge-bg); }
+    .diff-bar span { display: block; height: 100%; }
+    .diff-bar .e { background: var(--easy); }
+    .diff-bar .m { background: var(--medium); }
+    .diff-bar .h { background: var(--hard); }
+    .diff-legend { display: flex; gap: 1rem; flex-wrap: wrap; font-size: 0.8rem; color: var(--text-muted); margin: 0.5rem 0 1.5rem; }
+    .diff-legend span::before { content: ''; display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 5px; vertical-align: middle; }
+    .diff-legend .le::before { background: var(--easy); }
+    .diff-legend .lm::before { background: var(--medium); }
+    .diff-legend .lh::before { background: var(--hard); }
+    .compare-count { font-variant-numeric: tabular-nums; color: var(--text-muted); font-size: 0.8rem; }
+    .table-scroll { overflow-x: auto; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>awesome-interview</h1>
+    <p class="tagline" id="tagline">Compare interview loops across companies side by side.</p>
+    <nav>
+      <a id="nav-picker" href="index.html">Picker</a>
+      <a id="nav-reader" href="reader.html?file=README.md">Reader</a>
+      <a id="nav-compare" href="compare.html" aria-current="page">Compare</a>
+      <a id="nav-resume" href="resume.html">Resume → Q</a>
+      <span class="nav-sep" aria-hidden="true"></span>
+      <select id="language-select" aria-label="Select language">
+        <option value="en">English</option>
+        <option value="zh">简体中文</option>
+      </select>
+      <select id="theme-select" aria-label="Select theme">
+        <option value="light">Light</option>
+        <option value="dark">Dark</option>
+      </select>
+    </nav>
+  </header>
+
+  <main class="compare-wrap">
+    <div class="diff-legend">
+      <span class="le" id="legend-easy">Easy</span>
+      <span class="lm" id="legend-medium">Medium</span>
+      <span class="lh" id="legend-hard">Hard</span>
+    </div>
+    <p id="compare-status" class="status">Loading companies…</p>
+    <div class="table-scroll">
+      <table class="compare-table" id="compare-table" hidden>
+        <thead>
+          <tr>
+            <th id="col-company">Company</th>
+            <th id="col-rounds">Rounds</th>
+            <th id="col-focus">Focus areas</th>
+            <th id="col-langs">Languages</th>
+            <th id="col-duration">Duration</th>
+            <th id="col-diff">Difficulty mix</th>
+          </tr>
+        </thead>
+        <tbody id="compare-body"></tbody>
+      </table>
+    </div>
+  </main>
+
+  <footer>
+    <p id="footer-text">Built from the company question banks under <code>interviews/companies/</code>.</p>
+    <p class="footer-source">
+      <a id="source-link" href="https://github.com/Cecil2026/awesome-interview" target="_blank" rel="noopener">Source code (AGPL-3.0)</a>
+    </p>
+  </footer>
+
+  <script src="compare.js?v=12"></script>
+</body>
+</html>

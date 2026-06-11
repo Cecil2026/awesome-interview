@@ -1,6 +1,6 @@
 {
   "generated_by": "tools/build_index.py",
-  "total": 1157,
+  "total": 1281,
   "categories": [
     "behavioral",
     "interviews",
@@ -858,7 +858,8 @@
         "system-design",
         "time-series",
         "geospatial",
-        "ingestion"
+        "ingestion",
+        "big-data"
       ],
       "difficulty": "Hard",
       "title_zh": "设计菜鸟物流追踪",
@@ -1633,7 +1634,8 @@
         "design",
         "heap",
         "streaming",
-        "hashmap"
+        "hashmap",
+        "big-data"
       ],
       "difficulty": "Hard",
       "title_zh": "数据流中的 Top-K 高频元素",
@@ -1795,7 +1797,8 @@
         "cdn",
         "video-streaming",
         "drm",
-        "recommendation"
+        "recommendation",
+        "cloud"
       ],
       "difficulty": "Hard",
       "title_zh": "设计 Amazon Prime Video",
@@ -1846,7 +1849,8 @@
         "system-design",
         "blob-storage",
         "consistency",
-        "replication"
+        "replication",
+        "cloud"
       ],
       "difficulty": "Hard",
       "title_zh": "设计 Amazon S3",
@@ -2768,7 +2772,8 @@
         "cdn",
         "drm",
         "recommendation",
-        "offline"
+        "offline",
+        "cloud"
       ],
       "difficulty": "Hard",
       "title_zh": "设计 Apple Music（或类 Spotify）",
@@ -2802,7 +2807,8 @@
         "system-design",
         "sync",
         "dedup",
-        "ml-on-device"
+        "ml-on-device",
+        "cloud"
       ],
       "difficulty": "Hard",
       "title_zh": "设计 iCloud 照片图库",
@@ -2853,7 +2859,8 @@
         "system-design",
         "cdn",
         "caching",
-        "dns"
+        "dns",
+        "cloud"
       ],
       "difficulty": "Hard",
       "title_zh": "设计 CDN",
@@ -2950,7 +2957,8 @@
         "ml",
         "privacy",
         "mobile",
-        "ood"
+        "ood",
+        "cloud"
       ],
       "difficulty": "Medium",
       "title_zh": "端上 ML 与云端 ML 的权衡",
@@ -3757,7 +3765,8 @@
         "system-design",
         "video",
         "blob-storage",
-        "encoding"
+        "encoding",
+        "cloud"
       ],
       "difficulty": "Hard",
       "title_zh": "设计 TikTok 视频上传 + 编码",
@@ -3825,7 +3834,9 @@
         "rtmp",
         "hls",
         "cdn",
-        "low-latency"
+        "low-latency",
+        "cloud",
+        "big-data"
       ],
       "difficulty": "Hard",
       "title_zh": "设计直播平台",
@@ -4774,7 +4785,8 @@
         "cdn",
         "video-encoding",
         "sharding",
-        "recommendation"
+        "recommendation",
+        "cloud"
       ],
       "difficulty": "Hard",
       "title_zh": "设计 YouTube",
@@ -4810,7 +4822,8 @@
         "blob-storage",
         "sync",
         "conflict-resolution",
-        "chunking"
+        "chunking",
+        "cloud"
       ],
       "difficulty": "Hard",
       "title_zh": "设计 Google Drive",
@@ -5621,6 +5634,995 @@
       "file_zh": "interviews/companies/google.zh.md"
     },
     {
+      "id": "interviews/companies/huawei.md#1",
+      "number": 1,
+      "title": "Two Sum",
+      "file": "interviews/companies/huawei.md",
+      "line": 25,
+      "category": "interviews",
+      "topics": [
+        "array",
+        "hash-table"
+      ],
+      "difficulty": "Easy",
+      "title_zh": "两数之和（Two Sum）",
+      "file_zh": "interviews/companies/huawei.zh.md"
+    },
+    {
+      "id": "interviews/companies/huawei.md#2",
+      "number": 2,
+      "title": "Valid Parentheses",
+      "file": "interviews/companies/huawei.md",
+      "line": 87,
+      "category": "interviews",
+      "topics": [
+        "string",
+        "stack"
+      ],
+      "difficulty": "Easy",
+      "title_zh": "有效的括号（Valid Parentheses）",
+      "file_zh": "interviews/companies/huawei.zh.md"
+    },
+    {
+      "id": "interviews/companies/huawei.md#3",
+      "number": 3,
+      "title": "Reverse Linked List",
+      "file": "interviews/companies/huawei.md",
+      "line": 158,
+      "category": "interviews",
+      "topics": [
+        "linked-list",
+        "two-pointer"
+      ],
+      "difficulty": "Easy",
+      "title_zh": "反转链表（Reverse Linked List）",
+      "file_zh": "interviews/companies/huawei.zh.md"
+    },
+    {
+      "id": "interviews/companies/huawei.md#4",
+      "number": 4,
+      "title": "Merge Two Sorted Lists",
+      "file": "interviews/companies/huawei.md",
+      "line": 237,
+      "category": "interviews",
+      "topics": [
+        "linked-list",
+        "two-pointer"
+      ],
+      "difficulty": "Easy",
+      "title_zh": "合并两个有序链表（Merge Two Sorted Lists）",
+      "file_zh": "interviews/companies/huawei.zh.md"
+    },
+    {
+      "id": "interviews/companies/huawei.md#5",
+      "number": 5,
+      "title": "Best Time to Buy and Sell Stock",
+      "file": "interviews/companies/huawei.md",
+      "line": 320,
+      "category": "interviews",
+      "topics": [
+        "array",
+        "dynamic-programming"
+      ],
+      "difficulty": "Easy",
+      "title_zh": "买卖股票的最佳时机（Best Time to Buy and Sell Stock）",
+      "file_zh": "interviews/companies/huawei.zh.md"
+    },
+    {
+      "id": "interviews/companies/huawei.md#6",
+      "number": 6,
+      "title": "Binary Search",
+      "file": "interviews/companies/huawei.md",
+      "line": 379,
+      "category": "interviews",
+      "topics": [
+        "binary-search",
+        "array"
+      ],
+      "difficulty": "Easy",
+      "title_zh": "二分查找（Binary Search）",
+      "file_zh": "interviews/companies/huawei.zh.md"
+    },
+    {
+      "id": "interviews/companies/huawei.md#7",
+      "number": 7,
+      "title": "Maximum Subarray (Kadane)",
+      "file": "interviews/companies/huawei.md",
+      "line": 447,
+      "category": "interviews",
+      "topics": [
+        "array",
+        "dynamic-programming"
+      ],
+      "difficulty": "Medium",
+      "title_zh": "最大子数组和（Kadane）",
+      "file_zh": "interviews/companies/huawei.zh.md"
+    },
+    {
+      "id": "interviews/companies/huawei.md#8",
+      "number": 8,
+      "title": "Climbing Stairs",
+      "file": "interviews/companies/huawei.md",
+      "line": 506,
+      "category": "interviews",
+      "topics": [
+        "dynamic-programming"
+      ],
+      "difficulty": "Easy",
+      "title_zh": "爬楼梯（Climbing Stairs）",
+      "file_zh": "interviews/companies/huawei.zh.md"
+    },
+    {
+      "id": "interviews/companies/huawei.md#9",
+      "number": 9,
+      "title": "Valid Anagram",
+      "file": "interviews/companies/huawei.md",
+      "line": 560,
+      "category": "interviews",
+      "topics": [
+        "string",
+        "hash-table",
+        "counting"
+      ],
+      "difficulty": "Easy",
+      "title_zh": "有效的字母异位词（Valid Anagram）",
+      "file_zh": "interviews/companies/huawei.zh.md"
+    },
+    {
+      "id": "interviews/companies/huawei.md#10",
+      "number": 10,
+      "title": "Group Anagrams",
+      "file": "interviews/companies/huawei.md",
+      "line": 624,
+      "category": "interviews",
+      "topics": [
+        "string",
+        "hash-table",
+        "sorting"
+      ],
+      "difficulty": "Medium",
+      "title_zh": "字母异位词分组（Group Anagrams）",
+      "file_zh": "interviews/companies/huawei.zh.md"
+    },
+    {
+      "id": "interviews/companies/huawei.md#11",
+      "number": 11,
+      "title": "Container With Most Water",
+      "file": "interviews/companies/huawei.md",
+      "line": 685,
+      "category": "interviews",
+      "topics": [
+        "array",
+        "two-pointer",
+        "greedy"
+      ],
+      "difficulty": "Medium",
+      "title_zh": "盛最多水的容器（Container With Most Water）",
+      "file_zh": "interviews/companies/huawei.zh.md"
+    },
+    {
+      "id": "interviews/companies/huawei.md#12",
+      "number": 12,
+      "title": "3Sum",
+      "file": "interviews/companies/huawei.md",
+      "line": 741,
+      "category": "interviews",
+      "topics": [
+        "array",
+        "two-pointer",
+        "sorting"
+      ],
+      "difficulty": "Medium",
+      "title_zh": "三数之和（3Sum）",
+      "file_zh": "interviews/companies/huawei.zh.md"
+    },
+    {
+      "id": "interviews/companies/huawei.md#13",
+      "number": 13,
+      "title": "Longest Substring Without Repeating Characters",
+      "file": "interviews/companies/huawei.md",
+      "line": 834,
+      "category": "interviews",
+      "topics": [
+        "string",
+        "sliding-window",
+        "hash-table"
+      ],
+      "difficulty": "Medium",
+      "title_zh": "无重复字符的最长子串（Longest Substring Without Repeating Characters）",
+      "file_zh": "interviews/companies/huawei.zh.md"
+    },
+    {
+      "id": "interviews/companies/huawei.md#14",
+      "number": 14,
+      "title": "Minimum Window Substring",
+      "file": "interviews/companies/huawei.md",
+      "line": 896,
+      "category": "interviews",
+      "topics": [
+        "string",
+        "sliding-window",
+        "hash-table"
+      ],
+      "difficulty": "Hard",
+      "title_zh": "最小覆盖子串（Minimum Window Substring）",
+      "file_zh": "interviews/companies/huawei.zh.md"
+    },
+    {
+      "id": "interviews/companies/huawei.md#15",
+      "number": 15,
+      "title": "Product of Array Except Self",
+      "file": "interviews/companies/huawei.md",
+      "line": 984,
+      "category": "interviews",
+      "topics": [
+        "array",
+        "prefix-product"
+      ],
+      "difficulty": "Medium",
+      "title_zh": "除自身以外数组的乘积（Product of Array Except Self）",
+      "file_zh": "interviews/companies/huawei.zh.md"
+    },
+    {
+      "id": "interviews/companies/huawei.md#16",
+      "number": 16,
+      "title": "Search in Rotated Sorted Array",
+      "file": "interviews/companies/huawei.md",
+      "line": 1041,
+      "category": "interviews",
+      "topics": [
+        "binary-search",
+        "array"
+      ],
+      "difficulty": "Medium",
+      "title_zh": "搜索旋转排序数组（Search in Rotated Sorted Array）",
+      "file_zh": "interviews/companies/huawei.zh.md"
+    },
+    {
+      "id": "interviews/companies/huawei.md#17",
+      "number": 17,
+      "title": "Find First and Last Position of Element",
+      "file": "interviews/companies/huawei.md",
+      "line": 1115,
+      "category": "interviews",
+      "topics": [
+        "binary-search",
+        "array"
+      ],
+      "difficulty": "Medium",
+      "title_zh": "在排序数组中查找元素的首末位置（Find First and Last Position of Element）",
+      "file_zh": "interviews/companies/huawei.zh.md"
+    },
+    {
+      "id": "interviews/companies/huawei.md#18",
+      "number": 18,
+      "title": "Linked List Cycle",
+      "file": "interviews/companies/huawei.md",
+      "line": 1183,
+      "category": "interviews",
+      "topics": [
+        "linked-list",
+        "two-pointer",
+        "floyd"
+      ],
+      "difficulty": "Easy",
+      "title_zh": "环形链表（Linked List Cycle）",
+      "file_zh": "interviews/companies/huawei.zh.md"
+    },
+    {
+      "id": "interviews/companies/huawei.md#19",
+      "number": 19,
+      "title": "Remove Nth Node From End of List",
+      "file": "interviews/companies/huawei.md",
+      "line": 1254,
+      "category": "interviews",
+      "topics": [
+        "linked-list",
+        "two-pointer"
+      ],
+      "difficulty": "Medium",
+      "title_zh": "删除链表的倒数第 N 个节点（Remove Nth Node From End of List）",
+      "file_zh": "interviews/companies/huawei.zh.md"
+    },
+    {
+      "id": "interviews/companies/huawei.md#20",
+      "number": 20,
+      "title": "Merge k Sorted Lists",
+      "file": "interviews/companies/huawei.md",
+      "line": 1325,
+      "category": "interviews",
+      "topics": [
+        "linked-list",
+        "heap",
+        "divide-and-conquer"
+      ],
+      "difficulty": "Hard",
+      "title_zh": "合并 K 个有序链表（Merge k Sorted Lists）",
+      "file_zh": "interviews/companies/huawei.zh.md"
+    },
+    {
+      "id": "interviews/companies/huawei.md#21",
+      "number": 21,
+      "title": "Invert Binary Tree",
+      "file": "interviews/companies/huawei.md",
+      "line": 1408,
+      "category": "interviews",
+      "topics": [
+        "tree",
+        "recursion",
+        "dfs"
+      ],
+      "difficulty": "Easy",
+      "title_zh": "翻转二叉树（Invert Binary Tree）",
+      "file_zh": "interviews/companies/huawei.zh.md"
+    },
+    {
+      "id": "interviews/companies/huawei.md#22",
+      "number": 22,
+      "title": "Maximum Depth of Binary Tree",
+      "file": "interviews/companies/huawei.md",
+      "line": 1475,
+      "category": "interviews",
+      "topics": [
+        "tree",
+        "dfs",
+        "recursion"
+      ],
+      "difficulty": "Easy",
+      "title_zh": "二叉树的最大深度（Maximum Depth of Binary Tree）",
+      "file_zh": "interviews/companies/huawei.zh.md"
+    },
+    {
+      "id": "interviews/companies/huawei.md#23",
+      "number": 23,
+      "title": "Validate Binary Search Tree",
+      "file": "interviews/companies/huawei.md",
+      "line": 1534,
+      "category": "interviews",
+      "topics": [
+        "tree",
+        "dfs",
+        "bst"
+      ],
+      "difficulty": "Medium",
+      "title_zh": "验证二叉搜索树（Validate Binary Search Tree）",
+      "file_zh": "interviews/companies/huawei.zh.md"
+    },
+    {
+      "id": "interviews/companies/huawei.md#24",
+      "number": 24,
+      "title": "Binary Tree Level Order Traversal",
+      "file": "interviews/companies/huawei.md",
+      "line": 1606,
+      "category": "interviews",
+      "topics": [
+        "tree",
+        "bfs",
+        "queue"
+      ],
+      "difficulty": "Medium",
+      "title_zh": "二叉树的层序遍历（Binary Tree Level Order Traversal）",
+      "file_zh": "interviews/companies/huawei.zh.md"
+    },
+    {
+      "id": "interviews/companies/huawei.md#25",
+      "number": 25,
+      "title": "Lowest Common Ancestor of a Binary Tree",
+      "file": "interviews/companies/huawei.md",
+      "line": 1704,
+      "category": "interviews",
+      "topics": [
+        "tree",
+        "dfs",
+        "recursion"
+      ],
+      "difficulty": "Medium",
+      "title_zh": "二叉树的最近公共祖先（Lowest Common Ancestor of a Binary Tree）",
+      "file_zh": "interviews/companies/huawei.zh.md"
+    },
+    {
+      "id": "interviews/companies/huawei.md#26",
+      "number": 26,
+      "title": "Number of Islands",
+      "file": "interviews/companies/huawei.md",
+      "line": 1773,
+      "category": "interviews",
+      "topics": [
+        "graph",
+        "dfs",
+        "bfs",
+        "grid",
+        "union-find"
+      ],
+      "difficulty": "Medium",
+      "title_zh": "岛屿数量（Number of Islands）",
+      "file_zh": "interviews/companies/huawei.zh.md"
+    },
+    {
+      "id": "interviews/companies/huawei.md#27",
+      "number": 27,
+      "title": "Rotting Oranges",
+      "file": "interviews/companies/huawei.md",
+      "line": 1847,
+      "category": "interviews",
+      "topics": [
+        "graph",
+        "bfs",
+        "grid"
+      ],
+      "difficulty": "Medium",
+      "title_zh": "腐烂的橘子（Rotting Oranges）",
+      "file_zh": "interviews/companies/huawei.zh.md"
+    },
+    {
+      "id": "interviews/companies/huawei.md#28",
+      "number": 28,
+      "title": "Course Schedule",
+      "file": "interviews/companies/huawei.md",
+      "line": 1950,
+      "category": "interviews",
+      "topics": [
+        "graph",
+        "topological-sort",
+        "bfs"
+      ],
+      "difficulty": "Medium",
+      "title_zh": "课程表（Course Schedule）",
+      "file_zh": "interviews/companies/huawei.zh.md"
+    },
+    {
+      "id": "interviews/companies/huawei.md#29",
+      "number": 29,
+      "title": "Word Search",
+      "file": "interviews/companies/huawei.md",
+      "line": 2028,
+      "category": "interviews",
+      "topics": [
+        "backtracking",
+        "dfs",
+        "grid"
+      ],
+      "difficulty": "Medium",
+      "title_zh": "单词搜索（Word Search）",
+      "file_zh": "interviews/companies/huawei.zh.md"
+    },
+    {
+      "id": "interviews/companies/huawei.md#30",
+      "number": 30,
+      "title": "Combination Sum",
+      "file": "interviews/companies/huawei.md",
+      "line": 2109,
+      "category": "interviews",
+      "topics": [
+        "backtracking",
+        "recursion"
+      ],
+      "difficulty": "Medium",
+      "title_zh": "组合总和（Combination Sum）",
+      "file_zh": "interviews/companies/huawei.zh.md"
+    },
+    {
+      "id": "interviews/companies/huawei.md#31",
+      "number": 31,
+      "title": "Permutations",
+      "file": "interviews/companies/huawei.md",
+      "line": 2186,
+      "category": "interviews",
+      "topics": [
+        "backtracking",
+        "recursion"
+      ],
+      "difficulty": "Medium",
+      "title_zh": "全排列（Permutations）",
+      "file_zh": "interviews/companies/huawei.zh.md"
+    },
+    {
+      "id": "interviews/companies/huawei.md#32",
+      "number": 32,
+      "title": "Subsets",
+      "file": "interviews/companies/huawei.md",
+      "line": 2266,
+      "category": "interviews",
+      "topics": [
+        "backtracking",
+        "bit-manipulation"
+      ],
+      "difficulty": "Medium",
+      "title_zh": "子集（Subsets）",
+      "file_zh": "interviews/companies/huawei.zh.md"
+    },
+    {
+      "id": "interviews/companies/huawei.md#33",
+      "number": 33,
+      "title": "Coin Change",
+      "file": "interviews/companies/huawei.md",
+      "line": 2336,
+      "category": "interviews",
+      "topics": [
+        "dynamic-programming"
+      ],
+      "difficulty": "Medium",
+      "title_zh": "零钱兑换（Coin Change）",
+      "file_zh": "interviews/companies/huawei.zh.md"
+    },
+    {
+      "id": "interviews/companies/huawei.md#34",
+      "number": 34,
+      "title": "Longest Increasing Subsequence",
+      "file": "interviews/companies/huawei.md",
+      "line": 2392,
+      "category": "interviews",
+      "topics": [
+        "dynamic-programming",
+        "binary-search"
+      ],
+      "difficulty": "Medium",
+      "title_zh": "最长递增子序列（Longest Increasing Subsequence）",
+      "file_zh": "interviews/companies/huawei.zh.md"
+    },
+    {
+      "id": "interviews/companies/huawei.md#35",
+      "number": 35,
+      "title": "House Robber",
+      "file": "interviews/companies/huawei.md",
+      "line": 2458,
+      "category": "interviews",
+      "topics": [
+        "dynamic-programming"
+      ],
+      "difficulty": "Medium",
+      "title_zh": "打家劫舍（House Robber）",
+      "file_zh": "interviews/companies/huawei.zh.md"
+    },
+    {
+      "id": "interviews/companies/huawei.md#36",
+      "number": 36,
+      "title": "Word Break",
+      "file": "interviews/companies/huawei.md",
+      "line": 2504,
+      "category": "interviews",
+      "topics": [
+        "dynamic-programming",
+        "string"
+      ],
+      "difficulty": "Medium",
+      "title_zh": "单词拆分（Word Break）",
+      "file_zh": "interviews/companies/huawei.zh.md"
+    },
+    {
+      "id": "interviews/companies/huawei.md#37",
+      "number": 37,
+      "title": "Merge Intervals",
+      "file": "interviews/companies/huawei.md",
+      "line": 2563,
+      "category": "interviews",
+      "topics": [
+        "intervals",
+        "sorting"
+      ],
+      "difficulty": "Medium",
+      "title_zh": "合并区间（Merge Intervals）",
+      "file_zh": "interviews/companies/huawei.zh.md"
+    },
+    {
+      "id": "interviews/companies/huawei.md#38",
+      "number": 38,
+      "title": "Top K Frequent Elements",
+      "file": "interviews/companies/huawei.md",
+      "line": 2623,
+      "category": "interviews",
+      "topics": [
+        "heap",
+        "hash-table",
+        "bucket-sort"
+      ],
+      "difficulty": "Medium",
+      "title_zh": "前 K 个高频元素（Top K Frequent Elements）",
+      "file_zh": "interviews/companies/huawei.zh.md"
+    },
+    {
+      "id": "interviews/companies/huawei.md#39",
+      "number": 39,
+      "title": "Single Number",
+      "file": "interviews/companies/huawei.md",
+      "line": 2694,
+      "category": "interviews",
+      "topics": [
+        "bit-manipulation",
+        "array"
+      ],
+      "difficulty": "Easy",
+      "title_zh": "只出现一次的数字（Single Number）",
+      "file_zh": "interviews/companies/huawei.zh.md"
+    },
+    {
+      "id": "interviews/companies/huawei.md#40",
+      "number": 40,
+      "title": "Implement Trie (Prefix Tree)",
+      "file": "interviews/companies/huawei.md",
+      "line": 2738,
+      "category": "interviews",
+      "topics": [
+        "trie",
+        "design",
+        "string"
+      ],
+      "difficulty": "Medium",
+      "title_zh": "实现 Trie（前缀树）（Implement Trie）",
+      "file_zh": "interviews/companies/huawei.zh.md"
+    },
+    {
+      "id": "interviews/companies/huawei.md#41",
+      "number": 41,
+      "title": "Number of Provinces (Union-Find)",
+      "file": "interviews/companies/huawei.md",
+      "line": 2855,
+      "category": "interviews",
+      "topics": [
+        "union-find",
+        "graph",
+        "dsu"
+      ],
+      "difficulty": "Medium",
+      "title_zh": "省份数量（并查集）（Number of Provinces）",
+      "file_zh": "interviews/companies/huawei.zh.md"
+    },
+    {
+      "id": "interviews/companies/huawei.md#42",
+      "number": 42,
+      "title": "Kth Largest Element in an Array",
+      "file": "interviews/companies/huawei.md",
+      "line": 2935,
+      "category": "interviews",
+      "topics": [
+        "heap",
+        "quickselect",
+        "sorting"
+      ],
+      "difficulty": "Medium",
+      "title_zh": "数组中的第 K 个最大元素（Kth Largest Element in an Array）",
+      "file_zh": "interviews/companies/huawei.zh.md"
+    },
+    {
+      "id": "interviews/companies/huawei.md#43",
+      "number": 43,
+      "title": "Base-Station Coverage Merge (Telecom)",
+      "file": "interviews/companies/huawei.md",
+      "line": 2987,
+      "category": "interviews",
+      "topics": [
+        "intervals",
+        "sorting",
+        "greedy"
+      ],
+      "difficulty": "Medium",
+      "title_zh": "基站覆盖合并（电信）（Base-Station Coverage Merge）",
+      "file_zh": "interviews/companies/huawei.zh.md"
+    },
+    {
+      "id": "interviews/companies/huawei.md#44",
+      "number": 44,
+      "title": "Packet Routing Shortest Path (Dijkstra)",
+      "file": "interviews/companies/huawei.md",
+      "line": 3053,
+      "category": "interviews",
+      "topics": [
+        "graph",
+        "dijkstra",
+        "heap",
+        "shortest-path"
+      ],
+      "difficulty": "Medium",
+      "title_zh": "数据包路由最短路径（Dijkstra）（Packet Routing Shortest Path）",
+      "file_zh": "interviews/companies/huawei.zh.md"
+    },
+    {
+      "id": "interviews/companies/huawei.md#45",
+      "number": 45,
+      "title": "Telecom Signal Task Scheduling (Greedy + Heap)",
+      "file": "interviews/companies/huawei.md",
+      "line": 3137,
+      "category": "interviews",
+      "topics": [
+        "heap",
+        "greedy",
+        "intervals"
+      ],
+      "difficulty": "Medium",
+      "title_zh": "电信信号任务调度（贪心 + 堆）（Telecom Signal Task Scheduling）",
+      "file_zh": "interviews/companies/huawei.zh.md"
+    },
+    {
+      "id": "interviews/companies/huawei.md#46",
+      "number": 46,
+      "title": "5G Resource-Block Allocation (Interval Scheduling)",
+      "file": "interviews/companies/huawei.md",
+      "line": 3198,
+      "category": "interviews",
+      "topics": [
+        "greedy",
+        "intervals",
+        "activity-selection"
+      ],
+      "difficulty": "Medium",
+      "title_zh": "5G 资源块分配（区间调度）（5G Resource-Block Allocation）",
+      "file_zh": "interviews/companies/huawei.zh.md"
+    },
+    {
+      "id": "interviews/companies/huawei.md#47",
+      "number": 47,
+      "title": "Design a Telecom Billing System",
+      "file": "interviews/companies/huawei.md",
+      "line": 3253,
+      "category": "interviews",
+      "topics": [
+        "system-design",
+        "billing",
+        "streaming",
+        "consistency",
+        "big-data"
+      ],
+      "difficulty": "Hard",
+      "title_zh": "设计电信计费系统",
+      "file_zh": "interviews/companies/huawei.zh.md"
+    },
+    {
+      "id": "interviews/companies/huawei.md#48",
+      "number": 48,
+      "title": "Design HarmonyOS Distributed Soft Bus / Cross-Device Data Sync",
+      "file": "interviews/companies/huawei.md",
+      "line": 3268,
+      "category": "interviews",
+      "topics": [
+        "system-design",
+        "distributed",
+        "sync",
+        "iot"
+      ],
+      "difficulty": "Hard",
+      "title_zh": "设计 HarmonyOS 分布式软总线 / 跨设备数据同步",
+      "file_zh": "interviews/companies/huawei.zh.md"
+    },
+    {
+      "id": "interviews/companies/huawei.md#49",
+      "number": 49,
+      "title": "Design a 5G Base-Station OTA Firmware Update System",
+      "file": "interviews/companies/huawei.md",
+      "line": 3283,
+      "category": "interviews",
+      "topics": [
+        "system-design",
+        "ota",
+        "rollout",
+        "reliability",
+        "ops"
+      ],
+      "difficulty": "Hard",
+      "title_zh": "设计 5G 基站 OTA 固件升级系统",
+      "file_zh": "interviews/companies/huawei.zh.md"
+    },
+    {
+      "id": "interviews/companies/huawei.md#50",
+      "number": 50,
+      "title": "Design a CDN",
+      "file": "interviews/companies/huawei.md",
+      "line": 3298,
+      "category": "interviews",
+      "topics": [
+        "system-design",
+        "cdn",
+        "caching",
+        "dns",
+        "cloud"
+      ],
+      "difficulty": "Hard",
+      "title_zh": "设计 CDN",
+      "file_zh": "interviews/companies/huawei.zh.md"
+    },
+    {
+      "id": "interviews/companies/huawei.md#51",
+      "number": 51,
+      "title": "Design a Distributed Message Queue",
+      "file": "interviews/companies/huawei.md",
+      "line": 3313,
+      "category": "interviews",
+      "topics": [
+        "system-design",
+        "messaging",
+        "replication",
+        "ordering"
+      ],
+      "difficulty": "Hard",
+      "title_zh": "设计分布式消息队列",
+      "file_zh": "interviews/companies/huawei.zh.md"
+    },
+    {
+      "id": "interviews/companies/huawei.md#52",
+      "number": 52,
+      "title": "Design Huawei Cloud Object Storage (OBS)",
+      "file": "interviews/companies/huawei.md",
+      "line": 3328,
+      "category": "interviews",
+      "topics": [
+        "system-design",
+        "blob-storage",
+        "erasure-coding",
+        "consistency",
+        "cloud"
+      ],
+      "difficulty": "Hard",
+      "title_zh": "设计华为云对象存储（OBS）",
+      "file_zh": "interviews/companies/huawei.zh.md"
+    },
+    {
+      "id": "interviews/companies/huawei.md#53",
+      "number": 53,
+      "title": "Design a Real-Time IoT Device Management Platform",
+      "file": "interviews/companies/huawei.md",
+      "line": 3343,
+      "category": "interviews",
+      "topics": [
+        "system-design",
+        "iot",
+        "mqtt",
+        "time-series",
+        "big-data",
+        "ops"
+      ],
+      "difficulty": "Hard",
+      "title_zh": "设计实时物联网设备管理平台",
+      "file_zh": "interviews/companies/huawei.zh.md"
+    },
+    {
+      "id": "interviews/companies/huawei.md#54",
+      "number": 54,
+      "title": "Design a High-Availability Database for Carrier Networks",
+      "file": "interviews/companies/huawei.md",
+      "line": 3358,
+      "category": "interviews",
+      "topics": [
+        "system-design",
+        "database",
+        "replication",
+        "consensus"
+      ],
+      "difficulty": "Hard",
+      "title_zh": "设计运营商网络的高可用数据库",
+      "file_zh": "interviews/companies/huawei.zh.md"
+    },
+    {
+      "id": "interviews/companies/huawei.md#55",
+      "number": 55,
+      "title": "Tell me about embracing the 奋斗者 (dedicator) culture",
+      "file": "interviews/companies/huawei.md",
+      "line": 3373,
+      "category": "interviews",
+      "topics": [
+        "behavioral",
+        "culture",
+        "dedication"
+      ],
+      "difficulty": "Medium",
+      "title_zh": "谈谈拥抱\"奋斗者\"文化",
+      "file_zh": "interviews/companies/huawei.zh.md"
+    },
+    {
+      "id": "interviews/companies/huawei.md#56",
+      "number": 56,
+      "title": "Time you delivered under a high-pressure deadline",
+      "file": "interviews/companies/huawei.md",
+      "line": 3388,
+      "category": "interviews",
+      "topics": [
+        "behavioral",
+        "pressure",
+        "delivery"
+      ],
+      "difficulty": "Medium",
+      "title_zh": "在高压期限下交付的经历",
+      "file_zh": "interviews/companies/huawei.zh.md"
+    },
+    {
+      "id": "interviews/companies/huawei.md#57",
+      "number": 57,
+      "title": "Cross-team collaboration in a large organization",
+      "file": "interviews/companies/huawei.md",
+      "line": 3403,
+      "category": "interviews",
+      "topics": [
+        "behavioral",
+        "collaboration",
+        "communication"
+      ],
+      "difficulty": "Medium",
+      "title_zh": "大型组织中的跨团队协作",
+      "file_zh": "interviews/companies/huawei.zh.md"
+    },
+    {
+      "id": "interviews/companies/huawei.md#58",
+      "number": 58,
+      "title": "Why Huawei",
+      "file": "interviews/companies/huawei.md",
+      "line": 3418,
+      "category": "interviews",
+      "topics": [
+        "behavioral",
+        "motivation",
+        "fit"
+      ],
+      "difficulty": "Easy",
+      "title_zh": "为什么选择华为",
+      "file_zh": "interviews/companies/huawei.zh.md"
+    },
+    {
+      "id": "interviews/companies/huawei.md#59",
+      "number": 59,
+      "title": "C/C++ Memory Management and Pointers",
+      "file": "interviews/companies/huawei.md",
+      "line": 3433,
+      "category": "interviews",
+      "topics": [
+        "domain-knowledge",
+        "c-cpp",
+        "memory",
+        "pointers"
+      ],
+      "difficulty": "Hard",
+      "title_zh": "C/C++ 内存管理与指针",
+      "file_zh": "interviews/companies/huawei.zh.md"
+    },
+    {
+      "id": "interviews/companies/huawei.md#60",
+      "number": 60,
+      "title": "TCP/IP Networking Deep Dive",
+      "file": "interviews/companies/huawei.md",
+      "line": 3448,
+      "category": "interviews",
+      "topics": [
+        "domain-knowledge",
+        "networking",
+        "tcp",
+        "protocols"
+      ],
+      "difficulty": "Hard",
+      "title_zh": "TCP/IP 网络深挖",
+      "file_zh": "interviews/companies/huawei.zh.md"
+    },
+    {
+      "id": "interviews/companies/huawei.md#61",
+      "number": 61,
+      "title": "Linux Processes, Threads, and IPC",
+      "file": "interviews/companies/huawei.md",
+      "line": 3463,
+      "category": "interviews",
+      "topics": [
+        "domain-knowledge",
+        "linux",
+        "concurrency",
+        "ipc"
+      ],
+      "difficulty": "Hard",
+      "title_zh": "Linux 进程、线程与 IPC",
+      "file_zh": "interviews/companies/huawei.zh.md"
+    },
+    {
+      "id": "interviews/companies/huawei.md#62",
+      "number": 62,
+      "title": "Operating System Concepts",
+      "file": "interviews/companies/huawei.md",
+      "line": 3478,
+      "category": "interviews",
+      "topics": [
+        "domain-knowledge",
+        "operating-systems",
+        "scheduling",
+        "memory"
+      ],
+      "difficulty": "Hard",
+      "title_zh": "操作系统概念",
+      "file_zh": "interviews/companies/huawei.zh.md"
+    },
+    {
       "id": "interviews/companies/meta.md#1",
       "number": 1,
       "title": "Verifying an Alien Dictionary",
@@ -5776,7 +6778,8 @@
         "blob-storage",
         "cdn",
         "sharding",
-        "feed"
+        "feed",
+        "cloud"
       ],
       "difficulty": "Hard",
       "title_zh": "设计 Instagram",
@@ -5846,7 +6849,8 @@
         "system-design",
         "streaming",
         "count-min-sketch",
-        "heap"
+        "heap",
+        "big-data"
       ],
       "difficulty": "Hard",
       "title_zh": "设计 Top K 热门 hashtag",
@@ -6773,7 +7777,8 @@
         "system-design",
         "blob-storage",
         "replication",
-        "erasure-coding"
+        "erasure-coding",
+        "cloud"
       ],
       "difficulty": "Hard",
       "title_zh": "设计 Azure Blob 存储",
@@ -6807,7 +7812,9 @@
         "system-design",
         "queue",
         "scheduling",
-        "distributed-systems"
+        "distributed-systems",
+        "cloud",
+        "ops"
       ],
       "difficulty": "Medium",
       "title_zh": "设计任务调度器（Azure Functions 后端）",
@@ -6921,7 +7928,8 @@
       "topics": [
         "cloud",
         "cost-optimization",
-        "azure"
+        "azure",
+        "ops"
       ],
       "difficulty": "Medium",
       "title_zh": "优化某服务在 Azure 上的成本",
@@ -7796,7 +8804,8 @@
         "system-design",
         "blob-storage",
         "replication",
-        "consistency"
+        "consistency",
+        "cloud"
       ],
       "difficulty": "Hard",
       "title_zh": "设计腾讯云对象存储（COS）",
@@ -7813,7 +8822,8 @@
         "system-design",
         "real-time",
         "fanout",
-        "monetization"
+        "monetization",
+        "big-data"
       ],
       "difficulty": "Hard",
       "title_zh": "设计直播打赏 / 弹幕系统",
@@ -7861,7 +8871,8 @@
       "topics": [
         "behavioral",
         "incident-response",
-        "ownership"
+        "ownership",
+        "ops"
       ],
       "difficulty": "Medium",
       "title_zh": "处理生产事故的经历",
@@ -8591,6 +9602,993 @@
       "difficulty": "Hard",
       "title_zh": "二分图最大匹配（玩家到服务器分配）",
       "file_zh": "interviews/companies/tencent.zh.md"
+    },
+    {
+      "id": "interviews/companies/xiaomi.md#1",
+      "number": 1,
+      "title": "Two Sum",
+      "file": "interviews/companies/xiaomi.md",
+      "line": 25,
+      "category": "interviews",
+      "topics": [
+        "array",
+        "hash-table"
+      ],
+      "difficulty": "Easy",
+      "title_zh": "两数之和（Two Sum）",
+      "file_zh": "interviews/companies/xiaomi.zh.md"
+    },
+    {
+      "id": "interviews/companies/xiaomi.md#2",
+      "number": 2,
+      "title": "Best Time to Buy and Sell Stock",
+      "file": "interviews/companies/xiaomi.md",
+      "line": 86,
+      "category": "interviews",
+      "topics": [
+        "array",
+        "dynamic-programming"
+      ],
+      "difficulty": "Easy",
+      "title_zh": "买卖股票的最佳时机（Best Time to Buy and Sell Stock）",
+      "file_zh": "interviews/companies/xiaomi.zh.md"
+    },
+    {
+      "id": "interviews/companies/xiaomi.md#3",
+      "number": 3,
+      "title": "Valid Anagram",
+      "file": "interviews/companies/xiaomi.md",
+      "line": 144,
+      "category": "interviews",
+      "topics": [
+        "string",
+        "hash-table",
+        "counting"
+      ],
+      "difficulty": "Easy",
+      "title_zh": "有效的字母异位词（Valid Anagram）",
+      "file_zh": "interviews/companies/xiaomi.zh.md"
+    },
+    {
+      "id": "interviews/companies/xiaomi.md#4",
+      "number": 4,
+      "title": "Valid Parentheses",
+      "file": "interviews/companies/xiaomi.md",
+      "line": 205,
+      "category": "interviews",
+      "topics": [
+        "stack",
+        "string"
+      ],
+      "difficulty": "Easy",
+      "title_zh": "有效的括号（Valid Parentheses）",
+      "file_zh": "interviews/companies/xiaomi.zh.md"
+    },
+    {
+      "id": "interviews/companies/xiaomi.md#5",
+      "number": 5,
+      "title": "Merge Two Sorted Lists",
+      "file": "interviews/companies/xiaomi.md",
+      "line": 275,
+      "category": "interviews",
+      "topics": [
+        "linked-list",
+        "two-pointer"
+      ],
+      "difficulty": "Easy",
+      "title_zh": "合并两个有序链表（Merge Two Sorted Lists）",
+      "file_zh": "interviews/companies/xiaomi.zh.md"
+    },
+    {
+      "id": "interviews/companies/xiaomi.md#6",
+      "number": 6,
+      "title": "Maximum Subarray",
+      "file": "interviews/companies/xiaomi.md",
+      "line": 353,
+      "category": "interviews",
+      "topics": [
+        "array",
+        "dynamic-programming",
+        "kadane"
+      ],
+      "difficulty": "Medium",
+      "title_zh": "最大子数组和（Maximum Subarray）",
+      "file_zh": "interviews/companies/xiaomi.zh.md"
+    },
+    {
+      "id": "interviews/companies/xiaomi.md#7",
+      "number": 7,
+      "title": "Container With Most Water",
+      "file": "interviews/companies/xiaomi.md",
+      "line": 411,
+      "category": "interviews",
+      "topics": [
+        "array",
+        "two-pointer",
+        "greedy"
+      ],
+      "difficulty": "Medium",
+      "title_zh": "盛最多水的容器（Container With Most Water）",
+      "file_zh": "interviews/companies/xiaomi.zh.md"
+    },
+    {
+      "id": "interviews/companies/xiaomi.md#8",
+      "number": 8,
+      "title": "3Sum",
+      "file": "interviews/companies/xiaomi.md",
+      "line": 472,
+      "category": "interviews",
+      "topics": [
+        "array",
+        "two-pointer",
+        "sorting"
+      ],
+      "difficulty": "Medium",
+      "title_zh": "三数之和（3Sum）",
+      "file_zh": "interviews/companies/xiaomi.zh.md"
+    },
+    {
+      "id": "interviews/companies/xiaomi.md#9",
+      "number": 9,
+      "title": "Binary Search",
+      "file": "interviews/companies/xiaomi.md",
+      "line": 570,
+      "category": "interviews",
+      "topics": [
+        "binary-search",
+        "array"
+      ],
+      "difficulty": "Easy",
+      "title_zh": "二分查找（Binary Search）",
+      "file_zh": "interviews/companies/xiaomi.zh.md"
+    },
+    {
+      "id": "interviews/companies/xiaomi.md#10",
+      "number": 10,
+      "title": "Search in Rotated Sorted Array",
+      "file": "interviews/companies/xiaomi.md",
+      "line": 635,
+      "category": "interviews",
+      "topics": [
+        "binary-search",
+        "array"
+      ],
+      "difficulty": "Medium",
+      "title_zh": "搜索旋转排序数组（Search in Rotated Sorted Array）",
+      "file_zh": "interviews/companies/xiaomi.zh.md"
+    },
+    {
+      "id": "interviews/companies/xiaomi.md#11",
+      "number": 11,
+      "title": "Longest Substring Without Repeating Characters",
+      "file": "interviews/companies/xiaomi.md",
+      "line": 718,
+      "category": "interviews",
+      "topics": [
+        "string",
+        "sliding-window",
+        "hash-table"
+      ],
+      "difficulty": "Medium",
+      "title_zh": "无重复字符的最长子串（Longest Substring Without Repeating Characters）",
+      "file_zh": "interviews/companies/xiaomi.zh.md"
+    },
+    {
+      "id": "interviews/companies/xiaomi.md#12",
+      "number": 12,
+      "title": "Minimum Window Substring",
+      "file": "interviews/companies/xiaomi.md",
+      "line": 780,
+      "category": "interviews",
+      "topics": [
+        "string",
+        "sliding-window",
+        "hash-table"
+      ],
+      "difficulty": "Hard",
+      "title_zh": "最小覆盖子串（Minimum Window Substring）",
+      "file_zh": "interviews/companies/xiaomi.zh.md"
+    },
+    {
+      "id": "interviews/companies/xiaomi.md#13",
+      "number": 13,
+      "title": "Product of Array Except Self",
+      "file": "interviews/companies/xiaomi.md",
+      "line": 866,
+      "category": "interviews",
+      "topics": [
+        "array",
+        "prefix-product"
+      ],
+      "difficulty": "Medium",
+      "title_zh": "除自身以外数组的乘积（Product of Array Except Self）",
+      "file_zh": "interviews/companies/xiaomi.zh.md"
+    },
+    {
+      "id": "interviews/companies/xiaomi.md#14",
+      "number": 14,
+      "title": "Reverse Linked List",
+      "file": "interviews/companies/xiaomi.md",
+      "line": 923,
+      "category": "interviews",
+      "topics": [
+        "linked-list"
+      ],
+      "difficulty": "Easy",
+      "title_zh": "反转链表（Reverse Linked List）",
+      "file_zh": "interviews/companies/xiaomi.zh.md"
+    },
+    {
+      "id": "interviews/companies/xiaomi.md#15",
+      "number": 15,
+      "title": "Linked List Cycle",
+      "file": "interviews/companies/xiaomi.md",
+      "line": 990,
+      "category": "interviews",
+      "topics": [
+        "linked-list",
+        "two-pointer",
+        "floyd"
+      ],
+      "difficulty": "Easy",
+      "title_zh": "环形链表（Linked List Cycle）",
+      "file_zh": "interviews/companies/xiaomi.zh.md"
+    },
+    {
+      "id": "interviews/companies/xiaomi.md#16",
+      "number": 16,
+      "title": "Remove Nth Node From End of List",
+      "file": "interviews/companies/xiaomi.md",
+      "line": 1051,
+      "category": "interviews",
+      "topics": [
+        "linked-list",
+        "two-pointer"
+      ],
+      "difficulty": "Medium",
+      "title_zh": "删除链表的倒数第 N 个节点（Remove Nth Node From End of List）",
+      "file_zh": "interviews/companies/xiaomi.zh.md"
+    },
+    {
+      "id": "interviews/companies/xiaomi.md#17",
+      "number": 17,
+      "title": "Merge k Sorted Lists",
+      "file": "interviews/companies/xiaomi.md",
+      "line": 1112,
+      "category": "interviews",
+      "topics": [
+        "linked-list",
+        "heap",
+        "divide-and-conquer"
+      ],
+      "difficulty": "Hard",
+      "title_zh": "合并 K 个升序链表（Merge k Sorted Lists）",
+      "file_zh": "interviews/companies/xiaomi.zh.md"
+    },
+    {
+      "id": "interviews/companies/xiaomi.md#18",
+      "number": 18,
+      "title": "Invert Binary Tree",
+      "file": "interviews/companies/xiaomi.md",
+      "line": 1182,
+      "category": "interviews",
+      "topics": [
+        "tree",
+        "recursion",
+        "dfs"
+      ],
+      "difficulty": "Easy",
+      "title_zh": "翻转二叉树（Invert Binary Tree）",
+      "file_zh": "interviews/companies/xiaomi.zh.md"
+    },
+    {
+      "id": "interviews/companies/xiaomi.md#19",
+      "number": 19,
+      "title": "Maximum Depth of Binary Tree",
+      "file": "interviews/companies/xiaomi.md",
+      "line": 1242,
+      "category": "interviews",
+      "topics": [
+        "tree",
+        "recursion",
+        "dfs"
+      ],
+      "difficulty": "Easy",
+      "title_zh": "二叉树的最大深度（Maximum Depth of Binary Tree）",
+      "file_zh": "interviews/companies/xiaomi.zh.md"
+    },
+    {
+      "id": "interviews/companies/xiaomi.md#20",
+      "number": 20,
+      "title": "Binary Tree Level Order Traversal",
+      "file": "interviews/companies/xiaomi.md",
+      "line": 1289,
+      "category": "interviews",
+      "topics": [
+        "tree",
+        "bfs",
+        "queue"
+      ],
+      "difficulty": "Medium",
+      "title_zh": "二叉树的层序遍历（Binary Tree Level Order Traversal）",
+      "file_zh": "interviews/companies/xiaomi.zh.md"
+    },
+    {
+      "id": "interviews/companies/xiaomi.md#21",
+      "number": 21,
+      "title": "Validate Binary Search Tree",
+      "file": "interviews/companies/xiaomi.md",
+      "line": 1375,
+      "category": "interviews",
+      "topics": [
+        "tree",
+        "dfs",
+        "bst"
+      ],
+      "difficulty": "Medium",
+      "title_zh": "验证二叉搜索树（Validate Binary Search Tree）",
+      "file_zh": "interviews/companies/xiaomi.zh.md"
+    },
+    {
+      "id": "interviews/companies/xiaomi.md#22",
+      "number": 22,
+      "title": "Lowest Common Ancestor of a Binary Tree",
+      "file": "interviews/companies/xiaomi.md",
+      "line": 1435,
+      "category": "interviews",
+      "topics": [
+        "tree",
+        "dfs",
+        "recursion"
+      ],
+      "difficulty": "Medium",
+      "title_zh": "二叉树的最近公共祖先（Lowest Common Ancestor of a Binary Tree）",
+      "file_zh": "interviews/companies/xiaomi.zh.md"
+    },
+    {
+      "id": "interviews/companies/xiaomi.md#23",
+      "number": 23,
+      "title": "Serialize and Deserialize Binary Tree",
+      "file": "interviews/companies/xiaomi.md",
+      "line": 1492,
+      "category": "interviews",
+      "topics": [
+        "tree",
+        "dfs",
+        "design"
+      ],
+      "difficulty": "Hard",
+      "title_zh": "二叉树的序列化与反序列化（Serialize and Deserialize Binary Tree）",
+      "file_zh": "interviews/companies/xiaomi.zh.md"
+    },
+    {
+      "id": "interviews/companies/xiaomi.md#24",
+      "number": 24,
+      "title": "Number of Islands",
+      "file": "interviews/companies/xiaomi.md",
+      "line": 1602,
+      "category": "interviews",
+      "topics": [
+        "graph",
+        "dfs",
+        "bfs",
+        "matrix"
+      ],
+      "difficulty": "Medium",
+      "title_zh": "岛屿数量（Number of Islands）",
+      "file_zh": "interviews/companies/xiaomi.zh.md"
+    },
+    {
+      "id": "interviews/companies/xiaomi.md#25",
+      "number": 25,
+      "title": "Clone Graph",
+      "file": "interviews/companies/xiaomi.md",
+      "line": 1674,
+      "category": "interviews",
+      "topics": [
+        "graph",
+        "dfs",
+        "bfs",
+        "hash-table"
+      ],
+      "difficulty": "Medium",
+      "title_zh": "克隆图（Clone Graph）",
+      "file_zh": "interviews/companies/xiaomi.zh.md"
+    },
+    {
+      "id": "interviews/companies/xiaomi.md#26",
+      "number": 26,
+      "title": "Course Schedule",
+      "file": "interviews/companies/xiaomi.md",
+      "line": 1754,
+      "category": "interviews",
+      "topics": [
+        "graph",
+        "topological-sort",
+        "bfs"
+      ],
+      "difficulty": "Medium",
+      "title_zh": "课程表（Course Schedule）",
+      "file_zh": "interviews/companies/xiaomi.zh.md"
+    },
+    {
+      "id": "interviews/companies/xiaomi.md#27",
+      "number": 27,
+      "title": "Word Search",
+      "file": "interviews/companies/xiaomi.md",
+      "line": 1832,
+      "category": "interviews",
+      "topics": [
+        "backtracking",
+        "dfs",
+        "matrix"
+      ],
+      "difficulty": "Medium",
+      "title_zh": "单词搜索（Word Search）",
+      "file_zh": "interviews/companies/xiaomi.zh.md"
+    },
+    {
+      "id": "interviews/companies/xiaomi.md#28",
+      "number": 28,
+      "title": "Climbing Stairs",
+      "file": "interviews/companies/xiaomi.md",
+      "line": 1912,
+      "category": "interviews",
+      "topics": [
+        "dynamic-programming",
+        "fibonacci"
+      ],
+      "difficulty": "Easy",
+      "title_zh": "爬楼梯（Climbing Stairs）",
+      "file_zh": "interviews/companies/xiaomi.zh.md"
+    },
+    {
+      "id": "interviews/companies/xiaomi.md#29",
+      "number": 29,
+      "title": "Coin Change",
+      "file": "interviews/companies/xiaomi.md",
+      "line": 1958,
+      "category": "interviews",
+      "topics": [
+        "dynamic-programming",
+        "unbounded-knapsack"
+      ],
+      "difficulty": "Medium",
+      "title_zh": "零钱兑换（Coin Change）",
+      "file_zh": "interviews/companies/xiaomi.zh.md"
+    },
+    {
+      "id": "interviews/companies/xiaomi.md#30",
+      "number": 30,
+      "title": "Longest Increasing Subsequence",
+      "file": "interviews/companies/xiaomi.md",
+      "line": 2013,
+      "category": "interviews",
+      "topics": [
+        "dynamic-programming",
+        "binary-search"
+      ],
+      "difficulty": "Medium",
+      "title_zh": "最长递增子序列（Longest Increasing Subsequence）",
+      "file_zh": "interviews/companies/xiaomi.zh.md"
+    },
+    {
+      "id": "interviews/companies/xiaomi.md#31",
+      "number": 31,
+      "title": "House Robber",
+      "file": "interviews/companies/xiaomi.md",
+      "line": 2079,
+      "category": "interviews",
+      "topics": [
+        "dynamic-programming"
+      ],
+      "difficulty": "Medium",
+      "title_zh": "打家劫舍（House Robber）",
+      "file_zh": "interviews/companies/xiaomi.zh.md"
+    },
+    {
+      "id": "interviews/companies/xiaomi.md#32",
+      "number": 32,
+      "title": "Word Break",
+      "file": "interviews/companies/xiaomi.md",
+      "line": 2125,
+      "category": "interviews",
+      "topics": [
+        "dynamic-programming",
+        "string",
+        "hash-table"
+      ],
+      "difficulty": "Medium",
+      "title_zh": "单词拆分（Word Break）",
+      "file_zh": "interviews/companies/xiaomi.zh.md"
+    },
+    {
+      "id": "interviews/companies/xiaomi.md#33",
+      "number": 33,
+      "title": "Number of Connected Components in an Undirected Graph",
+      "file": "interviews/companies/xiaomi.md",
+      "line": 2187,
+      "category": "interviews",
+      "topics": [
+        "union-find",
+        "graph",
+        "dsu"
+      ],
+      "difficulty": "Medium",
+      "title_zh": "无向图中连通分量的数目（Number of Connected Components in an Undirected Graph）",
+      "file_zh": "interviews/companies/xiaomi.zh.md"
+    },
+    {
+      "id": "interviews/companies/xiaomi.md#34",
+      "number": 34,
+      "title": "Edit Distance",
+      "file": "interviews/companies/xiaomi.md",
+      "line": 2260,
+      "category": "interviews",
+      "topics": [
+        "dynamic-programming",
+        "string"
+      ],
+      "difficulty": "Hard",
+      "title_zh": "编辑距离（Edit Distance）",
+      "file_zh": "interviews/companies/xiaomi.zh.md"
+    },
+    {
+      "id": "interviews/companies/xiaomi.md#35",
+      "number": 35,
+      "title": "Subsets",
+      "file": "interviews/companies/xiaomi.md",
+      "line": 2331,
+      "category": "interviews",
+      "topics": [
+        "backtracking",
+        "bit-manipulation"
+      ],
+      "difficulty": "Medium",
+      "title_zh": "子集（Subsets）",
+      "file_zh": "interviews/companies/xiaomi.zh.md"
+    },
+    {
+      "id": "interviews/companies/xiaomi.md#36",
+      "number": 36,
+      "title": "Permutations",
+      "file": "interviews/companies/xiaomi.md",
+      "line": 2399,
+      "category": "interviews",
+      "topics": [
+        "backtracking"
+      ],
+      "difficulty": "Medium",
+      "title_zh": "全排列（Permutations）",
+      "file_zh": "interviews/companies/xiaomi.zh.md"
+    },
+    {
+      "id": "interviews/companies/xiaomi.md#37",
+      "number": 37,
+      "title": "Combination Sum",
+      "file": "interviews/companies/xiaomi.md",
+      "line": 2481,
+      "category": "interviews",
+      "topics": [
+        "backtracking",
+        "dfs"
+      ],
+      "difficulty": "Medium",
+      "title_zh": "组合总和（Combination Sum）",
+      "file_zh": "interviews/companies/xiaomi.zh.md"
+    },
+    {
+      "id": "interviews/companies/xiaomi.md#38",
+      "number": 38,
+      "title": "Kth Largest Element in an Array",
+      "file": "interviews/companies/xiaomi.md",
+      "line": 2556,
+      "category": "interviews",
+      "topics": [
+        "heap",
+        "quickselect",
+        "sorting"
+      ],
+      "difficulty": "Medium",
+      "title_zh": "数组中的第 K 个最大元素（Kth Largest Element in an Array）",
+      "file_zh": "interviews/companies/xiaomi.zh.md"
+    },
+    {
+      "id": "interviews/companies/xiaomi.md#39",
+      "number": 39,
+      "title": "Top K Frequent Elements",
+      "file": "interviews/companies/xiaomi.md",
+      "line": 2608,
+      "category": "interviews",
+      "topics": [
+        "heap",
+        "hash-table",
+        "bucket-sort"
+      ],
+      "difficulty": "Medium",
+      "title_zh": "前 K 个高频元素（Top K Frequent Elements）",
+      "file_zh": "interviews/companies/xiaomi.zh.md"
+    },
+    {
+      "id": "interviews/companies/xiaomi.md#40",
+      "number": 40,
+      "title": "Merge Intervals",
+      "file": "interviews/companies/xiaomi.md",
+      "line": 2679,
+      "category": "interviews",
+      "topics": [
+        "intervals",
+        "sorting"
+      ],
+      "difficulty": "Medium",
+      "title_zh": "合并区间（Merge Intervals）",
+      "file_zh": "interviews/companies/xiaomi.zh.md"
+    },
+    {
+      "id": "interviews/companies/xiaomi.md#41",
+      "number": 41,
+      "title": "Implement Trie (Prefix Tree)",
+      "file": "interviews/companies/xiaomi.md",
+      "line": 2743,
+      "category": "interviews",
+      "topics": [
+        "trie",
+        "design",
+        "string"
+      ],
+      "difficulty": "Medium",
+      "title_zh": "实现前缀树（Implement Trie）",
+      "file_zh": "interviews/companies/xiaomi.zh.md"
+    },
+    {
+      "id": "interviews/companies/xiaomi.md#42",
+      "number": 42,
+      "title": "Single Number",
+      "file": "interviews/companies/xiaomi.md",
+      "line": 2863,
+      "category": "interviews",
+      "topics": [
+        "bit-manipulation",
+        "xor"
+      ],
+      "difficulty": "Easy",
+      "title_zh": "只出现一次的数字（Single Number）",
+      "file_zh": "interviews/companies/xiaomi.zh.md"
+    },
+    {
+      "id": "interviews/companies/xiaomi.md#43",
+      "number": 43,
+      "title": "Smart-Home IoT Event Scheduling (Mi Home)",
+      "file": "interviews/companies/xiaomi.md",
+      "line": 2907,
+      "category": "interviews",
+      "topics": [
+        "heap",
+        "intervals",
+        "greedy"
+      ],
+      "difficulty": "Medium",
+      "title_zh": "智能家居 IoT 事件调度（米家）",
+      "file_zh": "interviews/companies/xiaomi.zh.md"
+    },
+    {
+      "id": "interviews/companies/xiaomi.md#44",
+      "number": 44,
+      "title": "MIUI App Launch Ordering (Topological Sort)",
+      "file": "interviews/companies/xiaomi.md",
+      "line": 2968,
+      "category": "interviews",
+      "topics": [
+        "graph",
+        "topological-sort",
+        "bfs"
+      ],
+      "difficulty": "Medium",
+      "title_zh": "MIUI 应用启动排序（拓扑排序）",
+      "file_zh": "interviews/companies/xiaomi.zh.md"
+    },
+    {
+      "id": "interviews/companies/xiaomi.md#45",
+      "number": 45,
+      "title": "Sensor Data Sliding-Window Maximum",
+      "file": "interviews/companies/xiaomi.md",
+      "line": 3047,
+      "category": "interviews",
+      "topics": [
+        "sliding-window",
+        "deque",
+        "monotonic-queue"
+      ],
+      "difficulty": "Hard",
+      "title_zh": "传感器数据滑动窗口最大值（Sliding-Window Maximum）",
+      "file_zh": "interviews/companies/xiaomi.zh.md"
+    },
+    {
+      "id": "interviews/companies/xiaomi.md#46",
+      "number": 46,
+      "title": "Battery Power Optimization (DP)",
+      "file": "interviews/companies/xiaomi.md",
+      "line": 3115,
+      "category": "interviews",
+      "topics": [
+        "dynamic-programming"
+      ],
+      "difficulty": "Medium",
+      "title_zh": "电池功耗优化（DP）",
+      "file_zh": "interviews/companies/xiaomi.zh.md"
+    },
+    {
+      "id": "interviews/companies/xiaomi.md#47",
+      "number": 47,
+      "title": "Design the Mi Home Smart-Home IoT Platform",
+      "file": "interviews/companies/xiaomi.md",
+      "line": 3161,
+      "category": "interviews",
+      "topics": [
+        "system-design",
+        "iot",
+        "mqtt",
+        "scale"
+      ],
+      "difficulty": "Hard",
+      "title_zh": "设计米家智能家居 IoT 平台",
+      "file_zh": "interviews/companies/xiaomi.zh.md"
+    },
+    {
+      "id": "interviews/companies/xiaomi.md#48",
+      "number": 48,
+      "title": "Design an OTA Firmware Update System",
+      "file": "interviews/companies/xiaomi.md",
+      "line": 3176,
+      "category": "interviews",
+      "topics": [
+        "system-design",
+        "ota",
+        "cdn",
+        "rollout",
+        "cloud",
+        "ops"
+      ],
+      "difficulty": "Hard",
+      "title_zh": "设计 OTA 固件升级系统",
+      "file_zh": "interviews/companies/xiaomi.zh.md"
+    },
+    {
+      "id": "interviews/companies/xiaomi.md#49",
+      "number": 49,
+      "title": "Design the MIUI Push Notification Service",
+      "file": "interviews/companies/xiaomi.md",
+      "line": 3191,
+      "category": "interviews",
+      "topics": [
+        "system-design",
+        "push",
+        "fanout",
+        "websocket"
+      ],
+      "difficulty": "Hard",
+      "title_zh": "设计 MIUI 推送通知服务",
+      "file_zh": "interviews/companies/xiaomi.zh.md"
+    },
+    {
+      "id": "interviews/companies/xiaomi.md#50",
+      "number": 50,
+      "title": "Design the Mi.com Flash-Sale / Seckill System (秒杀/抢购)",
+      "file": "interviews/companies/xiaomi.md",
+      "line": 3206,
+      "category": "interviews",
+      "topics": [
+        "system-design",
+        "high-concurrency",
+        "cache",
+        "consistency"
+      ],
+      "difficulty": "Hard",
+      "title_zh": "设计小米商城秒杀/抢购系统",
+      "file_zh": "interviews/companies/xiaomi.zh.md"
+    },
+    {
+      "id": "interviews/companies/xiaomi.md#51",
+      "number": 51,
+      "title": "Design an App Store / Short-Video Recommendation Feed",
+      "file": "interviews/companies/xiaomi.md",
+      "line": 3221,
+      "category": "interviews",
+      "topics": [
+        "system-design",
+        "recommendation",
+        "ranking",
+        "feed"
+      ],
+      "difficulty": "Hard",
+      "title_zh": "设计应用商店 / 短视频推荐流",
+      "file_zh": "interviews/companies/xiaomi.zh.md"
+    },
+    {
+      "id": "interviews/companies/xiaomi.md#52",
+      "number": 52,
+      "title": "Design Device-to-Cloud Telemetry Ingestion",
+      "file": "interviews/companies/xiaomi.md",
+      "line": 3236,
+      "category": "interviews",
+      "topics": [
+        "system-design",
+        "streaming",
+        "time-series",
+        "kafka",
+        "cloud",
+        "big-data"
+      ],
+      "difficulty": "Hard",
+      "title_zh": "设计设备到云遥测接入",
+      "file_zh": "interviews/companies/xiaomi.zh.md"
+    },
+    {
+      "id": "interviews/companies/xiaomi.md#53",
+      "number": 53,
+      "title": "Design a Distributed Cache",
+      "file": "interviews/companies/xiaomi.md",
+      "line": 3251,
+      "category": "interviews",
+      "topics": [
+        "system-design",
+        "cache",
+        "consistent-hashing",
+        "replication"
+      ],
+      "difficulty": "Hard",
+      "title_zh": "设计分布式缓存",
+      "file_zh": "interviews/companies/xiaomi.zh.md"
+    },
+    {
+      "id": "interviews/companies/xiaomi.md#54",
+      "number": 54,
+      "title": "Design a Real-Time Order System",
+      "file": "interviews/companies/xiaomi.md",
+      "line": 3266,
+      "category": "interviews",
+      "topics": [
+        "system-design",
+        "transactions",
+        "idempotency",
+        "queue"
+      ],
+      "difficulty": "Hard",
+      "title_zh": "设计实时订单系统",
+      "file_zh": "interviews/companies/xiaomi.zh.md"
+    },
+    {
+      "id": "interviews/companies/xiaomi.md#55",
+      "number": 55,
+      "title": "Why Xiaomi? (为发烧而生)",
+      "file": "interviews/companies/xiaomi.md",
+      "line": 3281,
+      "category": "interviews",
+      "topics": [
+        "behavioral",
+        "motivation",
+        "fit"
+      ],
+      "difficulty": "Easy",
+      "title_zh": "为什么选择小米？（为发烧而生）",
+      "file_zh": "interviews/companies/xiaomi.zh.md"
+    },
+    {
+      "id": "interviews/companies/xiaomi.md#56",
+      "number": 56,
+      "title": "Cost-Efficiency Mindset (感动人心、价格厚道)",
+      "file": "interviews/companies/xiaomi.md",
+      "line": 3296,
+      "category": "interviews",
+      "topics": [
+        "behavioral",
+        "cost",
+        "tradeoffs",
+        "ownership"
+      ],
+      "difficulty": "Medium",
+      "title_zh": "成本效率思维（感动人心、价格厚道）",
+      "file_zh": "interviews/companies/xiaomi.zh.md"
+    },
+    {
+      "id": "interviews/companies/xiaomi.md#57",
+      "number": 57,
+      "title": "Fast-Paced Release Cadence",
+      "file": "interviews/companies/xiaomi.md",
+      "line": 3311,
+      "category": "interviews",
+      "topics": [
+        "behavioral",
+        "execution",
+        "shipping"
+      ],
+      "difficulty": "Medium",
+      "title_zh": "快速发布节奏",
+      "file_zh": "interviews/companies/xiaomi.zh.md"
+    },
+    {
+      "id": "interviews/companies/xiaomi.md#58",
+      "number": 58,
+      "title": "Conflict / Disagreement with a Teammate",
+      "file": "interviews/companies/xiaomi.md",
+      "line": 3326,
+      "category": "interviews",
+      "topics": [
+        "behavioral",
+        "conflict",
+        "collaboration"
+      ],
+      "difficulty": "Medium",
+      "title_zh": "与同事的冲突/分歧",
+      "file_zh": "interviews/companies/xiaomi.zh.md"
+    },
+    {
+      "id": "interviews/companies/xiaomi.md#59",
+      "number": 59,
+      "title": "Android Framework: Activity Lifecycle, Binder IPC, Handler/Looper",
+      "file": "interviews/companies/xiaomi.md",
+      "line": 3341,
+      "category": "interviews",
+      "topics": [
+        "domain-knowledge",
+        "android",
+        "ipc",
+        "concurrency"
+      ],
+      "difficulty": "Hard",
+      "title_zh": "Android 框架：Activity 生命周期、Binder IPC、Handler/Looper",
+      "file_zh": "interviews/companies/xiaomi.zh.md"
+    },
+    {
+      "id": "interviews/companies/xiaomi.md#60",
+      "number": 60,
+      "title": "JVM Memory Model & Garbage Collection",
+      "file": "interviews/companies/xiaomi.md",
+      "line": 3356,
+      "category": "interviews",
+      "topics": [
+        "domain-knowledge",
+        "jvm",
+        "gc",
+        "memory"
+      ],
+      "difficulty": "Hard",
+      "title_zh": "JVM 内存模型与垃圾回收",
+      "file_zh": "interviews/companies/xiaomi.zh.md"
+    },
+    {
+      "id": "interviews/companies/xiaomi.md#61",
+      "number": 61,
+      "title": "Embedded C / RTOS Basics",
+      "file": "interviews/companies/xiaomi.md",
+      "line": 3371,
+      "category": "interviews",
+      "topics": [
+        "domain-knowledge",
+        "embedded",
+        "rtos",
+        "c"
+      ],
+      "difficulty": "Hard",
+      "title_zh": "嵌入式 C / RTOS 基础",
+      "file_zh": "interviews/companies/xiaomi.zh.md"
+    },
+    {
+      "id": "interviews/companies/xiaomi.md#62",
+      "number": 62,
+      "title": "Computer Networking: HTTP & TCP",
+      "file": "interviews/companies/xiaomi.md",
+      "line": 3386,
+      "category": "interviews",
+      "topics": [
+        "domain-knowledge",
+        "networking",
+        "tcp",
+        "http"
+      ],
+      "difficulty": "Medium",
+      "title_zh": "计算机网络：HTTP 与 TCP",
+      "file_zh": "interviews/companies/xiaomi.zh.md"
     },
     {
       "id": "knowledge/ai.md#1",

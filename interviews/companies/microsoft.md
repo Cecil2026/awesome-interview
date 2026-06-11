@@ -749,7 +749,7 @@ private static boolean dfs(char[][] b, String w, int r, int c, int i) {
 ### 10. Design Azure Blob Storage
 
 **Difficulty:** Hard
-**Topics:** system-design, blob-storage, replication, erasure-coding
+**Topics:** system-design, blob-storage, replication, erasure-coding, cloud
 **Position:** Senior SWE
 **Years:** L63-L65
 
@@ -790,7 +790,7 @@ private static boolean dfs(char[][] b, String w, int r, int c, int i) {
 ### 12. Design a Job Scheduler (Azure Functions backend)
 
 **Difficulty:** Medium
-**Topics:** system-design, queue, scheduling, distributed-systems
+**Topics:** system-design, queue, scheduling, distributed-systems, cloud, ops
 **Position:** Senior SWE
 **Years:** L63-L65
 
@@ -895,7 +895,7 @@ private static boolean dfs(char[][] b, String w, int r, int c, int i) {
 ### 19. Azure cost optimization on a service
 
 **Difficulty:** Medium
-**Topics:** cloud, cost-optimization, azure
+**Topics:** cloud, cost-optimization, azure, ops
 **Position:** SRE
 **Years:** L63
 

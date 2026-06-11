@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>awesome-interview · Resume → Questions</title>
+  <link rel="stylesheet" href="style.css?v=13" />
+  <script src="theme.js?v=10"></script>
+  <style>
+    .resume-wrap { max-width: 960px; margin: 0 auto; padding: 2rem 1.5rem; width: 100%; }
+    .resume-input { width: 100%; min-height: 180px; resize: vertical; padding: 0.9rem 1rem;
+      border: 1px solid var(--border); border-radius: 10px; background: var(--bg-card);
+      color: var(--text); font: inherit; line-height: 1.5; box-sizing: border-box; }
+    .resume-input:focus { outline: none; border-color: var(--accent); }
+    .resume-actions { display: flex; gap: 0.8rem; align-items: center; flex-wrap: wrap; margin: 0.9rem 0 0.4rem; }
+    .resume-hint { color: var(--text-muted); font-size: 0.85rem; }
+    .btn-generate { padding: 0.6rem 1.4rem; border: none; border-radius: 8px; cursor: pointer;
+      background: var(--accent); color: #fff; font-weight: 600; font-size: 0.95rem; }
+    .btn-generate:hover { background: var(--accent-hover); }
+    .btn-sample { background: none; border: 1px solid var(--border); color: var(--text);
+      padding: 0.55rem 1rem; border-radius: 8px; cursor: pointer; font-size: 0.9rem; }
+    .btn-sample:hover { border-color: var(--accent); color: var(--accent); }
+    .detected { display: flex; flex-wrap: wrap; gap: 0.45rem; margin: 1.2rem 0 0.4rem; }
+    .tech-chip { background: var(--badge-bg); color: var(--text); border-radius: 999px;
+      padding: 0.25rem 0.7rem; font-size: 0.82rem; }
+    .result-section { margin-top: 1.8rem; }
+    .result-section h2 { font-size: 1.1rem; margin-bottom: 0.7rem; padding-bottom: 0.4rem;
+      border-bottom: 1px solid var(--border); }
+    .q-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.6rem; }
+    .q-item { background: var(--bg-card); border: 1px solid var(--border); border-left: 3px solid var(--accent);
+      border-radius: 8px; padding: 0.7rem 0.9rem; line-height: 1.45; }
+    .q-item .q-tag { display: block; font-size: 0.72rem; color: var(--text-muted);
+      text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 0.25rem; }
+    .q-item.bank { border-left-color: var(--medium); }
+    .q-item.bank a { color: var(--accent); text-decoration: none; }
+    .q-item.bank a:hover { text-decoration: underline; }
+    .q-item .q-meta { font-size: 0.76rem; color: var(--text-muted); margin-top: 0.25rem; }
+    .empty-note { color: var(--text-muted); }
+    @media (max-width: 640px) {
+      .resume-wrap { padding: 1.2rem 1rem; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>awesome-interview</h1>
+    <p class="tagline" id="tagline">Paste a resume project and generate tailored interview questions.</p>
+    <nav>
+      <a id="nav-picker" href="index.html">Picker</a>
+      <a id="nav-reader" href="reader.html?file=README.md">Reader</a>
+      <a id="nav-compare" href="compare.html">Compare</a>
+      <a id="nav-resume" href="resume.html" aria-current="page">Resume → Q</a>
+      <span class="nav-sep" aria-hidden="true"></span>
+      <select id="language-select" aria-label="Select language">
+        <option value="en">English</option>
+        <option value="zh">简体中文</option>
+      </select>
+      <select id="theme-select" aria-label="Select theme">
+        <option value="light">Light</option>
+        <option value="dark">Dark</option>
+      </select>
+    </nav>
+  </header>
+
+  <main class="resume-wrap">
+    <label for="resume-text" id="input-label" style="display:block;margin-bottom:0.5rem;font-weight:600;">
+      Project experience
+    </label>
+    <textarea id="resume-text" class="resume-input"
+      placeholder="e.g. Built a real-time chat service with Node.js, WebSocket and Redis, sharded across 3 regions, handling 50k concurrent connections..."></textarea>
+    <div class="resume-actions">
+      <button id="generate-btn" class="btn-generate" type="button">Generate questions</button>
+      <button id="sample-btn" class="btn-sample" type="button">Load sample</button>
+      <span id="resume-hint" class="resume-hint">Runs fully offline — no data leaves your browser.</span>
+    </div>
+
+    <div id="results" hidden>
+      <div class="detected" id="detected"></div>
+      <div id="result-body"></div>
+    </div>
+  </main>
+
+  <footer>
+    <p id="footer-text">Heuristic generator — matches your stack against the local question bank and adds tailored follow-ups.</p>
+    <p class="footer-source">
+      <a id="source-link" href="https://github.com/Cecil2026/awesome-interview" target="_blank" rel="noopener">Source code (AGPL-3.0)</a>
+    </p>
+  </footer>
+
+  <script src="resume.js?v=12"></script>
+</body>
+</html>

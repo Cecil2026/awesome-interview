@@ -1,6 +1,6 @@
 # awesome-interview
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](LICENSE)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](#contributing)
 [![Daily question](https://img.shields.io/badge/daily-question-blue.svg)](.github/workflows/daily-question.yml)
 [![Pages](https://img.shields.io/badge/random-picker-blueviolet.svg)](docs/index.html)
@@ -19,7 +19,7 @@ A curated, opinionated interview-prep workspace. Algorithm drills with Python/Ty
 | [roadmap/](roadmap/) | 8-10 week study plans for frontend, backend, fullstack + a universal week-of checklist | 4 |
 | [behavioral/](behavioral/) | 50 STAR questions across 8 themes + the 16 Amazon Leadership Principles | 66 |
 | [tools/](tools/) | Timer, random picker, streak tracker, index builder, local installer, translator (stdlib Python + one PowerShell) | 7 |
-| [docs/](docs/) | Static site — random question picker + markdown reader with tab-switchable code samples | 1 |
+| [docs/](docs/) | Static site — random question picker, markdown reader with tab-switchable code samples, company comparison, and a resume → questions generator | 1 |
 
 Every Q&A entry uses the same `### N. Question` heading format, so the picker and the daily-question workflow can drill into any file uniformly. Algorithm questions ship with Python, TypeScript, and Java implementations; the reader renders them as switchable tabs.
 
@@ -59,19 +59,23 @@ python tools/run_service.py --no-kill      # don't auto-kill an existing process
 
 By default the service auto-detects an existing process on the same port (via `netstat`/`lsof`) and kills it before binding, so re-running the command Just Works. Pass `--no-kill` to opt out.
 
-It serves three pages:
+It serves five pages:
 
 | URL | Page | What you get |
 |---|---|---|
 | `/` | Module home | Card grid linking to every section of the repo |
+| `/docs/index.html` | Question picker | Filter by category / difficulty / topic (with a topic dropdown), pull a random question, browse the full bank, and track your progress |
 | `/docs/reader.html` | Markdown reader | Browse and read all `*.md` files in a clean HTML view with sidebar + TOC |
-| `/docs/index.html` | Question picker | Filter by category / difficulty / topic and pull a random question |
+| `/docs/compare.html` | Company comparison | Side-by-side table of rounds, focus areas, languages, duration, and difficulty mix across companies |
+| `/docs/resume.html` | Resume → Questions | Paste a resume project and generate tailored technical / behavioral interview questions (fully offline) |
+
+All pages share a unified top navigation (Picker · Reader · Compare · Resume) so you can jump between them anywhere.
 
 On first run it generates `docs/questions.json` (via `tools/build_index.py`) and `docs/md_files.json` so the picker and reader have content to render. Pass `--no-build` to skip that step.
 
 ### Language switching (EN ↔ 中文) and theme (Light / Dark)
 
-All three pages have an EN / 简体中文 toggle and a Light / Dark theme toggle in the top-right. Both choices are stored in `localStorage` and persist across pages and reloads. The theme defaults to your OS preference (`prefers-color-scheme`) on first visit.
+All pages have an EN / 简体中文 toggle and a Light / Dark theme toggle in the top-right. Both choices are stored in `localStorage` and persist across pages and reloads. The theme defaults to your OS preference (`prefers-color-scheme`) on first visit.
 
 ### Run as a service on Windows (autostart at boot)
 
@@ -109,7 +113,7 @@ To generate translations in bulk via the Claude API, use [`tools/translate_to_zh
 
 **Targeted prep** — interviewing at a specific company? Read its file under [interviews/companies/](interviews/companies/). It calls out the format, the focus areas, and 20 real questions per company.
 
-**Cramming** — open the [random picker](docs/index.html) (deploy via GitHub Pages from `docs/`), filter by difficulty and topic, and drill until your timer goes off.
+**Cramming** — open the [random picker](docs/index.html) (deploy via GitHub Pages from `docs/`), filter by difficulty and topic, and drill until your timer goes off. Targeting a company? Compare formats side by side in the [comparison view](docs/compare.html). Have a resume handy? Paste a project into the [resume → questions generator](docs/resume.html) to get tailored questions.
 
 ## Entry format
 
@@ -145,4 +149,12 @@ Add or correct anything you like. The numbering inside each file is a guide, not
 
 ## License
 
-MIT. See [LICENSE](LICENSE).
+Copyright (C) 2026 Eric Jin.
+
+This project is licensed under the **GNU Affero General Public License v3.0** — see
+[LICENSE](LICENSE) for the full text. In short: you may use, study, modify, and
+redistribute it, but derivative works (including software you run as a network
+service) must be released under the same license and offer their source to users.
+
+Contributions are accepted under the same license; merging is reserved to the
+maintainer (see [CONTRIBUTING.md](CONTRIBUTING.md#project-governance)).

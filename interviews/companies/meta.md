@@ -678,7 +678,7 @@ TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
 ### 10. Design Instagram
 
 **Difficulty:** Hard
-**Topics:** system-design, blob-storage, cdn, sharding, feed
+**Topics:** system-design, blob-storage, cdn, sharding, feed, cloud
 **Position:** Senior SWE
 **Years:** L5
 
@@ -749,7 +749,7 @@ TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
 ### 14. Design Top K Trending Hashtags
 
 **Difficulty:** Hard
-**Topics:** system-design, streaming, count-min-sketch, heap
+**Topics:** system-design, streaming, count-min-sketch, heap, big-data
 **Position:** Senior SWE
 **Years:** L5
 

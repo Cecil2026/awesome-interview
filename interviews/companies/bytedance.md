@@ -811,7 +811,7 @@ int find(int[] parent, int x) {
 ### 10. Design TikTok Video Upload + Encoding
 
 **Difficulty:** Hard
-**Topics:** system-design, video, blob-storage, encoding
+**Topics:** system-design, video, blob-storage, encoding, cloud
 **Position:** Senior SWE
 **Years:** 5+
 
@@ -882,7 +882,7 @@ int find(int[] parent, int x) {
 ### 14. Design a Live Streaming Platform
 
 **Difficulty:** Hard
-**Topics:** system-design, rtmp, hls, cdn, low-latency
+**Topics:** system-design, rtmp, hls, cdn, low-latency, cloud, big-data
 **Position:** Senior SWE
 **Years:** 5+
 

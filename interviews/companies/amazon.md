@@ -813,7 +813,7 @@ class ParkingLot {
 ### 10. Design Amazon Prime Video
 
 **Difficulty:** Hard
-**Topics:** system-design, cdn, video-streaming, drm, recommendation
+**Topics:** system-design, cdn, video-streaming, drm, recommendation, cloud
 **Position:** Senior SWE
 **Years:** L5
 
@@ -869,7 +869,7 @@ class ParkingLot {
 ### 13. Design Amazon S3
 
 **Difficulty:** Hard
-**Topics:** system-design, blob-storage, consistency, replication
+**Topics:** system-design, blob-storage, consistency, replication, cloud
 **Position:** Senior SWE
 **Years:** L5
 

@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>awesome-interview · Markdown Reader</title>
-  <script src="theme.js?v=8"></script>
+  <script src="theme.js?v=10"></script>
   <style>
     :root {
       color-scheme: light dark;
@@ -73,9 +73,13 @@
     .page { display: flex; flex-direction: column; min-height: 100vh; }
     .topbar { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; padding: 20px 28px; background: var(--bg-panel); border-bottom: 1px solid var(--border); }
     .topbar h1 { margin: 0; font-size: 1.35rem; letter-spacing: -0.03em; }
-    .topbar nav { display: flex; gap: 18px; flex-wrap: wrap; align-items: center; }
-    .topbar nav a { color: var(--accent-strong); font-weight: 600; }
-    .topbar select { padding: 6px 10px; border-radius: 8px; border: 1px solid var(--border-strong); background: var(--bg-panel); color: var(--text); font-size: .9rem; }
+    .topbar nav { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+    .topbar nav a { color: var(--text-muted); font-weight: 500; font-size: .9rem; text-decoration: none; padding: 6px 14px; border-radius: 999px; border: 1px solid transparent; transition: background .15s, color .15s, border-color .15s; }
+    .topbar nav a:hover { text-decoration: none; color: var(--text); background: var(--bg); border-color: var(--border); }
+    .topbar nav a[aria-current="page"] { color: #fff; background: var(--accent); border-color: var(--accent); }
+    .topbar nav .nav-sep { width: 1px; height: 18px; background: var(--border); margin: 0 6px; }
+    .topbar select { padding: 5px 8px; border-radius: 7px; border: 1px solid transparent; background: transparent; color: var(--text-muted); font-size: .82rem; cursor: pointer; transition: background .15s, color .15s, border-color .15s; }
+    .topbar select:hover { color: var(--text); background: var(--bg); border-color: var(--border-strong); }
     .nav-menu { position: relative; }
     .nav-menu > summary { cursor: pointer; list-style: none; color: var(--accent-strong); font-weight: 600; font-size: .9rem; }
     .nav-menu > summary::-webkit-details-marker { display: none; }
@@ -117,8 +121,9 @@
     .reader h2 { margin-top: 0; font-size: 1.8rem; }
     .reader h3 { margin-top: 2rem; }
     .reader p { line-height: 1.8; margin: 1rem 0; }
-    .reader pre { background: var(--code-bg); color: var(--code-fg); border-radius: 14px; padding: 18px; overflow-x: auto; white-space: pre-wrap; word-break: normal; position: relative; }
+    .reader pre { background: var(--code-bg); color: var(--code-fg); border-radius: 14px; padding: 18px; overflow-x: auto; white-space: pre; word-break: normal; position: relative; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; tab-size: 4; }
     .reader code { background: var(--code-inline-bg); color: var(--code-inline-fg); border-radius: 6px; padding: 2px 6px; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
+    .reader pre code { background: transparent; color: inherit; padding: 0; border-radius: 0; }
     .reader blockquote { margin: 1.5rem 0; padding-left: 18px; border-left: 4px solid var(--border-strong); color: var(--text-muted); background: var(--bg-card); border-radius: 10px; }
     .reader ul, .reader ol { margin: 1rem 0 1rem 1.5rem; }
     .reader table { width: 100%; border-collapse: collapse; margin: 1.2rem 0; }
@@ -139,6 +144,26 @@
     .reader pre:hover .copy-btn, .copy-btn:focus { opacity: 1; }
     .copy-btn:hover { background: rgba(148,163,184,.32); }
     .copy-btn.copied { background: rgba(52,211,153,.25); border-color: rgba(52,211,153,.5); }
+    .tok-kw { color: #c084fc; }
+    .tok-str { color: #86efac; }
+    .tok-com { color: #64748b; font-style: italic; }
+    .tok-num { color: #fbbf24; }
+    .tok-fn { color: #60a5fa; }
+    :root[data-theme="light"] .tok-kw { color: #7c3aed; }
+    :root[data-theme="light"] .tok-str { color: #15803d; }
+    :root[data-theme="light"] .tok-com { color: #94a3b8; }
+    :root[data-theme="light"] .tok-num { color: #b45309; }
+    :root[data-theme="light"] .tok-fn { color: #2563eb; }
+    .practice-toggle { display: inline-flex; align-items: center; gap: 8px; font-size: .9rem; color: var(--text-muted); cursor: pointer; user-select: none; }
+    .practice-toggle input { accent-color: var(--accent); width: auto; min-width: 0; padding: 0; margin: 0; }
+    .reveal-btn { display: none; margin: 0.5rem 0 1rem; padding: 8px 16px; background: transparent; color: var(--accent); border: 1px dashed var(--border-strong); border-radius: 10px; font-size: .9rem; font-weight: 600; cursor: pointer; }
+    .reveal-btn:hover { border-color: var(--accent); background: var(--bg-card); }
+    .reader.practice .reveal-btn { display: inline-block; }
+    .reader.practice .answer-block { display: none; }
+    .reader.practice .answer-block.revealed { display: block; }
+    .page-footer { text-align: center; padding: 16px; border-top: 1px solid var(--border); font-size: .82rem; }
+    .page-footer a { color: var(--text-muted); text-decoration: none; }
+    .page-footer a:hover { color: var(--accent); text-decoration: underline; }
     @media (max-width: 1080px) { .layout { grid-template-columns: 1fr; } .sidebar { max-height: 320px; position: sticky; top: 0; z-index: 2; } .content { padding: 18px; } .toc { display: none; } }
   </style>
 </head>
@@ -150,18 +175,11 @@
         <p class="intro">Reader for all markdown-based modules. Click a document on the left to render it here.</p>
       </div>
       <nav>
-        <a id="nav-question-picker" href="/docs/index.html">Question picker</a>
-        <details class="nav-menu">
-          <summary id="nav-browse">Browse</summary>
-          <div class="nav-menu-items">
-            <a id="nav-readme" href="/docs/reader.html?file=README.md">README</a>
-            <a id="nav-knowledge" href="/docs/reader.html?file=knowledge/algorithms.md">Knowledge</a>
-            <a id="nav-interviews" href="/docs/reader.html?file=interviews/companies/google.md">Interviews</a>
-            <a id="nav-mock" href="/docs/reader.html?file=mock-interviews/README.md">Mock interviews</a>
-            <a id="nav-behavioral" href="/docs/reader.html?file=behavioral/README.md">Behavioral</a>
-            <a id="nav-roadmap" href="/docs/reader.html?file=roadmap/fullstack-engineer.md">Roadmap</a>
-          </div>
-        </details>
+        <a id="nav-question-picker" href="/docs/index.html">Picker</a>
+        <a id="nav-reader" href="/docs/reader.html?file=README.md" aria-current="page">Reader</a>
+        <a id="nav-compare" href="/docs/compare.html">Compare</a>
+        <a id="nav-resume" href="/docs/resume.html">Resume → Q</a>
+        <span class="nav-sep" aria-hidden="true"></span>
         <select id="language-select" aria-label="Select language">
           <option value="en">English</option>
           <option value="zh">简体中文</option>
@@ -186,6 +204,7 @@
       <main class="content">
         <div class="toolbar content-toolbar">
           <a class="link" id="raw-link" href="#" target="_blank" rel="noopener">Open raw markdown</a>
+          <label class="practice-toggle"><input type="checkbox" id="practice-mode" /> <span id="practice-label">Practice mode</span></label>
           <span id="current-path">Select a file to read</span>
         </div>
         <article id="reader" class="reader">
@@ -198,7 +217,10 @@
         <nav id="toc-list" class="toc-list"><p class="toc-empty">Pick a file to see the document outline.</p></nav>
       </aside>
     </div>
+    <footer class="page-footer">
+      <a id="source-link" href="https://github.com/Cecil2026/awesome-interview" target="_blank" rel="noopener">Source code (AGPL-3.0)</a>
+    </footer>
   </div>
-  <script src="reader.js?v=8"></script>
+  <script src="reader.js?v=12"></script>
 </body>
 </html>

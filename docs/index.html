@@ -4,25 +4,19 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>awesome-interview · Random Question Picker</title>
-  <link rel="stylesheet" href="style.css?v=8" />
-  <script src="theme.js?v=8"></script>
+  <link rel="stylesheet" href="style.css?v=13" />
+  <script src="theme.js?v=10"></script>
 </head>
 <body>
   <header>
     <h1>awesome-interview</h1>
     <p class="tagline" id="tagline">Pick a random question from the bank and start drilling.</p>
     <nav>
-      <a id="nav-github" href="reader.html?file=README.md">README</a>
-      <details class="nav-menu">
-        <summary id="nav-browse">Browse</summary>
-        <div class="nav-menu-items">
-          <a id="nav-knowledge" href="reader.html?file=knowledge/algorithms.md">Knowledge</a>
-          <a id="nav-interviews" href="reader.html?file=interviews/companies/google.md">Interviews</a>
-          <a id="nav-mock" href="reader.html?file=mock-interviews/README.md">Mock interviews</a>
-          <a id="nav-behavioral" href="reader.html?file=behavioral/README.md">Behavioral</a>
-          <a id="nav-roadmap" href="reader.html?file=roadmap/fullstack-engineer.md">Roadmap</a>
-        </div>
-      </details>
+      <a id="nav-picker" href="index.html" aria-current="page">Picker</a>
+      <a id="nav-reader" href="reader.html?file=README.md">Reader</a>
+      <a id="nav-compare" href="compare.html">Compare</a>
+      <a id="nav-resume" href="resume.html">Resume → Q</a>
+      <span class="nav-sep" aria-hidden="true"></span>
       <select id="language-select" aria-label="Select language">
         <option value="en">English</option>
         <option value="zh">简体中文</option>
@@ -51,9 +45,11 @@
           <option id="option-hard" value="Hard">Hard</option>
         </select>
       </label>
-      <label class="search">
-        <span id="label-topic">Topic contains</span>
-        <input id="topic" type="text" placeholder="e.g. graph, caching, conflict" />
+      <label>
+        <span id="label-topic-select">Topic</span>
+        <select id="topic-select">
+          <option id="option-topic-all" value="">All</option>
+        </select>
       </label>
       <button id="pick" type="button">Pick a question</button>
     </section>
@@ -71,6 +67,40 @@
     </section>
 
     <p id="status" class="status">Loading questions…</p>
+
+    <section id="dashboard" class="dashboard hidden" aria-label="Progress">
+      <div class="stat">
+        <span class="stat-value" id="stat-total">0</span>
+        <span class="stat-label" id="stat-total-label">Questions</span>
+      </div>
+      <div class="stat">
+        <span class="stat-value" id="stat-solved">0</span>
+        <span class="stat-label" id="stat-solved-label">Solved</span>
+      </div>
+      <div class="stat">
+        <span class="stat-value" id="stat-streak">0</span>
+        <span class="stat-label" id="stat-streak-label">Day streak</span>
+      </div>
+      <div class="stat stat-progress">
+        <div class="progress-track"><div class="progress-fill" id="stat-progress-fill"></div></div>
+        <span class="stat-label" id="stat-progress-label">0% complete</span>
+      </div>
+    </section>
+
+    <section id="browse" class="browse hidden" aria-label="Browse questions">
+      <div class="browse-head">
+        <h2 class="sections-heading" id="browse-heading">Browse questions</h2>
+        <div class="browse-controls">
+          <label class="browse-toggle">
+            <input type="checkbox" id="hide-solved" />
+            <span id="hide-solved-label">Hide solved</span>
+          </label>
+          <span class="browse-count" id="browse-count"></span>
+        </div>
+      </div>
+      <div class="card-grid" id="card-grid"></div>
+      <button id="load-more" class="load-more hidden" type="button">Show more</button>
+    </section>
 
     <section class="sections" aria-labelledby="sections-heading">
       <h2 id="sections-heading" class="sections-heading">Explore</h2>
@@ -126,8 +156,19 @@
       Powered by <code>docs/questions.json</code> — rebuilt on each push via
       <code>.github/workflows/build-questions-json.yml</code>.
     </p>
+    <p class="footer-source">
+      <a id="source-link" href="https://github.com/Cecil2026/awesome-interview" target="_blank" rel="noopener">Source code (AGPL-3.0)</a>
+    </p>
   </footer>
 
-  <script src="app.js?v=8"></script>
+  <div id="palette" class="palette hidden" role="dialog" aria-modal="true" aria-label="Command palette">
+    <div class="palette-box">
+      <input id="palette-input" type="text" autocomplete="off" spellcheck="false" placeholder="Jump to a question…" />
+      <ul id="palette-results" class="palette-results"></ul>
+      <div class="palette-hint" id="palette-hint">↑↓ navigate · Enter open · Esc close</div>
+    </div>
+  </div>
+
+  <script src="app.js?v=13"></script>
 </body>
 </html>

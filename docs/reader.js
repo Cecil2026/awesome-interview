@@ -15,6 +15,8 @@
   const readerDescriptionEl = document.getElementById('reader-description');
   const navMarkdownEl = document.getElementById('nav-markdown');
   const navQuestionPickerEl = document.getElementById('nav-question-picker');
+  const navReaderEl = document.getElementById('nav-reader');
+  const navCompareEl = document.getElementById('nav-compare');
   const navReadmeEl = document.getElementById('nav-readme');
   const navKnowledgeEl = document.getElementById('nav-knowledge');
   const navInterviewsEl = document.getElementById('nav-interviews');
@@ -22,6 +24,11 @@
   const navBehavioralEl = document.getElementById('nav-behavioral');
   const navRoadmapEl = document.getElementById('nav-roadmap');
   const navBrowseEl = document.getElementById('nav-browse');
+  const navResumeEl = document.getElementById('nav-resume');
+  const sourceLinkEl = document.getElementById('source-link');
+
+  const practiceModeEl = document.getElementById('practice-mode');
+  const practiceLabelEl = document.getElementById('practice-label');
 
   let files = [];
   let activePath = '';
@@ -33,7 +40,9 @@
   const translations = {
     en: {
       navMarkdown: 'Markdown reader',
-      navQuestionPicker: 'Question picker',
+      navQuestionPicker: 'Picker',
+      navReader: 'Reader',
+      navCompare: 'Compare',
       navReadme: 'README',
       navKnowledge: 'Knowledge',
       navInterviews: 'Interviews',
@@ -41,6 +50,8 @@
       navBehavioral: 'Behavioral',
       navRoadmap: 'Roadmap',
       navBrowse: 'Browse',
+      navResume: 'Resume → Q',
+      sourceCode: 'Source code (AGPL-3.0)',
       intro: 'Reader for all markdown-based modules. Click a document on the left to render it here.',
       searchPlaceholder: 'Search by file, category, or keyword',
       fileLabel: 'Files:',
@@ -69,10 +80,14 @@
       copyCode: 'Copy',
       copiedCode: 'Copied',
       copyFailed: 'Copy failed',
+      practiceMode: 'Practice mode',
+      revealAnswer: 'Reveal answer',
     },
     zh: {
       navMarkdown: 'Markdown 阅读器',
-      navQuestionPicker: '问题选择器',
+      navQuestionPicker: '选题',
+      navReader: '阅读',
+      navCompare: '对比',
       navReadme: '项目说明',
       navKnowledge: '知识库',
       navInterviews: '面试题',
@@ -80,6 +95,8 @@
       navBehavioral: '行为面试',
       navRoadmap: '路线图',
       navBrowse: '浏览',
+      navResume: '简历 → 题',
+      sourceCode: '源代码（AGPL-3.0）',
       intro: '阅读所有基于 Markdown 的模块。点击左侧文档即可在此呈现。',
       searchPlaceholder: '按文件、类别或关键词搜索',
       fileLabel: '文件数：',
@@ -108,6 +125,8 @@
       copyCode: '复制',
       copiedCode: '已复制',
       copyFailed: '复制失败',
+      practiceMode: '练习模式',
+      revealAnswer: '显示答案',
     },
   };
 
@@ -126,6 +145,8 @@
   function updateLocalizedText() {
     if (navMarkdownEl) navMarkdownEl.textContent = t('navMarkdown');
     if (navQuestionPickerEl) navQuestionPickerEl.textContent = t('navQuestionPicker');
+    if (navReaderEl) navReaderEl.textContent = t('navReader');
+    if (navCompareEl) navCompareEl.textContent = t('navCompare');
     if (navReadmeEl) navReadmeEl.textContent = t('navReadme');
     if (navKnowledgeEl) navKnowledgeEl.textContent = t('navKnowledge');
     if (navInterviewsEl) navInterviewsEl.textContent = t('navInterviews');
@@ -133,6 +154,8 @@
     if (navBehavioralEl) navBehavioralEl.textContent = t('navBehavioral');
     if (navRoadmapEl) navRoadmapEl.textContent = t('navRoadmap');
     if (navBrowseEl) navBrowseEl.textContent = t('navBrowse');
+    if (navResumeEl) navResumeEl.textContent = t('navResume');
+    if (sourceLinkEl) sourceLinkEl.textContent = t('sourceCode');
     document.title = `awesome-interview · ${t('pageTitle')}`;
     if (introEl) introEl.textContent = t('intro');
     searchEl.placeholder = t('searchPlaceholder');
@@ -147,6 +170,7 @@
     }
     fileLabelEl.textContent = t('fileLabel');
     rawLink.textContent = t('openRawMarkdown');
+    if (practiceLabelEl) practiceLabelEl.textContent = t('practiceMode');
     currentPathEl.textContent = activePath || t('currentPathDefault');
     if (!activePath) {
       const titleEl = document.getElementById('reader-title');
@@ -490,6 +514,8 @@
         readerEl.innerHTML = banner + `<h2>${path}</h2>` + html;
         applyPreferredCodeLang();
         addCopyButtons();
+        highlightAll();
+        buildPracticeBlocks();
         renderToc(headings);
         observeHeadings();
         if (pendingFragment) {
@@ -654,6 +680,105 @@
     });
   }
 
+  // --- Lightweight, dependency-free syntax highlighting ---
+  const HL_KEYWORDS = new Set([
+    'def','class','return','if','elif','else','for','while','in','not','and','or','is','None','True','False',
+    'import','from','as','with','try','except','finally','raise','lambda','yield','pass','break','continue','global','nonlocal','async','await','self',
+    'function','const','let','var','new','typeof','instanceof','void','this','export','default','extends','implements','interface','type','enum','public','private','protected','static','readonly','abstract','super','null','undefined','true','false','number','string','boolean','any','this',
+    'int','long','double','float','char','byte','short','boolean','final','package','throws','throw','catch','switch','case','do','synchronized','volatile','transient','native','strictfp','assert','instanceof','this',
+  ]);
+
+  function escapeHtml(s) {
+    return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+
+  function highlightSource(src) {
+    // Order matters: comments & strings first, then numbers, then identifiers/keywords.
+    const tokenRe = /(\/\/[^\n]*|#[^\n]*|\/\*[\s\S]*?\*\/)|("(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'|`(?:\\.|[^`\\])*`)|(\b\d[\d_]*(?:\.\d+)?(?:[eE][+-]?\d+)?\b)|([A-Za-z_$][A-Za-z0-9_$]*)/g;
+    let out = '';
+    let last = 0;
+    let m;
+    while ((m = tokenRe.exec(src)) !== null) {
+      out += escapeHtml(src.slice(last, m.index));
+      if (m[1]) {
+        out += `<span class="tok-com">${escapeHtml(m[1])}</span>`;
+      } else if (m[2]) {
+        out += `<span class="tok-str">${escapeHtml(m[2])}</span>`;
+      } else if (m[3]) {
+        out += `<span class="tok-num">${escapeHtml(m[3])}</span>`;
+      } else if (m[4]) {
+        const word = m[4];
+        const after = src[tokenRe.lastIndex];
+        if (HL_KEYWORDS.has(word)) {
+          out += `<span class="tok-kw">${word}</span>`;
+        } else if (after === '(') {
+          out += `<span class="tok-fn">${word}</span>`;
+        } else {
+          out += escapeHtml(word);
+        }
+      }
+      last = tokenRe.lastIndex;
+    }
+    out += escapeHtml(src.slice(last));
+    return out;
+  }
+
+  function highlightAll() {
+    readerEl.querySelectorAll('pre code[class*="language-"]').forEach((code) => {
+      if (code.dataset.hl) return;
+      const lang = (code.className.match(/language-(\w+)/) || [])[1] || '';
+      if (!/^(python|py|typescript|ts|javascript|js|java)$/i.test(lang)) {
+        code.dataset.hl = 'skip';
+        return;
+      }
+      code.innerHTML = highlightSource(code.textContent || '');
+      code.dataset.hl = 'done';
+    });
+  }
+
+  // --- Practice mode: collapse answers per question, reveal on demand ---
+  const PRACTICE_KEY = 'awesome-interview-practice';
+  const ANSWER_START_RE = /^(Answer|Approach|Solution|Key points|答案|思路|方法|解答|参考答案|要点|关键点)[：:]?/i;
+
+  function isPracticeOn() {
+    return localStorage.getItem(PRACTICE_KEY) === '1';
+  }
+
+  function applyPracticeClass() {
+    readerEl.classList.toggle('practice', isPracticeOn());
+  }
+
+  function buildPracticeBlocks() {
+    const nodes = Array.from(readerEl.children);
+    for (let i = 0; i < nodes.length; i++) {
+      if (nodes[i].tagName !== 'H3') continue;
+      let j = i + 1;
+      let answerStart = -1;
+      while (j < nodes.length && !/^H[123]$/.test(nodes[j].tagName)) {
+        const txt = (nodes[j].textContent || '').trim();
+        if (answerStart === -1 && ANSWER_START_RE.test(txt)) answerStart = j;
+        j++;
+      }
+      if (answerStart !== -1) {
+        const block = document.createElement('div');
+        block.className = 'answer-block';
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'reveal-btn';
+        btn.textContent = t('revealAnswer');
+        readerEl.insertBefore(btn, nodes[answerStart]);
+        readerEl.insertBefore(block, nodes[answerStart]);
+        for (let k = answerStart; k < j; k++) block.appendChild(nodes[k]);
+        btn.addEventListener('click', () => {
+          block.classList.add('revealed');
+          btn.style.display = 'none';
+        });
+      }
+      i = j - 1;
+    }
+    applyPracticeClass();
+  }
+
   function copyText(text) {
     if (navigator.clipboard && navigator.clipboard.writeText) {
       return navigator.clipboard.writeText(text);
@@ -706,6 +831,14 @@
       }, 50);
       setTimeout(() => clearInterval(interval), 5000);
     }
+  }
+
+  if (practiceModeEl) {
+    practiceModeEl.checked = isPracticeOn();
+    practiceModeEl.addEventListener('change', () => {
+      localStorage.setItem(PRACTICE_KEY, practiceModeEl.checked ? '1' : '0');
+      applyPracticeClass();
+    });
   }
 
   fetchJson('md_files.json')

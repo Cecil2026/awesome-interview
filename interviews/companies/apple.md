@@ -725,7 +725,7 @@ class Solution {
 ### 9. Design Apple Music (or Spotify-like)
 
 **Difficulty:** Hard
-**Topics:** system-design, cdn, drm, recommendation, offline
+**Topics:** system-design, cdn, drm, recommendation, offline, cloud
 **Position:** Senior SWE
 **Years:** ICT5
 
@@ -777,7 +777,7 @@ class Solution {
 ### 11. Design iCloud Photo Library
 
 **Difficulty:** Hard
-**Topics:** system-design, sync, dedup, ml-on-device
+**Topics:** system-design, sync, dedup, ml-on-device, cloud
 **Position:** Senior SWE
 **Years:** ICT5
 
@@ -822,7 +822,7 @@ class Solution {
 ### 14. Design a CDN
 
 **Difficulty:** Hard
-**Topics:** system-design, cdn, caching, dns
+**Topics:** system-design, cdn, caching, dns, cloud
 **Position:** Senior SWE
 **Years:** ICT5
 
@@ -912,7 +912,7 @@ class Solution {
 ### 20. On-device ML vs cloud ML trade-offs
 
 **Difficulty:** Medium
-**Topics:** ml, privacy, mobile, ood
+**Topics:** ml, privacy, mobile, ood, cloud
 **Position:** Senior SWE
 **Years:** ICT5
 

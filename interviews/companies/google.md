@@ -781,7 +781,7 @@ public int jobScheduling(int[] start, int[] end, int[] profit) {
 ### 11. Design YouTube
 
 **Difficulty:** Hard
-**Topics:** system-design, cdn, video-encoding, sharding, recommendation
+**Topics:** system-design, cdn, video-encoding, sharding, recommendation, cloud
 **Position:** Senior SWE
 **Years:** L5
 
@@ -811,7 +811,7 @@ public int jobScheduling(int[] start, int[] end, int[] profit) {
 ### 13. Design Google Drive
 
 **Difficulty:** Hard
-**Topics:** system-design, blob-storage, sync, conflict-resolution, chunking
+**Topics:** system-design, blob-storage, sync, conflict-resolution, chunking, cloud
 **Position:** Senior SWE
 **Years:** L5
 

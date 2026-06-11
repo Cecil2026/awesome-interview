@@ -87,6 +87,22 @@ internal links, and index freshness. CI runs it automatically on every push and 
 - No proprietary or confidential material. Only publicly known interview questions.
 - US English in `*.md`, 简体中文 in `*.zh.md`.
 
+## Project governance
+
+This is an open project: anyone may fork it and open pull requests. However,
+**merging is reserved to the maintainer**.
+
+- Contribute via **fork → branch → pull request**. External contributors do not
+  have write access to this repository.
+- The default branch (`main`) is protected: changes must go through a PR, pass
+  CI (`tools/validate.py` and the index check), and be **approved by the
+  maintainer / code owner** before they can be merged.
+- The maintainer ([@Cecil2026](https://github.com/Cecil2026)) is the code owner
+  for the whole repo (see [.github/CODEOWNERS](.github/CODEOWNERS)) and performs
+  all merges.
+- By submitting a contribution you agree it is licensed under the project's
+  [LICENSE](LICENSE) (GNU AGPL-3.0).
+
 ## Code of conduct
 
 Be respectful and constructive. Assume good faith, keep feedback about the content,
