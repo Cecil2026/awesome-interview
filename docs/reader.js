@@ -25,6 +25,8 @@
   const navRoadmapEl = document.getElementById('nav-roadmap');
   const navBrowseEl = document.getElementById('nav-browse');
   const navResumeEl = document.getElementById('nav-resume');
+  const navPlanEl = document.getElementById('nav-plan');
+  const navStartEl = document.getElementById('nav-start');
   const sourceLinkEl = document.getElementById('source-link');
 
   const practiceModeEl = document.getElementById('practice-mode');
@@ -51,6 +53,8 @@
       navRoadmap: 'Roadmap',
       navBrowse: 'Browse',
       navResume: 'Resume → Q',
+      navPlan: 'Plan',
+      navStart: 'Start',
       sourceCode: 'Source code (AGPL-3.0)',
       intro: 'Reader for all markdown-based modules. Click a document on the left to render it here.',
       searchPlaceholder: 'Search by file, category, or keyword',
@@ -96,6 +100,8 @@
       navRoadmap: '路线图',
       navBrowse: '浏览',
       navResume: '简历 → 题',
+      navPlan: '计划',
+      navStart: '开始',
       sourceCode: '源代码（AGPL-3.0）',
       intro: '阅读所有基于 Markdown 的模块。点击左侧文档即可在此呈现。',
       searchPlaceholder: '按文件、类别或关键词搜索',
@@ -155,6 +161,8 @@
     if (navRoadmapEl) navRoadmapEl.textContent = t('navRoadmap');
     if (navBrowseEl) navBrowseEl.textContent = t('navBrowse');
     if (navResumeEl) navResumeEl.textContent = t('navResume');
+    if (navPlanEl) navPlanEl.textContent = t('navPlan');
+    if (navStartEl) navStartEl.textContent = t('navStart');
     if (sourceLinkEl) sourceLinkEl.textContent = t('sourceCode');
     document.title = `awesome-interview · ${t('pageTitle')}`;
     if (introEl) introEl.textContent = t('intro');

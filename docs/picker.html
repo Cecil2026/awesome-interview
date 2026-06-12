@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>awesome-interview · Random Question Picker</title>
+  <link rel="stylesheet" href="style.css?v=13" />
+  <script src="theme.js?v=10"></script>
+</head>
+<body>
+  <header>
+    <h1>awesome-interview</h1>
+    <p class="tagline" id="tagline">Pick a random question from the bank and start drilling.</p>
+    <nav>
+      <a id="nav-start" href="index.html">Start</a>
+      <a id="nav-picker" href="picker.html" aria-current="page">Picker</a>
+      <a id="nav-reader" href="reader.html?file=README.md">Reader</a>
+      <a id="nav-compare" href="compare.html">Compare</a>
+      <a id="nav-resume" href="resume.html">Resume → Q</a>
+      <a id="nav-plan" href="plan.html">Plan</a>
+      <span class="nav-sep" aria-hidden="true"></span>
+      <select id="language-select" aria-label="Select language">
+        <option value="en">English</option>
+        <option value="zh">简体中文</option>
+      </select>
+      <select id="theme-select" aria-label="Select theme">
+        <option value="light">Light</option>
+        <option value="dark">Dark</option>
+      </select>
+    </nav>
+  </header>
+
+  <main>
+    <section class="filters" aria-label="Filters">
+      <label>
+        <span id="label-category">Category</span>
+        <select id="category">
+          <option id="option-all" value="">All</option>
+        </select>
+      </label>
+      <label>
+        <span id="label-difficulty">Difficulty</span>
+        <select id="difficulty">
+          <option id="option-any" value="">Any</option>
+          <option id="option-easy" value="Easy">Easy</option>
+          <option id="option-medium" value="Medium">Medium</option>
+          <option id="option-hard" value="Hard">Hard</option>
+        </select>
+      </label>
+      <label>
+        <span id="label-topic-select">Topic</span>
+        <select id="topic-select">
+          <option id="option-topic-all" value="">All</option>
+        </select>
+      </label>
+      <button id="pick" type="button">Pick a question</button>
+    </section>
+
+    <section id="result" class="result hidden" aria-live="polite">
+      <div class="meta">
+        <span class="badge" id="r-category"></span>
+        <span class="badge" id="r-difficulty"></span>
+      </div>
+      <h2 id="r-title"></h2>
+      <p class="topics" id="r-topics"></p>
+      <p class="source">
+        <span id="label-source">Source:</span> <a id="r-source" href="#" target="_blank" rel="noopener"></a>
+      </p>
+    </section>
+
+    <p id="status" class="status">Loading questions…</p>
+
+    <section id="dashboard" class="dashboard hidden" aria-label="Progress">
+      <div class="stat">
+        <span class="stat-value" id="stat-total">0</span>
+        <span class="stat-label" id="stat-total-label">Questions</span>
+      </div>
+      <div class="stat">
+        <span class="stat-value" id="stat-solved">0</span>
+        <span class="stat-label" id="stat-solved-label">Solved</span>
+      </div>
+      <div class="stat">
+        <span class="stat-value" id="stat-streak">0</span>
+        <span class="stat-label" id="stat-streak-label">Day streak</span>
+      </div>
+      <div class="stat stat-progress">
+        <div class="progress-track"><div class="progress-fill" id="stat-progress-fill"></div></div>
+        <span class="stat-label" id="stat-progress-label">0% complete</span>
+      </div>
+    </section>
+
+    <section id="browse" class="browse hidden" aria-label="Browse questions">
+      <div class="browse-head">
+        <h2 class="sections-heading" id="browse-heading">Browse questions</h2>
+        <div class="browse-controls">
+          <label class="browse-toggle">
+            <input type="checkbox" id="hide-solved" />
+            <span id="hide-solved-label">Hide solved</span>
+          </label>
+          <span class="browse-count" id="browse-count"></span>
+        </div>
+      </div>
+      <div class="card-grid" id="card-grid"></div>
+      <button id="load-more" class="load-more hidden" type="button">Show more</button>
+    </section>
+
+    <section class="sections" aria-labelledby="sections-heading">
+      <h2 id="sections-heading" class="sections-heading">Explore</h2>
+      <div class="section-cards">
+        <a class="section-card" href="reader.html?file=knowledge/algorithms.md">
+          <svg class="section-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+          <span class="section-card-text">
+            <span class="section-card-title" id="card-knowledge-title">Knowledge</span>
+            <span class="section-card-desc" id="card-knowledge-desc">Topic-organized Q&amp;A banks</span>
+          </span>
+        </a>
+        <a class="section-card" href="reader.html?file=interviews/companies/google.md">
+          <svg class="section-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18"></path><path d="M5 21V7l8-4v18"></path><path d="M19 21V11l-6-4"></path></svg>
+          <span class="section-card-text">
+            <span class="section-card-title" id="card-interviews-title">Interviews</span>
+            <span class="section-card-desc" id="card-interviews-desc">Real company question banks</span>
+          </span>
+        </a>
+        <a class="section-card" href="reader.html?file=mock-interviews/README.md">
+          <svg class="section-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+          <span class="section-card-text">
+            <span class="section-card-title" id="card-mock-title">Mock interviews</span>
+            <span class="section-card-desc" id="card-mock-desc">Full transcript-style sessions</span>
+          </span>
+        </a>
+        <a class="section-card" href="reader.html?file=behavioral/README.md">
+          <svg class="section-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+          <span class="section-card-text">
+            <span class="section-card-title" id="card-behavioral-title">Behavioral</span>
+            <span class="section-card-desc" id="card-behavioral-desc">STAR questions &amp; principles</span>
+          </span>
+        </a>
+        <a class="section-card" href="reader.html?file=roadmap/fullstack-engineer.md">
+          <svg class="section-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18l6-6-6-6"></path><path d="M3 6h2"></path><path d="M3 12h2"></path><path d="M3 18h2"></path></svg>
+          <span class="section-card-text">
+            <span class="section-card-title" id="card-roadmap-title">Roadmap</span>
+            <span class="section-card-desc" id="card-roadmap-desc">Week-by-week study plans</span>
+          </span>
+        </a>
+        <a class="section-card" href="reader.html?file=README.md">
+          <svg class="section-card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><path d="M14 2v6h6"></path><path d="M16 13H8"></path><path d="M16 17H8"></path><path d="M10 9H8"></path></svg>
+          <span class="section-card-text">
+            <span class="section-card-title" id="card-readme-title">README</span>
+            <span class="section-card-desc" id="card-readme-desc">Project overview &amp; usage</span>
+          </span>
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p id="footer-text">
+      Powered by <code>docs/questions.json</code> — rebuilt on each push via
+      <code>.github/workflows/build-questions-json.yml</code>.
+    </p>
+    <p class="footer-source">
+      <a id="source-link" href="https://github.com/Cecil2026/awesome-interview" target="_blank" rel="noopener">Source code (AGPL-3.0)</a>
+    </p>
+  </footer>
+
+  <div id="palette" class="palette hidden" role="dialog" aria-modal="true" aria-label="Command palette">
+    <div class="palette-box">
+      <input id="palette-input" type="text" autocomplete="off" spellcheck="false" placeholder="Jump to a question…" />
+      <ul id="palette-results" class="palette-results"></ul>
+      <div class="palette-hint" id="palette-hint">↑↓ navigate · Enter open · Esc close</div>
+    </div>
+  </div>
+
+  <script src="app.js?v=13"></script>
+</body>
+</html>

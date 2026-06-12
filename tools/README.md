@@ -1,6 +1,30 @@
 # Tools
 
-Small Python utilities for interview prep practice. No external dependencies — standard library only. Tested on Python 3.9+.
+Small Python utilities + browser pages for interview prep practice. No external dependencies — standard library only (browser pages run client-side). Tested on Python 3.9+.
+
+> **Single source of truth.** The "Where to start" intent table is mirrored in [docs/index.html](../docs/index.html) (the Start page), the local-service home (`tools/run_service.py`), [README.md](../README.md), and this file. If you add a new tool, update all four surfaces in the same PR.
+
+## Where to start
+
+| If you want to… | Browser page | CLI / markdown |
+|---|---|---|
+| Generate a multi-week prep plan tailored to a target company + role | [docs/plan.html](../docs/plan.html) | `python tools/daily_plan.py`, [roadmap/](../roadmap/) |
+| Drill a random question | [docs/picker.html](../docs/picker.html) | `python tools/random_pick.py knowledge/` |
+| Prep for a specific company | [docs/compare.html](../docs/compare.html) → [docs/reader.html](../docs/reader.html) | [interviews/companies/](../interviews/companies/) |
+| Study a topic deeply | [docs/reader.html](../docs/reader.html) | [knowledge/](../knowledge/) |
+| Generate questions from your resume | [docs/resume.html](../docs/resume.html) | — |
+| Time a coding round | — | `python tools/timer.py 25 --coding` |
+| Track your streak | — | `python tools/streak.py done` |
+| Schedule spaced-repetition reviews | — | `python tools/review.py grade <id> --quality 0-5`, `python tools/review.py due` |
+| Rebuild question / file indexes | — | `python tools/build_index.py` (then optionally `python tools/run_service.py`) |
+| Validate the question bank | — | `python tools/validate.py` |
+| Start the local web service | — | `python tools/run_service.py --open` |
+| Run the service as a Windows background task | — | `.\tools\install.ps1` (run as Administrator) |
+| Bulk-translate `.md` → `.zh.md` via Claude | — | `python tools/translate_to_zh.py` (needs `pip install anthropic` + `ANTHROPIC_API_KEY`) |
+
+If you're new here, run `python tools/run_service.py --open` and click a card on the Start page.
+
+## CLI reference
 
 | Script | Purpose |
 |---|---|
@@ -11,9 +35,22 @@ Small Python utilities for interview prep practice. No external dependencies —
 | [streak.py](streak.py) | Track your daily prep streak (writes to `~/.awesome-interview-streak.json`) |
 | [build_index.py](build_index.py) | Rebuild `docs/questions.json` from all markdown files (used by the GitHub Pages picker and the daily-question workflow) |
 | [validate.py](validate.py) | Validate the question bank against the entry schema — missing `**Tags:**`, EN/ZH count mismatch, numbering gaps, stale `questions.json`, broken internal links. Run in CI via [validate.yml](../.github/workflows/validate.yml). |
-| [run_service.py](run_service.py) | Start a local browser-based service showing modules, a markdown reader, and the random picker (default port 8099, auto-kills an existing process holding the port) |
+| [run_service.py](run_service.py) | Start a local browser-based service. Renders the intent-routed Start page at `/` and serves all of `docs/` (default port 8099, auto-kills an existing process holding the port). |
 | [install.ps1](install.ps1) | (Windows only) Install `run_service.py` as a Scheduled Task that runs at boot, restarts on failure, and adds a Windows Firewall inbound rule. Run as Administrator. |
 | [translate_to_zh.py](translate_to_zh.py) | Batch-translate `*.md` to Simplified Chinese (`*.zh.md`) via the Claude API (**requires `pip install anthropic`** and `ANTHROPIC_API_KEY`) |
+
+## Browser pages
+
+All pages live under `docs/`. They share a top nav (Start · Picker · Reader · Compare · Resume → Q · Plan), an EN ↔ 中文 toggle, and a Light ↔ Dark theme toggle.
+
+| Page | What you get |
+|---|---|
+| [docs/index.html](../docs/index.html) | Start — intent-routed landing (4 main + 2 secondary cards) pointing at the right tool for your situation |
+| [docs/picker.html](../docs/picker.html) | Picker — filter by category / difficulty / topic, pull a random question, browse the full bank |
+| [docs/reader.html](../docs/reader.html) | Markdown reader with sidebar, TOC, and switchable code-language tabs |
+| [docs/compare.html](../docs/compare.html) | Side-by-side comparison of interview loops across companies |
+| [docs/resume.html](../docs/resume.html) | Paste a resume project; get tailored technical + behavioral follow-ups |
+| [docs/plan.html](../docs/plan.html) | Generate a multi-week study plan from target company, role, and resume |
 
 ## Quick start
 
@@ -41,7 +78,7 @@ python tools/build_index.py
 # Validate the question bank (run before committing new questions):
 python tools/validate.py
 
-# Start the local web service (auto-builds indexes, opens browser):
+# Start the local web service (auto-builds indexes, opens browser at the Start page):
 python tools/run_service.py --open
 
 # (Windows) Install as a background service that starts at boot:
@@ -53,7 +90,7 @@ All Python scripts accept `--help`; PowerShell uses `Get-Help .\tools\install.ps
 
 ## Chinese translations
 
-The browser pages (`docs/index.html`, `docs/reader.html`, and the local-service home page) support an EN ↔ 中文 toggle in the top-right.
+The browser pages (`docs/index.html`, `docs/picker.html`, `docs/reader.html`, and the local-service home page) support an EN ↔ 中文 toggle in the top-right.
 
 For markdown content, the reader uses a **parallel-file convention**:
 

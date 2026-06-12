@@ -1,0 +1,208 @@
+{
+  "generated_by": "hand-authored — keep grounded in topics actually present in questions.json",
+  "roles": [
+    {
+      "id": "backend-engineer",
+      "label_en": "Backend Engineer",
+      "label_zh": "后端工程师",
+      "roadmap": "roadmap/backend-engineer.md",
+      "roadmap_zh": "roadmap/backend-engineer.zh.md",
+      "topics": [
+        { "topic": "system-design", "weight": 3 },
+        { "topic": "distributed-systems", "weight": 3 },
+        { "topic": "caching", "weight": 2 },
+        { "topic": "sharding", "weight": 2 },
+        { "topic": "consistency", "weight": 2 },
+        { "topic": "replication", "weight": 2 },
+        { "topic": "concurrency", "weight": 2 },
+        { "topic": "transactions", "weight": 2 },
+        { "topic": "message-queue", "weight": 2 },
+        { "topic": "design", "weight": 2 },
+        { "topic": "dp", "weight": 1 },
+        { "topic": "graph", "weight": 1 },
+        { "topic": "tree", "weight": 1 },
+        { "topic": "hashmap", "weight": 1 }
+      ],
+      "behavioral_themes": [
+        "Leadership & ownership",
+        "Collaboration & influence",
+        "Failure & learning",
+        "Time management & prioritization"
+      ],
+      "guidance_en": "Backend bar is split: algorithm fluency (the gate) and system design depth (the differentiator). For most companies expect 2 algo rounds + 1-2 system design + 1 behavioral. Spend the first half of your prep getting medium LeetCode patterns to 25-minute fluency; spend the second half drilling system design with 45-min mock loops. Be ready to defend choices on storage (SQL vs NoSQL), consistency model, sharding key, and the failure modes of every queue/cache in your design. If you've never explained an EXPLAIN plan or named your replication topology out loud, you're not ready.",
+      "guidance_zh": "后端面试门槛拆成两块:算法熟练度(基本门槛) + 系统设计深度(差异化)。大多数公司的流程是 2 轮算法 + 1-2 轮系统设计 + 1 轮行为面。前半段把 LeetCode 中等题做到 25 分钟内拿下;后半段每周至少 2 个 45 分钟的系统设计模拟。要能讲清存储选型(SQL vs NoSQL)、一致性模型、分片键、以及设计里每个队列/缓存的失败模式。如果你从没口头讲过 EXPLAIN 计划或命名过自己的复制拓扑,就还没准备好。"
+    },
+    {
+      "id": "frontend-engineer",
+      "label_en": "Frontend Engineer",
+      "label_zh": "前端工程师",
+      "roadmap": "roadmap/frontend-engineer.md",
+      "roadmap_zh": "roadmap/frontend-engineer.zh.md",
+      "topics": [
+        { "topic": "frontend", "weight": 3 },
+        { "topic": "react", "weight": 3 },
+        { "topic": "web-perf", "weight": 3 },
+        { "topic": "lcp", "weight": 2 },
+        { "topic": "ssr", "weight": 2 },
+        { "topic": "design", "weight": 2 },
+        { "topic": "dp", "weight": 1 },
+        { "topic": "tree", "weight": 1 },
+        { "topic": "strings", "weight": 1 },
+        { "topic": "hashmap", "weight": 1 },
+        { "topic": "system-design", "weight": 1 }
+      ],
+      "behavioral_themes": [
+        "Customer / user focus",
+        "Collaboration & influence",
+        "Innovation & ambiguity",
+        "Leadership & ownership"
+      ],
+      "guidance_en": "Frontend interviews split into algorithm (lower bar than backend), framework internals (React reconciliation, virtual DOM, hooks), and UI/UX system design (e.g. 'design Twitter feed'). The differentiator is real perf intuition: explain LCP, CLS, INP without notes; describe how you debugged a hydration mismatch or a render storm; show you can split bundles and lazy-load route chunks. Practice drawing components on a whiteboard while talking about state, props, and prop drilling vs context vs store tradeoffs.",
+      "guidance_zh": "前端面试拆成算法(门槛比后端低)、框架原理(React 调度、虚拟 DOM、hooks)、UI/UX 系统设计(例如『设计 Twitter feed』)三块。真正的差异化是性能直觉:不看笔记能讲清 LCP/CLS/INP;能讲一次你排查 hydration 不匹配或渲染风暴的过程;能分包并按路由懒加载。练习在白板上画组件树时同步讲清 state/props 流向以及 prop drilling vs context vs store 的权衡。"
+    },
+    {
+      "id": "fullstack-engineer",
+      "label_en": "Fullstack Engineer",
+      "label_zh": "全栈工程师",
+      "roadmap": "roadmap/fullstack-engineer.md",
+      "roadmap_zh": "roadmap/fullstack-engineer.zh.md",
+      "topics": [
+        { "topic": "system-design", "weight": 3 },
+        { "topic": "frontend", "weight": 2 },
+        { "topic": "react", "weight": 2 },
+        { "topic": "distributed-systems", "weight": 2 },
+        { "topic": "caching", "weight": 2 },
+        { "topic": "design", "weight": 2 },
+        { "topic": "api", "weight": 2 },
+        { "topic": "concurrency", "weight": 1 },
+        { "topic": "dp", "weight": 1 },
+        { "topic": "tree", "weight": 1 },
+        { "topic": "graph", "weight": 1 },
+        { "topic": "web-perf", "weight": 1 }
+      ],
+      "behavioral_themes": [
+        "Leadership & ownership",
+        "Collaboration & influence",
+        "Time management & prioritization",
+        "Innovation & ambiguity"
+      ],
+      "guidance_en": "Fullstack is a longer plan because the surface area is larger — you'll be tested on both sides and need to defend trade-offs that cross the network boundary (where does this validation live? where does this cache live? who owns the schema?). Expect 1-2 algo + 1 frontend system design + 1 backend system design + 1 behavioral. Don't try to be elite at both halves; aim for 'solid' on your weaker half and 'strong' on your stronger half — the floor matters more than the ceiling.",
+      "guidance_zh": "全栈复习周期更长,因为考察面更广 — 两边都会问,而且要能为跨网络边界的权衡负责(校验放哪边?缓存放哪边?schema 归谁?)。流程通常是 1-2 算法 + 1 前端系统设计 + 1 后端系统设计 + 1 行为面。不要试图两边都顶尖;弱的一边做到『扎实』,强的一边做到『有深度』即可 — 下限比上限更重要。"
+    },
+    {
+      "id": "big-data-engineer",
+      "label_en": "Big Data Engineer",
+      "label_zh": "大数据工程师",
+      "topics": [
+        { "topic": "streaming", "weight": 3 },
+        { "topic": "big-data", "weight": 3 },
+        { "topic": "distributed-systems", "weight": 3 },
+        { "topic": "sharding", "weight": 2 },
+        { "topic": "consistency", "weight": 2 },
+        { "topic": "replication", "weight": 2 },
+        { "topic": "system-design", "weight": 2 },
+        { "topic": "data-stream", "weight": 2 },
+        { "topic": "ingestion", "weight": 2 },
+        { "topic": "time-series", "weight": 2 },
+        { "topic": "message-queue", "weight": 2 },
+        { "topic": "fanout", "weight": 1 },
+        { "topic": "dp", "weight": 1 },
+        { "topic": "graph", "weight": 1 },
+        { "topic": "hashmap", "weight": 1 }
+      ],
+      "behavioral_themes": [
+        "Leadership & ownership",
+        "Failure & learning",
+        "Collaboration & influence",
+        "Innovation & ambiguity"
+      ],
+      "guidance_en": "Big-data interviews emphasize streaming semantics, data-skew handling, and the batch-vs-stream trade-off. Expect deep dives on exactly-once vs at-least-once, watermarks and late events, checkpointing and recovery, and how you reshard a hot key under live traffic. Have at least one production story per pillar: (1) an ingestion pipeline you built, (2) a skew incident you solved, (3) a reprocessing run you executed safely. SQL window functions and Spark/Flink internals come up more than algorithm hard problems — but you still need medium algo fluency for the screen.",
+      "guidance_zh": "大数据面试重点在流式语义、数据倾斜处理、批 vs 流的权衡。会深挖 exactly-once vs at-least-once、watermark 与迟到事件、checkpoint 与恢复、以及如何在线对热点 key 重新分片。每个支柱至少准备一个生产故事:(1) 你搭过的入仓/入湖流水线,(2) 你解决过的倾斜事件,(3) 你安全执行过的一次重跑。SQL 窗口函数与 Spark/Flink 内部机制比算法 Hard 题更高频 — 但电话面的中等算法熟练度仍是必须。"
+    },
+    {
+      "id": "ai-algorithm",
+      "label_en": "AI / Algorithm Engineer",
+      "label_zh": "AI 算法工程师",
+      "topics": [
+        { "topic": "ml", "weight": 3 },
+        { "topic": "recommendation", "weight": 3 },
+        { "topic": "ranking", "weight": 3 },
+        { "topic": "domain-knowledge", "weight": 2 },
+        { "topic": "system-design", "weight": 2 },
+        { "topic": "dp", "weight": 2 },
+        { "topic": "math", "weight": 2 },
+        { "topic": "graph", "weight": 2 },
+        { "topic": "design", "weight": 2 },
+        { "topic": "distributed-systems", "weight": 1 },
+        { "topic": "concurrency", "weight": 1 },
+        { "topic": "tree", "weight": 1 },
+        { "topic": "hashmap", "weight": 1 }
+      ],
+      "behavioral_themes": [
+        "Innovation & ambiguity",
+        "Failure & learning",
+        "Customer / user focus",
+        "Collaboration & influence"
+      ],
+      "guidance_en": "AI/algo loops are split into three concerns: (1) ML fundamentals — bias/variance, regularization, gradient updates, attention math — must be answered without notes; (2) modeling deep dive on your own project — be ready to defend feature choice, loss, evaluation, online metric, and one failure mode you fixed; (3) ML system design — train/serve split, online vs offline metric divergence, drift detection, cold start. Algorithm round is shorter than backend but still graded — expect mediums on DP, graph, and math problems. LLM/RAG roles add: tokenization, attention/KV cache, distributed training, RLHF, and one or two recent paper questions.",
+      "guidance_zh": "AI/算法面试分三块:(1) ML 基础 — 偏差/方差、正则化、梯度更新、attention 推导 — 不能查资料地答出来;(2) 项目深挖 — 能为特征选择、损失函数、评估方式、线上指标、以及你修过的一个失败模式负责;(3) ML 系统设计 — 训练/服务拆分、在线 vs 离线指标偏移、漂移检测、冷启动。算法轮比后端短但仍会评分 — 重点是 DP、图、数学题的中等难度。LLM/RAG 岗位还会加:分词、attention/KV cache、分布式训练、RLHF、以及一两个最近论文的相关问题。"
+    },
+    {
+      "id": "architect",
+      "label_en": "Software Architect / Staff Engineer",
+      "label_zh": "架构师 / Staff 工程师",
+      "topics": [
+        { "topic": "system-design", "weight": 3 },
+        { "topic": "distributed-systems", "weight": 3 },
+        { "topic": "design", "weight": 3 },
+        { "topic": "consistency", "weight": 3 },
+        { "topic": "replication", "weight": 2 },
+        { "topic": "sharding", "weight": 2 },
+        { "topic": "caching", "weight": 2 },
+        { "topic": "message-queue", "weight": 2 },
+        { "topic": "ood", "weight": 2 },
+        { "topic": "cdn", "weight": 1 },
+        { "topic": "ownership", "weight": 1 },
+        { "topic": "domain-knowledge", "weight": 1 },
+        { "topic": "dp", "weight": 1 },
+        { "topic": "graph", "weight": 1 }
+      ],
+      "behavioral_themes": [
+        "Leadership & ownership",
+        "Collaboration & influence",
+        "Innovation & ambiguity",
+        "Conflict & disagreement"
+      ],
+      "guidance_en": "Architect / staff loops weight system design and influence heavily; coding rounds still happen but are calibration. The bar shifts from 'can you build it' to 'can you choose well under ambiguity, name the trade-offs, and align the team'. Expect: an open-ended design (45-90 min) where you must drive scope; a behavioral with depth probes on cross-team conflict and technical disagreement; and a 'tell me about your hardest tech decision and the alternatives you rejected'. Prepare 3-4 narrative stories with sharp 'what would you do differently' answers. Have an opinion on every box in your diagram — and a backup plan for when the interviewer pushes back.",
+      "guidance_zh": "架构师/Staff 面试以系统设计 + 影响力为主,编码轮仍有但更像校准。门槛从『能不能做出来』变成『能不能在模糊中选好,讲清权衡,带齐团队』。流程上会有:一个开放式设计(45-90 分钟),你要自己定义范围;一个深挖跨团队冲突与技术分歧的行为面;以及『讲一次你最难的技术决策与放弃的备选方案』。准备 3-4 个有锋利『复盘会怎么做』结尾的叙事故事。设计图里每个方块你都要有观点 — 并且要为面试官反驳时准备退路。"
+    },
+    {
+      "id": "devops-sre",
+      "label_en": "DevOps / SRE",
+      "label_zh": "DevOps / SRE",
+      "topics": [
+        { "topic": "system-design", "weight": 3 },
+        { "topic": "cloud", "weight": 3 },
+        { "topic": "distributed-systems", "weight": 2 },
+        { "topic": "consistency", "weight": 2 },
+        { "topic": "replication", "weight": 2 },
+        { "topic": "caching", "weight": 2 },
+        { "topic": "concurrency", "weight": 2 },
+        { "topic": "design", "weight": 2 },
+        { "topic": "fanout", "weight": 1 },
+        { "topic": "dp", "weight": 1 },
+        { "topic": "graph", "weight": 1 },
+        { "topic": "ownership", "weight": 1 },
+        { "topic": "hashmap", "weight": 1 }
+      ],
+      "behavioral_themes": [
+        "Leadership & ownership",
+        "Failure & learning",
+        "Time management & prioritization",
+        "Collaboration & influence"
+      ],
+      "guidance_en": "DevOps/SRE interviews probe reliability instincts: incident response, postmortems, SLO/SLI design, capacity planning, blast radius. Expect a deep dive on an outage you owned (timeline, mitigation, root cause, lasting change) and a system-design round framed around reliability (e.g. 'design a globally distributed deployment pipeline'). Coding rounds are usually scripting-flavored — log parsing, retry-with-backoff, rate limiter. Linux / networking / TLS fundamentals come up more than data-structure trivia. Have an opinion on observability stack: metrics vs logs vs traces, sampling, cardinality, alerting against burn rate vs static thresholds.",
+      "guidance_zh": "DevOps/SRE 面试主要考可靠性直觉:故障响应、复盘、SLO/SLI 设计、容量规划、爆炸半径。会深挖你独立处理过的一次事故(时间线 → 缓解 → 根因 → 持久变更),以及一个围绕可靠性的系统设计题(例如『设计一个全球分布式发布流水线』)。编码轮通常偏脚本 — 日志解析、带退避的重试、限流器。Linux/网络/TLS 基础比数据结构琐碎题更高频。要对可观测性栈有观点:指标 vs 日志 vs 链路、采样、基数、burn rate 告警 vs 静态阈值告警。"
+    }
+  ]
+}

@@ -3,13 +3,26 @@
 [![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](LICENSE)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](#contributing)
 [![Daily question](https://img.shields.io/badge/daily-question-blue.svg)](.github/workflows/daily-question.yml)
-[![Pages](https://img.shields.io/badge/random-picker-blueviolet.svg)](docs/index.html)
+[![Pages](https://img.shields.io/badge/random-picker-blueviolet.svg)](docs/picker.html)
 
 A curated, opinionated interview-prep workspace. Algorithm drills with Python/TypeScript/Java solutions, framework deep dives, system design, AI/ML, behavioral STAR scaffolds, real-company question banks, week-by-week roadmaps, and a couple of scripts to keep you honest about practicing. Every page supports EN ↔ 中文 and light/dark theme.
 
 > If you only have ten minutes today, run `python tools/random_pick.py knowledge/` and answer whatever comes out.
 
-## What's in here
+## Where to start
+
+New here? Open [docs/](docs/) (or run `python tools/run_service.py --open`) and pick the card that matches your situation. Each intent is below — every primary tool also has a CLI / markdown fallback so you can use whichever fits your terminal-vs-browser preference.
+
+| If you want to… | Use this | Or via CLI / markdown |
+|---|---|---|
+| Generate a multi-week prep plan tailored to a target company + role | [Plan](docs/plan.html) | `python tools/daily_plan.py`, [roadmap/](roadmap/) |
+| Drill a random question | [Picker](docs/picker.html) | `python tools/random_pick.py knowledge/` |
+| Prep for a specific company | [Compare](docs/compare.html) → [Reader](docs/reader.html) | [interviews/companies/](interviews/companies/) |
+| Study a topic deeply | [Reader](docs/reader.html) | [knowledge/](knowledge/) |
+| Generate questions from your resume | [Resume → Q](docs/resume.html) | — |
+| Track your streak / spaced repetition | — | `python tools/streak.py done`, `python tools/review.py due` |
+
+## Repo layout
 
 | Section | What it is | Count |
 |---|---|---|
@@ -19,7 +32,7 @@ A curated, opinionated interview-prep workspace. Algorithm drills with Python/Ty
 | [roadmap/](roadmap/) | 8-10 week study plans for frontend, backend, fullstack + a universal week-of checklist | 4 |
 | [behavioral/](behavioral/) | 50 STAR questions across 8 themes + the 16 Amazon Leadership Principles | 66 |
 | [tools/](tools/) | Timer, random picker, streak tracker, index builder, local installer, translator (stdlib Python + one PowerShell) | 7 |
-| [docs/](docs/) | Static site — random question picker, markdown reader with tab-switchable code samples, company comparison, and a resume → questions generator | 1 |
+| [docs/](docs/) | Static site — Start router, random question picker, markdown reader, company comparison, resume → questions, and a multi-week plan generator | 1 |
 
 Every Q&A entry uses the same `### N. Question` heading format, so the picker and the daily-question workflow can drill into any file uniformly. Algorithm questions ship with Python, TypeScript, and Java implementations; the reader renders them as switchable tabs.
 
@@ -59,17 +72,18 @@ python tools/run_service.py --no-kill      # don't auto-kill an existing process
 
 By default the service auto-detects an existing process on the same port (via `netstat`/`lsof`) and kills it before binding, so re-running the command Just Works. Pass `--no-kill` to opt out.
 
-It serves five pages:
+It serves these pages:
 
 | URL | Page | What you get |
 |---|---|---|
-| `/` | Module home | Card grid linking to every section of the repo |
-| `/docs/index.html` | Question picker | Filter by category / difficulty / topic (with a topic dropdown), pull a random question, browse the full bank, and track your progress |
-| `/docs/reader.html` | Markdown reader | Browse and read all `*.md` files in a clean HTML view with sidebar + TOC |
-| `/docs/compare.html` | Company comparison | Side-by-side table of rounds, focus areas, languages, duration, and difficulty mix across companies |
-| `/docs/resume.html` | Resume → Questions | Paste a resume project and generate tailored technical / behavioral interview questions (fully offline) |
+| `/` and `/docs/index.html` | Start | Intent-routed landing — pick the card that matches your situation |
+| `/docs/picker.html` | Picker | Filter by category / difficulty / topic, pull a random question, browse the full bank, and track your progress |
+| `/docs/reader.html` | Reader | Browse and read all `*.md` files in a clean HTML view with sidebar + TOC |
+| `/docs/compare.html` | Compare | Side-by-side table of rounds, focus areas, languages, duration, and difficulty mix across companies |
+| `/docs/resume.html` | Resume → Q | Paste a resume project and generate tailored technical / behavioral interview questions (fully offline) |
+| `/docs/plan.html` | Plan | Generate a multi-week study plan tailored to your target company, role, and resume (fully offline) |
 
-All pages share a unified top navigation (Picker · Reader · Compare · Resume) so you can jump between them anywhere.
+All pages share a unified top navigation (Start · Picker · Reader · Compare · Resume → Q · Plan) so you can jump between them anywhere.
 
 On first run it generates `docs/questions.json` (via `tools/build_index.py`) and `docs/md_files.json` so the picker and reader have content to render. Pass `--no-build` to skip that step.
 
@@ -113,7 +127,7 @@ To generate translations in bulk via the Claude API, use [`tools/translate_to_zh
 
 **Targeted prep** — interviewing at a specific company? Read its file under [interviews/companies/](interviews/companies/). It calls out the format, the focus areas, and 20 real questions per company.
 
-**Cramming** — open the [random picker](docs/index.html) (deploy via GitHub Pages from `docs/`), filter by difficulty and topic, and drill until your timer goes off. Targeting a company? Compare formats side by side in the [comparison view](docs/compare.html). Have a resume handy? Paste a project into the [resume → questions generator](docs/resume.html) to get tailored questions.
+**Cramming** — open the [random picker](docs/picker.html) (deploy via GitHub Pages from `docs/`), filter by difficulty and topic, and drill until your timer goes off. Targeting a company? Compare formats side by side in the [comparison view](docs/compare.html). Have a resume handy? Paste a project into the [resume → questions generator](docs/resume.html) to get tailored questions.
 
 ## Entry format
 

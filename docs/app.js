@@ -29,8 +29,10 @@
     optionMedium: document.getElementById('option-medium'),
     optionHard: document.getElementById('option-hard'),
     navGitHub: document.getElementById('nav-github'),
+    navStart: document.getElementById('nav-start'),
     navPicker: document.getElementById('nav-picker'),
     navReader: document.getElementById('nav-reader'),
+    navPlan: document.getElementById('nav-plan'),
     navKnowledge: document.getElementById('nav-knowledge'),
     navInterviews: document.getElementById('nav-interviews'),
     navMock: document.getElementById('nav-mock'),
@@ -96,10 +98,12 @@
       behavioral: 'Behavioral',
       roadmap: 'Roadmap',
       browse: 'Browse',
+      start: 'Start',
       picker: 'Picker',
       readerNav: 'Reader',
       compare: 'Compare',
       resume: 'Resume → Q',
+      plan: 'Plan',
       sectionsHeading: 'Explore',
       cardKnowledgeDesc: 'Topic-organized Q&A banks',
       cardInterviewsDesc: 'Real company question banks',
@@ -154,10 +158,12 @@
       behavioral: '行为面试',
       roadmap: '路线图',
       browse: '浏览',
+      start: '开始',
       picker: '选题',
       readerNav: '阅读',
       compare: '对比',
       resume: '简历 → 题',
+      plan: '计划',
       sectionsHeading: '探索板块',
       cardKnowledgeDesc: '按主题组织的问答题库',
       cardInterviewsDesc: '真实公司面试题库',
@@ -221,10 +227,12 @@
     if (els.navBehavioral) els.navBehavioral.textContent = t('behavioral');
     if (els.navRoadmap) els.navRoadmap.textContent = t('roadmap');
     if (els.navBrowse) els.navBrowse.textContent = t('browse');
+    if (els.navStart) els.navStart.textContent = t('start');
     if (els.navPicker) els.navPicker.textContent = t('picker');
     if (els.navReader) els.navReader.textContent = t('readerNav');
     if (els.navCompare) els.navCompare.textContent = t('compare');
     if (els.navResume) els.navResume.textContent = t('resume');
+    if (els.navPlan) els.navPlan.textContent = t('plan');
     if (els.sectionsHeading) els.sectionsHeading.textContent = t('sectionsHeading');
     if (els.cardKnowledgeTitle) els.cardKnowledgeTitle.textContent = t('knowledge');
     if (els.cardKnowledgeDesc) els.cardKnowledgeDesc.textContent = t('cardKnowledgeDesc');

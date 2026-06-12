@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>awesome-interview · Prep Plan</title>
+  <link rel="stylesheet" href="style.css?v=13" />
+  <script src="theme.js?v=10"></script>
+  <style>
+    .plan-wrap { max-width: 960px; margin: 0 auto; padding: 2rem 1.5rem; width: 100%; }
+    .plan-form { display: grid; grid-template-columns: 1fr 1fr; gap: 0.9rem 1rem;
+      padding: 1rem 1.1rem; background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: 12px; margin-bottom: 1rem; }
+    .plan-form label { display: flex; flex-direction: column; gap: 0.35rem;
+      font-size: 0.82rem; color: var(--text-muted); }
+    .plan-form select, .plan-form input {
+      padding: 0.55rem 0.7rem; background: var(--bg); border: 1px solid var(--border);
+      border-radius: 8px; color: var(--text); font-size: 0.95rem; font-family: inherit;
+    }
+    .plan-form select[multiple] { min-height: 130px; }
+    .plan-form .full { grid-column: 1 / -1; }
+    .plan-form details { grid-column: 1 / -1; }
+    .plan-form details summary { cursor: pointer; padding: 0.4rem 0; color: var(--text-muted); }
+    .plan-form details[open] summary { color: var(--text); }
+    .plan-form textarea { width: 100%; min-height: 150px; resize: vertical;
+      padding: 0.7rem 0.85rem; background: var(--bg); border: 1px solid var(--border);
+      border-radius: 8px; color: var(--text); font: inherit; line-height: 1.5;
+      box-sizing: border-box; margin-top: 0.5rem; }
+    .plan-form textarea:focus { outline: none; border-color: var(--accent); }
+    .plan-actions { display: flex; gap: 0.8rem; align-items: center; flex-wrap: wrap;
+      margin-bottom: 1.4rem; }
+    .btn-generate { padding: 0.6rem 1.4rem; border: none; border-radius: 8px;
+      cursor: pointer; background: var(--accent); color: #fff; font-weight: 600;
+      font-size: 0.95rem; }
+    .btn-generate:hover { background: var(--accent-hover); }
+    .btn-sample { background: none; border: 1px solid var(--border); color: var(--text);
+      padding: 0.55rem 1rem; border-radius: 8px; cursor: pointer; font-size: 0.9rem; }
+    .btn-sample:hover { border-color: var(--accent); color: var(--accent); }
+    .plan-hint { color: var(--text-muted); font-size: 0.85rem; }
+    .result-section { margin-top: 1.8rem; }
+    .result-section h2 { font-size: 1.1rem; margin-bottom: 0.7rem;
+      padding-bottom: 0.4rem; border-bottom: 1px solid var(--border); }
+    .q-list { list-style: none; padding: 0; margin: 0;
+      display: flex; flex-direction: column; gap: 0.6rem; }
+    .q-item { background: var(--bg-card); border: 1px solid var(--border);
+      border-left: 3px solid var(--accent); border-radius: 8px;
+      padding: 0.7rem 0.9rem; line-height: 1.45; }
+    .q-item.bank { border-left-color: var(--medium); }
+    .q-item.bank a { color: var(--accent); text-decoration: none; }
+    .q-item.bank a:hover { text-decoration: underline; }
+    .q-item .q-tag { display: block; font-size: 0.72rem; color: var(--text-muted);
+      text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 0.25rem; }
+    .q-item .q-meta { font-size: 0.76rem; color: var(--text-muted); margin-top: 0.25rem; }
+    .week-block { background: var(--bg-card); border: 1px solid var(--border);
+      border-left: 3px solid var(--accent); border-radius: 8px;
+      padding: 0.9rem 1rem; margin-bottom: 0.7rem; }
+    .week-block h3 { margin: 0 0 0.4rem; font-size: 0.95rem; }
+    .week-block .week-focus { color: var(--text-muted); font-size: 0.85rem;
+      margin-bottom: 0.5rem; }
+    .week-block .week-milestone { margin-top: 0.5rem; padding-top: 0.5rem;
+      border-top: 1px dashed var(--border); font-size: 0.84rem; color: var(--text-muted); }
+    .week-block ul { list-style: none; padding: 0; margin: 0;
+      display: flex; flex-direction: column; gap: 0.3rem; }
+    .week-block li { font-size: 0.88rem; line-height: 1.45; }
+    .week-block li a { color: var(--accent); text-decoration: none; }
+    .week-block li a:hover { text-decoration: underline; }
+    .week-block li .li-tag { display: inline-block; font-size: 0.7rem;
+      color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.04em;
+      margin-right: 0.4rem; }
+    .guidance { background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: 8px; padding: 0.9rem 1.1rem; line-height: 1.65; }
+    .guidance p { margin: 0 0 0.6rem; }
+    .guidance p:last-child { margin-bottom: 0; }
+    .guidance .gh { font-size: 0.78rem; color: var(--text-muted);
+      text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 0.3rem; }
+    .empty-note { color: var(--text-muted); }
+    .summary-chips { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 0.9rem; }
+    .summary-chips .chip { background: var(--badge-bg); color: var(--text);
+      border-radius: 999px; padding: 0.25rem 0.7rem; font-size: 0.78rem; }
+    @media (max-width: 640px) {
+      .plan-wrap { padding: 1.2rem 1rem; }
+      .plan-form { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>awesome-interview</h1>
+    <p class="tagline" id="tagline">Generate a multi-week prep plan tailored to your target company, role, and resume.</p>
+    <nav>
+      <a id="nav-start" href="index.html">Start</a>
+      <a id="nav-picker" href="picker.html">Picker</a>
+      <a id="nav-reader" href="reader.html?file=README.md">Reader</a>
+      <a id="nav-compare" href="compare.html">Compare</a>
+      <a id="nav-resume" href="resume.html">Resume → Q</a>
+      <a id="nav-plan" href="plan.html" aria-current="page">Plan</a>
+      <span class="nav-sep" aria-hidden="true"></span>
+      <select id="language-select" aria-label="Select language">
+        <option value="en">English</option>
+        <option value="zh">简体中文</option>
+      </select>
+      <select id="theme-select" aria-label="Select theme">
+        <option value="light">Light</option>
+        <option value="dark">Dark</option>
+      </select>
+    </nav>
+  </header>
+
+  <main class="plan-wrap">
+    <form class="plan-form" id="plan-form" onsubmit="return false;">
+      <label>
+        <span id="label-role">Role category</span>
+        <select id="role-select"></select>
+      </label>
+      <label>
+        <span id="label-weeks">Time window</span>
+        <select id="weeks-select">
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4" selected>4</option>
+          <option value="6">6</option>
+          <option value="8">8</option>
+        </select>
+      </label>
+      <label class="full">
+        <span id="label-companies">Target companies (optional, multi-select)</span>
+        <select id="companies-select" multiple></select>
+      </label>
+      <details>
+        <summary id="resume-summary">Add resume / project description (optional)</summary>
+        <textarea id="resume-text" placeholder="e.g. Built a real-time chat service with Node.js, WebSocket and Redis..."></textarea>
+      </details>
+    </form>
+    <div class="plan-actions">
+      <button id="generate-btn" class="btn-generate" type="button">Generate plan</button>
+      <button id="sample-btn" class="btn-sample" type="button">Load sample</button>
+      <span id="plan-hint" class="plan-hint">Runs fully offline — no data leaves your browser.</span>
+    </div>
+
+    <div id="results" hidden>
+      <div class="summary-chips" id="summary-chips"></div>
+      <div id="result-body"></div>
+    </div>
+    <p id="status" class="status">Loading data…</p>
+  </main>
+
+  <footer>
+    <p id="footer-text">Heuristic generator — picks bank questions weighted by your role + resume + company focus, then schedules them into weeks.</p>
+    <p class="footer-source">
+      <a id="source-link" href="https://github.com/Cecil2026/awesome-interview" target="_blank" rel="noopener">Source code (AGPL-3.0)</a>
+    </p>
+  </footer>
+
+  <script src="tech-catalog.js?v=1"></script>
+  <script src="plan.js?v=1"></script>
+</body>
+</html>

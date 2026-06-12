@@ -30,74 +30,75 @@ INDEX_JSON = DOCS_DIR / "questions.json"
 MD_INDEX = DOCS_DIR / "md_files.json"
 SKIP_DIRS = {".git", "node_modules", ".github", "docs"}
 
+# Intent-routed cards — matches docs/index.html (the Start page). Update both surfaces together;
+# also keep README.md "Where to start" and tools/README.md in sync.
 MODULES = [
     {
-        "title_en": "Markdown reader",
-        "title_zh": "Markdown 阅读器",
-        "description_en": "Browse the repo's markdown modules in a friendly HTML reader.",
-        "description_zh": "在友好的 HTML 阅读器中浏览仓库的 Markdown 模块。",
-        "path": "docs/reader.html",
+        "title_en": "I have N weeks until my interview",
+        "title_zh": "我还有 N 周准备面试",
+        "description_en": "Generate a tailored multi-week study plan from your target company, role, and resume.",
+        "description_zh": "根据目标公司、岗位与简历生成多周备考计划。",
+        "path": "docs/plan.html",
     },
     {
-        "title_en": "Random question picker",
-        "title_zh": "随机题目选择器",
-        "description_en": "Interactive browser page with filters for all indexed questions.",
-        "description_zh": "带筛选器的交互式网页，可浏览所有已索引的题目。",
-        "path": "docs/index.html",
+        "title_en": "Give me a question to drill",
+        "title_zh": "随便给我一道题练",
+        "description_en": "Pull a random question from the bank, filtered by category, difficulty, and topic.",
+        "description_zh": "按类别、难度、主题筛选后从题库随机抽题。",
+        "path": "docs/picker.html",
     },
     {
-        "title_en": "Knowledge bank",
-        "title_zh": "知识库",
-        "description_en": "Topic-organized Q&A in algorithms, frontend, backend, architecture, and DevOps.",
-        "description_zh": "按主题组织的算法、前端、后端、架构与 DevOps 问答。",
-        "path": "knowledge/",
+        "title_en": "I'm prepping for a specific company",
+        "title_zh": "我在准备某家公司",
+        "description_en": "Compare interview loops side-by-side, then deep-read the company's question bank.",
+        "description_zh": "并排对比公司面试流程，再深入读该公司的题库。",
+        "path": "docs/compare.html",
     },
     {
-        "title_en": "Real company interview questions",
-        "title_zh": "真实公司面试题",
-        "description_en": "Company-specific interview banks for Google, Meta, Amazon, Microsoft, Apple, ByteDance, Alibaba, Tencent.",
-        "description_zh": "Google、Meta、Amazon、Microsoft、Apple、字节跳动、阿里、腾讯等公司专属面试题库。",
-        "path": "interviews/companies/",
+        "title_en": "Study a topic deeply",
+        "title_zh": "我想深入学某个主题",
+        "description_en": "Read topic-organized Q&A banks on algorithms, AI, frontend, backend, architecture, DevOps.",
+        "description_zh": "按主题阅读算法、AI、前端、后端、架构、DevOps 题库。",
+        "path": "docs/reader.html?file=knowledge/algorithms.md",
     },
     {
-        "title_en": "Behavioral practice",
-        "title_zh": "行为面试练习",
-        "description_en": "STAR questions and leadership principles for behavioral interviews.",
-        "description_zh": "用于行为面试的 STAR 题目与领导力准则。",
-        "path": "behavioral/",
+        "title_en": "Tailor questions to my resume",
+        "title_zh": "基于简历定制面试题",
+        "description_en": "Paste a project description; get follow-up questions tuned to your stack.",
+        "description_zh": "粘贴一段项目经历，得到针对你技术栈的追问。",
+        "path": "docs/resume.html",
     },
     {
-        "title_en": "Mock interviews",
-        "title_zh": "模拟面试",
-        "description_en": "Transcript-style mock-interview exercises for systems and behavioral prep.",
-        "description_zh": "以对话脚本形式呈现的系统设计与行为面试模拟练习。",
-        "path": "mock-interviews/",
+        "title_en": "Track my streak / spaced repetition",
+        "title_zh": "记录打卡 / 间隔复习",
+        "description_en": "Timer, daily plan, streak tracker, SM-2 review scheduler — stdlib Python scripts.",
+        "description_zh": "计时器、每日计划、连续打卡、SM-2 复习排程 —— 全是 stdlib Python 脚本。",
+        "path": "docs/reader.html?file=tools/README.md",
     },
-    {
-        "title_en": "Roadmaps",
-        "title_zh": "学习路线",
-        "description_en": "Weekly study plans for backend, frontend, and fullstack interview prep.",
-        "description_zh": "面向后端、前端与全栈面试准备的每周学习计划。",
-        "path": "roadmap/",
-    },
-    {
-        "title_en": "Practice tools",
-        "title_zh": "练习工具",
-        "description_en": "Timer, random question picker, streak tracker, and index builder scripts.",
-        "description_zh": "计时器、随机抽题、连续打卡跟踪与索引构建脚本。",
-        "path": "tools/",
-    },
+]
+
+# Power-user fallback: listed under an "All modules" details block at the bottom.
+ALL_MODULES = [
+    ("knowledge/", "knowledge/", "topic Q&A banks", "主题题库"),
+    ("interviews/companies/", "interviews/companies/", "per-company banks", "公司题库"),
+    ("mock-interviews/", "mock-interviews/", "full transcripts", "完整模拟脚本"),
+    ("roadmap/", "roadmap/", "8-10 week plans", "8-10 周计划"),
+    ("behavioral/", "behavioral/", "STAR + LP", "STAR + LP"),
+    ("tools/", "tools/", "CLI scripts", "CLI 脚本"),
+    ("docs/reader.html", "docs/reader.html", "Markdown reader", "Markdown 阅读器"),
+    ("docs/compare.html", "docs/compare.html", "Company comparison", "公司对比"),
+    ("README.md", "README.md", "project overview", "项目概览"),
 ]
 
 
 PAGE_STRINGS = {
     "en": {
-        "page_title": "awesome-interview local service",
-        "heading": "awesome-interview local service",
-        "intro": "Browse the repo modules in your browser and launch the markdown reader and question picker from one command.",
+        "page_title": "awesome-interview · Start",
+        "heading": "awesome-interview",
+        "intro": "Pick the tool that matches your situation — tell us what you want to do and we'll point you at the right tool.",
         "command_label": "Command:",
         "open_label": "Open in browser:",
-        "helpful_links": "Helpful links",
+        "helpful_links": "All modules (browse the raw repo)",
         "questions_link_suffix": "— generated question index",
         "readme_link_suffix": "— repo usage and module descriptions",
         "language_aria": "Select language",
@@ -106,12 +107,12 @@ PAGE_STRINGS = {
         "theme_dark": "Dark",
     },
     "zh": {
-        "page_title": "awesome-interview 本地服务",
-        "heading": "awesome-interview 本地服务",
-        "intro": "在浏览器中浏览仓库模块，一条命令即可启动 Markdown 阅读器和题目选择器。",
+        "page_title": "awesome-interview · 开始",
+        "heading": "awesome-interview",
+        "intro": "选择最匹配你当前情况的工具 —— 告诉我你要做什么，我帮你指到合适的工具。",
         "command_label": "命令：",
         "open_label": "在浏览器中打开：",
-        "helpful_links": "常用链接",
+        "helpful_links": "全部模块（浏览原始仓库）",
         "questions_link_suffix": "— 自动生成的题目索引",
         "readme_link_suffix": "— 仓库使用说明与模块介绍",
         "language_aria": "选择语言",
@@ -210,13 +211,22 @@ class RootHandler(SimpleHTTPRequestHandler):
             ])
         lines.extend([
             "    </div>",
-            "    <section class=\"note\">",
-            f"      <h2 data-i18n=\"helpful_links\">{html.escape(en['helpful_links'])}</h2>",
-            "      <ul>",
-            f"        <li><a href=\"docs/questions.json\">docs/questions.json</a> <span data-i18n=\"questions_link_suffix\">{html.escape(en['questions_link_suffix'])}</span></li>",
-            f"        <li><a href=\"README.md\">README.md</a> <span data-i18n=\"readme_link_suffix\">{html.escape(en['readme_link_suffix'])}</span></li>",
+            "    <details class=\"note\">",
+            f"      <summary data-i18n=\"helpful_links\">{html.escape(en['helpful_links'])}</summary>",
+            "      <ul style=\"margin-top:12px\">",
+        ])
+        for path, label, desc_en, desc_zh in ALL_MODULES:
+            ep = html.escape(path)
+            el = html.escape(label)
+            lines.append(
+                f"        <li><a href=\"{ep}\">{el}</a> "
+                f"<span data-i18n-en=\"{html.escape('— ' + desc_en)}\" "
+                f"data-i18n-zh=\"{html.escape('— ' + desc_zh)}\">"
+                f"— {html.escape(desc_en)}</span></li>"
+            )
+        lines.extend([
             "      </ul>",
-            "    </section>",
+            "    </details>",
             "  </div>",
             "  <script>",
             f"    const I18N = {json.dumps(PAGE_STRINGS, ensure_ascii=False)};",

@@ -7,10 +7,12 @@
     body: document.getElementById('compare-body'),
     tagline: document.getElementById('tagline'),
     sourceLink: document.getElementById('source-link'),
+    navStart: document.getElementById('nav-start'),
     navPicker: document.getElementById('nav-picker'),
     navReader: document.getElementById('nav-reader'),
     navCompare: document.getElementById('nav-compare'),
     navResume: document.getElementById('nav-resume'),
+    navPlan: document.getElementById('nav-plan'),
     languageSelect: document.getElementById('language-select'),
     themeSelect: document.getElementById('theme-select'),
     legendEasy: document.getElementById('legend-easy'),
@@ -29,10 +31,12 @@
   const translations = {
     en: {
       tagline: 'Compare interview loops across companies side by side.',
+      navStart: 'Start',
       navPicker: 'Picker',
       navReader: 'Reader',
       navCompare: 'Compare',
       navResume: 'Resume → Q',
+      navPlan: 'Plan',
       easy: 'Easy', medium: 'Medium', hard: 'Hard',
       company: 'Company', rounds: 'Rounds', focus: 'Focus areas',
       langs: 'Languages', duration: 'Duration', diff: 'Difficulty mix',
@@ -46,10 +50,12 @@
     },
     zh: {
       tagline: '并排对比各公司的面试流程。',
+      navStart: '开始',
       navPicker: '选题',
       navReader: '阅读',
       navCompare: '对比',
       navResume: '简历 → 题',
+      navPlan: '计划',
       easy: '简单', medium: '中等', hard: '困难',
       company: '公司', rounds: '面试轮次', focus: '重点方向',
       langs: '编程语言', duration: '时长', diff: '难度分布',
@@ -73,10 +79,12 @@
     document.documentElement.lang = currentLanguage;
     if (els.languageSelect) els.languageSelect.value = currentLanguage;
     els.tagline.textContent = t('tagline');
+    if (els.navStart) els.navStart.textContent = t('navStart');
     els.navPicker.textContent = t('navPicker');
     els.navReader.textContent = t('navReader');
     if (els.navCompare) els.navCompare.textContent = t('navCompare');
     if (els.navResume) els.navResume.textContent = t('navResume');
+    if (els.navPlan) els.navPlan.textContent = t('navPlan');
     els.legendEasy.textContent = t('easy');
     els.legendMedium.textContent = t('medium');
     els.legendHard.textContent = t('hard');

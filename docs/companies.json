@@ -1,0 +1,85 @@
+{
+  "generated_by": "hand-authored — concise focus blurbs to colour the generated guidance per company",
+  "companies": [
+    {
+      "id": "alibaba",
+      "label_en": "Alibaba",
+      "label_zh": "阿里巴巴",
+      "file": "interviews/companies/alibaba.md",
+      "focus_en": "Heavy Java/JVM + distributed transactions (Seata) + middleware (Dubbo, RocketMQ). Expect deep dives on database (MySQL internals, sharding via ShardingSphere/MyCat). System design rounds favour e-commerce shapes: inventory, secondkill (秒杀), payment idempotency.",
+      "focus_zh": "Java/JVM + 分布式事务(Seata) + 中间件(Dubbo、RocketMQ)是重头戏。会深挖数据库(MySQL 内部、ShardingSphere/MyCat 分片)。系统设计偏电商场景:库存、秒杀、支付幂等。"
+    },
+    {
+      "id": "amazon",
+      "label_en": "Amazon",
+      "label_zh": "亚马逊",
+      "file": "interviews/companies/amazon.md",
+      "focus_en": "Leadership Principles drive every round — every behavioral answer must hit at least one LP explicitly. Algorithm bar is high (LeetCode medium fluency). System design favours customer-facing scale (Prime, retail). Have 8-12 polished STAR stories tagged to LPs (Customer Obsession, Ownership, Dive Deep, Bias for Action).",
+      "focus_zh": "Leadership Principles 贯穿每一轮 — 每个行为题都要明确命中一个 LP。算法门槛高(LeetCode 中等熟练)。系统设计偏 toC 规模(Prime、零售)。准备 8-12 个打磨过的 STAR 故事并贴上 LP 标签(顾客至上、Ownership、Dive Deep、Bias for Action)。"
+    },
+    {
+      "id": "apple",
+      "label_en": "Apple",
+      "label_zh": "苹果",
+      "file": "interviews/companies/apple.md",
+      "focus_en": "Team-by-team variance is huge — interview content depends on the org (Maps, Siri, iCloud, hardware). General trend: strong on fundamentals (memory, threading, OS), Swift/Objective-C if iOS, secrecy means little public prep material. Behavioral favours technical depth and craftsmanship stories over leadership scale.",
+      "focus_zh": "团队差异极大 — 面试内容看组(Maps、Siri、iCloud、硬件)。共性:基础扎实(内存、并发、OS),iOS 岗考 Swift/Objective-C,保密文化让公开资料稀缺。行为面偏技术深度与工匠精神,弱于领导力规模。"
+    },
+    {
+      "id": "bytedance",
+      "label_en": "ByteDance",
+      "label_zh": "字节跳动",
+      "file": "interviews/companies/bytedance.md",
+      "focus_en": "Algorithm bar is the highest in BAT-tier (LeetCode hard not unusual). Big-data and recommendation roles: Flink data-skew handling, exactly-once, feature store design. Backend roles: Go + microservices + Kitex/Hertz internals. Loop is fast and short — 3 tech rounds in one day is normal. Expect 'tell me about TikTok's feed' system design.",
+      "focus_zh": "算法门槛在 BAT 中最高(LeetCode Hard 不少见)。大数据/推荐岗:Flink 数据倾斜、exactly-once、特征平台设计。后端岗:Go + 微服务 + Kitex/Hertz 内部机制。流程快且短 — 一天 3 轮技术面是常态。系统设计常考『TikTok feed 怎么设计』。"
+    },
+    {
+      "id": "google",
+      "label_en": "Google",
+      "label_zh": "谷歌",
+      "file": "interviews/companies/google.md",
+      "focus_en": "Algorithm-first culture: 4-5 coding rounds, focus on clean code + complexity analysis + corner cases. System design exists but algo dominates the floor. Strong preference for talking aloud through trade-offs rather than jumping to optimal. Googleyness round measures collaboration, ambiguity, and 'craft over heroics'. No hard LP-style framework; just genuinely good engineering judgement.",
+      "focus_zh": "算法优先文化:4-5 轮编码,重视代码整洁 + 复杂度分析 + 边界情况。系统设计有但算法占主导。强烈偏好边说边权衡而不是直接跳到最优。Googleyness 轮考协作、模糊性容忍、『工艺胜于英雄主义』。没有 LP 那种硬框架,就是过硬的工程判断。"
+    },
+    {
+      "id": "huawei",
+      "label_en": "Huawei",
+      "label_zh": "华为",
+      "file": "interviews/companies/huawei.md",
+      "focus_en": "C/C++ + networking + operating systems for many infra roles. Mandatory machine test (机考) precedes onsite — practice timed coding under their format. System design often telecom-flavoured (high reliability, real-time constraints). Behavioral leans 'can you grind' and 'will you do whatever it takes' — be prepared for stories about overtime and tight delivery.",
+      "focus_zh": "基础设施岗以 C/C++ + 网络 + 操作系统为主。强制机考先于现场 — 要按其格式练限时编程。系统设计常带电信味(高可靠、实时约束)。行为面偏『能不能干』『拼不拼』 — 准备好加班和紧交付的故事。"
+    },
+    {
+      "id": "meta",
+      "label_en": "Meta",
+      "label_zh": "Meta",
+      "file": "interviews/companies/meta.md",
+      "focus_en": "Most predictable loop: 2 coding + 1 system design + 1 behavioral. Coding bar is high but problem set is well known — use the Meta-tagged LeetCode list. System design loves news-feed-shaped problems (Instagram, WhatsApp, Live). Behavioral signals: 'move fast', 'be direct and respectful', 'focus on long-term impact'. PSC framework matters for leveling.",
+      "focus_zh": "流程最稳定:2 编码 + 1 系统设计 + 1 行为面。编码门槛高但题集公开 — 用 Meta 标签的 LeetCode 列表刷。系统设计偏 news-feed 类(Instagram、WhatsApp、Live)。行为面信号:『move fast』『be direct and respectful』『focus on long-term impact』。PSC 框架决定 leveling。"
+    },
+    {
+      "id": "microsoft",
+      "label_en": "Microsoft",
+      "label_zh": "微软",
+      "file": "interviews/companies/microsoft.md",
+      "focus_en": "Loop is friendly relative to FAANG peers — 4 rounds, mixed coding + system + behavioral. Coding bar emphasizes problem-solving narration over speed. Azure/AI infra teams ask cloud-distributed-systems deep dives. Behavioral favours growth mindset stories (Satya-era culture). 'As-appropriate hire' bar — interviewer consensus matters.",
+      "focus_zh": "流程相对 FAANG 友好 — 4 轮,编码 + 系统设计 + 行为面混合。编码门槛重视讲清思路过程胜于速度。Azure/AI 基础设施团队会深挖云分布式系统。行为面偏成长心态故事(纳德拉时代文化)。『合适就录』门槛 — 面试官共识很关键。"
+    },
+    {
+      "id": "tencent",
+      "label_en": "Tencent",
+      "label_zh": "腾讯",
+      "file": "interviews/companies/tencent.md",
+      "focus_en": "BG-driven variance: WXG (WeChat) skews C++ + extreme reliability; IEG (Games) skews engine + graphics; TEG (infra) skews distributed systems. Common: heavy on OS/network basics, MySQL + Redis internals, and IM/feed-shaped system design. Behavioral lower-stakes than Alibaba/ByteDance but probe culture fit deeply.",
+      "focus_zh": "事业群差异大:WXG(微信)偏 C++ + 极致可靠性;IEG(游戏)偏引擎 + 图形;TEG(基础架构)偏分布式系统。共性:重 OS/网络基础、MySQL + Redis 内部机制、IM/feed 类系统设计。行为面比阿里/字节温和但会深探文化匹配。"
+    },
+    {
+      "id": "xiaomi",
+      "label_en": "Xiaomi",
+      "label_zh": "小米",
+      "file": "interviews/companies/xiaomi.md",
+      "focus_en": "Android + IoT + e-commerce backend are the big buckets. Android-leaning roles: Java/Kotlin + Android internals (View, Binder, ART). Backend: Java + Spring + MySQL + Redis. System design favours device-cloud collaboration, push, and OTA scenarios. Behavioral straightforward — emphasis on cost-consciousness and product instinct.",
+      "focus_zh": "Android + IoT + 电商后端是三大主线。Android 岗:Java/Kotlin + Android 内部(View、Binder、ART)。后端:Java + Spring + MySQL + Redis。系统设计偏端云协同、推送、OTA 场景。行为面直白 — 重视成本意识与产品直觉。"
+    }
+  ]
+}
