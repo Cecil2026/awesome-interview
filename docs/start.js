@@ -73,7 +73,7 @@
     zh: {
       pageTitle: '开始',
       tagline: '选择最匹配你当前情况的工具。',
-      hero: '告诉我你现在要做什么 —— 我帮你指到合适的工具。',
+      hero: '告诉我你现在要做什么 —— 我帮你定位到合适的工具。',
       navStart: '开始',
       navPicker: '选题',
       navReader: '阅读',

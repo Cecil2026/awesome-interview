@@ -18,7 +18,7 @@
 
 ### 2. 文件描述符与 ulimit
 
-**答案：** 文件描述符是内核每进程打开文件表中的一个小整数索引。0/1/2 是 stdin/stdout/stderr。套接字、管道、epoll 句柄都消耗 FD。默认软限制（常 1024）会让高连接服务遭遇 `EMFILE: too many open files`。用 `ulimit -n` 提高 shell 的；systemd 单元中用 `LimitNOFILE`；或 `/etc/security/limits.conf` 中用 `nofile`。容器里 kubelet/Docker daemon 设置封顶工作负载能请求多少。
+**答案：** 文件描述符是内核每进程打开文件表中的一个小整数索引。0/1/2 是 stdin/stdout/stderr。套接字、管道、epoll 句柄都消耗 FD。默认软上限（通常 1024）会让高连接服务遭遇 `EMFILE: too many open files`。用 `ulimit -n` 提高 shell 的上限；systemd 单元中用 `LimitNOFILE`；或在 `/etc/security/limits.conf` 中用 `nofile`。容器里 kubelet/Docker daemon 的设置封顶工作负载能请求的额度。
 
 **要点：**
 - FD 是每进程的整数索引
@@ -30,7 +30,7 @@
 
 ### 3. cgroups 与 namespaces
 
-**答案：** Namespace 隔离进程能看到什么（PID、NET、MNT、UTS、IPC、USER、CGROUP、TIME）；cgroup 限制并记账它能用什么（CPU、内存、IO、PID）。容器就是带着 cgroup 限制运行在 namespace 内的进程。cgroup v2 把层级统一为 `/sys/fs/cgroup` 下的单棵树。Kubernetes 和 Docker 按 pod/容器写入 cgroup 子树以强制 request 和 limit。
+**答案：** Namespace 隔离进程能看到什么（PID、NET、MNT、UTS、IPC、USER、CGROUP、TIME）；cgroup 限制并记账它能用多少（CPU、内存、IO、PID）。容器就是带着 cgroup 上限运行在 namespace 内的进程。cgroup v2 把层级统一为 `/sys/fs/cgroup` 下的单棵树。Kubernetes 和 Docker 按 pod/容器写入 cgroup 子树以强制 request 和 limit。
 
 **要点：**
 - Namespace = 隔离；cgroup = 配额
@@ -42,7 +42,7 @@
 
 ### 4. systemd 单元与 journalctl
 
-**答案：** systemd 以单元（`.service`、`.timer`、`.socket`、`.mount`）管理服务。单元文件位于 `/etc/systemd/system/`，在 `[Service]` 中声明 `ExecStart`、`Restart=`、`User=` 和资源限制。`systemctl daemon-reload` 拾取改动；`systemctl enable --now foo` 开机启动。日志进 journal；用 `journalctl -u foo -f` 或 `--since "1 hour ago"` 查询。用 `systemd-analyze blame` 找慢启动单元。
+**答案：** systemd 以单元（`.service`、`.timer`、`.socket`、`.mount`）管理服务。单元文件位于 `/etc/systemd/system/`，在 `[Service]` 中声明 `ExecStart`、`Restart=`、`User=` 和资源上限。`systemctl daemon-reload` 拾取改动；`systemctl enable --now foo` 设开机启动。日志进 journal；用 `journalctl -u foo -f` 或 `--since "1 hour ago"` 查询。用 `systemd-analyze blame` 找慢启动单元。
 
 **要点：**
 - 单元类型：service/timer/socket/mount/target
@@ -317,9 +317,9 @@ ENTRYPOINT ["/app"]
 
 ---
 
-### 26. 资源限制与 OOM
+### 26. 资源上限与 OOM
 
-**答案：** 无限制时，容器可饿死主机。`docker run --memory=512m --cpus=1` 强制 cgroup 限制。容器超内存时，内核 OOM 杀手终止进程，Docker 报 `OOMKilled`。CPU 限制是节流而非杀。Kubernetes 中设 `resources.limits.memory` 和 `requests` 通知调度；超 limit 的 pod 被杀并重启。
+**答案：** 无上限时，容器会饿死主机。`docker run --memory=512m --cpus=1` 强制 cgroup 上限。容器超内存时，内核 OOM 杀手终止进程，Docker 报 `OOMKilled`。CPU 超限是节流而非杀。Kubernetes 中设 `resources.limits.memory` 和 `requests` 告知调度；超 limit 的 pod 会被杀并重启。
 
 **要点：**
 - 内存超 limit -> OOMKill
@@ -367,13 +367,13 @@ ENTRYPOINT ["/app"]
 
 ### 30. Registry 选择
 
-**答案：** 选项包括 Docker Hub（免费层有速率限制）、GitHub Container Registry（`ghcr.io`，与 Actions 集成）、GitLab Registry、AWS ECR、Google Artifact Registry、Azure ACR、Harbor（带扫描/复制的自托管）和 JFrog Artifactory。按你 CI 的认证集成、地理复制需求、漏洞扫描和成本选择。气隙环境镜像上游到 Harbor/Artifactory。
+**答案：** 选项包括 Docker Hub（免费层有速率上限）、GitHub Container Registry（`ghcr.io`，与 Actions 集成）、GitLab Registry、AWS ECR、Google Artifact Registry、Azure ACR、Harbor（带扫描/复制的自托管）和 JFrog Artifactory。按你 CI 的认证集成、地理复制需求、漏洞扫描和成本选择。气隙环境把镜像上游到 Harbor/Artifactory。
 
 **要点：**
 - 云原生：ECR/Artifact Registry/ACR
 - 自托管：Harbor、Artifactory
 - 气隙构建镜像上游
-- 注意 Docker Hub pull 速率限制
+- 注意 Docker Hub pull 速率上限
 
 ---
 
@@ -403,7 +403,7 @@ ENTRYPOINT ["/app"]
 
 ### 33. Ingress vs Gateway API
 
-**答案：** Ingress 是通过注解做 HTTP(S) 路由的遗留 L7 API——按控制器的怪癖限制可移植性。Gateway API 是继任者：供应商中立、角色导向（GatewayClass 由基础设施拥有、Gateway 由集群运维、HTTPRoute 由应用团队），原生支持 TCP/UDP/TLS、流量切分和按头路由。新部署在控制器支持时应瞄准 Gateway API。
+**答案：** Ingress 是通过注解做 HTTP(S) 路由的遗留 L7 API——控制器的怪癖会拖累可移植性。Gateway API 是继任者：供应商中立、角色导向（GatewayClass 由基础设施拥有、Gateway 由集群运维、HTTPRoute 由应用团队），原生支持 TCP/UDP/TLS、流量切分和按头路由。新部署在控制器支持时应瞄准 Gateway API。
 
 **要点：**
 - Ingress = 遗留、注解重
@@ -533,7 +533,7 @@ topologySpreadConstraints:
 
 ### 43. NetworkPolicy 与默认拒绝
 
-**答案：** 默认所有 pod 可与所有 pod 通信。NetworkPolicy 选 pod 并限制 ingress/egress。应用命名空间级默认拒绝：
+**答案：** 默认所有 pod 可与所有 pod 通信。NetworkPolicy 选定 pod 并约束其 ingress/egress。在命名空间级应用默认拒绝：
 
 ```yaml
 spec:
@@ -637,7 +637,7 @@ spec:
 
 ### 51. Pod Security Standards
 
-**答案：** PSS 替代了 PodSecurityPolicy。三级：Privileged（无限制）、Baseline（阻止已知权限提升）、Restricted（加固：非 root、无能力、seccomp RuntimeDefault）。通过 PodSecurity 准入控制器在命名空间打标签强制：
+**答案：** PSS 替代了 PodSecurityPolicy。三级：Privileged（不设限）、Baseline（阻止已知权限提升）、Restricted（加固：非 root、无能力、seccomp RuntimeDefault）。通过 PodSecurity 准入控制器在命名空间打标签强制：
 
 ```yaml
 metadata:
@@ -705,13 +705,13 @@ metadata:
 
 ### 56. Pod Pending 诊断清单
 
-**答案：** 跑 `kubectl describe pod`。原因：CPU/内存不足（无节点适合 requests）、不可满足的 nodeSelector/affinity/taint、PVC 未绑定（无匹配 SC 或配额）、image pull 待定、SA 缺失、ResourceQuota 命中。查集群自动扩缩事件看扩容失败。PVC 问题 describe PVC 找供给器错误。
+**答案：** 跑 `kubectl describe pod`。常见原因：CPU/内存不足（无节点能容纳 requests）、不可满足的 nodeSelector/affinity/taint、PVC 未绑定（无匹配 SC 或配额）、image pull 待定、SA 缺失、命中 ResourceQuota。查集群自动扩缩事件看扩缩容失败。PVC 问题用 describe PVC 找供给器错误。
 
 **要点：**
 - 先看 `kubectl describe pod` 事件
 - 检查 requests vs 节点容量
 - 验证 PVC 已绑且 SC 存在
-- 看自动扩缩日志看扩容失败
+- 查自动扩缩日志定位扩缩容失败
 
 ---
 
@@ -1056,7 +1056,7 @@ strategy:
 
 ### 84. 不可变 vs 可变基础设施
 
-**答案：** 可变：SSH 进服务器原地打补丁（配置管理）。漂移累积；雪花服务器出现。不可变：每次变更构建新镜像/AMI/容器并替换实例——无原地变更。回滚更易、无漂移、契合自动扩缩。需要快速镜像构建和滚动部署自动化。容器是经典不可变单元。
+**答案：** 可变：SSH 进服务器原地打补丁（配置管理）。漂移累积；雪花服务器出现。不可变：每次变更构建新镜像/AMI/容器并替换实例——无原地变更。回滚更易、无漂移、契合自动扩缩容。需要快速镜像构建和滚动部署自动化。容器是经典的不可变单元。
 
 **要点：**
 - 可变 -> 漂移 + 雪花

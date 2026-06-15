@@ -899,7 +899,7 @@ private static boolean dfs(char[][] b, String w, int r, int c, int i) {
 **岗位：** SRE
 **级别：** L63
 
-**问题：** Azure 上某服务月账单 20 万美元。讲讲你如何砍掉一半。
+**问题：** Azure 上某服务月账单 20 万美元。讲讲你是怎么砍到一半的。
 
 **思路：** 先剖析成本：算力（VM/AKS）、存储（Blob/磁盘）、出网、托管服务。常见收益：(1) 调整 VM 规格（CPU/内存利用率 <30% 即过度配置），(2) 批处理用 reserved 或 spot 实例，(3) Cosmos DB → 调 RU/s 和分区，(4) 冷 blob 转到 cool/archive 层，(5) 重度缓存减少出网，(6) 审计 dev/test 资源下班后自动关机。别不看 SLO 影响就砍。展示你会先建成本看板再动手。
 
@@ -914,7 +914,7 @@ private static boolean dfs(char[][] b, String w, int r, int c, int i) {
 **岗位：** SWE
 **级别：** L62
 
-**问题：** 一个 C#/.NET 服务在生产 VM 间歇性 100% CPU。你如何排查？
+**问题：** 一个 C#/.NET 服务在生产 VM 间歇性 100% CPU。你会怎么排查？
 
 **思路：** 第 1 步：取 dump（`dotnet-dump collect`）或用 profiler（`dotnet-trace`、PerfView）。看最热的调用栈。常见原因：(1) GC 压力 → 看 Gen2 回收、大对象堆，(2) 灾难性回溯的正则，(3) 大对象的 JSON 序列化，(4) Task 调度器中的忙等，(5) 锁竞争。用 `dotnet-counters` 看实时指标。要把部署 diff 和近期流量模式关联起来分析。若无法复现，加结构化日志 + 生产采样 profiler（always-on profiling）。
 

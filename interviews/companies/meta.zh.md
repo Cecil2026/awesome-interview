@@ -828,7 +828,7 @@ TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
 **岗位：** 前端
 **级别：** L5
 
-**问题：** Facebook.com 在印度中端 Android 上加载慢。讲讲你如何诊断并改进 Time to Interactive。
+**问题：** Facebook.com 在印度中端 Android 上加载慢。讲讲你是怎么诊断并改进 Time to Interactive 的。
 
 **思路：** 先量化：用 Lighthouse / WebPageTest，在低端设备 + 3G 配置下跑。常见收益：(1) 减小 JS 包（按路由 code splitting、tree-shaking），(2) defer 非关键 JS，(3) 内联关键 CSS，(4) SSR/streaming SSR（现代 Meta 栈用 RSC）以在 hydration 前先出 paint，(5) 图片懒加载 + 响应式 `srcset`，(6) HTTP/2 push 或字体 `<link rel=preload>`。提一句 Meta 特有的 BigPipe / 部分 hydration。讨论用 RUM、Core Web Vitals 度量影响和发布策略（A/B 测试）。
 

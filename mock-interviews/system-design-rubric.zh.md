@@ -91,7 +91,7 @@
 | 2 | 抽象地提了 CAP。 |
 | 3 | 按数据类型分别给出一致性模型（强 / read-your-writes / 最终），并解释为什么。 |
 | 4 | 走过失败场景（节点挂、分区、整 region 挂），讲清楚每种行为。 |
-| 5 | 把 trade-off 主动说出来："我们牺牲 X 换 Y，业务能容忍 X 因为 Z。" |
+| 5 | 把取舍主动说出来："我们牺牲 X 换 Y，业务能容忍 X 因为 Z。" |
 
 ### 7. 深入展开
 
@@ -126,8 +126,8 @@
 | 级别 | 总分 | 必须达到的下限 | 典型画像 |
 | --- | --- | --- | --- |
 | L3 / E3 / 新人 | 18–24 | 维度 1–4 每项 ≥ 3 | 基础干净，deep dive 可选，运维基本没讲。 |
-| L4 / SDE II | 24–30 | 维度 1–6 每项 ≥ 3，至少一项 ≥ 4 | 基础扎实，一个真正的 deep dive，trade-off 能说出口。 |
-| L5 / 高级 | 30–35 | 每维 ≥ 3，两项 ≥ 4 | 两个 deep dive，明确的一致性模型，主动认 trade-off，运维有提。 |
+| L4 / SDE II | 24–30 | 维度 1–6 每项 ≥ 3，至少一项 ≥ 4 | 基础扎实，一个真正的 deep dive，取舍能说出口。 |
+| L5 / 高级 | 30–35 | 每维 ≥ 3，两项 ≥ 4 | 两个 deep dive，明确的一致性模型，主动认取舍，运维有提。 |
 | L6 / Staff | 34+ | 每维 ≥ 4，至少一项 5 | Deep dive 像在跑生产，有独到洞察，运维成熟。 |
 
 ## 常见红旗（命中一条降一级）
@@ -147,7 +147,7 @@
 
 | Mock | 评分表最能"咬"的维度 |
 | --- | --- |
-| [system-design-url-shortener.zh.md](./system-design-url-shortener.zh.md) | 维度 2（规模 → 100:1 读写驱动设计）、4（base62 计数器 vs 哈希权衡）、5（读路径缓存）。 |
+| [system-design-url-shortener.zh.md](./system-design-url-shortener.zh.md) | 维度 2（规模 → 100:1 读写驱动设计）、4（base62 计数器 vs 哈希取舍）、5（读路径缓存）。 |
 | [system-design-chat-app.zh.md](./system-design-chat-app.zh.md) | 维度 3（读路径 vs 写路径分离）、6（投递保证与顺序）、7（在线状态/fanout deep dive）。 |
 | [system-design-rate-limiter.zh.md](./system-design-rate-limiter.zh.md) | 维度 4（Redis 数据布局）、5（热 key、同步 vs 异步扣减）、7（token bucket vs sliding window）。 |
 

@@ -51,18 +51,7 @@
       secBank: 'Related practice from the question bank',
       bankMeta: '{category} · #{number}',
       noBank: 'No closely matching bank questions found for this stack.',
-      // generic project questions
-      gp1: 'Walk me through the end-to-end architecture. What were the main components and how did they interact?',
-      gp2: 'What was the scale — QPS, data volume, number of users? Where was the bottleneck and how did you find it?',
-      gp3: 'What was the hardest technical trade-off you made, and which alternatives did you reject and why?',
-      gp4: 'How did the system behave under failure? What happened if a key component or dependency went down?',
-      gp5: 'How did you test, deploy and monitor this? Which metrics told you it was healthy?',
-      gp6: 'How would you scale this system 10x? What breaks first?',
-      // behavioral
-      gb1: 'What was your specific contribution versus the rest of the team?',
-      gb2: 'Tell me about the biggest challenge or disagreement during this project and how you resolved it.',
-      gb3: 'If you rebuilt this today, what would you do differently and why?',
-      gb4: 'How did you decide what to prioritize when you were under time pressure?',
+      viewAnswer: 'Show talking points',
     },
     zh: {
       tagline: '粘贴一段简历项目经历，生成对应的技术面试题。',
@@ -86,19 +75,10 @@
       secTech: '技术深挖（基于你的技术栈）',
       secProject: '通用项目深挖',
       secBehavioral: '行为面试（STAR）',
-      secBank: '题库中的相关练习题',
+      secBank: '题库里相关的练习题',
       bankMeta: '{category} · 第 {number} 题',
-      noBank: '题库中没有与该技术栈高度匹配的题目。',
-      gp1: '请完整讲一遍系统的端到端架构。主要组件有哪些，它们如何交互？',
-      gp2: '系统规模如何——QPS、数据量、用户数？瓶颈在哪里，你是如何定位的？',
-      gp3: '你做过的最难的技术权衡是什么？放弃了哪些备选方案，为什么？',
-      gp4: '系统在故障时表现如何？某个关键组件或依赖宕机会发生什么？',
-      gp5: '你是如何测试、部署和监控它的？哪些指标能说明它是健康的？',
-      gp6: '如果要把这个系统扩展 10 倍，你会怎么做？最先出问题的是什么？',
-      gb1: '在这个项目里，你个人的具体贡献与团队其他人的贡献分别是什么？',
-      gb2: '讲一次项目中最大的挑战或分歧，以及你是如何解决的。',
-      gb3: '如果现在重做这个项目，你会有哪些不同的做法，为什么？',
-      gb4: '在时间压力下，你是如何决定优先级的？',
+      noBank: '题库里没有和这套技术栈高度匹配的题目。',
+      viewAnswer: '查看答案要点',
     },
   };
 
@@ -107,6 +87,121 @@
     Object.entries(params).forEach(([k, val]) => { v = v.replace(`{${k}}`, val); });
     return v;
   }
+
+  // Generic project + behavioral question banks (with talking-point answers).
+  const GENERIC_PROJECT = {
+    en: [
+      { q: 'Walk me through the end-to-end architecture. What were the main components and how did they interact?',
+        a: ['Lead with a one-sentence summary, then draw the boxes',
+            'Name the synchronous path vs the async / event paths',
+            'Call out the data stores and why each one was chosen',
+            'Mention what is yours vs what is shared infra'] },
+      { q: 'What was the scale — QPS, data volume, number of users? Where was the bottleneck and how did you find it?',
+        a: ['Concrete numbers: peak QPS, p50 / p99, data growth per day',
+            'Name the bottleneck (DB, network, lock contention) — be specific',
+            'How you found it: profiler, flame graph, slow log, RUM',
+            'What you measured before vs after to prove the fix'] },
+      { q: 'What was the hardest technical trade-off you made, and which alternatives did you reject and why?',
+        a: ['Frame the trade-off in 2-3 axes (latency vs cost, consistency vs availability)',
+            'State the rejected option fairly — what it would have been good at',
+            'Why this fit your constraints (team size, deadline, traffic shape)',
+            'What you would revisit if constraints changed'] },
+      { q: 'How did the system behave under failure? What happened if a key component or dependency went down?',
+        a: ['Walk one failure scenario end-to-end (e.g., DB primary loss)',
+            'Detection: alerts, SLO breach, customer report — what fired first',
+            'Mitigations in place: retries, circuit breakers, fallback, degraded mode',
+            'What was a known weakness that you accepted'] },
+      { q: 'How did you test, deploy and monitor this? Which metrics told you it was healthy?',
+        a: ['Test pyramid: unit + integration + load + chaos',
+            'Deploy: canary / blue-green; auto-rollback signal',
+            'Golden signals: latency, traffic, errors, saturation',
+            'Plus business KPIs that prove the system is actually working'] },
+      { q: 'How would you scale this system 10x? What breaks first?',
+        a: ['Identify the current bottleneck and project it linearly',
+            'Likely next failure: single-writer DB, cross-region latency, hot key',
+            'Sketch the change: shard, cache layer, async path',
+            'What this would cost (people + infra) and what risk it adds'] },
+    ],
+    zh: [
+      { q: '完整讲一遍系统的端到端架构。主要组件有哪些,它们怎么交互?',
+        a: ['先一句话总结,再画框图',
+            '区分同步路径和异步 / 事件路径',
+            '点出数据存储,以及为什么选每一个',
+            '说明哪些是你自己的,哪些是共用基础设施'] },
+      { q: '系统规模怎样——QPS、数据量、用户数?瓶颈在哪里,你怎么定位的?',
+        a: ['给具体数字:峰值 QPS、p50 / p99、每天数据增量',
+            '点名瓶颈(DB、网络、锁竞争),要具体',
+            '怎么发现的:profiler、火焰图、慢日志、RUM',
+            '修复前后分别度量哪些指标,证明确实改善'] },
+      { q: '你做过最难的技术取舍是什么?放弃了哪些备选方案,为什么?',
+        a: ['用 2-3 个维度框定取舍(延迟 vs 成本、一致性 vs 可用)',
+            '客观陈述被放弃的方案有什么优势',
+            '为什么当前选择更契合你的约束(团队、时限、流量形态)',
+            '如果约束变化,哪个会重新考虑'] },
+      { q: '系统在故障下表现如何?某个关键组件或依赖挂掉会发生什么?',
+        a: ['完整走一个故障场景(比如 DB 主库丢失)',
+            '感知:告警、SLO 破线、用户反馈——哪个先出',
+            '已有的缓解:重试、熔断、降级、fallback',
+            '哪些已知弱点是你主动接受的'] },
+      { q: '你怎么测试、部署和监控?哪些指标说明它是健康的?',
+        a: ['测试金字塔:单测 + 集成 + 压测 + 混沌',
+            '部署:金丝雀 / 蓝绿;自动回滚信号',
+            '黄金信号:延迟、流量、错误、饱和度',
+            '加上能证明系统真在工作的业务 KPI'] },
+      { q: '把这个系统扩展 10 倍你会怎么做?最先坏的是什么?',
+        a: ['先识别当前瓶颈,线性外推',
+            '下一个故障点通常是:单写 DB、跨地域延迟、热点 key',
+            '勾勒改动:分片、加缓存层、改异步',
+            '成本(人 + 资源)和带来的风险'] },
+    ],
+  };
+
+  const GENERIC_BEHAVIORAL = {
+    en: [
+      { q: 'What was your specific contribution versus the rest of the team?',
+        a: ['Use "I" not "we" — own your slice',
+            'Be precise: design / code / mentoring / on-call',
+            'Acknowledge the team — does not weaken you, it adds credibility',
+            'Quantify when possible (lines, commits do not count; outcomes do)'] },
+      { q: 'Tell me about the biggest challenge or disagreement during this project and how you resolved it.',
+        a: ['STAR: situation, task, action, result — keep each tight',
+            'Pick a real disagreement, not a strawman',
+            'Show the data / experiment that broke the tie',
+            'Close on what you learned about working with that person / team'] },
+      { q: 'If you rebuilt this today, what would you do differently and why?',
+        a: ['Pick 1-2 things, not a laundry list',
+            'Show you understand what was right at the time vs what is right now',
+            'Mention what you learned that changed your view',
+            'Avoid "we should have used <today\'s buzzword>" without justification'] },
+      { q: 'How did you decide what to prioritize when you were under time pressure?',
+        a: ['Name the framework (RICE / ICE / impact-effort) — but stay concrete',
+            'What you cut and why; what you chose to ship',
+            'How you communicated the trade-off to stakeholders',
+            'What ended up mattering vs what you over- or under-weighted'] },
+    ],
+    zh: [
+      { q: '这个项目里你的具体贡献,和团队其他人的贡献分别是什么?',
+        a: ['用"我"不用"我们"——讲清自己那块',
+            '具体一点:设计 / 实现 / 带人 / 值班',
+            '承认团队的作用——不会削弱你,反而更可信',
+            '能量化就量化(代码行数不算,产出结果才算)'] },
+      { q: '讲一次项目中最大的挑战或分歧,以及你怎么解决的。',
+        a: ['STAR:情境 / 任务 / 行动 / 结果——每一段都简洁',
+            '选真实的分歧,不要立稻草人',
+            '说清楚是什么数据 / 实验决定了结果',
+            '收尾讲你从中学到了怎么和这类同事 / 团队合作'] },
+      { q: '如果现在重做这个项目,你会有哪些不同的做法,为什么?',
+        a: ['挑 1-2 件,不要列清单',
+            '说明你能分清"当时是对的"和"现在是对的"',
+            '提一下你学到的、改变了观点的东西',
+            '避免"应该用 <最新流行词>"这种没有论据的话'] },
+      { q: '时间紧的时候你怎么决定优先级?',
+        a: ['说出你用的框架(RICE / ICE / 影响 vs 投入),但要具体',
+            '砍了什么,为什么;选择什么先上',
+            '怎么跟干系人沟通这个取舍',
+            '最后真正重要的是什么,哪些被你高估或低估了'] },
+    ],
+  };
 
   // Technology catalog shared with plan.js — loaded from tech-catalog.js.
   const { CATALOG, normalize, detectTech } = (window.AwesomeTechCatalog || {});
@@ -185,7 +280,13 @@
       } else {
         li.className = 'q-item';
         const tag = item.tag ? `<span class="q-tag">${esc(item.tag)}</span>` : '';
-        li.innerHTML = `${tag}${esc(item.text)}`;
+        let html = `${tag}<div class="q-text">${esc(item.text)}</div>`;
+        if (Array.isArray(item.a) && item.a.length) {
+          const bullets = item.a.map((b) => `<li>${esc(b)}</li>`).join('');
+          html += `<details class="q-answer"><summary>${esc(t('viewAnswer'))}</summary>`
+                + `<ul>${bullets}</ul></details>`;
+        }
+        li.innerHTML = html;
       }
       ul.appendChild(li);
     });
@@ -226,12 +327,19 @@
     const techItems = [];
     detected.forEach((e) => {
       const arr = (e.follow[currentLanguage] || e.follow.en);
-      arr.forEach((q) => techItems.push({ text: q, tag: e.label }));
+      arr.forEach((entry) => {
+        // Backwards-compat: entry may be plain string or { q, a }.
+        const q = typeof entry === 'string' ? entry : entry.q;
+        const a = typeof entry === 'string' ? null : entry.a;
+        techItems.push({ text: q, tag: e.label, a });
+      });
     });
 
     // General project + behavioral
-    const projItems = ['gp1', 'gp2', 'gp3', 'gp4', 'gp5', 'gp6'].map((k) => ({ text: t(k) }));
-    const behItems = ['gb1', 'gb2', 'gb3', 'gb4'].map((k) => ({ text: t(k) }));
+    const projBank = GENERIC_PROJECT[currentLanguage] || GENERIC_PROJECT.en;
+    const behBank = GENERIC_BEHAVIORAL[currentLanguage] || GENERIC_BEHAVIORAL.en;
+    const projItems = projBank.map((e) => ({ text: e.q, a: e.a }));
+    const behItems = behBank.map((e) => ({ text: e.q, a: e.a }));
 
     // Bank matches
     const bankItems = matchBankQuestions(detected).map((q) => ({ bank: true, q }));

@@ -416,7 +416,7 @@ const throttle = (fn, ms) => { let last = 0; return (...a) => { const n = Date.n
 
 ### 33. 垃圾回收（标记清除）
 
-**答案：** 现代 JS 引擎用分代标记清除：根（全局、栈）被标记，然后可达对象，其余被清。V8 把堆分新生代（Scavenger）和老生代（Mark-Compact）。你不能强制 GC，但可避免泄漏：解绑事件监听器、清定时器、把长命缓存中引用置 null，按对象做 key 的缓存优先 `WeakMap`/`WeakRef`。
+**答案：** 现代 JS 引擎用分代标记清除：先标记根（全局、栈），再标记可达对象，其余清除。V8 把堆分为新生代（Scavenger）和老生代（Mark-Compact）。你不能强制 GC，但可避免泄漏：解绑事件监听器、清定时器、把长命缓存中的引用置 null，以对象为 key 的缓存优先用 `WeakMap`/`WeakRef`。
 
 **要点：**
 - 引用计数（老 IE）在循环上失败
@@ -428,7 +428,7 @@ const throttle = (fn, ms) => { let last = 0; return (...a) => { const n = Date.n
 
 ### 34. WeakMap / WeakSet
 
-**答案：** `WeakMap` 的 key 和 `WeakSet` 的值被弱持——它们不防被引用对象的 GC。对把元数据与 DOM 节点或类实例关联而不泄漏内存有用。它们不可迭代且不暴露 size，因为条目可能在检查之间消失。
+**答案：** `WeakMap` 的 key 和 `WeakSet` 的值是弱引用——它们不会阻止被引用对象被 GC。适合把元数据与 DOM 节点或类实例关联而不泄漏内存。它们不可迭代且不暴露 size，因为条目可能在检查之间消失。
 
 **要点：**
 - key 必须是对象（或未注册 symbol）
@@ -440,7 +440,7 @@ const throttle = (fn, ms) => { let last = 0; return (...a) => { const n = Date.n
 
 ### 35. Map vs 对象作字典
 
-**答案：** `Map` 保留插入顺序、接受任何 key 类型（对象、函数）、有真 `size`，频繁加删更快。普通对象有原型污染风险（`__proto__`、`constructor`）、仅字符串/symbol key、JSON 友好序列化。动态键值集合用 `Map`，固定形状记录用对象。
+**答案：** `Map` 保留插入顺序、接受任何 key 类型（对象、函数）、有真正的 `size`，频繁增删更快。普通对象有原型污染风险（`__proto__`、`constructor`）、只支持字符串/symbol key，但 JSON 序列化友好。动态键值集合用 `Map`，固定形状的记录用对象。
 
 **要点：**
 - `Object.create(null)` 给无原型字典
@@ -452,7 +452,7 @@ const throttle = (fn, ms) => { let last = 0; return (...a) => { const n = Date.n
 
 ### 36. Symbol；`Symbol.iterator`
 
-**答案：** Symbol 是唯一不可变原语，常用作不冲突的属性 key 或著名协议钩子。`Symbol.iterator` 让你定义自定义迭代，`Symbol.asyncIterator` 用于异步，`Symbol.toPrimitive` 用于强制。`Symbol.for(key)` 在全局注册表中查找共享 symbol。
+**答案：** Symbol 是唯一不可变原语，常用作不冲突的属性 key 或知名协议钩子。`Symbol.iterator` 让你定义自定义迭代，`Symbol.asyncIterator` 用于异步迭代，`Symbol.toPrimitive` 用于类型强制。`Symbol.for(key)` 在全局注册表中查找共享 symbol。
 
 **要点：**
 - Symbol 键属性不出现在 `for...in` 或 `Object.keys`
@@ -464,7 +464,7 @@ const throttle = (fn, ms) => { let last = 0; return (...a) => { const n = Date.n
 
 ### 37. Proxy 与 Reflect
 
-**答案：** `Proxy` 用陷阱（`get`、`set`、`has`、`deleteProperty`、`apply` 等）包装对象拦截基本操作。驱动 Vue 3 响应性、MobX 和校验/观察库。`Reflect` 把代理陷阱镜像为静态方法，便于把操作转发到原始目标。
+**答案：** `Proxy` 用陷阱（`get`、`set`、`has`、`deleteProperty`、`apply` 等）包装对象以拦截基本操作。驱动 Vue 3 响应性、MobX 和校验/观察库。`Reflect` 把代理陷阱镜像为静态方法，便于把操作转发到原始目标。
 
 ```js
 const p = new Proxy(target, { get(t, k, r) { console.log('read', k); return Reflect.get(t, k, r); } });
@@ -1095,13 +1095,13 @@ class NotFoundError extends Error { constructor(id: string) { super(`Missing ${i
 
 ### 87. WebSocket vs SSE vs 长轮询
 
-**答案：** WebSocket 双向、低延迟，理想用于聊天/游戏/协作编辑——需要服务器支持并处理二进制。SSE 是单向（服务器 → 客户端）HTTP 上、更简单、自动重连、通过多数代理工作，但仅文本且每源浏览器连接有限。长轮询是通过保持请求开模拟推的回退。
+**答案：** WebSocket 双向、低延迟，是聊天/游戏/协作编辑的理想方案——需要服务器支持并处理二进制。SSE 是单向（服务器 → 客户端）走 HTTP，更简单、自动重连、能穿过大多数代理，但仅文本且浏览器每源连接数有上限。长轮询是通过保持请求挂起来模拟推送的回退方案。
 
 **要点：**
 - SSE 适合通知、实时 feed、AI 流
 - WebSocket 需心跳应对空闲超时
 - WebTransport（HTTP/3）是低延迟双向的新兴继任者
-- SSE 在 HTTP/1.1 有每源连接限制
+- SSE 在 HTTP/1.1 下有每源连接数上限
 
 ---
 
