@@ -117,7 +117,7 @@ The reader supports a parallel-file convention for translated content:
 
 When the language is set to 中文, the reader serves `*.zh.md` if it exists; otherwise it falls back to the original and shows a "translation not available" notice. `.zh.md` files don't appear as separate entries in the sidebar — they're treated as variants of the original. Restart `run_service.py` after adding or removing one to refresh `docs/md_files.json`. See `interviews/_template.zh.md` for a working example.
 
-To generate translations in bulk via the Claude API, use [`tools/translate_to_zh.py`](tools/translate_to_zh.py) (requires `pip install anthropic` and `ANTHROPIC_API_KEY`). Run with `--dry-run` first to preview what would be translated. See [tools/README.md](tools/README.md#generating-translations-in-bulk) for full usage.
+To generate translations in bulk via an LLM, use [`tools/translate_to_zh.py`](tools/translate_to_zh.py) (requires `pip install anthropic` and `ANTHROPIC_API_KEY`). Run with `--dry-run` first to preview what would be translated. See [tools/README.md](tools/README.md#generating-translations-in-bulk) for full usage.
 
 ## How to use this repo
 

@@ -117,7 +117,7 @@ cd C:\path\to\awesome-interview
 
 切换到中文时，阅读器会优先加载 `*.zh.md`；若不存在则回退到原文，并显示「暂无翻译」提示。`.zh.md` 文件不会在侧边栏单独出现，而是作为原文的变体。添加或删除翻译后，请重启 `run_service.py` 以刷新 `docs/md_files.json`。`interviews/_template.zh.md` 是一个可参考的样例。
 
-如需通过 Claude API 批量生成翻译，可使用 [`tools/translate_to_zh.py`](tools/translate_to_zh.py)（需要 `pip install anthropic` 并设置 `ANTHROPIC_API_KEY`）。先用 `--dry-run` 预览将要翻译哪些内容。完整用法见 [tools/README.md](tools/README.md#generating-translations-in-bulk)。
+如需通过 LLM 批量生成翻译，可使用 [`tools/translate_to_zh.py`](tools/translate_to_zh.py)（需要 `pip install anthropic` 并设置 `ANTHROPIC_API_KEY`）。先用 `--dry-run` 预览将要翻译哪些内容。完整用法见 [tools/README.md](tools/README.md#generating-translations-in-bulk)。
 
 ## 这个仓库怎么用
 
