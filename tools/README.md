@@ -20,7 +20,7 @@ Small Python utilities + browser pages for interview prep practice. No external 
 | Validate the question bank | — | `python tools/validate.py` |
 | Start the local web service | — | `python tools/run_service.py --open` |
 | Run the service as a Windows background task | — | `.\tools\install.ps1` (run as Administrator) |
-| Bulk-translate `.md` → `.zh.md` via Claude | — | `python tools/translate_to_zh.py` (needs `pip install anthropic` + `ANTHROPIC_API_KEY`) |
+| Bulk-translate `.md` → `.zh.md` via an LLM | — | `python tools/translate_to_zh.py` (needs `pip install anthropic` + `ANTHROPIC_API_KEY`) |
 
 If you're new here, run `python tools/run_service.py --open` and click a card on the Start page.
 
@@ -37,7 +37,7 @@ If you're new here, run `python tools/run_service.py --open` and click a card on
 | [validate.py](validate.py) | Validate the question bank against the entry schema — missing `**Tags:**`, EN/ZH count mismatch, numbering gaps, stale `questions.json`, broken internal links. Run in CI via [validate.yml](../.github/workflows/validate.yml). |
 | [run_service.py](run_service.py) | Start a local browser-based service. Renders the intent-routed Start page at `/` and serves all of `docs/` (default port 8099, auto-kills an existing process holding the port). |
 | [install.ps1](install.ps1) | (Windows only) Install `run_service.py` as a Scheduled Task that runs at boot, restarts on failure, and adds a Windows Firewall inbound rule. Run as Administrator. |
-| [translate_to_zh.py](translate_to_zh.py) | Batch-translate `*.md` to Simplified Chinese (`*.zh.md`) via the Claude API (**requires `pip install anthropic`** and `ANTHROPIC_API_KEY`) |
+| [translate_to_zh.py](translate_to_zh.py) | Batch-translate `*.md` to Simplified Chinese (`*.zh.md`) via an LLM API (**requires `pip install anthropic`** and `ANTHROPIC_API_KEY`) |
 
 ## Browser pages
 
@@ -109,7 +109,7 @@ See `interviews/_template.zh.md` for a working example.
 
 ### Generating translations in bulk
 
-`translate_to_zh.py` walks the repo and generates a `.zh.md` for every original `.md` that doesn't already have one, calling the Claude API per file. Re-runnable — already-translated files are skipped.
+`translate_to_zh.py` walks the repo and generates a `.zh.md` for every original `.md` that doesn't already have one, calling an LLM API per file. Re-runnable — already-translated files are skipped.
 
 ```bash
 pip install anthropic
@@ -125,4 +125,4 @@ python tools/translate_to_zh.py --force                         # overwrite exis
 
 Defaults: `claude-sonnet-4-6`, `--max-tokens 48000`, `effort=low`, thinking disabled (translation is non-thinking instruction-following). Each file is one API call; failures are logged and the batch continues. `docs/md_files.json` is rebuilt at the end so the reader picks up the new translations immediately.
 
-**Always run `--dry-run` first** to see the file list and total source size, and start with `--limit 1` or `--limit 3` to gauge cost and quality before doing the full sweep. Review the generated `.zh.md` files before committing — Claude-generated translations are a starting point, not finished prose.
+**Always run `--dry-run` first** to see the file list and total source size, and start with `--limit 1` or `--limit 3` to gauge cost and quality before doing the full sweep. Review the generated `.zh.md` files before committing — LLM-generated translations are a starting point, not finished prose.
