@@ -27,7 +27,7 @@ jobs:
         id: pick
         run: |
           python - <<'PY' >> "$GITHUB_OUTPUT"
-          import json, random, datetime, re, pathlib
+          import json, random, datetime, os, re, pathlib
 
           data = json.loads(pathlib.Path("docs/questions.json").read_text(encoding="utf-8"))
           questions = data["questions"]
@@ -55,7 +55,9 @@ jobs:
               body = body[:MAX].rstrip() + "\n\n…(truncated — see source file for the full entry)"
 
           title = f"Daily question — {datetime.date.today().isoformat()}: {q['title']}"
-          link = f"https://github.com/${{ github.repository }}/blob/main/{q['file']}#L{q['line']}"
+          repo = os.environ["GITHUB_REPOSITORY"]
+          branch = os.environ.get("GITHUB_REF_NAME", "master")
+          link = f"https://github.com/{repo}/blob/{branch}/{q['file']}#L{q['line']}"
 
           issue = f"""**Category:** `{q['category']}`
           **Difficulty:** {q.get('difficulty') or '—'}
@@ -79,11 +81,11 @@ jobs:
           PY
 
       - name: Open issue
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
-            const title = `${{ steps.pick.outputs.title }}`;
-            const body = `${{ steps.pick.outputs.body }}`;
+            const title = ${{ toJSON(steps.pick.outputs.title) }};
+            const body = ${{ toJSON(steps.pick.outputs.body) }};
             await github.rest.issues.create({
               owner: context.repo.owner,
               repo: context.repo.repo,
