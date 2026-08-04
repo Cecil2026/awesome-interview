@@ -123,6 +123,8 @@
       "id": "ai-algorithm",
       "label_en": "AI / Algorithm Engineer",
       "label_zh": "AI 算法工程师",
+      "roadmap": "roadmap/ai-algorithm.md",
+      "roadmap_zh": "roadmap/ai-algorithm.zh.md",
       "topics": [
         { "topic": "ml", "weight": 3 },
         { "topic": "recommendation", "weight": 3 },

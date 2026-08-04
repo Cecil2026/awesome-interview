@@ -19,6 +19,8 @@
     --border: #e2e8f0;
     --text: #0f172a;
     --text-muted: #64748b;
+    --accent: #2563eb;
+    --accent-hover: #1d4ed8;
     --badge-bg: #e2e8f0;
   }
 }
@@ -29,6 +31,8 @@
   --border: #e2e8f0;
   --text: #0f172a;
   --text-muted: #64748b;
+  --accent: #2563eb;
+  --accent-hover: #1d4ed8;
   --badge-bg: #e2e8f0;
 }
 
@@ -400,6 +404,28 @@ footer .footer-source a:hover {
   display: none;
 }
 
+.dashboard-actions {
+  grid-column: 1 / -1;
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-end;
+}
+
+.ghost-btn {
+  padding: 0.35rem 0.8rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.ghost-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
 .stat {
   display: flex;
   flex-direction: column;
@@ -498,8 +524,14 @@ footer .footer-source a:hover {
   gap: 0.85rem;
 }
 
+.q-card-wrap {
+  position: relative;
+  display: flex;
+}
+
 .q-card {
   position: relative;
+  flex: 1;
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
@@ -553,15 +585,15 @@ footer .footer-source a:hover {
 
 .q-card-solve {
   position: absolute;
-  top: 0.6rem;
-  right: 0.6rem;
-  width: 22px;
-  height: 22px;
+  top: 0.5rem;
+  right: 0.5rem;
+  width: 28px;
+  height: 28px;
   border-radius: 999px;
   border: 1px solid var(--border);
   background: var(--bg);
   color: var(--text-muted);
-  font-size: 0.85rem;
+  font-size: 0.9rem;
   line-height: 1;
   cursor: pointer;
   display: flex;

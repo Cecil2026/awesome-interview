@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>awesome-interview · Random Question Picker</title>
-  <link rel="stylesheet" href="style.css?v=13" />
+  <link rel="stylesheet" href="style.css?v=14" />
   <script src="theme.js?v=10"></script>
 </head>
 <body>
@@ -87,6 +87,11 @@
         <div class="progress-track"><div class="progress-fill" id="stat-progress-fill"></div></div>
         <span class="stat-label" id="stat-progress-label">0% complete</span>
       </div>
+      <div class="dashboard-actions">
+        <button type="button" id="progress-export" class="ghost-btn">Export</button>
+        <button type="button" id="progress-import" class="ghost-btn">Import</button>
+        <input type="file" id="progress-import-file" accept="application/json" hidden>
+      </div>
     </section>
 
     <section id="browse" class="browse hidden" aria-label="Browse questions">
@@ -165,12 +170,14 @@
 
   <div id="palette" class="palette hidden" role="dialog" aria-modal="true" aria-label="Command palette">
     <div class="palette-box">
-      <input id="palette-input" type="text" autocomplete="off" spellcheck="false" placeholder="Jump to a question…" />
-      <ul id="palette-results" class="palette-results"></ul>
+      <input id="palette-input" type="text" role="combobox" aria-expanded="false" aria-controls="palette-results" aria-autocomplete="list" autocomplete="off" spellcheck="false" placeholder="Jump to a question…" />
+      <ul id="palette-results" class="palette-results" role="listbox" aria-label="Question results"></ul>
       <div class="palette-hint" id="palette-hint">↑↓ navigate · Enter open · Esc close</div>
     </div>
   </div>
 
-  <script src="app.js?v=13"></script>
+  <script src="progress.js?v=1"></script>
+  <script src="app.js?v=14"></script>
+  <script src="timer.js?v=1"></script>
 </body>
 </html>

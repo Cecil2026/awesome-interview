@@ -33,12 +33,15 @@
       navCompare: 'Compare',
       navResume: 'Resume → Q',
       navPlan: 'Plan',
+      themeLight: 'Light',
+      themeDark: 'Dark',
       navStart: 'Start',
       inputLabel: 'Project experience',
       placeholder: 'e.g. Built a real-time chat service with Node.js, WebSocket and Redis, sharded across 3 regions, handling 50k concurrent connections...',
       generate: 'Generate questions',
       sample: 'Load sample',
       hint: 'Runs fully offline — no data leaves your browser.',
+      loadError: 'Could not load the question bank — bank matches are unavailable. Check your connection and reload.',
       footer: 'Heuristic generator — matches your stack against the local question bank and adds tailored follow-ups.',
       sourceCode: 'Source code (AGPL-3.0)',
       pageTitle: 'Resume → Questions',
@@ -60,12 +63,15 @@
       navCompare: '对比',
       navResume: '简历 → 题',
       navPlan: '计划',
+      themeLight: '浅色',
+      themeDark: '深色',
       navStart: '开始',
       inputLabel: '项目经历',
       placeholder: '例如：用 Node.js、WebSocket 和 Redis 构建了一个实时聊天服务，按 3 个区域分片，支撑 5 万并发连接……',
       generate: '生成面试题',
       sample: '载入示例',
       hint: '完全离线运行——数据不会离开你的浏览器。',
+      loadError: '无法加载题库——题库匹配不可用。请检查网络后重新加载。',
       footer: '启发式生成器——将你的技术栈与本地题库匹配，并补充针对性的追问。',
       sourceCode: '源代码（AGPL-3.0）',
       pageTitle: '简历 → 面试题',
@@ -215,6 +221,13 @@
     els.navReader.textContent = t('navReader');
     if (els.navResume) els.navResume.textContent = t('navResume');
     if (els.navPlan) els.navPlan.textContent = t('navPlan');
+    if (els.themeSelect) {
+      const opts = els.themeSelect.options;
+      for (let i = 0; i < opts.length; i++) {
+        if (opts[i].value === 'light') opts[i].textContent = t('themeLight');
+        if (opts[i].value === 'dark') opts[i].textContent = t('themeDark');
+      }
+    }
     if (els.navStart) els.navStart.textContent = t('navStart');
     els.inputLabel.textContent = t('inputLabel');
     els.textarea.placeholder = t('placeholder');
@@ -380,7 +393,14 @@
     fetch('questions.json', { cache: 'no-cache' })
       .then((r) => (r.ok ? r.json() : Promise.reject(new Error(`HTTP ${r.status}`))))
       .then((data) => { questions = data.questions || []; })
-      .catch(() => { questions = []; });
+      .catch((err) => {
+        console.error('resume: failed to load questions.json', err);
+        questions = [];
+        if (els.hint) {
+          els.hint.textContent = t('loadError');
+          els.hint.classList.add('hint-error');
+        }
+      });
   }
 
   init();

@@ -13,6 +13,10 @@ scratch/
 notes-private/
 *.local.md
 
+# Local service logs
+svc.out
+svc.err
+
 # Python
 __pycache__/
 *.pyc

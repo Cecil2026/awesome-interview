@@ -4,16 +4,18 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>awesome-interview · Resume → Questions</title>
-  <link rel="stylesheet" href="style.css?v=13" />
+  <link rel="stylesheet" href="style.css?v=14" />
   <script src="theme.js?v=10"></script>
   <style>
     .resume-wrap { max-width: 960px; margin: 0 auto; padding: 2rem 1.5rem; width: 100%; }
     .resume-input { width: 100%; min-height: 180px; resize: vertical; padding: 0.9rem 1rem;
       border: 1px solid var(--border); border-radius: 10px; background: var(--bg-card);
       color: var(--text); font: inherit; line-height: 1.5; box-sizing: border-box; }
-    .resume-input:focus { outline: none; border-color: var(--accent); }
+    .resume-input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 30%, transparent); }
+    .resume-input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
     .resume-actions { display: flex; gap: 0.8rem; align-items: center; flex-wrap: wrap; margin: 0.9rem 0 0.4rem; }
     .resume-hint { color: var(--text-muted); font-size: 0.85rem; }
+    .resume-hint.hint-error { color: var(--hard, #f87171); }
     .btn-generate { padding: 0.6rem 1.4rem; border: none; border-radius: 8px; cursor: pointer;
       background: var(--accent); color: #fff; font-weight: 600; font-size: 0.95rem; }
     .btn-generate:hover { background: var(--accent-hover); }
@@ -101,6 +103,6 @@
   </footer>
 
   <script src="tech-catalog.js?v=3"></script>
-  <script src="resume.js?v=14"></script>
+  <script src="resume.js?v=15"></script>
 </body>
 </html>

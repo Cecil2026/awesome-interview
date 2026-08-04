@@ -66,6 +66,9 @@
     statSolvedLabel: document.getElementById('stat-solved-label'),
     statStreakLabel: document.getElementById('stat-streak-label'),
     statProgressLabel: document.getElementById('stat-progress-label'),
+    progressExport: document.getElementById('progress-export'),
+    progressImport: document.getElementById('progress-import'),
+    progressImportFile: document.getElementById('progress-import-file'),
     browse: document.getElementById('browse'),
     browseHeading: document.getElementById('browse-heading'),
     hideSolved: document.getElementById('hide-solved'),
@@ -140,6 +143,10 @@
       statSolved: 'Solved',
       statStreak: 'Day streak',
       statProgress: '{pct}% complete',
+      exportProgress: 'Export',
+      importProgress: 'Import',
+      importOk: 'Progress imported.',
+      importErr: 'Could not import that file.',
       browseHeading: 'Browse questions',
       hideSolved: 'Hide solved',
       browseCount: '{shown} of {total}',
@@ -200,6 +207,10 @@
       statSolved: '已完成',
       statStreak: '连续天数',
       statProgress: '完成 {pct}%',
+      exportProgress: '导出进度',
+      importProgress: '导入进度',
+      importOk: '进度已导入。',
+      importErr: '无法导入该文件。',
       browseHeading: '浏览题目',
       hideSolved: '隐藏已完成',
       browseCount: '共 {total} 道，当前显示 {shown} 道',
@@ -273,6 +284,8 @@
     if (els.statTotalLabel) els.statTotalLabel.textContent = t('statTotal');
     if (els.statSolvedLabel) els.statSolvedLabel.textContent = t('statSolved');
     if (els.statStreakLabel) els.statStreakLabel.textContent = t('statStreak');
+    if (els.progressExport) els.progressExport.textContent = t('exportProgress');
+    if (els.progressImport) els.progressImport.textContent = t('importProgress');
     if (els.browseHeading) els.browseHeading.textContent = t('browseHeading');
     if (els.hideSolvedLabel) els.hideSolvedLabel.textContent = t('hideSolved');
     if (els.loadMore) els.loadMore.textContent = t('loadMore');
@@ -390,64 +403,22 @@
     els.result.dataset.questionId = q.id;
   }
 
-  // --- Progress tracking (localStorage) ---
-  const SOLVED_KEY = 'awesome-interview-solved';
-  const STREAK_KEY = 'awesome-interview-web-streak';
+  // --- Progress tracking (unified store, see progress.js) ---
+  const P = window.AwesomeProgress;
 
   function loadSolved() {
-    try {
-      return new Set(JSON.parse(localStorage.getItem(SOLVED_KEY) || '[]'));
-    } catch {
-      return new Set();
-    }
+    return new Set(P ? P.read().solved : []);
   }
 
   let solved = loadSolved();
 
-  function saveSolved() {
-    localStorage.setItem(SOLVED_KEY, JSON.stringify([...solved]));
-  }
-
-  function todayStr() {
-    return new Date().toISOString().slice(0, 10);
-  }
-
-  function recordActivity() {
-    let data;
-    try {
-      data = JSON.parse(localStorage.getItem(STREAK_KEY) || '{}');
-    } catch {
-      data = {};
-    }
-    const today = todayStr();
-    if (data.last === today) return;
-    const yesterday = new Date(Date.now() - 86400000).toISOString().slice(0, 10);
-    data.count = data.last === yesterday ? (data.count || 0) + 1 : 1;
-    data.last = today;
-    localStorage.setItem(STREAK_KEY, JSON.stringify(data));
-  }
-
   function currentStreak() {
-    let data;
-    try {
-      data = JSON.parse(localStorage.getItem(STREAK_KEY) || '{}');
-    } catch {
-      return 0;
-    }
-    const today = todayStr();
-    const yesterday = new Date(Date.now() - 86400000).toISOString().slice(0, 10);
-    if (data.last === today || data.last === yesterday) return data.count || 0;
-    return 0;
+    return P ? P.streakCount() : 0;
   }
 
   function toggleSolved(id) {
-    if (solved.has(id)) {
-      solved.delete(id);
-    } else {
-      solved.add(id);
-      recordActivity();
-    }
-    saveSolved();
+    if (P) P.toggleSolved(id);
+    solved = loadSolved();
     renderDashboard();
     renderGrid();
   }
@@ -492,6 +463,8 @@
     els.cardGrid.innerHTML = '';
     const frag = document.createDocumentFragment();
     pool.slice(0, gridShown).forEach((q) => {
+      const wrap = document.createElement('div');
+      wrap.className = 'q-card-wrap';
       const card = document.createElement('a');
       const diff = (q.difficulty || '').toLowerCase();
       card.className = 'q-card' + (diff ? ` diff-${diff}` : '') + (solved.has(q.id) ? ' solved' : '');
@@ -534,8 +507,9 @@
         topics.textContent = q.topics.slice(0, 4).join(' · ');
         card.appendChild(topics);
       }
-      card.appendChild(solve);
-      frag.appendChild(card);
+      wrap.appendChild(card);
+      wrap.appendChild(solve);
+      frag.appendChild(wrap);
     });
     els.cardGrid.appendChild(frag);
     if (els.browseCount) {
@@ -554,17 +528,27 @@
   // --- Command palette (Ctrl/Cmd+K) ---
   let paletteItems = [];
   let paletteActive = 0;
+  let paletteLastFocus = null;
 
   function openPalette() {
     if (!els.palette) return;
+    paletteLastFocus = document.activeElement;
     els.palette.classList.remove('hidden');
     els.paletteInput.value = '';
+    els.paletteInput.setAttribute('aria-expanded', 'true');
     renderPalette('');
     els.paletteInput.focus();
   }
 
   function closePalette() {
-    if (els.palette) els.palette.classList.add('hidden');
+    if (!els.palette || els.palette.classList.contains('hidden')) return;
+    els.palette.classList.add('hidden');
+    els.paletteInput.setAttribute('aria-expanded', 'false');
+    els.paletteInput.removeAttribute('aria-activedescendant');
+    if (paletteLastFocus && typeof paletteLastFocus.focus === 'function') {
+      paletteLastFocus.focus();
+    }
+    paletteLastFocus = null;
   }
 
   function renderPalette(term) {
@@ -587,7 +571,13 @@
     }
     paletteItems.forEach((item, i) => {
       const li = document.createElement('li');
-      if (i === 0) li.classList.add('active');
+      li.id = `palette-opt-${i}`;
+      li.setAttribute('role', 'option');
+      li.setAttribute('aria-selected', i === 0 ? 'true' : 'false');
+      if (i === 0) {
+        li.classList.add('active');
+        els.paletteInput.setAttribute('aria-activedescendant', li.id);
+      }
       const cat = document.createElement('span');
       cat.className = 'pr-cat';
       cat.textContent = item.category;
@@ -608,8 +598,14 @@
     const lis = els.paletteResults.querySelectorAll('li');
     if (!lis.length) return;
     paletteActive = (i + lis.length) % lis.length;
-    lis.forEach((li, idx) => li.classList.toggle('active', idx === paletteActive));
-    lis[paletteActive].scrollIntoView({ block: 'nearest' });
+    lis.forEach((li, idx) => {
+      const on = idx === paletteActive;
+      li.classList.toggle('active', on);
+      li.setAttribute('aria-selected', on ? 'true' : 'false');
+    });
+    const active = lis[paletteActive];
+    active.scrollIntoView({ block: 'nearest' });
+    if (active.id) els.paletteInput.setAttribute('aria-activedescendant', active.id);
   }
 
   function wireFilters() {
@@ -618,6 +614,30 @@
     });
     if (els.topic) els.topic.addEventListener('input', resetGrid);
     if (els.hideSolved) els.hideSolved.addEventListener('change', resetGrid);
+    if (els.progressExport && P) {
+      els.progressExport.addEventListener('click', () => P.download());
+    }
+    if (els.progressImport && els.progressImportFile && P) {
+      els.progressImport.addEventListener('click', () => els.progressImportFile.click());
+      els.progressImportFile.addEventListener('change', (e) => {
+        const file = e.target.files && e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = () => {
+          try {
+            P.importJSON(String(reader.result), 'merge');
+            solved = loadSolved();
+            renderDashboard();
+            renderGrid();
+            if (els.statProgressLabel) els.statProgressLabel.textContent = t('importOk');
+          } catch (err) {
+            alert(t('importErr'));
+          }
+          els.progressImportFile.value = '';
+        };
+        reader.readAsText(file);
+      });
+    }
     if (els.loadMore) {
       els.loadMore.addEventListener('click', () => {
         gridShown += PAGE_SIZE;
@@ -635,6 +655,9 @@
           if (item) window.location.href = questionHref(item);
         } else if (e.key === 'Escape') {
           closePalette();
+        } else if (e.key === 'Tab') {
+          // Only the input is focusable inside the dialog — keep focus trapped.
+          e.preventDefault();
         }
       });
       els.palette.addEventListener('click', (e) => {

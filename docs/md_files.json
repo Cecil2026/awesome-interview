@@ -1,6 +1,6 @@
 {
   "generated_by": "tools/run_service.py",
-  "total": 31,
+  "total": 34,
   "categories": [
     "behavioral",
     "interviews",
@@ -151,6 +151,13 @@
       }
     },
     {
+      "category": "knowledge",
+      "file": "knowledge/system-design.md",
+      "translations": {
+        "zh": "knowledge/system-design.zh.md"
+      }
+    },
+    {
       "category": "mock-interviews",
       "file": "mock-interviews/behavioral-leadership-conflict.md",
       "translations": {
@@ -201,6 +208,13 @@
     },
     {
       "category": "roadmap",
+      "file": "roadmap/ai-algorithm.md",
+      "translations": {
+        "zh": "roadmap/ai-algorithm.zh.md"
+      }
+    },
+    {
+      "category": "roadmap",
       "file": "roadmap/backend-engineer.md",
       "translations": {
         "zh": "roadmap/backend-engineer.zh.md"
@@ -226,6 +240,10 @@
       "translations": {
         "zh": "roadmap/fullstack-engineer.zh.md"
       }
+    },
+    {
+      "category": "overview",
+      "file": "SECURITY.md"
     }
   ]
 }

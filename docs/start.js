@@ -69,6 +69,8 @@
       extraToolsDesc: '— CLI scripts',
       extraReadme: 'README',
       extraReadmeDesc: '— project overview',
+      themeLight: 'Light',
+      themeDark: 'Dark',
     },
     zh: {
       pageTitle: '开始',
@@ -120,6 +122,8 @@
       extraToolsDesc: '— CLI 脚本',
       extraReadme: 'README',
       extraReadmeDesc: '— 项目概览',
+      themeLight: '浅色',
+      themeDark: '深色',
     },
   };
 
@@ -143,6 +147,13 @@
     if (els.navCompare) els.navCompare.textContent = t('navCompare');
     if (els.navResume) els.navResume.textContent = t('navResume');
     if (els.navPlan) els.navPlan.textContent = t('navPlan');
+    if (els.themeSelect) {
+      const options = els.themeSelect.options;
+      for (let i = 0; i < options.length; i++) {
+        if (options[i].value === 'light') options[i].textContent = t('themeLight');
+        if (options[i].value === 'dark') options[i].textContent = t('themeDark');
+      }
+    }
     // i18n-marked text in the card bodies — some use HTML (cli hints), others textContent.
     document.querySelectorAll('[data-i18n]').forEach((el) => {
       const key = el.getAttribute('data-i18n');

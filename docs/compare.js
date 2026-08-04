@@ -37,6 +37,8 @@
       navCompare: 'Compare',
       navResume: 'Resume → Q',
       navPlan: 'Plan',
+      themeLight: 'Light',
+      themeDark: 'Dark',
       easy: 'Easy', medium: 'Medium', hard: 'Hard',
       company: 'Company', rounds: 'Rounds', focus: 'Focus areas',
       langs: 'Languages', duration: 'Duration', diff: 'Difficulty mix',
@@ -56,6 +58,8 @@
       navCompare: '对比',
       navResume: '简历 → 题',
       navPlan: '计划',
+      themeLight: '浅色',
+      themeDark: '深色',
       easy: '简单', medium: '中等', hard: '困难',
       company: '公司', rounds: '面试轮次', focus: '重点方向',
       langs: '编程语言', duration: '时长', diff: '难度分布',
@@ -85,6 +89,13 @@
     if (els.navCompare) els.navCompare.textContent = t('navCompare');
     if (els.navResume) els.navResume.textContent = t('navResume');
     if (els.navPlan) els.navPlan.textContent = t('navPlan');
+    if (els.themeSelect) {
+      const opts = els.themeSelect.options;
+      for (let i = 0; i < opts.length; i++) {
+        if (opts[i].value === 'light') opts[i].textContent = t('themeLight');
+        if (opts[i].value === 'dark') opts[i].textContent = t('themeDark');
+      }
+    }
     els.legendEasy.textContent = t('easy');
     els.legendMedium.textContent = t('medium');
     els.legendHard.textContent = t('hard');

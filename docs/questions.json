@@ -1,6 +1,6 @@
 {
   "generated_by": "tools/build_index.py",
-  "total": 1281,
+  "total": 1291,
   "categories": [
     "behavioral",
     "interviews",
@@ -113,7 +113,7 @@
       "category": "behavioral",
       "topics": [],
       "difficulty": null,
-      "title_zh": "讲一次你与同事意见不合的经历。你如何解决？",
+      "title_zh": "讲一次你与同事意见不合的经历。你怎么解决的？",
       "file_zh": "behavioral/star-questions.zh.md"
     },
     {
@@ -605,7 +605,7 @@
       "category": "behavioral",
       "topics": [],
       "difficulty": null,
-      "title_zh": "描述你在过去一两年中是如何成长的。",
+      "title_zh": "描述你在过去一两年中怎么成长。",
       "file_zh": "behavioral/star-questions.zh.md"
     },
     {
@@ -15699,7 +15699,7 @@
       "category": "knowledge",
       "topics": [],
       "difficulty": null,
-      "title_zh": "资源限制与 OOM",
+      "title_zh": "资源上限与 OOM",
       "file_zh": "knowledge/devops.zh.md"
     },
     {
@@ -17789,6 +17789,185 @@
       "difficulty": null,
       "title_zh": "PWA：SW 生命周期、离线策略、安装提示",
       "file_zh": "knowledge/frontend.zh.md"
+    },
+    {
+      "id": "knowledge/system-design.md#1",
+      "number": 1,
+      "title": "Design a URL shortener (TinyURL / bit.ly)",
+      "file": "knowledge/system-design.md",
+      "line": 9,
+      "category": "knowledge",
+      "topics": [
+        "system-design",
+        "hashing",
+        "caching",
+        "sharding",
+        "read-heavy"
+      ],
+      "difficulty": "Medium",
+      "title_zh": "设计短链接服务（TinyURL / bit.ly）",
+      "file_zh": "knowledge/system-design.zh.md"
+    },
+    {
+      "id": "knowledge/system-design.md#2",
+      "number": 2,
+      "title": "Design a social news feed (Twitter / Facebook timeline)",
+      "file": "knowledge/system-design.md",
+      "line": 24,
+      "category": "knowledge",
+      "topics": [
+        "system-design",
+        "fan-out",
+        "caching",
+        "sharding",
+        "consistency"
+      ],
+      "difficulty": "Hard",
+      "title_zh": "设计社交信息流（Twitter / Facebook 时间线）",
+      "file_zh": "knowledge/system-design.zh.md"
+    },
+    {
+      "id": "knowledge/system-design.md#3",
+      "number": 3,
+      "title": "Design a rate limiter",
+      "file": "knowledge/system-design.md",
+      "line": 39,
+      "category": "knowledge",
+      "topics": [
+        "system-design",
+        "rate-limiting",
+        "concurrency",
+        "caching",
+        "distributed-systems"
+      ],
+      "difficulty": "Medium",
+      "title_zh": "设计限流器",
+      "file_zh": "knowledge/system-design.zh.md"
+    },
+    {
+      "id": "knowledge/system-design.md#4",
+      "number": 4,
+      "title": "Design a distributed key-value store (Dynamo-style)",
+      "file": "knowledge/system-design.md",
+      "line": 54,
+      "category": "knowledge",
+      "topics": [
+        "system-design",
+        "distributed-systems",
+        "consistency",
+        "replication",
+        "sharding"
+      ],
+      "difficulty": "Hard",
+      "title_zh": "设计分布式键值存储（Dynamo 风格）",
+      "file_zh": "knowledge/system-design.zh.md"
+    },
+    {
+      "id": "knowledge/system-design.md#5",
+      "number": 5,
+      "title": "Design a messaging / chat system (WhatsApp, Messenger)",
+      "file": "knowledge/system-design.md",
+      "line": 69,
+      "category": "knowledge",
+      "topics": [
+        "system-design",
+        "websockets",
+        "message-queue",
+        "consistency",
+        "fan-out"
+      ],
+      "difficulty": "Hard",
+      "title_zh": "设计即时通讯/聊天系统（WhatsApp、Messenger）",
+      "file_zh": "knowledge/system-design.zh.md"
+    },
+    {
+      "id": "knowledge/system-design.md#6",
+      "number": 6,
+      "title": "Design a web crawler",
+      "file": "knowledge/system-design.md",
+      "line": 84,
+      "category": "knowledge",
+      "topics": [
+        "system-design",
+        "distributed-systems",
+        "message-queue",
+        "bloom-filter",
+        "politeness"
+      ],
+      "difficulty": "Medium",
+      "title_zh": "设计网络爬虫",
+      "file_zh": "knowledge/system-design.zh.md"
+    },
+    {
+      "id": "knowledge/system-design.md#7",
+      "number": 7,
+      "title": "Design a notification service (push / email / SMS fan-out)",
+      "file": "knowledge/system-design.md",
+      "line": 99,
+      "category": "knowledge",
+      "topics": [
+        "system-design",
+        "message-queue",
+        "fan-out",
+        "idempotency",
+        "reliability"
+      ],
+      "difficulty": "Medium",
+      "title_zh": "设计通知服务（推送 / 邮件 / 短信扇出）",
+      "file_zh": "knowledge/system-design.zh.md"
+    },
+    {
+      "id": "knowledge/system-design.md#8",
+      "number": 8,
+      "title": "Design a typeahead / autocomplete service",
+      "file": "knowledge/system-design.md",
+      "line": 114,
+      "category": "knowledge",
+      "topics": [
+        "system-design",
+        "trie",
+        "caching",
+        "read-heavy",
+        "ranking"
+      ],
+      "difficulty": "Medium",
+      "title_zh": "设计前缀补全 / 自动补全服务",
+      "file_zh": "knowledge/system-design.zh.md"
+    },
+    {
+      "id": "knowledge/system-design.md#9",
+      "number": 9,
+      "title": "Design a distributed unique ID generator",
+      "file": "knowledge/system-design.md",
+      "line": 129,
+      "category": "knowledge",
+      "topics": [
+        "system-design",
+        "distributed-systems",
+        "sharding",
+        "clock"
+      ],
+      "difficulty": "Medium",
+      "title_zh": "设计分布式唯一 ID 生成器",
+      "file_zh": "knowledge/system-design.zh.md"
+    },
+    {
+      "id": "knowledge/system-design.md#10",
+      "number": 10,
+      "title": "Design a video streaming platform (YouTube / Netflix)",
+      "file": "knowledge/system-design.md",
+      "line": 144,
+      "category": "knowledge",
+      "topics": [
+        "system-design",
+        "cdn",
+        "storage",
+        "encoding",
+        "read-heavy"
+      ],
+      "difficulty": "Hard",
+      "title_zh": "设计视频流媒体平台（YouTube / Netflix）",
+      "file_zh": "knowledge/system-design.zh.md"
     },
     {
       "id": "mock-interviews/system-design-rubric.md#1",

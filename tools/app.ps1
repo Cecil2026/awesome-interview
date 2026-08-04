@@ -1,11 +1,21 @@
 <#
 .SYNOPSIS
-Install awesome-interview as a Scheduled Task on the local Windows machine.
+Manage awesome-interview as a Windows background service (single entry point).
 
 .DESCRIPTION
-Registers a Scheduled Task that runs tools/run_service.py at boot, restarts
-on failure, and adds an inbound firewall rule for the chosen port. Requires
-Administrator (right-click PowerShell -> Run as Administrator).
+One script, verb subcommands. Wraps a Scheduled Task that runs
+tools/run_service.py at boot, restarts on failure, and (optionally) adds an
+inbound firewall rule for the chosen port. Requires Administrator for every
+command except 'status' (right-click PowerShell -> Run as Administrator).
+
+.PARAMETER Command
+What to do:
+  install    Build indexes, (re)register the Scheduled Task + firewall rule, start it, verify. (default)
+  start      Start the already-registered task and verify it comes up.
+  stop       Stop the running task.
+  restart    Stop then start the task (use after editing markdown / code).
+  status     Show task + port + firewall status. Does not change anything (no admin needed).
+  uninstall  Stop + unregister the task + remove the firewall rule.
 
 .PARAMETER Port
 TCP port to bind. Default: 8099
@@ -19,56 +29,51 @@ Pass a full path if not on PATH or when using -RunAsSystem.
 
 .PARAMETER RunAsSystem
 Run as SYSTEM (no user logon required). Default: runs as current user (S4U,
-also no logon required, but uses your user profile / PATH).
+also no logon required, but uses your user profile / PATH). Only used by 'install'.
 
 .PARAMETER NoFirewall
-Skip adding the Windows Firewall inbound rule.
-
-.PARAMETER Status
-Show task + port status, don't change anything.
-
-.PARAMETER Restart
-Just restart the task (skip re-registration).
-
-.PARAMETER Uninstall
-Stop + unregister task + remove firewall rule.
+Skip adding / removing the Windows Firewall inbound rule.
 
 .EXAMPLE
 # Install with defaults (port 8099)
-.\tools\install.ps1
+.\tools\app.ps1 install
 
 # Custom port
-.\tools\install.ps1 -Port 9000
+.\tools\app.ps1 install -Port 9000
 
 # Run as SYSTEM with explicit Python path
-.\tools\install.ps1 -RunAsSystem -PythonExe "C:\Python313\python.exe"
-
-# Check status
-.\tools\install.ps1 -Status
+.\tools\app.ps1 install -RunAsSystem -PythonExe "C:\Python313\python.exe"
 
 # Restart after editing markdown / code
-.\tools\install.ps1 -Restart
+.\tools\app.ps1 restart
+
+# Stop / start
+.\tools\app.ps1 stop
+.\tools\app.ps1 start
+
+# Check status (no admin required)
+.\tools\app.ps1 status
 
 # Remove
-.\tools\install.ps1 -Uninstall
+.\tools\app.ps1 uninstall
 
 .NOTES
-Requires Administrator. Run PowerShell as Administrator before invoking.
-After install, the service is reachable at:
+State-changing commands require Administrator. Run PowerShell as Administrator
+before invoking. After install, the service is reachable at:
   http://localhost:<port>/        (this machine)
   http://<your-lan-ip>:<port>/    (same LAN, via firewall rule)
 #>
 
 [CmdletBinding()]
 param(
+    [Parameter(Position = 0)]
+    [ValidateSet('install', 'start', 'stop', 'restart', 'status', 'uninstall')]
+    [string]$Command = 'install',
     [int]$Port = 8099,
     [string]$TaskName = 'awesome-interview',
     [string]$PythonExe = 'python.exe',
     [switch]$RunAsSystem,
-    [switch]$NoFirewall,
-    [switch]$Status,
-    [switch]$Restart,
-    [switch]$Uninstall
+    [switch]$NoFirewall
 )
 
 $ErrorActionPreference = 'Stop'
@@ -80,19 +85,50 @@ if (-not (Test-Path $runScript)) {
     throw "Cannot find tools\run_service.py - make sure this script lives in the repo's tools\ directory."
 }
 
-# ---- admin check ----
+# ---- helpers ----
 function Test-Admin {
     $id = [Security.Principal.WindowsIdentity]::GetCurrent()
     $principal = New-Object Security.Principal.WindowsPrincipal($id)
     return $principal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
 }
 
-if (-not (Test-Admin)) {
-    throw "This script must run as Administrator. Right-click PowerShell -> Run as Administrator, then retry."
+function Assert-Admin {
+    if (-not (Test-Admin)) {
+        throw "'$Command' must run as Administrator. Right-click PowerShell -> Run as Administrator, then retry."
+    }
 }
 
-# ---- Status ----
-if ($Status) {
+function Wait-ForService {
+    Write-Host "==> Waiting for service to come up..."
+    Start-Sleep -Seconds 3
+    for ($i = 0; $i -lt 10; $i++) {
+        try {
+            $r = Invoke-WebRequest -Uri "http://127.0.0.1:$Port/" -UseBasicParsing -TimeoutSec 2
+            if ($r.StatusCode -eq 200) { return $true }
+        } catch {}
+        Start-Sleep -Seconds 1
+    }
+    return $false
+}
+
+function Show-Endpoints {
+    $lanIp = (Get-NetIPAddress -AddressFamily IPv4 -ErrorAction SilentlyContinue |
+        Where-Object { $_.IPAddress -notmatch '^(127\.|169\.254\.)' -and $_.PrefixOrigin -ne 'WellKnown' } |
+        Select-Object -First 1 -ExpandProperty IPAddress)
+    Write-Host "    Local:    http://localhost:$Port/"
+    if ($lanIp) { Write-Host "    LAN:      http://${lanIp}:$Port/" }
+}
+
+function Show-ManageHint {
+    Write-Host ""
+    Write-Host "    Manage:"
+    Write-Host "      .\tools\app.ps1 status"
+    Write-Host "      .\tools\app.ps1 restart"
+    Write-Host "      .\tools\app.ps1 uninstall"
+}
+
+# ---- commands ----
+function Invoke-Status {
     Write-Host "==> Status"
     $task = Get-ScheduledTask -TaskName $TaskName -ErrorAction SilentlyContinue
     if ($task) {
@@ -123,11 +159,10 @@ if ($Status) {
     } else {
         Write-Host "Firewall:     no rule named '$TaskName'"
     }
-    exit 0
 }
 
-# ---- Uninstall ----
-if ($Uninstall) {
+function Invoke-Uninstall {
+    Assert-Admin
     Write-Host "==> Uninstalling"
     Stop-ScheduledTask -TaskName $TaskName -ErrorAction SilentlyContinue
     Unregister-ScheduledTask -TaskName $TaskName -Confirm:$false -ErrorAction SilentlyContinue
@@ -137,18 +172,38 @@ if ($Uninstall) {
         Write-Host "    firewall rule removed"
     }
     Write-Host "Done. Repo files at $repoRoot were NOT deleted."
-    exit 0
 }
 
-# ---- Restart only ----
-if ($Restart) {
+function Invoke-Stop {
+    Assert-Admin
     $task = Get-ScheduledTask -TaskName $TaskName -ErrorAction SilentlyContinue
-    if (-not $task) { throw "Task '$TaskName' not registered yet. Run without -Restart first." }
+    if (-not $task) { throw "Task '$TaskName' not registered. Run '.\tools\app.ps1 install' first." }
+    Write-Host "==> Stopping task"
+    Stop-ScheduledTask -TaskName $TaskName -ErrorAction SilentlyContinue
+    Write-Host "    stopped"
+}
+
+function Invoke-Start {
+    Assert-Admin
+    $task = Get-ScheduledTask -TaskName $TaskName -ErrorAction SilentlyContinue
+    if (-not $task) { throw "Task '$TaskName' not registered. Run '.\tools\app.ps1 install' first." }
+    Write-Host "==> Starting task"
+    Start-ScheduledTask -TaskName $TaskName
+}
+
+function Invoke-Restart {
+    Assert-Admin
+    $task = Get-ScheduledTask -TaskName $TaskName -ErrorAction SilentlyContinue
+    if (-not $task) { throw "Task '$TaskName' not registered. Run '.\tools\app.ps1 install' first." }
     Write-Host "==> Restarting task"
     Stop-ScheduledTask -TaskName $TaskName -ErrorAction SilentlyContinue
     Start-Sleep -Seconds 1
     Start-ScheduledTask -TaskName $TaskName
-} else {
+}
+
+function Invoke-Install {
+    Assert-Admin
+
     # ---- Build indexes ----
     Write-Host "==> Verifying Python"
     $pyOut = & $PythonExe --version 2>&1
@@ -209,37 +264,26 @@ if ($Restart) {
     }
 }
 
-# ---- Verify ----
-Write-Host "==> Waiting for service to come up..."
-Start-Sleep -Seconds 3
-$ok = $false
-for ($i = 0; $i -lt 10; $i++) {
-    try {
-        $r = Invoke-WebRequest -Uri "http://127.0.0.1:$Port/" -UseBasicParsing -TimeoutSec 2
-        if ($r.StatusCode -eq 200) { $ok = $true; break }
-    } catch {}
-    Start-Sleep -Seconds 1
+# ---- dispatch ----
+switch ($Command) {
+    'status'    { Invoke-Status; exit 0 }
+    'uninstall' { Invoke-Uninstall; exit 0 }
+    'stop'      { Invoke-Stop; exit 0 }
+    'start'     { Invoke-Start }
+    'restart'   { Invoke-Restart }
+    'install'   { Invoke-Install }
 }
 
-if (-not $ok) {
+# ---- verify (start / restart / install) ----
+if (-not (Wait-ForService)) {
     Write-Warning "Service did not respond on http://127.0.0.1:$Port within 13 seconds."
     Write-Host "    Check task with:  Get-ScheduledTaskInfo -TaskName '$TaskName'"
     Write-Host "    Check events:     Get-WinEvent -LogName 'Microsoft-Windows-TaskScheduler/Operational' -MaxEvents 20"
     exit 1
 }
 
-# ---- Show LAN IP for convenience ----
-$lanIp = (Get-NetIPAddress -AddressFamily IPv4 -ErrorAction SilentlyContinue |
-    Where-Object { $_.IPAddress -notmatch '^(127\.|169\.254\.)' -and $_.PrefixOrigin -ne 'WellKnown' } |
-    Select-Object -First 1 -ExpandProperty IPAddress)
-
 Write-Host ""
-Write-Host "==> Install OK"
-Write-Host "    Local:    http://localhost:$Port/"
-if ($lanIp) { Write-Host "    LAN:      http://${lanIp}:$Port/" }
+Write-Host "==> $Command OK"
+Show-Endpoints
 Write-Host "    Task:     $TaskName  (AtStartup trigger, auto-restart on failure)"
-Write-Host ""
-Write-Host "    Manage:"
-Write-Host "      .\tools\install.ps1 -Status"
-Write-Host "      .\tools\install.ps1 -Restart"
-Write-Host "      .\tools\install.ps1 -Uninstall"
+Show-ManageHint

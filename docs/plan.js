@@ -69,6 +69,8 @@
       navCompare: 'Compare',
       navResume: 'Resume → Q',
       navPlan: 'Plan',
+      themeLight: 'Light',
+      themeDark: 'Dark',
       navStart: 'Start',
       labelRole: 'Role category',
       labelWeeks: 'Time window (weeks)',
@@ -112,6 +114,8 @@
       navCompare: '对比',
       navResume: '简历 → 题',
       navPlan: '计划',
+      themeLight: '浅色',
+      themeDark: '深色',
       navStart: '开始',
       labelRole: '岗位类别',
       labelWeeks: '时间窗（周）',
@@ -200,7 +204,7 @@
     return window.AwesomeTechCatalog.detectTech(txt);
   }
 
-  function buildTopicWeights(role, resumeHits, companyIds) {
+  function buildTopicWeights(role, resumeHits) {
     const w = new Map();
     role.topics.forEach((entry) => {
       w.set(entry.topic, (w.get(entry.topic) || 0) + entry.weight);
@@ -210,27 +214,33 @@
         w.set(tp, (w.get(tp) || 0) + 1);
       });
     });
-    // Companies currently colour guidance only — no per-company topic boost.
-    void companyIds;
     return w;
   }
 
-  function scoreQuestion(q, weights) {
+  // Selected-company questions get a flat boost so picking "Google + Meta" actually
+  // surfaces those banks' questions — not just colours the guidance text.
+  const COMPANY_BOOST = 3;
+
+  function scoreQuestion(q, weights, companyFiles) {
     let s = 0;
     (q.topics || []).forEach((tp) => {
       const w = weights.get(tp);
       if (w) s += w;
     });
+    if (companyFiles && companyFiles.has(q.file)) s += COMPANY_BOOST;
     return s;
   }
 
   function rankBank(role, resumeHits, companyIds) {
-    const weights = buildTopicWeights(role, resumeHits, companyIds);
+    const weights = buildTopicWeights(role, resumeHits);
+    const companyFiles = new Set(
+      companies.filter((c) => companyIds.includes(c.id)).map((c) => c.file)
+    );
     const scored = [];
     questions.forEach((q) => {
       const kind = classifyKind(q);
       if (kind === 'behavioral') return;
-      const s = scoreQuestion(q, weights);
+      const s = scoreQuestion(q, weights, companyFiles);
       if (s > 0) scored.push({ q, score: s, kind });
     });
     scored.sort((a, b) => b.score - a.score
@@ -323,8 +333,7 @@
       const li = document.createElement('li');
       li.className = 'q-item bank';
       li.innerHTML = `<a href="${bankHref(p.q)}">${esc(bankTitle(p.q))}</a>`
-        + `<div class="q-meta">${t('bankMeta', { category: esc(p.q.category), number: p.q.number })}`
-        + ` · score ${p.score}</div>`;
+        + `<div class="q-meta">${t('bankMeta', { category: esc(p.q.category), number: p.q.number })}</div>`;
       ul.appendChild(li);
     });
     sec.appendChild(ul);
@@ -547,6 +556,13 @@
     if (els.navCompare) els.navCompare.textContent = t('navCompare');
     if (els.navResume) els.navResume.textContent = t('navResume');
     if (els.navPlan) els.navPlan.textContent = t('navPlan');
+    if (els.themeSelect) {
+      const opts = els.themeSelect.options;
+      for (let i = 0; i < opts.length; i++) {
+        if (opts[i].value === 'light') opts[i].textContent = t('themeLight');
+        if (opts[i].value === 'dark') opts[i].textContent = t('themeDark');
+      }
+    }
     if (els.navStart) els.navStart.textContent = t('navStart');
     if (els.labelRole) els.labelRole.textContent = t('labelRole');
     if (els.labelWeeks) els.labelWeeks.textContent = t('labelWeeks');
@@ -605,6 +621,11 @@
     }
     els.generateBtn.addEventListener('click', generate);
     els.sampleBtn.addEventListener('click', loadSample);
+    if (els.resumeText) {
+      els.resumeText.addEventListener('keydown', (e) => {
+        if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') { e.preventDefault(); generate(); }
+      });
+    }
 
     Promise.all([
       fetch('questions.json', { cache: 'no-cache' }).then((r) => r.ok ? r.json() : Promise.reject(new Error('questions'))),

@@ -27,7 +27,7 @@
 | 板块 | 内容 | 数量 |
 |---|---|---|
 | [knowledge/](knowledge/) | 按主题组织的问答库（算法 Py+TS+Java、AI/ML、前端、后端、架构、DevOps） | 600 |
-| [interviews/](interviews/) | 公开来源的真实公司面试题（Google、Meta、亚马逊、微软、苹果、字节跳动、阿里、腾讯）——每家约 50 算法 + 12 非算法 | 500 |
+| [interviews/](interviews/) | 公开来源的真实公司面试题（Google、Meta、亚马逊、微软、苹果、字节跳动、阿里、腾讯、华为、小米）——每家约 50 算法 + 12 非算法 | 623 |
 | [mock-interviews/](mock-interviews/) | 完整对话脚本的模拟面试——系统设计和行为面试 | 5 |
 | [roadmap/](roadmap/) | 前端、后端、全栈 8-10 周学习计划 + 一份通用面试周清单 | 4 |
 | [behavioral/](behavioral/) | 跨 8 个主题的 50 道 STAR 题目 + Amazon 16 条领导力准则 | 66 |
@@ -93,17 +93,19 @@ python tools/run_service.py --no-kill      # 端口被占时直接报错，不�
 
 ### 一键安装为 Windows 后台服务（开机自启）
 
-[`tools/install.ps1`](tools/install.ps1) 会在本机 Windows 上注册一个 Scheduled Task：开机自动启动 `run_service.py`、崩溃后自动重启，并添加 Windows Firewall 入站规则。
+[`tools/app.ps1`](tools/app.ps1) 会在本机 Windows 上注册一个 Scheduled Task：开机自动启动 `run_service.py`、崩溃后自动重启，并添加 Windows Firewall 入站规则。一个脚本，用动词子命令管理。
 
 ```powershell
 # 以管理员身份打开 PowerShell，然后执行
 cd C:\path\to\awesome-interview
 
-.\tools\install.ps1                   # 默认端口 8099
-.\tools\install.ps1 -Port 9000        # 自定义端口
-.\tools\install.ps1 -Status           # 查看任务／端口／防火墙状态
-.\tools\install.ps1 -Restart          # 改了内容或代码后重启
-.\tools\install.ps1 -Uninstall        # 停服 + 注销任务 + 删除防火墙规则
+.\tools\app.ps1 install               # 默认端口 8099
+.\tools\app.ps1 install -Port 9000    # 自定义端口
+.\tools\app.ps1 status                # 查看任务／端口／防火墙状态（无需管理员）
+.\tools\app.ps1 stop                  # 停止服务
+.\tools\app.ps1 start                 # 启动服务
+.\tools\app.ps1 restart               # 改了内容或代码后重启
+.\tools\app.ps1 uninstall             # 停服 + 注销任务 + 删除防火墙规则
 ```
 
 装完后可访问 `http://localhost:8099/` 或 `http://<本机局域网 IP>:8099/`（脚本会自动检测并打印 LAN IP）。

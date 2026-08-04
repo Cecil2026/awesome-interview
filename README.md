@@ -27,7 +27,7 @@ New here? Open [docs/](docs/) (or run `python tools/run_service.py --open`) and 
 | Section | What it is | Count |
 |---|---|---|
 | [knowledge/](knowledge/) | Topic-organized Q&A banks (algorithms in Py+TS+Java, AI/ML, frontend, backend, architecture, devops) | 600 |
-| [interviews/](interviews/) | Real, publicly known interview questions by company (Google, Meta, Amazon, Microsoft, Apple, ByteDance, Alibaba, Tencent) — ~50 algorithm + ~12 non-algorithm per company | 500 |
+| [interviews/](interviews/) | Real, publicly known interview questions by company (Google, Meta, Amazon, Microsoft, Apple, ByteDance, Alibaba, Tencent, Huawei, Xiaomi) — ~50 algorithm + ~12 non-algorithm per company | 623 |
 | [mock-interviews/](mock-interviews/) | Full transcript-style mock interviews — system design and behavioral | 6 |
 | [roadmap/](roadmap/) | 8-10 week study plans for frontend, backend, fullstack + a universal week-of checklist | 4 |
 | [behavioral/](behavioral/) | 50 STAR questions across 8 themes + the 16 Amazon Leadership Principles | 66 |
@@ -93,17 +93,19 @@ All pages have an EN / 简体中文 toggle and a Light / Dark theme toggle in th
 
 ### Run as a service on Windows (autostart at boot)
 
-[`tools/install.ps1`](tools/install.ps1) registers a Scheduled Task on the local Windows machine that runs `run_service.py` at boot, restarts on failure, and adds a Windows Firewall inbound rule for the port.
+[`tools/app.ps1`](tools/app.ps1) registers a Scheduled Task on the local Windows machine that runs `run_service.py` at boot, restarts on failure, and adds a Windows Firewall inbound rule for the port. One script, verb subcommands.
 
 ```powershell
 # Open PowerShell as Administrator, then:
 cd C:\path\to\awesome-interview
 
-.\tools\install.ps1                   # install on default port 8099
-.\tools\install.ps1 -Port 9000        # custom port
-.\tools\install.ps1 -Status           # task + port + firewall status
-.\tools\install.ps1 -Restart          # restart after editing markdown/code
-.\tools\install.ps1 -Uninstall        # stop + unregister + remove firewall rule
+.\tools\app.ps1 install               # install on default port 8099
+.\tools\app.ps1 install -Port 9000    # custom port
+.\tools\app.ps1 status                # task + port + firewall status (no admin needed)
+.\tools\app.ps1 stop                  # stop the service
+.\tools\app.ps1 start                 # start the service
+.\tools\app.ps1 restart               # restart after editing markdown/code
+.\tools\app.ps1 uninstall             # stop + unregister + remove firewall rule
 ```
 
 After install, the service is reachable at `http://localhost:8099/` and `http://<your-lan-ip>:8099/` (the script prints both URLs).

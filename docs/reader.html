@@ -118,6 +118,8 @@
     #current-path { color: var(--text-muted); font-size: 0.95rem; }
     .content-toolbar { justify-content: space-between; border-bottom: 1px solid var(--border); padding-bottom: 16px; margin-bottom: 24px; }
     .reader { max-width: 860px; }
+    .reader .doc-path { margin: 0 0 1rem; font-size: .8rem; color: var(--text-faint); font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; }
+    .reader h1 { margin-top: 0; font-size: 1.8rem; }
     .reader h2 { margin-top: 0; font-size: 1.8rem; }
     .reader h3 { margin-top: 2rem; }
     .reader p { line-height: 1.8; margin: 1rem 0; }
@@ -161,6 +163,11 @@
     .reader.practice .reveal-btn { display: inline-block; }
     .reader.practice .answer-block { display: none; }
     .reader.practice .answer-block.revealed { display: block; }
+    .grade-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 12px 0 4px; }
+    .grade-prompt { font-size: .82rem; color: var(--text-muted); margin-right: 4px; }
+    .grade-btn { padding: 5px 12px; border-radius: 8px; border: 1px solid var(--border); background: transparent; color: var(--text); font-size: .82rem; font-weight: 600; cursor: pointer; }
+    .grade-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .grade-btn:disabled { opacity: .5; cursor: default; }
     .page-footer { text-align: center; padding: 16px; border-top: 1px solid var(--border); font-size: .82rem; }
     .page-footer a { color: var(--text-muted); text-decoration: none; }
     .page-footer a:hover { color: var(--accent); text-decoration: underline; }
@@ -223,6 +230,8 @@
       <a id="source-link" href="https://github.com/Cecil2026/awesome-interview" target="_blank" rel="noopener">Source code (AGPL-3.0)</a>
     </footer>
   </div>
-  <script src="reader.js?v=12"></script>
+  <script src="progress.js?v=1"></script>
+  <script src="reader.js?v=13"></script>
+  <script src="timer.js?v=1"></script>
 </body>
 </html>

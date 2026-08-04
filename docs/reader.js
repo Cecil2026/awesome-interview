@@ -86,6 +86,12 @@
       copyFailed: 'Copy failed',
       practiceMode: 'Practice mode',
       revealAnswer: 'Reveal answer',
+      gradePrompt: 'How did you recall it?',
+      gradeAgain: 'Again',
+      gradeHard: 'Hard',
+      gradeGood: 'Good',
+      gradeEasy: 'Easy',
+      gradedIn: 'Next review in {n}d',
     },
     zh: {
       navMarkdown: 'Markdown 阅读器',
@@ -133,6 +139,12 @@
       copyFailed: '复制失败',
       practiceMode: '练习模式',
       revealAnswer: '显示答案',
+      gradePrompt: '刚才回忆得怎么样？',
+      gradeAgain: '重来',
+      gradeHard: '困难',
+      gradeGood: '良好',
+      gradeEasy: '简单',
+      gradedIn: '{n} 天后复习',
     },
   };
 
@@ -296,6 +308,10 @@
         .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
         .replace(/\*(.+?)\*/g, '<em>$1</em>')
         .replace(/`([^`]+)`/g, '<code>$1</code>')
+        // Images first, so ![alt](src) isn't misparsed as a link with a stray "!".
+        .replace(/!\[(.*?)\]\((.+?)\)/g, (match, alt, src) => {
+          return `<img src="${resolveLink(src)}" alt="${alt}" loading="lazy" />`;
+        })
         .replace(/\[(.+?)\]\((.+?)\)/g, (match, text, href) => {
           const resolved = resolveLink(href);
           const isExternal = /^(?:https?:|mailto:|javascript:)/.test(href);
@@ -305,8 +321,19 @@
         });
     }
 
-    for (let raw of lines) {
-      let line = raw;
+    // GFM table helpers: a table is a `| a | b |` row immediately followed by a
+    // `| --- | --- |` separator; body rows continue until the first non-pipe line.
+    function splitRow(l) {
+      let s = l.trim();
+      if (s.startsWith('|')) s = s.slice(1);
+      if (s.endsWith('|')) s = s.slice(0, -1);
+      return s.split('|').map((c) => c.trim());
+    }
+    const isTableRow = (l) => l && l.indexOf('|') !== -1 && l.trim() !== '';
+    const isTableSep = (l) => /\|/.test(l) && /-/.test(l) && /^[\s|:-]+$/.test(l);
+
+    for (let i = 0; i < lines.length; i++) {
+      let line = lines[i];
       if (line.startsWith('```')) {
         if (inCode) {
           flushCode();
@@ -322,6 +349,23 @@
 
       if (inCode) {
         html += line + '\n';
+        continue;
+      }
+
+      if (isTableRow(line) && i + 1 < lines.length && isTableSep(lines[i + 1])) {
+        closeParagraph();
+        closeList();
+        const header = splitRow(line);
+        i += 1; // consume the separator row
+        let body = '';
+        while (i + 1 < lines.length && isTableRow(lines[i + 1])) {
+          i += 1;
+          const cells = splitRow(lines[i]);
+          body += '<tr>' + cells.map((c) => `<td>${inlineFormat(c)}</td>`).join('') + '</tr>';
+        }
+        html += '<table><thead><tr>'
+          + header.map((c) => `<th>${inlineFormat(c)}</th>`).join('')
+          + '</tr></thead><tbody>' + body + '</tbody></table>';
         continue;
       }
 
@@ -519,7 +563,9 @@
         } else if (currentLanguage === 'zh' && loadPath !== path) {
           banner = `<div class="translation-notice">${t('translationShown', { path: loadPath })}</div>`;
         }
-        readerEl.innerHTML = banner + `<h2>${path}</h2>` + html;
+        // The document's own first heading is the title; show the path only as a
+        // muted breadcrumb so it doesn't render as a second, competing <h2> title.
+        readerEl.innerHTML = banner + `<p class="doc-path">${path}</p>` + html;
         applyPreferredCodeLang();
         addCopyButtons();
         highlightAll();
@@ -756,10 +802,45 @@
     readerEl.classList.toggle('practice', isPracticeOn());
   }
 
+  // Turn an H3 like "12. Two Sum" into the same id the picker uses (EN file path).
+  function questionIdFor(headingEl) {
+    const m = (headingEl.textContent || '').trim().match(/^(\d+)\./);
+    if (!m || !activePath) return null;
+    const enPath = activePath.replace(/\.zh\.md$/, '.md');
+    return `${enPath}#${m[1]}`;
+  }
+
+  // SM-2 grade bar shown after an answer is revealed — the browser twin of review.py.
+  function buildGradeBar(qId) {
+    const P = window.AwesomeProgress;
+    if (!P || !qId) return null;
+    const bar = document.createElement('div');
+    bar.className = 'grade-bar';
+    const label = document.createElement('span');
+    label.className = 'grade-prompt';
+    label.textContent = t('gradePrompt');
+    bar.appendChild(label);
+    [['gradeAgain', 1], ['gradeHard', 3], ['gradeGood', 4], ['gradeEasy', 5]].forEach(([key, q]) => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'grade-btn grade-' + q;
+      b.textContent = t(key);
+      b.addEventListener('click', () => {
+        const store = P.grade(qId, q);
+        const r = store.reviews[qId];
+        label.textContent = t('gradedIn', { n: r ? r.interval : 1 });
+        bar.querySelectorAll('.grade-btn').forEach((x) => { x.disabled = true; });
+      });
+      bar.appendChild(b);
+    });
+    return bar;
+  }
+
   function buildPracticeBlocks() {
     const nodes = Array.from(readerEl.children);
     for (let i = 0; i < nodes.length; i++) {
       if (nodes[i].tagName !== 'H3') continue;
+      const qId = questionIdFor(nodes[i]);
       let j = i + 1;
       let answerStart = -1;
       while (j < nodes.length && !/^H[123]$/.test(nodes[j].tagName)) {
@@ -780,6 +861,8 @@
         btn.addEventListener('click', () => {
           block.classList.add('revealed');
           btn.style.display = 'none';
+          const gradeBar = buildGradeBar(qId);
+          if (gradeBar) block.appendChild(gradeBar);
         });
       }
       i = j - 1;
