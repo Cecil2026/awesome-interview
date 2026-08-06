@@ -21,6 +21,8 @@
 ```markdown
 ### N. 题目标题
 
+**Question:** ……完整题干，说明要考什么，含各个子问题……
+
 **Answer:** ……正文……
 
 **Key points:**
@@ -29,7 +31,9 @@
 ```
 
 - 编号 `N` 只是参考，并非契约 —— 可以自由重新编号，但同一文件内的条目必须**连续**（1、2、3……）且不重复。
+- `**Question:**` 给出完整题干，在阅读器的练习模式下始终可见；从 `**Answer:**` 起的内容会先折叠、点开才显示。
 - `knowledge/`、`behavioral/` 和 `mock-interviews/` 都使用上面的散文式结构。
+- **算法条目**用 `**Problem:**`（题面）和 `**Approach:**` 代替 `**Question:**` / `**Answer:**` —— 阅读器把 `**Problem:**` 当作始终可见的题干，从 `**Approach:**` 起折叠。
 - **公司文件**（`interviews/companies/*.md`）额外使用结构化的元数据行，包括
   `**Tags:** #algorithm | #coding | #system-design`。算法／编码类条目应包含复杂度
   （单独一行 `**Complexity:**`，或在答案中内联 `O(...)`）。校验器会对公司文件强制要求这一点。

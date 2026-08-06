@@ -19,12 +19,15 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 HEADING_RE = re.compile(r"^### (\d+)\.\s+(.+?)\s*$", re.MULTILINE)
 TOPICS_RE = re.compile(r"^\*\*Topics:\*\*\s*(.+?)\s*$", re.MULTILINE)
 DIFFICULTY_RE = re.compile(r"^\*\*Difficulty:\*\*\s*(.+?)\s*$", re.MULTILINE)
+FREQUENCY_RE = re.compile(r"^\*\*Frequency:\*\*\s*(.+?)\s*$", re.MULTILINE)
 TAGS_RE = re.compile(r"^\*\*Tags:\*\*\s*(.+?)\s*$", re.MULTILINE)
 COMPLEXITY_RE = re.compile(r"^\*\*Complexity:\*\*\s*(.+?)\s*$", re.MULTILINE)
 FOLLOWUPS_RE = re.compile(r"^\*\*Follow-ups:\*\*\s*$", re.MULTILINE)
 
 # Chinese mirror markers (used when validating .zh.md files)
 HEADING_ZH_RE = HEADING_RE  # zh files keep the same "### N. title" heading
+# **频率：** High|Medium|Low (or 高|中|低)
+FREQUENCY_ZH_RE = re.compile(r"^\*\*频率：\*\*\s*(.+?)\s*$", re.MULTILINE)
 TAGS_ZH_RE = re.compile(r"^\*\*\u6807\u7b7e\uff1a\*\*\s*(.+?)\s*$", re.MULTILINE)
 FOLLOWUPS_ZH_RE = re.compile(r"^\*\*\u5e38\u89c1\u8ffd\u95ee\uff1a\*\*\s*$", re.MULTILINE)
 COMPLEXITY_ZH_RE = re.compile(r"^\*\*\u590d\u6742\u5ea6\uff1a\*\*\s*(.+?)\s*$", re.MULTILINE)
@@ -45,6 +48,7 @@ class Entry:
     line: int
     topics: list[str] = field(default_factory=list)
     difficulty: str | None = None
+    frequency: str | None = None
     tags: str | None = None
 
     @property
@@ -81,6 +85,7 @@ def parse_entries(text: str) -> list[Entry]:
         body = text[start:end]
         topics_match = TOPICS_RE.search(body)
         difficulty_match = DIFFICULTY_RE.search(body)
+        frequency_match = FREQUENCY_RE.search(body) or FREQUENCY_ZH_RE.search(body)
         tags_match = TAGS_RE.search(body) or TAGS_ZH_RE.search(body)
         line = text.count("\n", 0, m.start()) + 1
         entries.append(
@@ -91,10 +96,20 @@ def parse_entries(text: str) -> list[Entry]:
                 line=line,
                 topics=[t.strip() for t in topics_match.group(1).split(",")] if topics_match else [],
                 difficulty=difficulty_match.group(1) if difficulty_match else None,
+                frequency=_norm_frequency(frequency_match.group(1)) if frequency_match else None,
                 tags=tags_match.group(1) if tags_match else None,
             )
         )
     return entries
+
+
+_FREQ_MAP = {"高": "High", "中": "Medium", "低": "Low"}
+
+
+def _norm_frequency(raw: str) -> str:
+    """Canonicalize a frequency value to High/Medium/Low (maps zh 高/中/低)."""
+    v = raw.strip()
+    return _FREQ_MAP.get(v, v)
 
 
 def read_text(path: Path) -> str | None:

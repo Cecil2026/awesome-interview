@@ -54,6 +54,7 @@ def parse_file(path: Path) -> list[dict]:
             "category": category_for(path),
             "topics": e.topics,
             "difficulty": e.difficulty,
+            "frequency": e.frequency,
         }
         if e.number in zh_titles:
             entry["title_zh"] = zh_titles[e.number]

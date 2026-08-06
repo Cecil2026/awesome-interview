@@ -12,6 +12,7 @@
     result: document.getElementById("result"),
     rCategory: document.getElementById("r-category"),
     rDifficulty: document.getElementById("r-difficulty"),
+    rFrequency: document.getElementById("r-frequency"),
     rTitle: document.getElementById("r-title"),
     rTopics: document.getElementById("r-topics"),
     rSource: document.getElementById("r-source"),
@@ -128,6 +129,9 @@
       pickQuestion: 'Pick a question',
       sourceLabel: 'Source:',
       topicsPrefix: 'Topics:',
+      freqHigh: '🔥 High freq',
+      freqMedium: 'Medium freq',
+      freqLow: 'Low freq',
       statusLoaded: '{count} questions loaded across {categories} categories.',
       statusLoadError: 'Could not load questions.json — {message}. Run "python tools/build_index.py" to generate it.',
       statusNoMatch: 'No questions match those filters. Loosen them and try again.',
@@ -192,6 +196,9 @@
       pickQuestion: '抽取一道题',
       sourceLabel: '来源：',
       topicsPrefix: '主题：',
+      freqHigh: '🔥 高频',
+      freqMedium: '中频',
+      freqLow: '低频',
       statusLoaded: '已加载 {count} 道题，覆盖 {categories} 个类别。',
       statusLoadError: '无法加载 questions.json — {message}。请先运行 "python tools/build_index.py" 生成该文件。',
       statusNoMatch: '当前筛选条件下没有匹配的题目，请放宽条件后重试。',
@@ -366,6 +373,23 @@
     });
   }
 
+  // Bias the picker toward frequently-asked ("hot") questions. Questions without
+  // a frequency marker (e.g. algorithms, behavioral) fall back to the Medium weight.
+  const FREQ_WEIGHT = { High: 3, Medium: 2, Low: 1 };
+  function weightFor(q) {
+    return FREQ_WEIGHT[q.frequency] || 2;
+  }
+  function weightedPick(pool) {
+    let total = 0;
+    for (const q of pool) total += weightFor(q);
+    let r = Math.random() * total;
+    for (const q of pool) {
+      r -= weightFor(q);
+      if (r < 0) return q;
+    }
+    return pool[pool.length - 1];
+  }
+
   function pick() {
     const pool = filter();
     if (pool.length === 0) {
@@ -373,7 +397,7 @@
       els.result.classList.add("hidden");
       return;
     }
-    const q = pool[Math.floor(Math.random() * pool.length)];
+    const q = weightedPick(pool);
     lastQuestion = q;
     render(q);
     const plural = pool.length === 1 ? '' : 's';
@@ -391,6 +415,16 @@
       els.rDifficulty.style.display = "";
     } else {
       els.rDifficulty.style.display = "none";
+    }
+    if (els.rFrequency) {
+      if (q.frequency && FREQ_WEIGHT[q.frequency]) {
+        const fk = 'freq' + q.frequency; // freqHigh / freqMedium / freqLow
+        els.rFrequency.textContent = t(fk) || q.frequency;
+        els.rFrequency.className = "badge freq-" + q.frequency.toLowerCase();
+        els.rFrequency.style.display = "";
+      } else {
+        els.rFrequency.style.display = "none";
+      }
     }
     els.rTopics.textContent = (q.topics || []).length ? `${t('topicsPrefix')} ${q.topics.join(', ')}` : "";
     const sourceFile = useZh && q.file_zh ? q.file_zh : q.file;

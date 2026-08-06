@@ -24,6 +24,8 @@ and the validator can drill into any file uniformly:
 ```markdown
 ### N. Question title
 
+**Question:** ...full prompt stating what's being asked, with any sub-parts...
+
 **Answer:** ...prose...
 
 **Key points:**
@@ -33,7 +35,12 @@ and the validator can drill into any file uniformly:
 
 - The number `N` is a guide, not a contract — renumber freely, but keep entries
   **contiguous** (1, 2, 3, ...) with no duplicates within a file.
+- `**Question:**` states the full prompt and stays visible in the reader's
+  practice mode; everything from `**Answer:**` onward is collapsed until revealed.
 - `knowledge/`, `behavioral/`, and `mock-interviews/` use the prose layout above.
+- **Algorithm entries** use `**Problem:**` (the statement) and `**Approach:**`
+  in place of `**Question:**` / `**Answer:**` — the reader treats `**Problem:**`
+  as the always-visible prompt and collapses from `**Approach:**` onward.
 - **Company files** (`interviews/companies/*.md`) additionally use structured
   metadata lines, including `**Tags:** #algorithm | #coding | #system-design`.
   Algorithm/coding entries should include complexity (a `**Complexity:**` line or

@@ -286,6 +286,10 @@ main {
 .badge.medium { background: var(--medium); color: #3a1e00; }
 .badge.hard { background: var(--hard); color: #3a0e0e; }
 
+.badge.freq-high { background: #fee2e2; color: #b91c1c; }
+.badge.freq-medium { background: #fef3c7; color: #92400e; }
+.badge.freq-low { background: var(--badge-bg); color: var(--text-muted); }
+
 .topics {
   margin: 0.25rem 0 0.75rem;
   color: var(--text-muted);

@@ -60,13 +60,18 @@
   function loadPref() {
     try {
       const p = JSON.parse(localStorage.getItem(PREF_KEY) || '{}');
-      return { mode: p.mode || 'coding', minutes: p.minutes || 25 };
+      // Timer is hidden by default; only shown once the user flips the nav toggle.
+      return { mode: p.mode || 'coding', minutes: p.minutes || 25, visible: p.visible === true };
     } catch (e) {
-      return { mode: 'coding', minutes: 25 };
+      return { mode: 'coding', minutes: 25, visible: false };
     }
   }
-  function savePref(mode, minutes) {
-    try { localStorage.setItem(PREF_KEY, JSON.stringify({ mode, minutes })); } catch (e) {}
+  function savePref() {
+    try {
+      localStorage.setItem(PREF_KEY, JSON.stringify({
+        mode: state.mode, minutes: state.minutes, visible: state.visible,
+      }));
+    } catch (e) {}
   }
 
   const css = `
@@ -74,6 +79,12 @@
     padding:10px 14px;border:none;border-radius:999px;cursor:pointer;font:600 14px/1 -apple-system,system-ui,sans-serif;
     color:#fff;background:var(--accent,#2563eb);box-shadow:0 4px 14px rgba(0,0,0,.25)}
   #ai-timer-fab:hover{background:var(--accent-hover,#1d4ed8)}
+  #ai-timer-fab.hidden{display:none}
+  #ai-timer-toggle{display:inline-flex;align-items:center;gap:5px;padding:6px 10px;border-radius:8px;
+    border:1px solid var(--border,#e2e8f0);background:transparent;color:var(--text,#0f172a);cursor:pointer;
+    font:600 13px/1 -apple-system,system-ui,sans-serif}
+  #ai-timer-toggle:hover{border-color:var(--accent,#2563eb)}
+  #ai-timer-toggle[aria-pressed="true"]{background:var(--accent,#2563eb);color:#fff;border-color:var(--accent,#2563eb)}
   #ai-timer-panel{position:fixed;right:18px;bottom:70px;z-index:9999;width:300px;max-width:calc(100vw - 36px);
     background:var(--bg-card,#fff);color:var(--text,#0f172a);border:1px solid var(--border,#e2e8f0);
     border-radius:14px;box-shadow:0 12px 40px rgba(0,0,0,.35);padding:16px;display:none}
@@ -99,7 +110,7 @@
   `;
 
   let els = null;
-  let state = { total: 0, remaining: 0, running: false, tick: null, mode: 'coding', fired: 0 };
+  let state = { total: 0, remaining: 0, running: false, tick: null, mode: 'coding', minutes: 25, fired: 0, visible: false };
 
   function beep() {
     try {
@@ -170,10 +181,11 @@
     stopTick();
     const minutes = Math.max(0.1, parseFloat(els.minutes.value) || 25);
     state.mode = els.mode.value;
+    state.minutes = minutes;
     state.total = Math.round(minutes * 60);
     state.remaining = state.total;
     state.fired = 0;
-    savePref(state.mode, minutes);
+    savePref();
     render();
     els.go.textContent = t('start');
     if (clearPhase !== false) {
@@ -182,8 +194,21 @@
     }
   }
 
+  function setVisible(visible, persist) {
+    state.visible = visible;
+    els.fab.classList.toggle('hidden', !visible);
+    if (els.toggle) els.toggle.setAttribute('aria-pressed', visible ? 'true' : 'false');
+    if (!visible && els.panel) els.panel.classList.remove('open');
+    if (persist) savePref();
+  }
+
   function localize() {
     els.fab.querySelector('span').textContent = t('open');
+    if (els.toggle) {
+      els.toggle.querySelector('span').textContent = t('open');
+      els.toggle.setAttribute('aria-label', t('open'));
+      els.toggle.title = t('open');
+    }
     els.title.childNodes[0].textContent = t('title') + ' ';
     els.mode.options[0].textContent = t('plain');
     els.mode.options[1].textContent = t('coding');
@@ -225,8 +250,20 @@
     document.body.appendChild(fab);
     document.body.appendChild(panel);
 
+    // Nav toggle — the switch that reveals/hides the (default-hidden) timer widget.
+    let toggle = null;
+    const nav = document.querySelector('header nav');
+    if (nav) {
+      toggle = document.createElement('button');
+      toggle.id = 'ai-timer-toggle';
+      toggle.type = 'button';
+      toggle.setAttribute('aria-pressed', 'false');
+      toggle.innerHTML = '⏱ <span></span>';
+      nav.appendChild(toggle);
+    }
+
     els = {
-      fab, panel,
+      fab, panel, toggle,
       title: panel.querySelector('h3'),
       time: panel.querySelector('#ai-timer-time'),
       bar: panel.querySelector('#ai-timer-bar > i'),
@@ -245,6 +282,18 @@
       const open = panel.classList.toggle('open');
       if (open) { localize(); if (state.total === 0) reset(); }
     });
+    if (toggle) {
+      toggle.addEventListener('click', () => {
+        const next = !state.visible;
+        setVisible(next, true);
+        // Revealing the timer also pops the panel open so it's immediately usable.
+        if (next) { panel.classList.add('open'); localize(); if (state.total === 0) reset(); }
+      });
+    }
+    // The nav toggle is always visible, so keep its label in sync when the
+    // page switches language in place (no reload).
+    const langSel = document.getElementById('language-select');
+    if (langSel) langSel.addEventListener('change', () => localize());
     panel.querySelector('.ai-x').addEventListener('click', () => panel.classList.remove('open'));
     els.go.addEventListener('click', start);
     els.reset.addEventListener('click', () => reset());
@@ -254,8 +303,10 @@
       b.addEventListener('click', () => { els.minutes.value = b.dataset.m; reset(); });
     });
 
+    state.visible = pref.visible;
     localize();
     reset();
+    setVisible(pref.visible, false);
   }
 
   if (document.readyState === 'loading') {
