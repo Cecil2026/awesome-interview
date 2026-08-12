@@ -1,6 +1,6 @@
 {
   "generated_by": "tools/run_service.py",
-  "total": 34,
+  "total": 36,
   "categories": [
     "behavioral",
     "interviews",
@@ -138,9 +138,23 @@
     },
     {
       "category": "knowledge",
+      "file": "knowledge/big-data.md",
+      "translations": {
+        "zh": "knowledge/big-data.zh.md"
+      }
+    },
+    {
+      "category": "knowledge",
       "file": "knowledge/devops.md",
       "translations": {
         "zh": "knowledge/devops.zh.md"
+      }
+    },
+    {
+      "category": "knowledge",
+      "file": "knowledge/distributed.md",
+      "translations": {
+        "zh": "knowledge/distributed.zh.md"
       }
     },
     {
