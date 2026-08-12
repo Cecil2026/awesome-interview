@@ -106,7 +106,7 @@ List<List<String>> groupAnagrams(String[] strs) {
 
 ### 3. Longest Consecutive Sequence  ·  LC 128  ·  Medium  ·  Hashing
 
-**Problem:** Given an unsorted integer array nums, return the length of the longest run of consecutive integers (values differing by exactly 1) that can be formed from its elements, regardless of their order in the array. Duplicates count only once. The array can be empty, and its size may reach up to 1 <= n <= 10^5 with values anywhere in the 32-bit integer range. The required time complexity is O(n).
+**Problem:** Given an unsorted array `nums`, return the length of the longest run of consecutive integers (values differing by 1). Duplicates count once; the array may be empty. Required O(n) time. 0 <= n <= 10^5.
 
 **Approach:** Put every value into a hash set for O(1) membership tests, then only start counting a streak from a value x whose predecessor x-1 is absent, since such an x is the true start of a sequence. From each start, walk upward while the next value exists, tracking the longest run. Each element is visited at most twice across all streaks, giving O(n) time and O(n) space.
 
@@ -169,7 +169,7 @@ class Solution {
 
 ### 4. Move Zeroes  ·  LC 283  ·  Easy  ·  Two Pointers
 
-**Problem:** Given an integer array nums, rearrange it in place so that every zero is pushed to the end while the relative order of all non-zero elements is preserved. You must not allocate a separate output array, and the operation should minimize the number of writes. The array length satisfies 1 <= n <= 10^4 and values fit in a signed 32-bit integer. Return nothing; mutate nums directly.
+**Problem:** Move all zeros in `nums` to the end in place while keeping the relative order of non-zero elements. Mutate `nums` directly. 1 <= n <= 10^4.
 
 **Approach:** Keep an insert pointer marking where the next non-zero value belongs. Scan with a read pointer, and whenever a non-zero is found swap it into the insert slot and advance insert. This packs non-zeros forward in their original order and leaves zeros trailing, running in O(n) time with O(1) extra space.
 
@@ -475,7 +475,7 @@ int lengthOfLongestSubstring(String s) {
 
 ### 9. Find All Anagrams in a String  ·  LC 438  ·  Medium  ·  Sliding Window
 
-**Problem:** Given two lowercase strings s and p, return the starting indices of every substring of s that is an anagram of p (a permutation of p's characters), in increasing order. Both strings consist only of lowercase English letters, with 1 <= s.length, p.length <= 3*10^4. If p is longer than s, the answer is empty. The order of indices in the output should follow their position in s.
+**Problem:** Given lowercase strings `s` and `p`, return the start indices of every substring of `s` that is an anagram of `p`. 1 <= len(s), len(p) <= 3*10^4.
 
 **Approach:** Maintain a fixed-size sliding window of length |p| over s using a 26-element frequency count, plus a target count for p. As the window slides one character right, increment the entering char and decrement the leaving char, then compare the two count arrays; equality means the current window is an anagram. Each comparison is over a constant 26 buckets, so the whole scan is O(n) time and O(1) extra space (26 counters).
 
@@ -549,7 +549,7 @@ class Solution {
 
 ### 10. Subarray Sum Equals K  ·  LC 560  ·  Medium  ·  Substring
 
-**Problem:** Given an integer array nums and an integer k, count how many contiguous subarrays have elements summing exactly to k. Elements may be negative, zero, or positive, so the running sum is not monotonic. The array length is 1 <= n <= 2*10^4 and each value and k fit in the range -10^7 to 10^7. Return the total count of qualifying subarrays.
+**Problem:** Count the contiguous subarrays of `nums` that sum exactly to `k`. Values may be negative (running sum is not monotonic). 1 <= n <= 2*10^4.
 
 **Approach:** Track the running prefix sum and a hash map from each prefix-sum value to how many times it has occurred. A subarray ending at the current index sums to k exactly when a previous prefix equal to (current prefix - k) exists, so add its occurrence count to the answer. Seeding the map with {0: 1} handles subarrays starting at index 0, giving O(n) time and O(n) space.
 
@@ -864,7 +864,7 @@ int[][] merge(int[][] intervals) {
 
 ### 15. Rotate Array  ·  LC 189  ·  Medium  ·  Array
 
-**Problem:** Given an integer array nums, rotate it to the right by k positions in place, where k is non-negative and may exceed the array length. Every element shifts right by k slots, with elements falling off the end wrapping around to the front. The array length is 1 <= n <= 10^5 and 0 <= k <= 10^5; you should aim for a solution using O(1) extra space. Return nothing; modify nums directly.
+**Problem:** Rotate `nums` to the right by `k` steps in place; `k` may exceed `n`. Aim for O(1) extra space. 1 <= n <= 10^5, 0 <= k <= 10^5.
 
 **Approach:** First reduce k modulo n so rotations larger than the length wrap correctly. Then reverse the whole array, reverse the first k elements, and reverse the remaining n-k elements; the three reversals compose to a right rotation by k. This runs in O(n) time with O(1) extra space, avoiding an auxiliary copy.
 
@@ -994,7 +994,7 @@ int[] productExceptSelf(int[] nums) {
 
 ### 17. First Missing Positive  ·  LC 41  ·  Hard  ·  Array
 
-**Problem:** Given an unsorted integer array nums, find the smallest positive integer (1 or greater) that does not appear in the array. The array may contain duplicates, negatives, and zeros, and its length satisfies 1 <= n <= 10^5 with values in the full 32-bit integer range. You must return the answer in O(n) time using only O(1) extra space beyond the input array.
+**Problem:** Given an unsorted array `nums`, find the smallest missing positive integer, in O(n) time and O(1) extra space. 1 <= n <= 10^5.
 
 **Approach:** Use the array itself as a hash table: for each position, repeatedly swap the value v into index v-1 as long as v is in the valid range [1, n] and not already placed. After this cyclic-sort pass every value that can occupy slot i sits at index i-1, so a second scan returns the first index where nums[i] != i+1; if all match, the answer is n+1. This works because the first missing positive must lie in [1, n+1], so only values in that window matter. O(n) time, O(1) space.
 
@@ -1261,7 +1261,7 @@ void rotate(int[][] matrix) {
 
 ### 21. Search a 2D Matrix II  ·  LC 240  ·  Medium  ·  Matrix
 
-**Problem:** Given an m x n matrix where every row is sorted in ascending order left-to-right and every column is sorted ascending top-to-bottom, decide whether a given target value exists in the matrix and return a boolean. Dimensions satisfy 1 <= m, n <= 300 and values fit in a signed 32-bit integer. Note the matrix is not globally sorted like a flattened array, so a single binary search over all cells does not apply.
+**Problem:** Given a matrix whose rows and columns are each sorted ascending, decide whether `target` exists. The matrix is not globally sorted, so one binary search over all cells does not apply. 1 <= m, n <= 300.
 
 **Approach:** Start at the top-right corner and treat it as a search staircase: if the current value equals the target return true, if it is larger move left (that whole column below is too big), and if it is smaller move down (that whole row to the left is too small). Each comparison eliminates one full row or one full column, so the walk is monotonic and never revisits cells. This exploits the dual sorted order that a plain binary search cannot. O(m + n) time, O(1) space.
 
@@ -1324,7 +1324,7 @@ boolean searchMatrix(int[][] matrix, int target) {
 
 ### 22. Intersection of Two Linked Lists  ·  LC 160  ·  Easy  ·  Linked List
 
-**Problem:** Given the heads of two singly linked lists that may merge and share a common tail, return the node at which they first intersect, or null if they never meet. Intersection is defined by reference identity, not by equal values, and the lists must retain their original structure. Combined length is up to 5 * 10^4 nodes; solve it in O(1) extra space.
+**Problem:** Given the heads of two singly linked lists that may share a common tail, return the node where they first intersect (by reference, not value), or null. Combined length up to 5*10^4; O(1) extra space.
 
 **Approach:** Advance two pointers, one per list; whenever a pointer reaches the end, redirect it to the head of the other list. After at most one such switch each pointer has traversed lenA + lenB nodes, so they arrive at the intersection simultaneously (or both reach null together when there is none). The redirection equalizes the differing prefix lengths without measuring them. O(m + n) time, O(1) space.
 
@@ -1446,7 +1446,7 @@ ListNode reverseList(ListNode head) {
 
 ### 24. Palindrome Linked List  ·  LC 234  ·  Easy  ·  Linked List
 
-**Problem:** Given the head of a singly linked list, determine whether the sequence of node values reads the same forwards and backwards, returning a boolean. The list holds between 1 and 10^5 nodes with small non-negative values. The target is O(n) time and O(1) extra space, so building a full array or recursion stack is considered suboptimal.
+**Problem:** Determine whether a singly linked list's values read the same forwards and backwards. Target O(n) time and O(1) extra space. 1 <= n <= 10^5.
 
 **Approach:** Find the middle with slow/fast pointers, reverse the second half in place, then compare it node-by-node against the front half; equality across the whole shorter half means the list is a palindrome. Splitting at the midpoint lets the two halves be walked in lockstep, and iterating only until the reversed (right) pointer is null correctly handles both even and odd lengths. O(n) time, O(1) space.
 
@@ -1817,7 +1817,7 @@ ListNode removeNthFromEnd(ListNode head, int n) {
 
 ### 30. Swap Nodes in Pairs  ·  LC 24  ·  Medium  ·  Linked List
 
-**Problem:** Given the head of a singly linked list, swap every two adjacent nodes and return the new head, changing the node links rather than just their stored values. If the list has an odd number of nodes, the final lone node stays in place. The list contains 0 to 100 nodes; aim for O(n) time and O(1) space.
+**Problem:** Swap every two adjacent nodes of a singly linked list by relinking (not by swapping values) and return the new head. An odd final node stays in place. 0 <= n <= 100.
 
 **Approach:** Use a dummy node in front of the head so the first pair has a stable predecessor, then iterate while a full pair remains: relink prev -> second -> first -> rest and advance prev to first for the next pair. The dummy removes the special-case handling of the head, and re-wiring pointers (not values) satisfies the problem's structural requirement. O(n) time, O(1) space.
 
@@ -1880,7 +1880,7 @@ ListNode swapPairs(ListNode head) {
 
 ### 31. Reverse Nodes in k-Group  ·  LC 25  ·  Hard  ·  Linked List
 
-**Problem:** Given the head of a singly linked list, reverse the nodes of the list in consecutive groups of exactly k, and return the modified list's head. If the final group has fewer than k nodes, leave those nodes in their original order. You may not swap the stored values inside nodes; only the node links themselves may be rearranged. The list holds between 1 and 5000 nodes, each value is between 0 and 1000, and 1 <= k <= n.
+**Problem:** Reverse the nodes of a singly linked list in groups of `k` by relinking; a final group with fewer than `k` nodes stays as-is. Return the new head. 1 <= n <= 5000, 1 <= k <= n.
 
 **Approach:** Use a dummy node and a per-group pointer that always sits just before the group to be reversed. Before reversing, walk k steps to confirm a full group exists (otherwise stop, leaving the tail untouched); then reverse the group's links in place and stitch it back between the previous group and the next group. Because each node is visited a constant number of times, this runs in O(n) time and O(1) extra space.
 
@@ -2050,7 +2050,7 @@ Node copyRandomList(Node head) {
 
 ### 33. Sort List  ·  LC 148  ·  Medium  ·  Linked List
 
-**Problem:** Given the head of a singly linked list, return the same list sorted into non-decreasing order by node value. The relative rearrangement must be done by relinking nodes, and an optimal solution should sort in O(n log n) time. The list may contain between 0 and 5 x 10^4 nodes, and each value fits in the 32-bit signed integer range from -10^5 to 10^5.
+**Problem:** Sort a singly linked list into non-decreasing order by relinking nodes, in O(n log n) time. 0 <= n <= 5*10^4.
 
 **Approach:** Apply top-down merge sort tailored to linked lists: split the list into two halves with a slow/fast pointer, recursively sort each half, then merge the two sorted halves by comparing heads and relinking. Merge sort is the natural fit because linked lists lack random access (ruling out efficient quicksort partitioning) yet merging is trivial with pointers. This yields O(n log n) time and O(log n) space from the recursion stack.
 
@@ -2289,7 +2289,7 @@ class LRUCache {
 
 ### 36. Binary Tree Inorder Traversal  ·  LC 94  ·  Easy  ·  Binary Tree
 
-**Problem:** Given the root of a binary tree, return a list of its node values produced by an inorder traversal, meaning left subtree first, then the current node, then the right subtree. The tree contains between 0 and 100 nodes, and each node value lies between -100 and 100. A common follow-up asks for an iterative solution instead of recursion.
+**Problem:** Return the inorder traversal (left, node, right) of a binary tree's node values. 0 <= n <= 100. Follow-up: solve it iteratively.
 
 **Approach:** Simulate the recursion with an explicit stack: repeatedly push nodes while descending left, then pop a node, record its value, and move to its right child. This reproduces the left-node-right ordering exactly because a node is only recorded once its entire left subtree has been consumed. It runs in O(n) time and O(h) space where h is the tree height (up to O(n) for a skewed tree).
 
@@ -2457,7 +2457,7 @@ TreeNode invertTree(TreeNode root) {
 
 ### 39. Symmetric Tree  ·  LC 101  ·  Easy  ·  Binary Tree
 
-**Problem:** Given the root of a binary tree, determine whether the tree is a mirror image of itself about its center, returning true if it is symmetric and false otherwise. Symmetry means the left subtree is the reflection of the right subtree, matching in both structure and node values. The tree has between 1 and 1000 nodes, with each value in the range -100 to 100.
+**Problem:** Determine whether a binary tree is a mirror image of itself about its center (left subtree reflects the right in structure and values). 1 <= n <= 1000.
 
 **Approach:** Compare the two subtrees pairwise with a helper that checks whether tree a is a mirror of tree b: both empty is symmetric, exactly one empty or unequal values is asymmetric, otherwise recurse on the outer pair (a.left vs b.right) and inner pair (a.right vs b.left). Mirroring requires crossing the children, which is why left is paired with right. This visits each node once for O(n) time and O(h) space for the recursion.
 
@@ -2508,7 +2508,7 @@ private boolean mirror(TreeNode a, TreeNode b) {
 
 ### 40. Diameter of Binary Tree  ·  LC 543  ·  Easy  ·  Binary Tree
 
-**Problem:** Given the root of a binary tree, return its diameter, defined as the number of edges on the longest path between any two nodes in the tree. This path may or may not pass through the root, and its length is counted in edges rather than nodes. The tree contains between 1 and 10^4 nodes, and each node value is between -100 and 100.
+**Problem:** Return the diameter of a binary tree — the number of edges on the longest path between any two nodes (the path may not pass through the root). 1 <= n <= 10^4.
 
 **Approach:** Run a single post-order DFS that returns the height of each subtree while tracking a running maximum. At every node the longest path passing through it equals the left height plus the right height (in edges), so we update the global best with that sum and return 1 + max(left, right) to the parent. Computing height once per node avoids the O(n^2) blowup of recomputing heights, giving O(n) time and O(h) space.
 
@@ -2648,7 +2648,7 @@ List<List<Integer>> levelOrder(TreeNode root) {
 
 ### 42. Convert Sorted Array to Binary Search Tree  ·  LC 108  ·  Easy  ·  Binary Tree
 
-**Problem:** Given an integer array sorted in strictly ascending order, construct a height-balanced binary search tree from it, where a height-balanced tree means the depths of the two subtrees of every node differ by at most one. Return the root of any valid such tree. The array length satisfies 1 <= n <= 10^4 and values fit in a 32-bit signed integer.
+**Problem:** Given an ascending sorted array, build a height-balanced BST (subtree depths differ by at most 1) and return its root. Any valid tree is accepted. 1 <= n <= 10^4.
 
 **Approach:** Because the array is already sorted, the middle element can serve as the root and everything to its left/right forms the left/right subtree, which keeps the tree balanced by construction. Recurse on each half using index bounds instead of slicing to avoid copying. This visits each element once, giving O(n) time and O(log n) auxiliary stack space (plus O(n) for the output tree).
 
@@ -2844,7 +2844,7 @@ int kthSmallest(TreeNode root, int k) {
 
 ### 45. Binary Tree Right Side View  ·  LC 199  ·  Medium  ·  Binary Tree
 
-**Problem:** Given the root of a binary tree, imagine standing on its right side and return the values of the nodes you can see ordered from top to bottom. In other words, for every depth level output the value of its rightmost node. The tree has between 0 and 100 nodes, and node values fit in a 32-bit signed integer.
+**Problem:** Return the values of a binary tree's nodes visible from the right side, top to bottom (the rightmost node at each level). 0 <= n <= 100.
 
 **Approach:** Do a level-order (breadth-first) traversal, processing the tree one level at a time; the last node dequeued in each level is the one visible from the right. Snapshotting the level size before iterating lets us know exactly where each level ends. Every node is enqueued and dequeued once, so it runs in O(n) time and O(w) space where w is the maximum tree width.
 
@@ -2947,7 +2947,7 @@ class Solution {
 
 ### 46. Flatten Binary Tree to Linked List  ·  LC 114  ·  Medium  ·  Binary Tree
 
-**Problem:** Given the root of a binary tree, rearrange it in place into a 'linked list': every node's left child must become null and its right child must point to the next node in the tree's preorder traversal order. Modify the tree directly rather than returning a new structure. The number of nodes is in the range 0 to 2000 and node values fit in a 32-bit signed integer.
+**Problem:** Flatten a binary tree in place into a right-leaning 'linked list' following preorder: each left child becomes null and each right child points to the next preorder node. 0 <= n <= 2000.
 
 **Approach:** Use the Morris-style threading trick: for each node that has a left subtree, find the rightmost node of that left subtree (the preorder predecessor of the right subtree), attach the current right subtree there, then move the whole left subtree to the right and clear the left pointer. Advancing along the right pointers processes the entire tree. Each edge is traversed a constant number of times, giving O(n) time and O(1) extra space.
 
@@ -3107,7 +3107,7 @@ TreeNode go(int[] preorder, Map<Integer, Integer> idx, int l, int r) {
 
 ### 48. Path Sum III  ·  LC 437  ·  Medium  ·  Binary Tree
 
-**Problem:** Given the root of a binary tree and an integer target, count the number of downward paths whose node values sum to the target, where a path must go from a node to one of its descendants (any start and end, not necessarily root-to-leaf) following parent-to-child links. Return the total count of such paths. The tree has 0 to 1000 nodes, node values are in [-10^9, 10^9], and the target is a 32-bit integer.
+**Problem:** Count the downward paths (parent-to-child, any start and end) in a binary tree whose node values sum to `target`. 0 <= n <= 1000, values in [-10^9, 10^9].
 
 **Approach:** Track the running prefix sum from the root to the current node and store counts of every prefix sum seen along the current path in a hash map; a path ending at the current node with the target sum exists once for each earlier prefix equal to current - target. Add the current prefix before recursing into children and remove it when backtracking so only ancestors on the active path are counted. Each node is visited once with O(1) map work, giving O(n) time and O(h) space for the map and recursion.
 
@@ -3390,7 +3390,7 @@ void dfs(char[][] grid, int r, int c) {
 
 ### 52. Rotting Oranges  ·  LC 994  ·  Medium  ·  Graph
 
-**Problem:** You are given an m x n grid where each cell is 0 (empty), 1 (a fresh orange), or 2 (a rotten orange). Every minute, any fresh orange that is 4-directionally adjacent to a rotten one becomes rotten. Return the minimum number of minutes until no fresh orange remains, or -1 if some fresh orange can never rot. Grid dimensions satisfy 1 <= m, n <= 10 (cells values are 0, 1, or 2).
+**Problem:** In an m x n grid of cells 0 (empty), 1 (fresh), 2 (rotten), each minute every fresh orange 4-directionally adjacent to a rotten one rots. Return the minutes until no fresh orange remains, or -1 if impossible. 1 <= m, n <= 10.
 
 **Approach:** Run a multi-source breadth-first search starting from all initially rotten oranges at once, processing the grid one minute (one BFS layer) at a time and counting fresh oranges as they rot. When the queue empties, any remaining fresh oranges are unreachable so the answer is -1; otherwise the number of layers processed is the elapsed time. Every cell is enqueued at most once, giving O(m*n) time and O(m*n) space.
 
@@ -4072,7 +4072,7 @@ boolean dfs(char[][] b, String w, int r, int c, int k) {
 
 ### 61. Palindrome Partitioning  ·  LC 131  ·  Medium  ·  Backtracking
 
-**Problem:** Given a string s consisting of lowercase English letters, split it into contiguous substrings so that every piece is a palindrome, and return all possible such partitionings. Each partitioning is a list of the substrings in order, and the full collection of partitionings can be returned in any order. Constraints: 1 <= s.length <= 16, so the exponential number of partitionings is bounded.
+**Problem:** Partition lowercase string `s` into contiguous substrings where every piece is a palindrome, and return all such partitionings (any order). 1 <= len(s) <= 16.
 
 **Approach:** Use backtracking: at each starting index, try every possible next cut, and recurse only when the candidate prefix is a palindrome, appending a complete partition when the index reaches the end. A two-pointer palindrome check keeps each test cheap, and pruning non-palindromic prefixes avoids exploring dead branches. This runs in O(n * 2^n) time (up to 2^(n-1) partition points, each producing an O(n) copy) and O(n) extra space for the recursion path.
 
@@ -4274,7 +4274,7 @@ void go(int r, int n, Set<Integer> cols, Set<Integer> d1, Set<Integer> d2, int[]
 
 ### 63. Search Insert Position  ·  LC 35  ·  Easy  ·  Binary Search
 
-**Problem:** Given a sorted array of distinct integers nums and a target value, return the index where target is found; if it is absent, return the index at which it would be inserted to keep the array sorted. The array is in strictly ascending order. Constraints: 1 <= nums.length <= 10^4, -10^4 <= nums[i], target <= 10^4, and the solution must run in O(log n) time.
+**Problem:** Given a sorted array of distinct integers and a `target`, return its index if present, else the index where it would be inserted to keep the array sorted. Must run in O(log n). 1 <= n <= 10^4.
 
 **Approach:** Run a binary search for the leftmost position whose value is greater than or equal to target, using a half-open interval [lo, hi). Whenever the midpoint is smaller than target we move lo past it; otherwise the answer is at or before mid, so we shrink hi to mid. When the interval collapses, lo is exactly the insertion (or found) index. This is O(log n) time and O(1) space.
 
@@ -4336,7 +4336,7 @@ class Solution {
 
 ### 64. Search a 2D Matrix  ·  LC 74  ·  Medium  ·  Binary Search
 
-**Problem:** Given an m x n matrix where each row is sorted in ascending order and the first integer of every row is greater than the last integer of the previous row, determine whether a given target value exists in the matrix, returning true or false. Because of this layout the matrix behaves like one fully sorted sequence read row by row. Constraints: 1 <= m, n <= 100, -10^4 <= matrix[i][j], target <= 10^4, with a required O(log(m*n)) time bound.
+**Problem:** Given a matrix where each row is sorted and the first value of each row exceeds the last of the previous row, decide whether `target` exists. It behaves like one sorted sequence read row by row. O(log(m*n)) time. 1 <= m, n <= 100.
 
 **Approach:** Treat the matrix as a single sorted array of length m*n and binary search over indices 0..m*n-1, mapping index k to row k//n and column k%n. The row-ordering guarantees mean this virtual flattening is globally sorted, so standard binary search applies. This achieves the required O(log(m*n)) time with O(1) space.
 
@@ -4810,7 +4810,7 @@ class MinStack {
 
 ### 71. Decode String  ·  LC 394  ·  Medium  ·  Stack
 
-**Problem:** Given an encoded string that uses the pattern k[encoded], where the bracketed content must be repeated exactly k times, return the fully decoded string. Encodings can be nested (for example 3[a2[c]] decodes to accaccacc), k is always a positive integer, and the input contains only digits, letters, and square brackets with no stray whitespace or malformed brackets. Constraints: 1 <= s.length <= 30, 1 <= k <= 300, and the decoded output fits comfortably in memory.
+**Problem:** Decode a string using the pattern k[encoded], repeating the bracketed content `k` times; encodings may nest (e.g. `3[a2[c]]` -> `accaccacc`). Input has only digits, letters, and brackets. 1 <= len(s) <= 30, 1 <= k <= 300.
 
 **Approach:** Scan left to right maintaining two stacks: one for repeat counts and one for the string built before each open bracket. On '[' push the current count and accumulated string then reset them; on ']' pop the saved prefix and multiplier and splice the repeated inner string back in. This handles arbitrary nesting because each bracket level is restored exactly when its ']' is reached. It runs in O(N) time and O(N) space where N is the length of the decoded output.
 
@@ -5354,7 +5354,7 @@ boolean canJump(int[] nums) {
 
 ### 79. Jump Game II  ·  LC 45  ·  Medium  ·  Greedy
 
-**Problem:** Given a 0-indexed array nums where each element is the maximum forward jump length from that position, return the minimum number of jumps needed to reach the last index starting from index 0. The problem guarantees that the last index is always reachable. Constraints: 1 <= nums.length <= 10^4 and 0 <= nums[i] <= 1000.
+**Problem:** Given `nums` where each element is the max forward jump length from that index, return the minimum jumps to reach the last index from index 0 (always reachable). 1 <= n <= 10^4, 0 <= nums[i] <= 1000.
 
 **Approach:** Use a greedy BFS-by-levels: track the farthest index reachable overall and the end of the current jump's reach, and whenever the scan reaches that current end you must spend one more jump and extend the boundary to the farthest seen so far. Each contiguous block of indices reachable with the same number of jumps forms one BFS level, so counting boundary crossings yields the minimum. Iterating only up to the second-to-last index avoids an extra count when already at the goal. This is O(n) time and O(1) space.
 
@@ -5416,7 +5416,7 @@ class Solution {
 
 ### 80. Partition Labels  ·  LC 763  ·  Medium  ·  Greedy
 
-**Problem:** You are given a lowercase-letter string s. Split it into the maximum number of contiguous pieces such that every distinct letter appears in exactly one piece (no letter spans two pieces). Return the list of piece lengths in left-to-right order. Constraints: 1 <= s.length <= 500 and s contains only lowercase English letters.
+**Problem:** Split a lowercase string `s` into the maximum number of contiguous pieces such that each letter appears in exactly one piece. Return the piece lengths in order. 1 <= len(s) <= 500.
 
 **Approach:** First record the last index at which each character occurs. Then sweep left to right, extending the current partition's end to the farthest last-occurrence of any character seen so far; when the running index reaches that end, no character inside can appear later, so we can safely cut here. This greedy cut is optimal because it makes each partition as small as possible while still self-contained. O(n) time, O(1) space (a fixed 26-slot table).
 
@@ -5525,7 +5525,7 @@ int climbStairs(int n) {
 
 ### 82. Pascal's Triangle  ·  LC 118  ·  Easy  ·  Dynamic Programming
 
-**Problem:** Given an integer numRows, build the first numRows rows of Pascal's Triangle and return them as a list of lists. Row 0 is [1]; every subsequent row starts and ends with 1, and each interior value equals the sum of the two values diagonally above it in the previous row. Constraints: 1 <= numRows <= 30.
+**Problem:** Return the first `numRows` rows of Pascal's Triangle, where each interior value is the sum of the two values diagonally above it. 1 <= numRows <= 30.
 
 **Approach:** Construct the triangle row by row: initialize each row filled with 1s (which correctly fixes both endpoints), then overwrite each interior cell with the sum of the two adjacent cells from the already-built previous row. Because every value depends only on the prior row, a straightforward bottom-up build produces all entries directly. O(numRows^2) time and O(numRows^2) space, which is optimal since the output itself has that many elements.
 
@@ -5997,7 +5997,7 @@ boolean canPartition(int[] nums) {
 
 ### 90. Longest Valid Parentheses  ·  LC 32  ·  Hard  ·  Dynamic Programming
 
-**Problem:** Given a string s consisting only of the characters '(' and ')', find the length of the longest contiguous substring that forms a well-formed (properly balanced and nested) sequence of parentheses. For example ")()())" yields 4 for the substring "()()". Constraints: 0 <= s.length <= 3 * 10^4.
+**Problem:** Given a string of '(' and ')', return the length of the longest contiguous well-formed parentheses substring (e.g. ")()())" -> 4). 0 <= len(s) <= 3*10^4.
 
 **Approach:** Keep a stack of indices seeded with -1 to act as a base boundary. Push the index of each '(' ; on each ')' pop, and if the stack becomes empty push the current index as a new boundary, otherwise the length of the valid run ending here is the current index minus the new stack top. This works because the stack top always holds the index just before the current valid segment. O(n) time, O(n) space.
 
@@ -6120,7 +6120,7 @@ int uniquePaths(int m, int n) {
 
 ### 92. Minimum Path Sum  ·  LC 64  ·  Medium  ·  Multi-dim DP
 
-**Problem:** Given an m x n grid of non-negative integers, find a path from the top-left cell to the bottom-right cell that minimizes the sum of the numbers along the path, where you may move only right or down at each step. Return that minimum sum. Constraints: 1 <= m, n <= 200 and 0 <= grid[i][j] <= 200.
+**Problem:** Given an m x n grid of non-negative integers, moving only right or down, return the minimum path sum from top-left to bottom-right. 1 <= m, n <= 200, 0 <= grid[i][j] <= 200.
 
 **Approach:** Use dynamic programming where each cell holds the minimum cost to reach it: the first row and first column can only be reached one way (accumulate along them), and every other cell adds its own value to the smaller of the costs from directly above or directly left. Computing in place mutates the grid into the DP table, so no extra array is needed. O(m*n) time and O(1) extra space.
 
@@ -6414,7 +6414,7 @@ int singleNumber(int[] nums) {
 
 ### 97. Majority Element  ·  LC 169  ·  Easy  ·  Techniques
 
-**Problem:** Given an integer array of length n, return the element that appears more than n/2 times. The majority element is guaranteed to exist, so no validity check is required. Constraints: 1 <= n <= 5*10^4 and each value fits in a 32-bit signed integer.
+**Problem:** Return the element that appears more than n/2 times in an array (guaranteed to exist). 1 <= n <= 5*10^4.
 
 **Approach:** Use the Boyer-Moore voting algorithm: keep a running candidate and a counter, incrementing when the current value matches the candidate and decrementing otherwise, resetting the candidate whenever the counter hits zero. Because the majority element occupies more than half the array, all cancellations from other elements cannot fully eliminate it, so it survives as the final candidate. O(n) time, O(1) space.
 
@@ -6467,7 +6467,7 @@ class Solution {
 
 ### 98. Sort Colors  ·  LC 75  ·  Medium  ·  Techniques
 
-**Problem:** Given an array containing only the values 0, 1, and 2 representing red, white, and blue objects, sort it in place so that objects of the same color are grouped and ordered as red, white, blue. You must not use a library sort. Constraints: 1 <= n <= 300 and every element is one of 0, 1, or 2.
+**Problem:** Given an array of only 0, 1, 2 (red/white/blue), sort it in place without a library sort. 1 <= n <= 300.
 
 **Approach:** Apply the Dutch National Flag algorithm with three pointers: low marks the boundary of settled 0s, high marks the boundary of settled 2s, and mid scans forward. On seeing a 0 swap it to the low region and advance both low and mid; on a 1 just advance mid; on a 2 swap it to the high region and shrink high without advancing mid, since the swapped-in value is still unexamined. This partitions the array in a single pass. O(n) time, O(1) space.
 
@@ -6537,7 +6537,7 @@ class Solution {
 
 ### 99. Next Permutation  ·  LC 31  ·  Medium  ·  Techniques
 
-**Problem:** Given an array of integers representing a permutation, rearrange it in place into the next lexicographically greater permutation. If no greater arrangement exists (the array is in descending order), transform it into the smallest permutation, i.e. sorted ascending. Constraints: 1 <= n <= 100 and each value is between 0 and 100.
+**Problem:** Rearrange an integer array in place into the next lexicographically greater permutation; if none exists (descending), transform it into the smallest (ascending). 1 <= n <= 100.
 
 **Approach:** Scan from the right to find the first index i where nums[i] < nums[i+1]; this pivot is the rightmost position that can be increased. If it exists, find the rightmost element greater than nums[i] and swap them, which places the smallest possible larger value at the pivot. Finally reverse the suffix after i, turning its descending order into ascending to make it the smallest tail. O(n) time, O(1) space.
 
@@ -6605,7 +6605,7 @@ class Solution {
 
 ### 100. Find the Duplicate Number  ·  LC 287  ·  Medium  ·  Techniques
 
-**Problem:** Given an array of n+1 integers where every value lies in the range 1 to n, exactly one number is repeated (possibly more than once) while all others appear once; return that repeated number. You must not modify the array and must use only constant extra space. Constraints: 1 <= n <= 10^5 and 1 <= nums[i] <= n.
+**Problem:** Given n+1 integers each in [1, n], exactly one value repeats; return it without modifying the array and using only O(1) extra space. 1 <= n <= 10^5.
 
 **Approach:** Treat each index as a node pointing to the node given by its value, which forms a linked list that must contain a cycle because the duplicate value makes two indices point to the same node. Use Floyd's tortoise-and-hare: advance a slow pointer one step and a fast pointer two steps until they meet inside the cycle, then reset one pointer to the start and move both one step at a time; their meeting point is the cycle entrance, which equals the duplicate. O(n) time, O(1) space.
 

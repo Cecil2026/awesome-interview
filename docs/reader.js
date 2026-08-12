@@ -148,6 +148,74 @@
     },
   };
 
+  const categoryLabels = {
+    en: {
+      behavioral: 'behavioral',
+      interviews: 'interviews',
+      knowledge: 'knowledge',
+      'mock-interviews': 'mock-interviews',
+      overview: 'overview',
+      roadmap: 'roadmap',
+    },
+    zh: {
+      behavioral: '行为面试',
+      interviews: '面试题',
+      knowledge: '知识库',
+      'mock-interviews': '模拟面试',
+      overview: '概览',
+      roadmap: '路线图',
+    },
+  };
+
+  function categoryLabel(category) {
+    const table = categoryLabels[currentLanguage] || categoryLabels.en;
+    return table[category] || category;
+  }
+
+  const fileLabels = {
+    'behavioral/amazon-leadership-principles.md': { en: 'Amazon Leadership Principles', zh: '亚马逊领导力准则' },
+    'behavioral/star-questions.md': { en: 'STAR Questions', zh: 'STAR 行为问题' },
+    'CONTRIBUTING.md': { en: 'Contributing', zh: '贡献指南' },
+    'README.md': { en: 'README', zh: '项目说明' },
+    'SECURITY.md': { en: 'Security', zh: '安全策略' },
+    'interviews/_template.md': { en: 'Template', zh: '模板' },
+    'interviews/companies/alibaba.md': { en: 'Alibaba', zh: '阿里巴巴' },
+    'interviews/companies/amazon.md': { en: 'Amazon', zh: '亚马逊' },
+    'interviews/companies/apple.md': { en: 'Apple', zh: '苹果' },
+    'interviews/companies/bytedance.md': { en: 'ByteDance', zh: '字节跳动' },
+    'interviews/companies/google.md': { en: 'Google', zh: '谷歌' },
+    'interviews/companies/huawei.md': { en: 'Huawei', zh: '华为' },
+    'interviews/companies/meta.md': { en: 'Meta', zh: 'Meta' },
+    'interviews/companies/microsoft.md': { en: 'Microsoft', zh: '微软' },
+    'interviews/companies/tencent.md': { en: 'Tencent', zh: '腾讯' },
+    'interviews/companies/xiaomi.md': { en: 'Xiaomi', zh: '小米' },
+    'knowledge/ai.md': { en: 'AI', zh: '人工智能' },
+    'knowledge/algorithms.md': { en: 'Algorithms', zh: '算法' },
+    'knowledge/architecture.md': { en: 'Architecture', zh: '架构' },
+    'knowledge/backend.md': { en: 'Backend', zh: '后端' },
+    'knowledge/devops.md': { en: 'DevOps', zh: 'DevOps' },
+    'knowledge/frontend.md': { en: 'Frontend', zh: '前端' },
+    'knowledge/system-design.md': { en: 'System Design', zh: '系统设计' },
+    'mock-interviews/behavioral-leadership-conflict.md': { en: 'Behavioral: Leadership Conflict', zh: '行为面试：领导力冲突' },
+    'mock-interviews/system-design-chat-app.md': { en: 'System Design: Chat App', zh: '系统设计：聊天应用' },
+    'mock-interviews/system-design-rag-qa.md': { en: 'System Design: RAG Q&A', zh: '系统设计：RAG 问答' },
+    'mock-interviews/system-design-rate-limiter.md': { en: 'System Design: Rate Limiter', zh: '系统设计：限流器' },
+    'mock-interviews/system-design-rubric.md': { en: 'System Design: Rubric', zh: '系统设计：评分标准' },
+    'mock-interviews/system-design-url-shortener.md': { en: 'System Design: URL Shortener', zh: '系统设计：短链接' },
+    'roadmap/ai-algorithm.md': { en: 'AI / Algorithm', zh: 'AI / 算法' },
+    'roadmap/backend-engineer.md': { en: 'Backend Engineer', zh: '后端工程师' },
+    'roadmap/checklist.md': { en: 'Checklist', zh: '清单' },
+    'roadmap/frontend-engineer.md': { en: 'Frontend Engineer', zh: '前端工程师' },
+    'roadmap/fullstack-engineer.md': { en: 'Fullstack Engineer', zh: '全栈工程师' },
+  };
+
+  function fileLabel(path) {
+    const entry = fileLabels[path];
+    if (entry) return entry[currentLanguage] || entry.en || path;
+    const base = path.split('/').pop().replace(/\.md$/i, '');
+    return base.replace(/[-_]/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
+  }
+
   function t(key, params = {}) {
     let value = translations[currentLanguage][key] || translations.en[key] || key;
     Object.entries(params).forEach(([name, param]) => {
@@ -212,8 +280,9 @@
     if (languageSelect) languageSelect.value = currentLanguage;
     document.documentElement.lang = currentLanguage;
     updateLocalizedText();
-    if (changed && activePath) {
-      loadFile(activePath);
+    if (changed) {
+      if (files.length) filterFiles();
+      if (activePath) loadFile(activePath);
     }
   }
 
@@ -442,14 +511,15 @@
 
       const summary = document.createElement('summary');
       summary.className = 'category-heading';
-      summary.textContent = `${category} (${grouped[category].length})`;
+      summary.textContent = `${categoryLabel(category)} (${grouped[category].length})`;
       section.appendChild(summary);
 
       grouped[category].forEach((file) => {
         const anchor = document.createElement('a');
         anchor.className = 'file-link';
         anchor.href = '#';
-        anchor.textContent = file.file.replace(`${category}/`, '');
+        anchor.textContent = fileLabel(file.file);
+        anchor.title = file.file;
         anchor.dataset.path = file.file;
         anchor.addEventListener('click', (event) => {
           event.preventDefault();
@@ -586,7 +656,10 @@
   function filterFiles() {
     const term = searchEl.value.trim().toLowerCase();
     const filtered = files.filter((file) => {
-      return file.file.toLowerCase().includes(term) || file.category.toLowerCase().includes(term);
+      return file.file.toLowerCase().includes(term)
+        || file.category.toLowerCase().includes(term)
+        || categoryLabel(file.category).toLowerCase().includes(term)
+        || fileLabel(file.file).toLowerCase().includes(term);
     });
     renderFileList(filtered);
     updateFileCount(filtered.length);
