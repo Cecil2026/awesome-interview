@@ -937,3 +937,833 @@ Wrap these with a catalog that **classifies** PII, lineage to trace where person
 - Right-to-be-forgotten: lakehouse row-level DELETE/MERGE or crypto-shredding (delete per-subject key).
 - Partition by tenant/region for isolation, data residency, and easier deletion.
 - Add classification, lineage, retention, and audit logging so compliance is provable.
+
+---
+
+### 51. Spark SQL execution: RDD vs DataFrame vs Dataset
+
+**Frequency:** High
+
+**Question:** How does Spark SQL execute a query, and what are the trade-offs between the RDD, DataFrame, and Dataset APIs?
+
+**Answer:** A Spark SQL query (SQL string or DataFrame call) is parsed into an **unresolved logical plan**, resolved against the catalog, then rewritten by the **Catalyst** optimizer (predicate/projection pushdown, constant folding, join reordering) into an optimized logical plan, and finally lowered to **physical plans** costed to pick one; **Tungsten** then generates whole-stage bytecode operating on off-heap binary rows. The API you use decides how much of this you get:
+
+- **RDD** — arbitrary JVM objects and lambdas; maximum control but *opaque* to Catalyst, so no pushdown, no columnar/off-heap encoding, and full serialization overhead.
+- **DataFrame** — `Dataset[Row]` with a schema; fully optimized by Catalyst/Tungsten and the fastest for relational work, but untyped (errors surface at runtime).
+- **Dataset[T]** — typed, compile-time-safe JVM objects with encoders; safer than DataFrame but typed lambdas become black boxes that block some optimizations and add (de)serialization cost.
+
+Prefer DataFrame/Dataset; drop to RDD only for low-level control the relational model can't express.
+
+**Key points:**
+- Pipeline: parse → resolve → Catalyst logical optimization → cost-based physical selection → Tungsten codegen.
+- RDD is opaque to Catalyst — no pushdown, no columnar encoding, high serialization cost.
+- DataFrame = optimized but untyped; Dataset = typed but typed lambdas can block optimizations.
+- Default to DataFrame/Dataset; use RDD only when you truly need object-level control.
+
+---
+
+### 52. Bucketing and shuffle-free bucketed joins
+
+**Frequency:** Medium
+
+**Question:** What is bucketing in Spark, and how does it enable joins that avoid a shuffle?
+
+**Answer:** Bucketing pre-partitions a table into a **fixed number of buckets** by `hash(bucketColumn) % numBuckets`, persisting each bucket as a set of files with the layout recorded in the metastore. Because rows with the same key always land in the same bucket, two tables **bucketed on the same column into the same number of buckets** can be joined by matching bucket-to-bucket locally — the exchange (shuffle) that a sort-merge join normally needs is eliminated, which is the whole point when the tables are too big to broadcast. It differs from partitioning: partitioning creates directories for coarse *pruning* by low-cardinality columns, while bucketing controls *file distribution* by a high-cardinality join/aggregation key. Caveats: bucket counts must match (or one must be a multiple, with Spark's bucket-coalescing), spark.sql.sources.bucketing must be enabled, and choosing the number is a commitment — too few buckets means large tasks, too many creates a small-files problem, and rebucketing requires a rewrite.
+
+**Key points:**
+- Buckets = deterministic `hash(key) % N` file layout recorded in the metastore.
+- Same column + same bucket count → sort-merge join with no shuffle exchange.
+- Partitioning prunes by low-cardinality dirs; bucketing distributes by high-cardinality keys.
+- Bucket count is a fixed commitment; mismatches, small files, and rewrites are the pitfalls.
+
+---
+
+### 53. Window functions for analytics
+
+**Frequency:** High
+
+**Question:** How do SQL/Spark window functions work, and what do PARTITION BY, ORDER BY, and the frame clause each control?
+
+**Answer:** A window function computes a value over a set of rows **related to the current row without collapsing them** — unlike GROUP BY, every input row is preserved and gets its own result. Three clauses define the window: **PARTITION BY** splits rows into independent groups (like GROUP BY, but non-aggregating); **ORDER BY** orders rows within each partition, which is required for ranking and offset functions and defines "preceding/following"; and the **frame** (`ROWS`/`RANGE BETWEEN … AND …`) bounds which ordered rows feed the aggregate for running totals or moving averages. Functions fall into ranking (`ROW_NUMBER`, `RANK`, `DENSE_RANK`, `NTILE`), offset (`LAG`, `LEAD`), and aggregate-over-window (`SUM`, `AVG`) families. A subtlety: with ORDER BY but no explicit frame, SQL defaults to `RANGE BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW`, and `RANGE` ties peer rows together (same value = same running sum) whereas `ROWS` counts physical rows. In Spark each distinct window spec triggers a shuffle-and-sort by the partition key, so skewed or high-cardinality partitions are the performance risk.
+
+**Key points:**
+- Windows compute per-row results over related rows without collapsing them (unlike GROUP BY).
+- PARTITION BY = groups; ORDER BY = ordering for ranking/offsets; frame = which rows aggregate.
+- Default frame with ORDER BY is `RANGE UNBOUNDED PRECEDING → CURRENT ROW`; ROWS vs RANGE differ on ties.
+- Each window spec forces a shuffle+sort in Spark; skewed partition keys hurt performance.
+
+---
+
+### 54. Cost-based optimization and table statistics
+
+**Frequency:** Medium
+
+**Question:** How does cost-based optimization use table statistics, and why do ANALYZE and histograms matter?
+
+**Answer:** Rule-based optimization applies fixed rewrites, but **cost-based optimization (CBO)** compares alternative plans by estimating their cost, and those estimates are only as good as the **statistics** the engine has. `ANALYZE TABLE … COMPUTE STATISTICS` collects table-level stats (row count, total size) and per-column stats (distinct count/NDV, min/max, null count, average length), and optionally **histograms** that describe value distribution within a column. CBO uses these to estimate the **selectivity** and output cardinality of each operator, which drives the big decisions: **join reordering** (join the most selective/smallest intermediates first to shrink downstream data), **join-strategy choice** (broadcast vs shuffle vs sort-merge based on estimated size), and build-side selection. Histograms matter because uniform-distribution assumptions badly misestimate skewed columns — an equi-height histogram captures that a few values dominate, fixing selectivity for range and equality filters. Stale statistics are the classic cause of catastrophic plans, so stats must be refreshed as data changes; Spark also has runtime AQE that corrects estimates using actual shuffle sizes.
+
+**Key points:**
+- CBO picks plans by estimated cost; estimates depend entirely on collected statistics.
+- ANALYZE gathers table (rows/size) and column (NDV, min/max, nulls) stats, plus optional histograms.
+- Stats drive join reordering, join-strategy selection, and cardinality/selectivity estimates.
+- Histograms fix skewed-column misestimates; stale stats cause bad plans — AQE corrects at runtime.
+
+---
+
+### 55. Handling skewed joins with salting and skew hints
+
+**Frequency:** High
+
+**Question:** When a join is skewed by a few hot keys, how do salting and skew hints fix it?
+
+**Answer:** In a shuffle join, all rows for a key go to one task; if a few keys hold a disproportionate share of rows, those tasks run far longer than the rest — the job's tail is dominated by a handful of straggler partitions while other cores sit idle. **Salting** breaks up the hot keys: append a random suffix `0…N-1` to the skewed side's key so one hot key becomes N sub-keys spread across N tasks, and **explode** the other side by cross-joining each matching row against all N salt values so the halves still meet. This trades extra data replication on the small side for balanced parallelism. Modern Spark automates the common case with **AQE skew join handling** (`spark.sql.adaptive.skewJoin.enabled`): it detects partitions larger than a median-based threshold at runtime and **splits** them into smaller sub-partitions automatically. A **skew hint** (`/*+ SKEW */` in engines that support it) tells the optimizer which key/column is skewed so it can apply the split proactively. Prefer AQE/hints first; hand-salt only when automation can't.
+
+**Key points:**
+- Skewed keys create straggler tasks — the slowest partition sets the job's runtime.
+- Salting = randomize hot keys into N sub-keys and replicate the other side's matching rows.
+- AQE skew join splits oversized partitions at runtime automatically (no code change).
+- Skew hints tell the optimizer which key is hot; prefer automation, hand-salt as a fallback.
+
+---
+
+### 56. Materialized views and query-result caching
+
+**Frequency:** Medium
+
+**Question:** How do materialized views and query-result caching speed up analytical engines, and what are their trade-offs?
+
+**Answer:** Both trade storage and freshness for speed, but at different granularities. A **materialized view (MV)** persists the *result of a query* (often a join+aggregate rollup) as a physical table; the payoff is **automatic query rewrite** — the optimizer transparently redirects matching queries (or sub-expressions) to the smaller MV, so many different queries benefit without referencing it by name. The cost is maintenance: the MV goes stale as base tables change and must be refreshed, either **full** (recompute) or **incremental** (apply only deltas), and the engine must know the MV is fresh enough to use. **Query-result caching** instead memoizes the exact output of a specific query keyed by the query text/plan (and often the underlying data version), returning instantly on an identical re-run but invalidated the moment inputs change — great for repeated dashboards, useless for parameter-varying queries. MVs are broad and reusable but need refresh policies; result cache is cheap and automatic but brittle to any change and to query-text variation.
+
+**Key points:**
+- MV persists a query result as a table; optimizer auto-rewrites matching queries to it.
+- MV maintenance: full vs incremental refresh, plus staleness/freshness tracking.
+- Result caching memoizes exact query output; instant on identical re-run, invalidated on any input change.
+- MV = broad/reusable but needs refresh; result cache = cheap/automatic but brittle to change.
+
+---
+
+### 57. Approximate query algorithms: HyperLogLog and t-digest
+
+**Frequency:** Medium
+
+**Question:** How do algorithms like HyperLogLog and t-digest give fast approximate answers, and when should you use them?
+
+**Answer:** Exact count-distinct and exact quantiles require holding or sorting all distinct values, which is memory-prohibitive at scale and doesn't parallelize cheaply. **HyperLogLog (HLL)** estimates cardinality in fixed, tiny memory (kilobytes for billions of distinct items) by hashing each value and tracking the maximum number of leading zeros seen per bucket — the intuition being that longer runs of leading zeros imply more distinct values — yielding a low, bounded relative error (~1–2%). Crucially HLL **sketches are mergeable**: you can union sketches from different partitions/days, which is why they suit distributed engines (`approx_count_distinct`) and pre-aggregation. **t-digest** (and GK) approximate **quantiles/percentiles** by maintaining a compact set of weighted centroids that keep more resolution at the distribution's tails, so p50/p99 stay accurate while memory stays small; it is also mergeable. Use these when an answer within a few percent is fine and you need speed, mergeability, or bounded memory — dashboards, monitoring, unique-visitor counts, latency SLOs — not for billing or reconciliation that demand exactness.
+
+**Key points:**
+- HLL estimates count-distinct in KB of memory via leading-zero counts; ~1–2% error, mergeable sketches.
+- t-digest approximates quantiles/percentiles with weighted centroids, high tail resolution, mergeable.
+- Mergeability is key: sketches union across partitions/time for distributed and incremental use.
+- Use for speed/memory when small error is acceptable; never for exact billing/reconciliation.
+
+---
+
+### 58. Bloom filters in big data
+
+**Frequency:** Medium
+
+**Question:** How are Bloom filters used in big data for join pruning and storage-layer skipping?
+
+**Answer:** A Bloom filter is a compact bit array with k hash functions that answers set membership with **no false negatives but possible false positives** — "definitely not present" is certain, "possibly present" is not. This one-sided guarantee makes it a cheap pre-filter. In **runtime join pruning** (Spark's runtime filters / dynamic filtering), the engine builds a Bloom filter from the smaller join side's keys and pushes it to the scan of the larger side, so rows that can't possibly match are discarded before shuffle — cutting I/O and shuffle volume, similar in spirit to a semi-join. At the **storage layer**, formats like ORC and Parquet can store Bloom filters per column chunk / row group, letting a reader **skip** entire blocks whose filter says a searched value is absent — powerful for high-cardinality equality predicates where min/max zone maps are useless (e.g., random IDs). Trade-offs: false-positive rate is tuned by bits-per-element and hash count, filters cost space and build time, and they help only equality/membership, not range predicates.
+
+**Key points:**
+- Bloom filter: no false negatives, possible false positives — "maybe present / definitely absent."
+- Runtime/dynamic join filters prune the large side before shuffle, cutting I/O (semi-join effect).
+- Storage-layer Bloom filters (ORC/Parquet) skip row groups for high-cardinality equality lookups.
+- Only helps equality/membership, not ranges; false-positive rate trades against space.
+
+---
+
+### 59. UDFs vs built-in functions
+
+**Frequency:** High
+
+**Question:** Why are built-in functions usually faster than UDFs, and what optimization limits do UDFs impose?
+
+**Answer:** Built-in (native) functions are **known to Catalyst**: they operate on Tungsten's off-heap binary rows, participate in whole-stage code generation, and can be pushed down and reordered by the optimizer. A **UDF is a black box** — Catalyst cannot see inside it, so it disables predicate pushdown *through* the UDF, blocks related optimizations and codegen fusion, and treats it as an opaque map. Worse is the serialization cost: a Scala/Java UDF still runs on the JVM but forces conversion out of the internal binary format into JVM objects and back; a **Python UDF** is far costlier because each row (or batch) must be serialized and shipped to a separate Python worker process and back over a pipe. **Pandas/vectorized UDFs** (Arrow-based) mitigate this by transferring columnar batches with near-zero-copy Arrow, amortizing overhead and enabling vectorized execution — much faster than row-at-a-time Python UDFs but still opaque to pushdown. Rule of thumb: express logic with built-ins whenever possible; if you must write a UDF, prefer native/SQL expressions, then vectorized Pandas UDFs, and push filters *before* the UDF.
+
+**Key points:**
+- Built-ins are transparent to Catalyst: Tungsten binary rows, codegen, pushdown, reordering.
+- UDFs are black boxes — they block pushdown/codegen and add (de)serialization cost.
+- Python UDFs cross a JVM↔Python process boundary per row/batch; the most expensive option.
+- Pandas/Arrow vectorized UDFs amortize overhead; still push filters before any UDF.
+
+---
+
+### 60. Static vs dynamic partition pruning
+
+**Frequency:** High
+
+**Question:** What is the difference between static and dynamic partition pruning, and why does DPP matter for star-schema joins?
+
+**Answer:** Partition pruning skips reading partitions that can't satisfy a query, dramatically cutting I/O on partitioned tables. **Static partition pruning** happens at **compile time**: when a filter is a literal on the partition column (`WHERE dt = '2026-08-12'`), the optimizer resolves the predicate against partition metadata and plans to scan only those directories — no runtime information needed. But in a **star-schema join** the filter is often on a *dimension* table (`WHERE dim.country = 'US'`) while the huge partitioned *fact* table is partitioned by a join key; the pruning value isn't a literal and isn't known until the dimension side is evaluated, so static pruning can't help and the engine would scan the whole fact table. **Dynamic partition pruning (DPP)** fixes this: at runtime Spark evaluates the filtered dimension side first, extracts the surviving join-key values (often as a broadcast/Bloom filter), and pushes them into the fact-table scan so only matching partitions are read. This turns a full-table scan into a small subset — often an order-of-magnitude win on large fact tables.
+
+**Key points:**
+- Static pruning resolves literal partition-column filters at compile time from metadata.
+- Star-schema filters sit on the dimension, so the fact partition value isn't a compile-time literal.
+- DPP evaluates the dimension at runtime and pushes surviving keys into the fact scan.
+- DPP prunes fact-table partitions dynamically — large I/O savings; needs broadcast/AQE support.
+
+---
+
+### 61. Batch ingestion patterns: full vs incremental extract
+
+**Frequency:** High
+
+**Question:** How do you ingest data from an operational database into a lake or warehouse, and how do you choose between full and incremental extracts?
+
+**Answer:** Batch ingestion (the Sqoop/JDBC-connector pattern) pulls data on a schedule by running parallel range-partitioned queries against a source DB and writing partitioned files to the lake. The core decision is **full vs incremental** extract:
+
+- **Full extract** re-reads the entire table each run — simple and self-correcting, but expensive and impractical past a few million rows.
+- **Incremental extract** reads only rows changed since the last watermark, using a monotonically increasing key or an `updated_at` timestamp (Sqoop's `--incremental append`/`lastmodified`), persisting the high-water mark between runs.
+
+To avoid hammering production, isolate reads on a replica, bound parallelism (split column, number of mappers), and land into a **staging/bronze** layer for later transformation. Watch for pitfalls: incremental extracts miss hard deletes and rows updated without touching the watermark column, and clock skew or non-unique timestamps can drop boundary rows — which is why CDC is often preferred for high-fidelity capture.
+
+**Key points:**
+- Full = simple, self-healing, but O(table) cost; incremental = watermark-based, cheap, but fragile.
+- Use a monotonic id or `updated_at` high-water mark, persisted across runs.
+- Partition/parallelize reads against a replica to protect the source OLTP system.
+- Incremental extract misses deletes and off-watermark updates; land raw into bronze/staging.
+
+---
+
+### 62. Streaming ingestion: micro-batch vs continuous
+
+**Frequency:** High
+
+**Question:** How does micro-batch ingestion differ from continuous streaming, and how do you reliably deliver a stream into the lake?
+
+**Answer:** Streaming ingestion continuously moves events (e.g., from Kafka) into the lake, and the engine model shapes the latency/throughput trade-off. **Micro-batch** (Spark Structured Streaming's default) buffers events into small batches every trigger interval, processing each as a tiny job — higher latency (seconds) but excellent throughput, simple exactly-once via offset checkpointing, and reuse of the batch runtime. **Continuous/record-at-a-time** (Flink, or Spark's continuous mode) processes each event as it arrives — sub-second/millisecond latency at the cost of finer-grained checkpointing complexity. Delivery to the lake needs care: writers **checkpoint the source offsets together with the committed files** so a restart resumes exactly where it left off, and they must handle the **small-files problem** by batching writes and compacting. Landing into a transactional table format (Delta/Iceberg/Hudi) gives atomic commits, so readers never see half-written data, and enables downstream incremental consumption.
+
+**Key points:**
+- Micro-batch = buffered mini-jobs, higher latency, great throughput, simple offset-checkpoint exactly-once.
+- Continuous = per-event, ms latency, more complex checkpointing.
+- Commit source offsets atomically with output files so restarts resume correctly.
+- Write to Delta/Iceberg/Hudi for atomic commits; batch/compact to avoid small files.
+
+---
+
+### 63. Idempotent and exactly-once sinks
+
+**Frequency:** High
+
+**Question:** How do you achieve exactly-once (or effectively-once) delivery at a pipeline's sink, given that retries and failures are inevitable?
+
+**Answer:** Because processing can crash and replay, any at-least-once source will re-deliver records, so the sink must make duplicates harmless — the practical goal is **effectively-once**. Techniques:
+
+- **Idempotent writes:** upsert on a deterministic business/natural key (MERGE/UPSERT), so replaying the same record overwrites rather than duplicates.
+- **Deduplication:** carry a unique event id and drop already-seen ids using a state store or a dedup table (often within a time/watermark window).
+- **Transactional/two-phase commit sinks:** write output and commit source offsets in one atomic transaction (Kafka transactions, Flink's `TwoPhaseCommitSinkFunction`, Delta/Iceberg atomic commits) so partial writes are never visible.
+
+The anti-pattern is a blind append with auto-generated ids, which double-counts on every retry. Choose the cheapest guarantee that fits: idempotent upserts for keyed data, transactional commits when you need atomic multi-record visibility. Determinism matters too — non-deterministic transformations (e.g., `now()`, random ids) break replay-safety even with idempotent sinks.
+
+**Key points:**
+- Retries make at-least-once the default; design the sink so duplicates don't corrupt results.
+- Idempotent upsert on a natural key is the simplest effectively-once mechanism.
+- Dedup by unique event id via state/dedup table within a window.
+- Transactional/2PC sinks commit data + offsets atomically; keep transformations deterministic.
+
+---
+
+### 64. Data contracts and schema-registry governance
+
+**Frequency:** Medium
+
+**Question:** What is a data contract, and how does a schema registry enforce compatibility between producers and consumers?
+
+**Answer:** A **data contract** is an explicit, versioned agreement about the shape and semantics of data a producer emits — field names/types, nullability, units, semantic meaning, SLAs (freshness, volume), and ownership. It shifts responsibility left: producers can no longer silently break downstream jobs. A **schema registry** (e.g., Confluent Schema Registry with Avro/Protobuf/JSON Schema) operationalizes the structural part: each topic/subject has registered schema versions, and producers/consumers validate against them at serialization time. The registry enforces **compatibility modes** — *backward* (new schema reads old data: safe to drop fields / add optional ones), *forward* (old readers handle new data), and *full* (both) — rejecting incompatible changes at publish time rather than at 3 a.m. in production. Combined with CI checks, data contracts catch breaking changes in pull requests. Beyond structure, contracts also encode semantic and quality expectations that a registry alone can't, so teams pair the registry with data-quality tests and clear versioning/deprecation policies.
+
+**Key points:**
+- Data contract = versioned producer commitment: schema, semantics, SLAs, ownership.
+- Schema registry stores versioned schemas and validates at (de)serialization time.
+- Compatibility modes (backward/forward/full) reject breaking changes before they ship.
+- Enforce in CI; pair with quality tests for semantics the registry can't capture.
+
+---
+
+### 65. Backfills and reprocessing without double-counting
+
+**Frequency:** High
+
+**Question:** How do you safely backfill or reprocess historical data without producing duplicates or double-counted metrics?
+
+**Answer:** A backfill re-runs a pipeline over past intervals — to fix a bug, add a column, or seed a new table — and the danger is that a naive re-run appends on top of existing output, double-counting everything. The foundation is **idempotent, partition-scoped writes**: each run should be a pure function of its input partition (keyed by execution/logical date, not `now()`), and it must **overwrite that partition atomically** (`INSERT OVERWRITE`/dynamic partition overwrite, or delete-then-insert in a transactional table) rather than append. Practical strategies:
+
+- **Partition replacement:** recompute a date range and atomically swap each partition.
+- **Isolated backfill target:** write to a shadow table/branch, validate, then promote.
+- **Bounded, parallel windows:** backfill in date chunks to control load and cost.
+
+Orchestrators help when tasks are parameterized by logical date and support catchup, but only idempotency makes replays safe. Also freeze late-arriving data assumptions, keep transformations deterministic, and reset any stored watermarks/offsets so streaming state doesn't skip the reprocessed range.
+
+**Key points:**
+- Naive append on re-run double-counts; make writes idempotent and partition-scoped.
+- Key logic on logical/execution date and atomically overwrite the target partition.
+- Use partition swap, shadow tables, or bounded windows; validate before promoting.
+- Reset watermarks/offsets and keep transformations deterministic for replay safety.
+
+---
+
+### 66. Incremental processing with MERGE INTO / CDC upserts
+
+**Frequency:** High
+
+**Question:** How does `MERGE INTO` power incremental upserts, and how would you merge a CDC change stream into a lakehouse table?
+
+**Answer:** `MERGE INTO` is a single atomic statement that reconciles a target table with a source of changes: `WHEN MATCHED THEN UPDATE/DELETE ... WHEN NOT MATCHED THEN INSERT`. It's the workhorse of incremental processing on lakehouse tables (Delta/Iceberg/Hudi), turning an immutable columnar store into something you can upsert into transactionally. For **CDC**, the source is a stream of inserts/updates/deletes (from Debezium/Kafka Connect) keyed by the primary key; you merge each micro-batch so the target mirrors the OLTP source's current state. Key correctness details: **deduplicate the batch per key first** (a key may change several times per batch — keep the latest by CDC sequence/LSN, not arrival order), handle deletes with `WHEN MATCHED ... THEN DELETE`, and use an **ordering/sequence column** so an out-of-order older change never overwrites a newer one. Watch performance: MERGE rewrites touched files, so partition and Z-order/cluster on the merge keys, and compact regularly to keep write amplification down.
+
+**Key points:**
+- `MERGE INTO` = atomic matched-update/delete + not-matched-insert; enables lakehouse upserts.
+- CDC merge: key on PK, apply inserts/updates/deletes to mirror source state.
+- Dedup per key by CDC sequence/LSN before merging; use an ordering column to avoid stale overwrites.
+- MERGE rewrites files — partition/cluster on merge keys and compact to limit write amplification.
+
+---
+
+### 67. Orchestration beyond Airflow: asset-based scheduling
+
+**Frequency:** Medium
+
+**Question:** How do Dagster and Prefect differ from Airflow, and what is data-aware (asset-based) scheduling?
+
+**Answer:** Airflow models pipelines as **task DAGs** — you orchestrate *operations* and their ordering, but the framework doesn't inherently know what data each task produces. **Dagster** introduces **software-defined assets**: you declare the *data objects* (tables, files, ML models) and their dependencies, and Dagster derives the execution graph and can schedule on **data awareness** — rematerialize an asset when its upstreams change or become stale, rather than only on a cron. This makes lineage, freshness policies, partitioning, and data-quality checks first-class, and improves local testability and typed IO. **Prefect** focuses on a lighter, Pythonic, dynamic model: flows and tasks are ordinary functions with retries, caching, and runtime-dynamic DAGs (no rigid pre-declared graph), which suits imperative and parameter-heavy workflows. Rule of thumb: choose Airflow for mature, task-centric batch scheduling; Dagster when you want an asset/lineage-centric platform with strong data awareness; Prefect when you value dynamic, code-first flows with minimal ceremony.
+
+**Key points:**
+- Airflow = task-DAG orchestration; the engine is unaware of produced data.
+- Dagster = software-defined assets; schedule by data freshness/staleness with built-in lineage.
+- Prefect = dynamic, Pythonic flows with retries/caching and runtime-generated DAGs.
+- Asset-based scheduling rematerializes outputs when upstream data changes, not just on cron.
+
+---
+
+### 68. Pipeline testing and data-quality frameworks
+
+**Frequency:** Medium
+
+**Question:** How do you test data pipelines, and how do frameworks like Great Expectations and dbt tests fit in?
+
+**Answer:** Data pipelines fail in two ways — the **code** is wrong, or the **data** is wrong — so testing spans both. For code, unit-test transformation logic on small fixtures and run integration tests on sample datasets in CI. For data, you assert properties of the actual rows at runtime. **dbt tests** cover the common cases declaratively in YAML — `not_null`, `unique`, `accepted_values`, `relationships` (referential integrity) — plus custom SQL/singular tests, running as part of the build so a failing test can halt the pipeline. **Great Expectations** offers a richer, reusable suite of "expectations" (distributions, ranges, row-count deltas, regex, freshness), validation *checkpoints*, profiling to auto-suggest expectations, and human-readable **Data Docs**. Best practice is to run these as **gates** at layer boundaries (bronze→silver→gold) so bad data fails fast instead of propagating, distinguishing hard failures (block) from soft warnings (alert), and to monitor trends for anomaly detection rather than only pass/fail thresholds.
+
+**Key points:**
+- Test both code (unit/integration on fixtures) and data (runtime assertions on rows).
+- dbt tests = declarative not_null/unique/accepted_values/relationships plus custom SQL tests.
+- Great Expectations = rich reusable expectation suites, checkpoints, profiling, Data Docs.
+- Run checks as gates between layers; separate blocking failures from warnings; track trends.
+
+---
+
+### 69. dbt and ELT transformation modeling
+
+**Frequency:** High
+
+**Question:** How does dbt structure ELT transformations, and what do models, refs, and incremental materializations give you?
+
+**Answer:** dbt is the **T in ELT**: you load raw data into the warehouse first, then transform it in-warehouse with SQL. A **model** is a `SELECT` statement in a `.sql` file that dbt turns into a table or view; you never write DDL. Models reference each other with **`ref()`**, from which dbt builds the dependency DAG, resolves environment-correct table names, and determines run order — this is what makes lineage and incremental builds automatic. **Materializations** control how a model is persisted: *view* (cheap, always fresh), *table* (recomputed each run), *ephemeral* (inlined CTE), and **incremental** (only process new/changed rows via an `is_incremental()` filter, appending or merging with a unique key so you don't rebuild huge tables every run). dbt adds Jinja macros for reuse, `sources` and freshness checks, tests and docs, and snapshots for SCD Type 2. The result is version-controlled, testable, modular analytics engineering with layered models (staging → intermediate → marts).
+
+**Key points:**
+- dbt = ELT's transform layer: SQL `SELECT` models compiled to tables/views, no manual DDL.
+- `ref()` builds the DAG, handles run order, and enables lineage across staging→marts.
+- Materializations: view, table, ephemeral, and incremental (`is_incremental()` + unique key merge).
+- Adds macros, sources/freshness, tests, docs, and SCD2 snapshots for testable analytics engineering.
+
+---
+
+### 70. Late-arriving dimensions and out-of-order handling
+
+**Frequency:** Medium
+
+**Question:** How do you handle late-arriving dimensions and out-of-order events in a batch pipeline?
+
+**Answer:** In dimensional pipelines, a fact often arrives before its dimension row exists — a **late-arriving dimension** (or "early-arriving fact"). If you drop or inner-join it, you silently lose facts. The standard fix is the **inferred/placeholder dimension member**: insert a stub dimension row keyed by the natural key with a surrogate key and unknown attributes, join the fact to it immediately, then **update the stub in place when the real dimension arrives** so the surrogate key (and all facts pointing at it) stay valid. For **SCD Type 2** dimensions, late-arriving *changes* are harder: a change with an old effective date must be inserted into the correct historical slot, splitting/adjusting the validity windows of surrounding versions and restating any facts that should point at the corrected version. More broadly, out-of-order handling in batch relies on **event-time (not processing-time) partitioning**, reprocessing recent windows on a lookback so late data lands in its true partition, and idempotent overwrites so re-running those partitions doesn't double-count.
+
+**Key points:**
+- Late-arriving dimension: insert an inferred/placeholder member so facts aren't lost, then backfill attributes.
+- Keep the surrogate key stable when the real dimension arrives so existing facts stay valid.
+- SCD2 late changes must slot into the right historical window and restate affected facts.
+- Partition by event time, reprocess a lookback window, and use idempotent overwrites for out-of-order data.
+
+---
+
+### 71. Spark memory management
+
+**Frequency:** High
+
+**Question:** How does Spark manage executor and driver memory, and how do you diagnose and prevent OutOfMemory errors?
+
+**Answer:** Each executor JVM heap (`spark.executor.memory`) is split by the **unified memory manager** into a shared region (`spark.memory.fraction`, default 0.6) that dynamically balances **execution** memory (shuffles, joins, sorts, aggregations) against **storage** memory (cached blocks), plus a smaller **user** region for your objects. Under pressure execution can evict cached storage but not vice versa. On top of the heap, `spark.executor.memoryOverhead` covers off-heap/native needs (Netty buffers, Python workers), and off-heap execution can be enabled via `spark.memory.offHeap`. When execution memory runs out Spark **spills to disk** instead of failing, but heavy spill wrecks performance. OOMs usually come from the **driver** (large `collect()` or broadcast) or executors (huge/skewed partitions, wide aggregations, too many cores per executor). Fixes: raise partition count to shrink per-task data, increase overhead, avoid `collect`, cap broadcast size, and reduce executor cores so concurrent tasks share memory better.
+
+**Key points:**
+- Unified manager splits heap into a shared execution+storage region (0.6) plus a user region; overhead is separate off-heap.
+- Execution evicts storage under pressure; spill to disk avoids failure but is slow.
+- Driver OOM from collect/broadcast; executor OOM from big/skewed partitions.
+- Fix via more partitions, higher overhead, fewer cores per executor, avoiding collect.
+
+---
+
+### 72. Shuffle internals and tuning
+
+**Frequency:** High
+
+**Question:** What happens during a Spark shuffle, and how do you tune it?
+
+**Answer:** A wide transformation writes each map task's output into buckets partitioned by the target reducer, sorts and spills them to local disk as **shuffle files**, and reduce tasks then fetch their slice from every mapper over the network — an all-to-all transfer that is Spark's most expensive operation. The number of reduce partitions is `spark.sql.shuffle.partitions` (default 200); too few makes partitions large and spill-heavy, too many creates tiny tasks and scheduling overhead — AQE's coalesce helps by merging small post-shuffle partitions at runtime. The **external shuffle service** serves shuffle files from a long-lived daemon (on the NodeManager) so executors can be removed without losing their shuffle output — essential for dynamic allocation. Tuning levers: right-size partitions (~100–200 MB each), enable AQE, raise `spark.reducer.maxSizeInFlight` and shuffle buffers for big shuffles, prefer `reduceByKey`/broadcast joins to cut shuffle volume, and watch spill metrics in the UI.
+
+**Key points:**
+- Shuffle = map-side partition + sort + spill to local files, then all-to-all network fetch by reducers.
+- `spark.sql.shuffle.partitions` (default 200): too few → spill, too many → overhead; AQE coalesces.
+- External shuffle service decouples shuffle files from executor lifetime → enables dynamic allocation.
+- Cut shuffle with reduceByKey/broadcast joins; monitor spill and fetch metrics.
+
+---
+
+### 73. Speculative execution and straggler mitigation
+
+**Frequency:** Medium
+
+**Question:** What is speculative execution in Spark, and when does it help or hurt?
+
+**Answer:** A **straggler** is a task that runs far slower than its peers — from a slow/failing disk, a noisy neighbor, an overloaded node, or uneven data. Because a stage finishes only when its slowest task does, one straggler stretches wall-clock. **Speculative execution** (`spark.speculation`) has the driver watch task durations and, when a task runs much longer than the median of completed tasks in the stage (`spark.speculation.multiplier`, after `spark.speculation.quantile` have finished), launch a **duplicate copy** on another node; whichever finishes first wins and the other is killed. This masks *hardware/environmental* slowness at the cost of extra resources. Crucially, speculation does **not** fix **data skew** — a duplicate of a task processing a huge partition is equally slow, so you address skew with salting/AQE instead. Avoid speculation for non-idempotent tasks (e.g., writes to external systems without atomic commit), where a duplicate could double-write.
+
+**Key points:**
+- Straggler = abnormally slow task; a stage waits for its slowest task.
+- Speculation launches a duplicate of slow tasks; first to finish wins, the other is killed.
+- Good for hardware/environment slowness; useless for data skew (fix with salting/AQE).
+- Beware non-idempotent side effects; it also costs extra cluster resources.
+
+---
+
+### 74. Dynamic resource allocation in Spark
+
+**Frequency:** Medium
+
+**Question:** How does Spark's dynamic resource allocation work, and what does it require?
+
+**Answer:** With **dynamic allocation** (`spark.dynamicAllocation.enabled`) Spark adjusts the number of executors to the workload instead of holding a fixed set for the app's whole lifetime. When tasks queue up beyond a backlog timeout it **requests more executors** (growing exponentially), up to `maxExecutors`; when executors sit idle past `executorIdleTimeout` it **releases them** back to the cluster manager (YARN/K8s), down to `minExecutors`. This improves multi-tenant cluster utilization and cuts cost for bursty or idle-heavy jobs (e.g., a long notebook session). The catch is **shuffle data**: an executor holds shuffle files that later stages need, so removing it would force recomputation — hence dynamic allocation traditionally requires the **external shuffle service** (or, on Kubernetes, shuffle tracking / persistent volumes / graceful decommissioning to preserve or migrate shuffle blocks). Cached data on a removed executor is likewise lost, so tune `cachedExecutorIdleTimeout` to protect executors holding cache.
+
+**Key points:**
+- Scales executors up on task backlog and down on idle, between min and max.
+- Improves cluster utilization and cost for bursty/interactive workloads.
+- Requires external shuffle service (or K8s shuffle tracking) so removing executors doesn't lose shuffle files.
+- Removed executors lose cached blocks; guard with cachedExecutorIdleTimeout.
+
+---
+
+### 75. Small-file compaction jobs and optimal file sizing
+
+**Frequency:** High
+
+**Question:** How do you design a compaction job for small files, and what target file size should you aim for?
+
+**Answer:** Streaming ingestion and heavily-partitioned writes produce many tiny files, which inflate metadata, slow listing, and create one small task per file — killing scan throughput. A **compaction (bin-packing) job** periodically rewrites many small files into fewer large ones per partition: read the partition, `repartition`/`coalesce` to the desired file count, and rewrite. Aim for files roughly **128 MB–1 GB** — commonly ~128–256 MB to match HDFS block size and Parquet row-group behavior and keep tasks well-sized, larger (512 MB–1 GB) for pure scan workloads. Compute the target file count as `total_partition_bytes / target_size`. Lakehouse formats automate this: Delta's `OPTIMIZE` (with `ZORDER`) and auto-compaction, Iceberg's `rewrite_data_files`, Hudi clustering/compaction — all performing atomic, snapshot-isolated rewrites so readers aren't disrupted. Balance frequency against cost: compacting too often wastes I/O, too rarely leaves the small-file penalty in place.
+
+**Key points:**
+- Small files → metadata bloat, slow listing, one tiny task per file.
+- Compaction bin-packs many small files into fewer large ones per partition via rewrite.
+- Target ~128 MB–1 GB (often 128–256 MB); file_count = total_bytes / target_size.
+- Delta OPTIMIZE/ZORDER, Iceberg rewrite_data_files, Hudi clustering do atomic compaction.
+
+---
+
+### 76. External caching and acceleration layers
+
+**Frequency:** Medium
+
+**Question:** What problem does a layer like Alluxio solve, and when would you add one to a big-data stack?
+
+**Answer:** Separating compute from storage (Spark/Presto over S3/HDFS) means every query pays remote-read latency and, on cloud object stores, per-request and egress costs, plus throttling on hot prefixes. **Alluxio** (and similar storage caches) insert a **distributed caching tier** between compute and the underlying store: hot data is cached in the memory/SSD of the compute nodes and served at near-local latency, while Alluxio presents a **unified namespace** over heterogeneous back-ends (S3, HDFS, GCS). It shines for **repeated reads** of the same datasets — interactive BI, iterative ML, multiple jobs sharing tables — and for restoring **data locality** when compute is disaggregated. Note it caches data across the cluster, unlike Spark's in-process `persist()`, which lives only inside one application's executors; Alluxio is cross-application and survives job restarts. Trade-offs: added infrastructure, memory/SSD cost, and cache consistency/eviction management, so it earns its place only when read amplification is high.
+
+**Key points:**
+- Adds a distributed cache tier between compute and object/remote storage for near-local reads.
+- Cuts remote-read latency, request/egress cost, and hot-prefix throttling; unifies namespaces.
+- Best for repeated/interactive/iterative reads and disaggregated compute (locality).
+- Cross-application and persistent, unlike per-app persist(); costs infra plus consistency management.
+
+---
+
+### 77. Cloud cost optimization
+
+**Frequency:** High
+
+**Question:** How do you optimize the cost of big-data workloads in the cloud?
+
+**Answer:** The big levers are compute pricing, elasticity, and storage tiering. Run interruptible work on **spot/preemptible instances** (up to ~70–90% cheaper) — safe for **executors/worker nodes** because Spark recomputes lost tasks, but keep the **driver/master and shuffle service on on-demand** to avoid whole-job failure; mix instance types and configure a fallback to on-demand. **Autoscale** clusters (dynamic allocation, managed autoscaling) so you pay only for capacity in use, and terminate idle clusters. On storage, use **tiering/lifecycle policies** (S3 Standard → Infrequent Access → Glacier) to move cold data down automatically, compact small files to cut request counts, and use **columnar formats + compression + partition pruning** so queries scan less — in per-scan engines like BigQuery/Athena, bytes scanned *is* the bill. Also right-size instances, prefer transient job clusters over always-on ones, and monitor with cost tags and budgets to attribute spend.
+
+**Key points:**
+- Spot/preemptible for workers (Spark re-runs tasks); keep driver/master + shuffle on on-demand.
+- Autoscale and auto-terminate idle clusters; right-size and use transient job clusters.
+- Storage lifecycle tiering (Standard → IA → Glacier); compact small files to cut request counts.
+- Columnar + compression + partition pruning reduces bytes scanned = direct savings in Athena/BigQuery.
+
+---
+
+### 78. Serverless big data
+
+**Frequency:** Medium
+
+**Question:** What are the elasticity trade-offs of serverless big-data platforms like EMR Serverless, Databricks, or BigQuery?
+
+**Answer:** Serverless platforms remove cluster provisioning: you submit a job or query and the platform allocates capacity on demand, scales it automatically, and bills by **resource-seconds or bytes/slots consumed** rather than for idle cluster time. **EMR Serverless** and **Databricks serverless (SQL/jobs)** spin executors up and down per job; **BigQuery** runs fully managed with on-demand (bytes-scanned) pricing or reserved **slots** (capacity units) for predictable cost. The upside is zero idle cost, fast startup, and no cluster ops — ideal for spiky, unpredictable, or intermittent workloads. Trade-offs: less control over instance types/tuning, potential **cold-start** latency, harder cost predictability for heavy steady workloads (where a reserved/committed cluster or slot reservation is cheaper), noisy-neighbor variance on shared pools, and possible feature/library limits. Rule of thumb: serverless for bursty and dev/ad-hoc work; provisioned/reserved for large, continuous, predictable pipelines.
+
+**Key points:**
+- No provisioning; auto-scales and bills per resource-second / bytes / slots, not idle time.
+- Zero idle cost, fast start, no ops — great for spiky, intermittent, ad-hoc work.
+- Trade-offs: less tuning control, cold starts, weaker cost predictability at steady high load.
+- Steady heavy pipelines are usually cheaper on reserved capacity/slots or provisioned clusters.
+
+---
+
+### 79. Benchmarking and profiling big-data jobs
+
+**Frequency:** Medium
+
+**Question:** How do you find the bottleneck in a slow Spark job?
+
+**Answer:** Start with the **Spark UI**. The **stages/timeline** view shows which stage dominates and whether tasks are balanced; a stage where one task's duration and input/shuffle-read dwarf the median means **skew**, while uniformly slow tasks point to under-parallelism or resource limits. Check **shuffle read/write and spill** metrics (memory and disk spill = pressure — add partitions/memory), **GC time** (high = memory pressure or too little heap), and the **event timeline** to see whether time goes to compute, scheduler delay, or task deserialization. The **SQL tab** shows the physical plan, per-operator row counts, and where a scan reads too much (missing pruning) or a join isn't broadcast. Classify the bottleneck as I/O, shuffle, CPU/serialization, GC/memory, or scheduling, then act accordingly. For repeatable benchmarks, fix data and config, warm caches consistently, run multiple trials, and change one variable at a time.
+
+**Key points:**
+- Spark UI first: the stage timeline reveals the dominant stage and skew (one outsized task).
+- Watch shuffle read/write, spill, GC time, and scheduler delay to localize the bottleneck class.
+- SQL tab shows the physical plan, per-operator rows, missing pruning, or non-broadcast joins.
+- Benchmark rigorously: fix inputs/config, run multiple trials, change one variable at a time.
+
+---
+
+### 80. Choosing a partitioning strategy for object storage
+
+**Frequency:** High
+
+**Question:** How do you choose partition columns for a dataset on object storage, and what is over-partitioning?
+
+**Answer:** Physical partitioning writes data into directory layouts like `.../date=2026-08-12/region=us/` so engines can **prune** whole partitions from a query's predicate without scanning them. Pick columns that (a) appear frequently in query **filters** and (b) have **moderate cardinality**. **Date/time** is the canonical choice for time-series data. The trap is **over-partitioning**: choosing a high-cardinality column (user_id, timestamp to the second) or nesting many columns explodes the number of directories, each holding a few tiny files — reviving the small-file problem, bloating metadata, and making listing/planning slow. Under-partitioning leaves partitions too big to prune effectively. Aim for partitions in the ~hundreds-of-MB-to-GB range and reasonable directory counts; for high-cardinality filtering use **bucketing** or lakehouse **data-skipping/Z-ordering/clustering** (Iceberg hidden partitioning, Delta Z-order) instead of a partition column. Validate against real query patterns and watch files-per-partition.
+
+**Key points:**
+- Partition by columns common in filters with moderate cardinality; date/time is canonical.
+- Partitioning enables partition pruning → less data scanned.
+- Over-partitioning (high cardinality / too many columns) → tiny files, metadata bloat, slow planning.
+- Use bucketing or Z-order/data-skipping/hidden partitioning for high-cardinality filters.
+
+---
+
+### 81. LSM-tree storage engines
+
+**Frequency:** High
+
+**Question:** How does an LSM-tree work, and why is it the storage model of choice for write-heavy NoSQL engines?
+
+**Answer:** A **Log-Structured Merge-tree** turns random writes into sequential ones. Every write first appends to a **write-ahead log** (for durability) and then updates an in-memory sorted structure, the **memtable**. When the memtable fills, it is flushed as an immutable, sorted **SSTable** file on disk; writes never modify existing files, so they stay fast and sequential. Over time many SSTables accumulate, so a background **compaction** process merges them, discarding overwritten values and tombstones. Reads must check the memtable plus potentially several SSTables, so engines add **Bloom filters** (to skip SSTables that can't contain a key) and sparse block indexes. The core trade-off is **write amplification vs. read amplification**: leveled compaction gives tight read/space bounds but rewrites data more; size-tiered compaction is cheaper to write but bloats space and reads. This write-optimized design underpins Cassandra, HBase, RocksDB, and LevelDB.
+
+**Key points:**
+- WAL + in-memory memtable → flushed as immutable sorted SSTables; writes are sequential appends.
+- Compaction merges SSTables, dropping overwrites and tombstones.
+- Reads check memtable + SSTables; Bloom filters and block indexes cut read cost.
+- Core trade-off: leveled (read/space optimized) vs. size-tiered (write optimized) compaction.
+
+---
+
+### 82. HBase internals: regions, splits, and hotspotting
+
+**Frequency:** Medium
+
+**Question:** How does HBase distribute data across regions, and how do row-key design and compaction affect performance?
+
+**Answer:** HBase stores a table as a sorted map partitioned into **regions**, each owning a contiguous **row-key range**. Regions are served by **RegionServers**; the **HMaster** handles assignment and balancing, and metadata lives in the `hbase:meta` table (found via ZooKeeper). Because rows are physically sorted by key, a monotonically increasing key (timestamps, sequential IDs) sends every write to the **last region on one server** — the classic **hotspotting** problem. Mitigations: **salting** (prefix a hash bucket), **key hashing**, or field reversal to spread writes. When a region grows past a threshold it undergoes a **region split** into two daughter regions, which may then be rebalanced across servers. Internally each region uses an LSM engine: writes hit the WAL and MemStore, flush to **HFiles**, and a **minor compaction** merges small HFiles while a **major compaction** rewrites all files per column family, physically dropping deleted cells and expired versions. Major compactions are I/O-heavy, so they are usually scheduled off-peak.
+
+**Key points:**
+- Table = sorted rows split into range-based regions served by RegionServers; ZooKeeper + meta locate them.
+- Sequential row keys cause hotspotting; fix with salting, hashing, or key reversal.
+- Regions auto-split when large, then rebalance across the cluster.
+- Minor compaction merges HFiles; major compaction rewrites all files and purges deletes/old versions (I/O-heavy).
+
+---
+
+### 83. Cassandra data modeling
+
+**Frequency:** High
+
+**Question:** How do you model data in Cassandra, and what is the difference between partition keys and clustering keys?
+
+**Answer:** Cassandra modeling is **query-first**: you enumerate your read queries, then design a table per query so each read hits a single partition — there are no efficient joins or ad-hoc filters. The **primary key** has two parts. The **partition key** (first component, possibly composite) is hashed to decide which node(s) own the row; all rows sharing it live together and are the unit of distribution and single-partition reads. The **clustering keys** (remaining components) define the **sort order within a partition**, enabling efficient range scans and `ORDER BY`. This drives deliberate **denormalization**: the same data is written into multiple tables shaped for different queries. Good partition keys give **high cardinality and even distribution** while keeping partitions bounded — a too-coarse key (e.g., a single day) creates unbounded "hot" partitions, while a too-fine key prevents range queries. You avoid `ALLOW FILTERING` and cross-partition scans, accepting write-side duplication to guarantee predictable, low-latency reads.
+
+**Key points:**
+- Model per query; one query = one table = ideally one partition read (no joins).
+- Partition key → placement/distribution; clustering keys → sort order and range scans within a partition.
+- Denormalize deliberately: duplicate data across query-shaped tables.
+- Choose partition keys for even distribution and bounded size; avoid ALLOW FILTERING and unbounded hot partitions.
+
+---
+
+### 84. Real-time OLAP engine internals
+
+**Frequency:** High
+
+**Question:** How do real-time OLAP engines like Druid, Pinot, and ClickHouse achieve sub-second analytical queries?
+
+**Answer:** These engines are **columnar** and store data in immutable, self-contained **segments** (Druid/Pinot) or **parts** (ClickHouse) that are partitioned by time and heavily indexed. Because each column is stored separately and compressed (dictionary, run-length, delta), a query scans only the columns it touches. Druid and Pinot support **ingestion-time pre-aggregation (rollup)**, collapsing raw events into aggregated rows at defined granularities so many dashboards read pre-computed results. They add rich indexing — **bitmap/inverted indexes** on dimensions for fast filtering, plus sorted/range indexes — and a scatter-gather query layer that fans out to segment servers and merges partial aggregates. ClickHouse instead relies on the **MergeTree** family: data is sorted by a **primary/sorting key** with a sparse index and skipping indexes, and background **merges** combine parts (optionally aggregating via `AggregatingMergeTree`). All three separate **real-time ingestion** (queryable immediately from memory/fresh segments) from **historical** optimized storage, giving both freshness and speed.
+
+**Key points:**
+- Columnar, compressed, immutable time-partitioned segments/parts scanned column-by-column.
+- Druid/Pinot: ingestion-time rollup pre-aggregation + bitmap/inverted indexes; scatter-gather querying.
+- ClickHouse: MergeTree sorted primary key, sparse + skipping indexes, background merges.
+- Separate real-time (fresh, in-memory) from historical (optimized) tiers for freshness plus speed.
+
+---
+
+### 85. Elasticsearch for search and analytics at scale
+
+**Frequency:** High
+
+**Question:** How does Elasticsearch use the inverted index and sharding to support search and aggregations at scale?
+
+**Answer:** Elasticsearch (on Lucene) indexes documents into an **inverted index**: for each analyzed term it stores a posting list of the documents containing it, making full-text search and boolean/phrase queries fast. An index is split into **primary shards** (each a self-contained Lucene index) plus **replica shards** for HA and read throughput; shard count is largely fixed at creation, so sizing matters. Writes go to a primary then replicate; new docs land in an in-memory buffer flushed to immutable **segments** on **refresh** (near-real-time, ~1s), which is why ES is not immediately consistent. Segments are periodically merged. Search is **scatter-gather**: the coordinating node queries every shard and merges results. For **analytics**, aggregations run on **doc values** (a columnar, on-disk structure) rather than the inverted index, enabling fast group-by, histograms, and metrics. Scaling pitfalls include **deep pagination** (use `search_after`), oversharding, and high-cardinality aggregations that pressure heap.
+
+**Key points:**
+- Inverted index (term → posting list) powers full-text search; doc values (columnar) power aggregations.
+- Index = primary shards (fixed count) + replicas; writes replicate, reads scatter-gather across shards.
+- Near-real-time: docs visible after refresh (~1s) as immutable, later-merged segments.
+- Watch oversharding, deep pagination (use search_after), and high-cardinality aggregations.
+
+---
+
+### 86. Large-scale graph processing
+
+**Frequency:** Medium
+
+**Question:** How does the Pregel/GraphX vertex-centric model process massive graphs, and how does it differ from a graph database?
+
+**Answer:** Large-scale graph algorithms (PageRank, shortest paths, connected components) fit poorly on MapReduce because they iterate over the whole graph repeatedly. **Pregel** introduced a **vertex-centric, "think like a vertex"** model built on **Bulk Synchronous Parallel (BSP)** supersteps: in each superstep every active vertex receives messages from the previous step, updates its state, and sends messages along its edges; a global barrier synchronizes supersteps, and the job ends when all vertices **vote to halt**. This maps naturally to distributed execution — vertices are partitioned across workers and only messages cross the network. **GraphX** (Spark) expresses the same idea over its RDDs via the `Pregel` API and `aggregateMessages`, unifying graph and data-parallel processing. This differs from a **graph database** (e.g., Neo4j): databases optimize **low-latency traversals and transactional OLTP queries** over stored, indexed relationships, whereas Pregel/GraphX are **batch analytical** engines for whole-graph iterative computation.
+
+**Key points:**
+- Iterative graph algorithms need repeated full-graph passes — awkward on MapReduce.
+- Pregel = vertex-centric BSP: supersteps of receive → compute → send, barrier-synced, ending when all vote to halt.
+- Vertices partitioned across workers; only messages traverse the network. GraphX brings this to Spark.
+- Pregel/GraphX = batch whole-graph analytics; graph DBs = low-latency transactional traversals.
+
+---
+
+### 87. Vector databases and ANN search
+
+**Frequency:** High
+
+**Question:** How do vector databases perform embedding similarity search at scale, and how do HNSW and IVF indexes work?
+
+**Answer:** Vector databases store high-dimensional **embeddings** and answer **nearest-neighbor** queries by similarity (cosine/dot/L2). Exact search is O(N) per query and infeasible at billions of vectors, so they use **Approximate Nearest Neighbor (ANN)** indexes that trade a little recall for large speedups. **HNSW** (Hierarchical Navigable Small World) builds a multi-layer proximity graph: search starts at a sparse top layer and greedily descends, giving logarithmic-ish query time with high recall, at the cost of high memory and build time (tuned via `M` and `efConstruction/efSearch`). **IVF** (Inverted File) instead **clusters** vectors (k-means) into cells and, at query time, probes only the `nprobe` nearest cells — cheaper memory, tunable recall/speed — and is usually combined with **Product Quantization (PQ)** to compress vectors for memory-bound, billion-scale sets. Production systems add **metadata filtering** (hybrid queries), sharding, and often combine dense vector scores with keyword/BM25 scores for hybrid search.
+
+**Key points:**
+- Exact NN is O(N); ANN indexes trade recall for speed at scale.
+- HNSW: layered navigable graph, high recall and speed, high memory; tune M/ef.
+- IVF: cluster into cells, probe nprobe nearest; combine with PQ compression for billion-scale.
+- Production adds metadata filtering, sharding, and hybrid (vector + keyword/BM25) search.
+
+---
+
+### 88. Choosing a NoSQL data model
+
+**Frequency:** High
+
+**Question:** How do you choose among key-value, wide-column, and document databases, and what are the trade-offs?
+
+**Answer:** Match the **data model to the access pattern**. **Key-value** stores (Redis, DynamoDB in its simplest form) map an opaque key to a blob — fastest and simplest, ideal for caches, sessions, and lookups by known key, but they can't query by value. **Wide-column** stores (Cassandra, HBase) use a partition key plus sparse, sorted columns; they excel at **massive write throughput and range scans within a partition** (time series, event logs, feeds) but demand rigid query-first modeling with no joins. **Document** stores (MongoDB) hold self-describing JSON/BSON with **secondary indexes and rich queries on any field**, fitting evolving schemas and aggregate-oriented entities (catalogs, user profiles), at some cost to write throughput and cross-document consistency. Cross-cutting factors: **consistency model** (CP vs AP, tunable quorums), **query flexibility** vs raw performance, and whether relationships are better served by a **graph** DB. The honest default is often to reach for these only when a relational database's scale or flexibility limits actually bite.
+
+**Key points:**
+- Key-value: fastest, lookup-by-key only — caches, sessions.
+- Wide-column: partition + sorted columns, huge write throughput and in-partition ranges; strict query-first modeling.
+- Document: rich per-field queries and flexible schema; weaker cross-document consistency/throughput.
+- Choose on access pattern, consistency (CP/AP), and query flexibility; don't abandon relational without a real reason.
+
+---
+
+### 89. Secondary indexes in distributed stores
+
+**Frequency:** Medium
+
+**Question:** What is the difference between local and global secondary indexes in distributed data stores, and what are their consistency and performance costs?
+
+**Answer:** A **secondary index** lets you query by a non-primary attribute, but in a partitioned store the index must itself be distributed, and there are two strategies. A **local (partitioned) index** stores index entries alongside the data on the **same node/partition** (e.g., Cassandra secondary indexes, DynamoDB LSIs). Writes stay cheap and local, but a query on the indexed field usually has no partition key, so it must **scatter-gather across all partitions** — fine for a few nodes, expensive at scale. A **global index** is a separately partitioned structure keyed by the **indexed value** (e.g., DynamoDB GSIs, Cassandra's SASI/materialized-view patterns): a lookup goes straight to the one partition holding matches, so **reads are efficient**, but every write must **update a remote index partition**, adding write amplification, cross-partition coordination, and typically **eventual (asynchronous) consistency** between base table and index. The general rule: local = cheap writes/expensive reads; global = efficient reads/costly, often eventually-consistent writes.
+
+**Key points:**
+- Secondary index = query by non-primary attribute; must be distributed in a partitioned store.
+- Local index: co-located with data, cheap writes, but reads scatter-gather all partitions.
+- Global index: partitioned by indexed value, efficient targeted reads, but writes hit a remote partition.
+- Global indexes add write amplification and are usually eventually consistent with the base table.
+
+---
+
+### 90. Read/write paths, tombstones, and compaction pitfalls
+
+**Frequency:** Medium
+
+**Question:** How do deletes work in LSM-based stores via tombstones, and what compaction pitfalls do they cause?
+
+**Answer:** In an LSM store, data is immutable, so a **delete cannot remove anything in place** — it writes a **tombstone**, a marker recording that a key (or range) is deleted, which shadows all older values. Tombstones are only physically purged during **compaction**, and not immediately: they must survive at least `gc_grace_seconds` so the delete can propagate to every replica (otherwise a stale replica could resurrect the data — **zombie rows**). The read path must merge the memtable and all relevant SSTables and honor tombstones, so accumulated tombstones **slow reads dramatically**: a query scanning a partition full of tombstones (e.g., a queue-like workload of insert-then-delete) reads and discards huge amounts of data and can time out. Other pitfalls: **range tombstones** and TTL expirations bloat SSTables; **large partitions** amplify compaction I/O; and unbalanced size-tiered compaction causes **space amplification**. Mitigations include avoiding delete-heavy/queue patterns, using TTLs thoughtfully, tuning compaction strategy, and monitoring tombstone-per-read.
+
+**Key points:**
+- Deletes write tombstones (markers), not in-place removals; older values are shadowed.
+- Tombstones purged only by compaction after gc_grace to avoid zombie/resurrected rows.
+- Tombstone buildup (queue-like insert/delete patterns) severely slows reads and can cause timeouts.
+- Watch large partitions, range/TTL tombstones, and space amplification; tune compaction and avoid delete-heavy designs.
+
+---
+
+### 91. Feature stores and offline/online parity
+
+**Frequency:** High
+
+**Question:** What problem does a feature store solve, and how do you guarantee offline/online parity and point-in-time correctness?
+
+**Answer:** A feature store centralizes feature computation, storage, and serving so training and inference share one definition, avoiding the classic bug where a feature is engineered one way in a batch training job and subtly differently in the online request path (training/serving skew). It has two layers: an **offline store** (columnar warehouse/lake) holding full history for training, and a low-latency **online store** (Redis, DynamoDB, Cassandra) holding the latest value per entity for serving. Parity comes from defining the transformation once and materializing to both sides, or reusing the same code. **Point-in-time correctness** is the subtle part: when building a training set you must join each label to feature values *as of* the event timestamp, never leaking future data — an as-of/point-in-time join on event time. Feature stores also manage freshness, backfills, versioning, and reuse across teams.
+
+**Key points:**
+- Solves training/serving skew by sharing one feature definition across offline and online stores.
+- Offline store = history for training; online store = low-latency latest values for inference.
+- Point-in-time (as-of) joins prevent label leakage from future feature values.
+- Adds freshness SLAs, backfills, versioning, and cross-team reuse.
+
+---
+
+### 92. Data versioning and reproducibility
+
+**Frequency:** Medium
+
+**Question:** How do you version datasets so experiments and pipelines are reproducible, and what do Delta/Iceberg time travel, lakeFS, and DVC each address?
+
+**Answer:** Reproducibility means you can re-run a pipeline or retrain a model against the exact same data it originally saw. Three approaches operate at different layers:
+
+- **Table-format time travel** (Delta, Iceberg, Hudi): each commit produces an immutable snapshot, so you can query `AS OF` a version or timestamp and pin training to a snapshot ID. This is table-level and native to the lakehouse.
+- **lakeFS**: git-like branching, commits, and merges over the *whole* object store, giving atomic multi-table versioning and isolated branches for experiments or CI on real data.
+- **DVC**: git-adjacent versioning for files/artifacts (datasets, models), storing large blobs in remote storage while git tracks lightweight pointers — good for ML repos.
+
+Combine data versions with code (git SHA) and environment (container/lockfile) versions; only pinning all three makes a run truly reproducible.
+
+**Key points:**
+- Delta/Iceberg time travel = immutable snapshots, query AS OF version/timestamp, table-level.
+- lakeFS = git-like branch/commit/merge across the entire object store, atomic multi-table.
+- DVC = versions large data/model artifacts with git-tracked pointers plus remote storage.
+- True reproducibility pins data + code SHA + environment together.
+
+---
+
+### 93. Data mesh and domain-oriented ownership
+
+**Frequency:** Medium
+
+**Question:** What is data mesh, and what are its core principles compared to a centralized data platform?
+
+**Answer:** Data mesh is a socio-technical response to the bottleneck of a single central data team that owns all pipelines but understands none of the domains. It decentralizes ownership around four principles: **domain-oriented ownership** (the team that produces the data — orders, payments — owns its analytical data end to end); **data as a product** (each dataset has an owner, SLAs, documentation, discoverability, and quality guarantees, treated like an API for consumers); **self-serve data platform** (a central platform team provides paved-road infrastructure — storage, pipelines, catalog, governance tooling — so domains ship without reinventing plumbing); and **federated computational governance** (global standards for interoperability, security, and PII are defined centrally but enforced automatically/as code across domains). The trade-off: it improves scalability and domain alignment but demands organizational maturity, and done poorly it degenerates into inconsistent silos with duplicated effort.
+
+**Key points:**
+- Four principles: domain ownership, data as a product, self-serve platform, federated governance.
+- Shifts pipeline ownership from a central team to the domains that know the data.
+- Data products have owners, SLAs, docs, and quality — consumed like APIs.
+- Powerful for scale but needs org maturity; poorly done it becomes inconsistent silos.
+
+---
+
+### 94. Data catalog, discovery, and metadata management
+
+**Frequency:** Medium
+
+**Question:** Beyond a searchable table list, what makes a modern data catalog effective, and how is metadata collected and kept current?
+
+**Answer:** A catalog is only useful if metadata is trustworthy and automatically fresh, so effectiveness hinges on how it ingests and links metadata rather than on the search box. Modern catalogs (DataHub, Amundsen, OpenMetadata, Unity Catalog) collect three metadata types: **technical** (schemas, partitions, formats), **operational** (freshness, row counts, last-run, popularity/query logs), and **business** (owners, descriptions, glossary terms, PII/classification tags). Metadata is harvested by **crawlers and push-based emitters** wired into ingestion, orchestration, and query engines, so it updates as pipelines run instead of via manual entry that rots. Key capabilities: **column-level lineage** for impact/root-cause analysis, **automated PII classification** and tagging, ranking discovery by popularity and certification status, and exposing everything through **APIs** so governance and access policies can consume it. Adoption fails when the catalog is a manual side-project; it succeeds when metadata generation is embedded in the platform.
+
+**Key points:**
+- Collects technical + operational + business metadata, not just table names.
+- Auto-harvested via crawlers/push emitters in pipelines — stays fresh, not manually curated.
+- Column-level lineage, automated PII classification, popularity/certification ranking.
+- API-first so policies and tools consume metadata; manual-only catalogs rot and fail adoption.
+
+---
+
+### 95. Encryption, column masking, and tokenization
+
+**Frequency:** Medium
+
+**Question:** How do encryption at rest/in transit, column-level masking, and tokenization differ, and when do you use each?
+
+**Answer:** These are layered controls, not substitutes. **Encryption in transit** (TLS between clients, brokers, and storage) protects data on the wire; **encryption at rest** (KMS-managed keys, ideally envelope encryption with per-dataset data keys) protects stored bytes and enables **crypto-shredding** — deleting a key to render data unrecoverable for erasure requests. Both are coarse: anyone with query access still sees plaintext values, so you add finer controls. **Column/dynamic masking** applies at query time based on the caller's role — an analyst sees `****1234` while a fraud team sees the full number — leaving stored data intact and policy-driven. **Tokenization** replaces a sensitive value with a surrogate token, keeping the real value in a separate secured vault; unlike encryption it's typically irreversible without vault lookup and can preserve format, so downstream joins and analytics work on tokens without exposing PII. Use encryption everywhere as the baseline, masking for role-based read control, tokenization when raw values must never live in the analytics estate.
+
+**Key points:**
+- In-transit (TLS) + at-rest (KMS/envelope) encryption are the coarse baseline; enables crypto-shredding.
+- Encryption alone leaves plaintext to anyone with query access — add finer controls.
+- Column/dynamic masking = query-time, role-based redaction; stored data unchanged.
+- Tokenization = surrogate tokens with values in a separate vault; format-preserving, joinable without exposing PII.
+
+---
+
+### 96. Multi-tenancy and data isolation
+
+**Frequency:** Medium
+
+**Question:** How do you provide isolation between tenants on a shared big-data platform across storage, compute, and access?
+
+**Answer:** Multi-tenancy trades cost efficiency against blast radius, so you isolate on three axes. **Storage isolation**: separate buckets/databases/schemas per tenant (or at least partition/prefix by tenant), with bucket policies and table ACLs scoped so a tenant can never read another's paths; strong-isolation needs may demand separate accounts/keys. **Compute isolation**: prevent one tenant's heavy job from starving others via resource queues (YARN/Kubernetes namespaces, warehouse-per-tenant, or separate Spark pools), quotas, and rate limits — the "noisy neighbor" problem. **Access isolation**: a centralized authorization layer (Ranger, Lake Formation, Unity Catalog) enforcing row/column-level policies keyed to tenant identity, plus per-tenant encryption keys so even platform operators can't cross boundaries. The spectrum runs from fully shared (cheapest, weakest isolation) to fully siloed per-tenant infra (strongest, most expensive); regulated tenants often justify the siloed end. Audit logging per tenant proves isolation held.
+
+**Key points:**
+- Isolate on three axes: storage (buckets/schemas/ACLs), compute (queues/quotas), access (policy engine).
+- Compute quotas prevent the noisy-neighbor problem of one tenant starving others.
+- Centralized authz (Ranger/Lake Formation/Unity) with per-tenant keys and row/column policies.
+- Spectrum: shared (cheap, weak) to siloed per-tenant infra (strong, costly); pick per compliance needs.
+
+---
+
+### 97. Disaster recovery for lakes and warehouses
+
+**Frequency:** Medium
+
+**Question:** How do you design disaster recovery and backup for a data lake or warehouse, and what do RPO and RTO drive?
+
+**Answer:** **RPO** (recovery point objective) is how much data loss you tolerate; **RTO** (recovery time objective) is how long recovery may take — together they dictate cost and architecture. For object-store lakes, durability is high but you still guard against corruption and accidental/malicious deletion with **cross-region replication**, **versioning**, and immutability/object-lock (WORM) so a bad job or ransomware can't erase history. Lakehouse table formats add safety via snapshot **time travel** and retention, letting you roll a table back to a good version. Warehouses use snapshots, point-in-time restore, and cross-region replicas. Match tier to criticality: a hot standby in a second region gives low RTO at high cost; periodic snapshots to cheaper storage give higher RTO but low cost. Critically, **test restores regularly** — untested backups are not backups — and separate DR credentials/accounts so the same breach can't destroy both primary and backup.
+
+**Key points:**
+- RPO = tolerable data loss; RTO = tolerable downtime — they set cost and design.
+- Lakes: cross-region replication + versioning + object-lock/WORM against corruption and deletion.
+- Table-format time travel and warehouse point-in-time restore enable rollback to a good state.
+- Test restores regularly; isolate DR credentials so one breach can't wipe primary and backup.
+
+---
+
+### 98. Data observability and SLAs
+
+**Frequency:** Medium
+
+**Question:** What does data observability monitor beyond pipeline job status, and how do freshness, volume, schema, and distribution checks form data SLAs?
+
+**Answer:** Pipeline "green" (the job ran) does not mean the data is correct, so data observability monitors the data itself along several pillars: **freshness** (did the table update within its expected window — the most common failure), **volume** (row counts within normal bounds — sudden drops/spikes signal upstream breakage or duplication), **schema** (unexpected column adds/drops/type changes that silently break consumers), and **distribution** (null rates, ranges, cardinality, and value drift that indicate quality regressions or model-affecting data drift). Tools like Monte Carlo, Great Expectations, or Soda compute these and, crucially, **alert on anomalies** — often via ML-learned baselines rather than only hand-set thresholds — and tie failures to lineage for fast root-cause. Codifying expected freshness/volume/quality into **data SLAs** (with owners and error budgets, like SRE for data) turns "someone noticed the dashboard was wrong" into proactive, contract-based detection before consumers are hit.
+
+**Key points:**
+- Four pillars: freshness, volume, schema, distribution — job success alone hides bad data.
+- Anomaly detection via learned baselines, not just static thresholds; alerts wired to lineage.
+- Distribution monitoring catches data/quality drift that degrades models and metrics.
+- Data SLAs with owners and error budgets make detection proactive and contractual.
+
+---
+
+### 99. Streaming joins and their challenges
+
+**Frequency:** Medium
+
+**Question:** How do stream-stream and stream-table joins work, and what makes them hard?
+
+**Answer:** Joining unbounded streams is hard because you can't wait for "all" the data. A **stream-stream join** matches events from two streams — e.g., ad impressions with clicks — but a match may arrive seconds or minutes apart, so engines require a **windowed join** (join within a time bound) and must **buffer state** for the window; without a bound, state grows forever. Out-of-order and late events mean you rely on **event time and watermarks** to decide when a window can close and unmatched events emitted (or dropped). A **stream-table join** enriches each event against reference/dimension data (e.g., user profile). The subtlety is temporal correctness: the table is itself changing, so you want a **temporal/versioned join** that looks up the dimension value *as of* the event's time, not the current value, and you must keep that lookup state fresh and consistent. Both face state size, exactly-once semantics under failure, and skew as the main operational challenges.
+
+**Key points:**
+- Stream-stream needs windowed joins with buffered state; unbounded state is the core risk.
+- Watermarks/event time decide when windows close and how late/out-of-order events are handled.
+- Stream-table enriches events; use temporal (as-of) joins so you match the correct dimension version.
+- Operational pain: state size, exactly-once under failure, and skew.
+
+---
+
+### 100. Design an end-to-end real-time analytics system
+
+**Frequency:** High
+
+**Question:** Design a real-time analytics platform (e.g., live product/user event analytics) end to end, tying together ingestion, processing, serving, and governance.
+
+**Answer:** Start from requirements — latency target, query patterns, scale, and correctness needs — then layer the system. **Ingestion:** clients emit events to a durable log (Kafka/Kinesis) partitioned by entity key for ordering and parallelism, with a schema registry enforcing contracts. **Processing:** a stream engine (Flink/Spark Structured Streaming) does windowed aggregations, stream-table enrichment, and dedup, using event time + watermarks and checkpointing for exactly-once; write results to both an online store for low-latency serving and the lake for history. **Storage/serving:** a real-time OLAP store (Druid/Pinot/ClickHouse) serves sub-second dashboard/API queries; the lakehouse (Iceberg/Delta) holds full history for ad-hoc and ML. Rather than the dual-code Lambda architecture, prefer **Kappa** (reprocess by replaying the log) to avoid maintaining two codebases. Cross-cutting: a **feature store** feeds online ML, and governance — catalog, lineage, data-quality gates, observability SLAs (freshness/volume), encryption/masking, and multi-tenant isolation — runs across every layer. Call out trade-offs: latency vs cost, exactly-once vs throughput, and pre-aggregation vs query flexibility.
+
+**Key points:**
+- Layers: durable partitioned log → stream engine (event time, watermarks, exactly-once) → real-time OLAP + lakehouse.
+- Serve low-latency from Druid/Pinot/ClickHouse; keep full history in Iceberg/Delta for ad-hoc/ML.
+- Prefer Kappa (replay) over Lambda to avoid dual codebases; feature store bridges to online ML.
+- Governance is cross-cutting: catalog, lineage, quality gates, observability SLAs, encryption, tenant isolation.
+- Name trade-offs: latency vs cost, exactly-once vs throughput, pre-aggregation vs flexibility.
