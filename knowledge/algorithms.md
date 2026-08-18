@@ -6,7 +6,23 @@ The 100 most-liked LeetCode problems (热题 100), each with an original problem
 
 ### 1. Two Sum  ·  LC 1  ·  Easy  ·  Hashing
 
-**Problem:** Given an array `nums` and an integer `target`, return indices of the two numbers that add up to `target`. Exactly one solution exists. 2 <= len(nums) <= 10^4, -10^9 <= nums[i], target <= 10^9.
+**Problem:** Given an integer array `nums` and an integer `target`, return the indices of the two numbers that add up to `target`. Each input has exactly one solution, and you may not use the same element twice. You may return the answer in any order.
+
+**Examples:**
+```
+Input: nums = [2,7,11,15], target = 9
+Output: [0,1]
+Explanation: nums[0] + nums[1] == 9, so we return [0, 1].
+
+Input: nums = [3,2,4], target = 6
+Output: [1,2]
+```
+
+**Constraints:**
+- `2 <= nums.length <= 10^4`
+- `-10^9 <= nums[i] <= 10^9`
+- `-10^9 <= target <= 10^9`
+- Only one valid answer exists.
 
 **Approach:** Single pass with a hash map from value to index; for each `x`, check if `target - x` was seen. O(n) time, O(n) space.
 
@@ -56,7 +72,21 @@ int[] twoSum(int[] nums, int target) {
 
 ### 2. Group Anagrams  ·  LC 49  ·  Medium  ·  Hashing
 
-**Problem:** Group strings that are anagrams of each other. 1 <= len(strs) <= 10^4.
+**Problem:** Given an array of strings `strs`, group together the strings that are anagrams of each other. An anagram is a word formed by rearranging the letters of another, using all original letters exactly once. Return the groups in any order, and the strings within each group in any order.
+
+**Examples:**
+```
+Input: strs = ["eat","tea","tan","ate","nat","bat"]
+Output: [["bat"],["nat","tan"],["ate","eat","tea"]]
+
+Input: strs = [""]
+Output: [[""]]
+```
+
+**Constraints:**
+- `1 <= strs.length <= 10^4`
+- `0 <= strs[i].length <= 100`
+- `strs[i]` consists of lowercase English letters.
 
 **Approach:** Bucket by a canonical key (sorted string or 26-count tuple). O(n * k log k) time with sorting.
 
@@ -106,7 +136,21 @@ List<List<String>> groupAnagrams(String[] strs) {
 
 ### 3. Longest Consecutive Sequence  ·  LC 128  ·  Medium  ·  Hashing
 
-**Problem:** Given an unsorted array `nums`, return the length of the longest run of consecutive integers (values differing by 1). Duplicates count once; the array may be empty. Required O(n) time. 0 <= n <= 10^5.
+**Problem:** Given an unsorted integer array `nums`, return the length of the longest sequence of consecutive integers (values that differ by exactly 1). The elements need not be adjacent in the array, and duplicate values are counted only once. You must design an algorithm that runs in O(n) time.
+
+**Examples:**
+```
+Input: nums = [100,4,200,1,3,2]
+Output: 4
+Explanation: The longest consecutive run is [1,2,3,4], which has length 4.
+
+Input: nums = [0,3,7,2,5,8,4,6,0,1]
+Output: 9
+```
+
+**Constraints:**
+- `0 <= nums.length <= 10^5`
+- `-10^9 <= nums[i] <= 10^9`
 
 **Approach:** Put every value into a hash set for O(1) membership tests, then only start counting a streak from a value x whose predecessor x-1 is absent, since such an x is the true start of a sequence. From each start, walk upward while the next value exists, tracking the longest run. Each element is visited at most twice across all streaks, giving O(n) time and O(n) space.
 
@@ -169,7 +213,20 @@ class Solution {
 
 ### 4. Move Zeroes  ·  LC 283  ·  Easy  ·  Two Pointers
 
-**Problem:** Move all zeros in `nums` to the end in place while keeping the relative order of non-zero elements. Mutate `nums` directly. 1 <= n <= 10^4.
+**Problem:** Given an integer array `nums`, move all `0`s to the end of the array while maintaining the relative order of the non-zero elements. You must do this in place without making a copy of the array.
+
+**Examples:**
+```
+Input: nums = [0,1,0,3,12]
+Output: [1,3,12,0,0]
+
+Input: nums = [0]
+Output: [0]
+```
+
+**Constraints:**
+- `1 <= nums.length <= 10^4`
+- `-2^31 <= nums[i] <= 2^31 - 1`
 
 **Approach:** Keep an insert pointer marking where the next non-zero value belongs. Scan with a read pointer, and whenever a non-zero is found swap it into the insert slot and advance insert. This packs non-zeros forward in their original order and leaves zeros trailing, running in O(n) time with O(1) extra space.
 
@@ -223,7 +280,22 @@ class Solution {
 
 ### 5. Container With Most Water  ·  LC 11  ·  Medium  ·  Two Pointers
 
-**Problem:** Given heights, choose two lines forming a container; maximize water area. 2 <= len(height) <= 10^5.
+**Problem:** Given an integer array `height` of length `n`, where each element represents a vertical line drawn at that index with the given height, choose two lines that together with the x-axis form a container. Return the maximum amount of water such a container can store. The container cannot be slanted; its capacity is the shorter of the two chosen heights multiplied by the horizontal distance between them.
+
+**Examples:**
+```
+Input: height = [1,8,6,2,5,4,8,3,7]
+Output: 49
+Explanation: The lines at index 1 and 8 (heights 8 and 7) form a container of area min(8,7) * (8-1) = 49.
+
+Input: height = [1,1]
+Output: 1
+```
+
+**Constraints:**
+- `n == height.length`
+- `2 <= n <= 10^5`
+- `0 <= height[i] <= 10^4`
 
 **Approach:** Two pointers from ends; move the shorter side inward since it limits the area. O(n) time, O(1) space.
 
@@ -276,7 +348,21 @@ int maxArea(int[] height) {
 
 ### 6. 3Sum  ·  LC 15  ·  Medium  ·  Two Pointers
 
-**Problem:** Return all unique triplets in `nums` that sum to zero. 3 <= len(nums) <= 3000.
+**Problem:** Given an integer array `nums`, return all unique triplets `[nums[i], nums[j], nums[k]]` such that `i`, `j`, and `k` are distinct indices and `nums[i] + nums[j] + nums[k] == 0`. The solution set must not contain duplicate triplets. The triplets and their elements may be returned in any order.
+
+**Examples:**
+```
+Input: nums = [-1,0,1,2,-1,-4]
+Output: [[-1,-1,2],[-1,0,1]]
+Explanation: The distinct triplets summing to zero are [-1,-1,2] and [-1,0,1].
+
+Input: nums = [0,1,1]
+Output: []
+```
+
+**Constraints:**
+- `3 <= nums.length <= 3000`
+- `-10^5 <= nums[i] <= 10^5`
 
 **Approach:** Sort; fix one index then two-pointer the rest. Skip duplicates to keep results unique. O(n^2) time, O(1) extra.
 
@@ -363,7 +449,22 @@ List<List<Integer>> threeSum(int[] nums) {
 
 ### 7. Trapping Rain Water  ·  LC 42  ·  Hard  ·  Two Pointers
 
-**Problem:** Given non-negative heights, compute water trapped after rain. 0 <= len(height) <= 2*10^4.
+**Problem:** Given an array `height` of `n` non-negative integers representing an elevation map where the width of each bar is 1, compute how much water can be trapped after raining. Water is trapped above a bar when there are taller bars on both its left and right sides.
+
+**Examples:**
+```
+Input: height = [0,1,0,2,1,0,1,3,2,1,2,1]
+Output: 6
+Explanation: The elevation map traps 6 units of water in the valleys between the bars.
+
+Input: height = [4,2,0,3,2,5]
+Output: 9
+```
+
+**Constraints:**
+- `n == height.length`
+- `1 <= n <= 2 * 10^4`
+- `0 <= height[i] <= 10^5`
 
 **Approach:** Two pointers tracking left_max and right_max; add deficit at the lower side. O(n) time, O(1) space.
 
@@ -419,7 +520,21 @@ int trap(int[] height) {
 
 ### 8. Longest Substring Without Repeating Characters  ·  LC 3  ·  Medium  ·  Sliding Window
 
-**Problem:** Find the length of the longest substring with all distinct characters. 0 <= len(s) <= 5*10^4.
+**Problem:** Given a string `s`, find the length of the longest substring that contains no repeating characters. A substring is a contiguous sequence of characters within the string.
+
+**Examples:**
+```
+Input: s = "abcabcbb"
+Output: 3
+Explanation: The longest substring without repeating characters is "abc", with length 3.
+
+Input: s = "bbbbb"
+Output: 1
+```
+
+**Constraints:**
+- `0 <= s.length <= 5 * 10^4`
+- `s` consists of English letters, digits, symbols, and spaces.
 
 **Approach:** Sliding window; on duplicate, advance left past the previous occurrence. O(n) time, O(min(n, alphabet)) space.
 
@@ -475,7 +590,21 @@ int lengthOfLongestSubstring(String s) {
 
 ### 9. Find All Anagrams in a String  ·  LC 438  ·  Medium  ·  Sliding Window
 
-**Problem:** Given lowercase strings `s` and `p`, return the start indices of every substring of `s` that is an anagram of `p`. 1 <= len(s), len(p) <= 3*10^4.
+**Problem:** Given two strings `s` and `p`, return an array of all the start indices of `p`'s anagrams in `s`. You may return the answer in any order. An anagram is formed by rearranging all letters of `p` exactly once.
+
+**Examples:**
+```
+Input: s = "cbaebabacd", p = "abc"
+Output: [0,6]
+Explanation: The substring at index 0 is "cba" and at index 6 is "bac", both anagrams of "abc".
+
+Input: s = "abab", p = "ab"
+Output: [0,1,2]
+```
+
+**Constraints:**
+- `1 <= s.length, p.length <= 3 * 10^4`
+- `s` and `p` consist of lowercase English letters.
 
 **Approach:** Maintain a fixed-size sliding window of length |p| over s using a 26-element frequency count, plus a target count for p. As the window slides one character right, increment the entering char and decrement the leaving char, then compare the two count arrays; equality means the current window is an anagram. Each comparison is over a constant 26 buckets, so the whole scan is O(n) time and O(1) extra space (26 counters).
 
@@ -549,7 +678,22 @@ class Solution {
 
 ### 10. Subarray Sum Equals K  ·  LC 560  ·  Medium  ·  Substring
 
-**Problem:** Count the contiguous subarrays of `nums` that sum exactly to `k`. Values may be negative (running sum is not monotonic). 1 <= n <= 2*10^4.
+**Problem:** Given an integer array `nums` and an integer `k`, return the total number of contiguous subarrays whose elements sum to exactly `k`. A subarray is a contiguous, non-empty sequence of elements. Values may be negative, so the running sum is not monotonic.
+
+**Examples:**
+```
+Input: nums = [1,1,1], k = 2
+Output: 2
+Explanation: The subarrays [1,1] at indices (0,1) and (1,2) each sum to 2.
+
+Input: nums = [1,2,3], k = 3
+Output: 2
+```
+
+**Constraints:**
+- `1 <= nums.length <= 2 * 10^4`
+- `-1000 <= nums[i] <= 1000`
+- `-10^7 <= k <= 10^7`
 
 **Approach:** Track the running prefix sum and a hash map from each prefix-sum value to how many times it has occurred. A subarray ending at the current index sums to k exactly when a previous prefix equal to (current prefix - k) exists, so add its occurrence count to the answer. Seeding the map with {0: 1} handles subarrays starting at index 0, giving O(n) time and O(n) space.
 
@@ -612,7 +756,22 @@ class Solution {
 
 ### 11. Sliding Window Maximum  ·  LC 239  ·  Hard  ·  Substring
 
-**Problem:** For each window of size k, return its max. 1 <= k <= len(nums) <= 10^5.
+**Problem:** Given an integer array `nums` and an integer `k`, consider a sliding window of size `k` moving from the left end of the array to the right, one position at a time. For each window position, return the maximum value in the window. Output the maximums as an array.
+
+**Examples:**
+```
+Input: nums = [1,3,-1,-3,5,3,6,7], k = 3
+Output: [3,3,5,5,6,7]
+Explanation: Each window of size 3 has maximums 3, 3, 5, 5, 6, and 7 respectively.
+
+Input: nums = [1], k = 1
+Output: [1]
+```
+
+**Constraints:**
+- `1 <= nums.length <= 10^5`
+- `-10^4 <= nums[i] <= 10^4`
+- `1 <= k <= nums.length`
 
 **Approach:** Monotonic deque of indices in decreasing order; front is always the window max. O(n) time.
 
@@ -672,7 +831,24 @@ int[] maxSlidingWindow(int[] nums, int k) {
 
 ### 12. Minimum Window Substring  ·  LC 76  ·  Hard  ·  Substring
 
-**Problem:** Find the shortest substring of `s` containing all characters of `t` (with multiplicity). Return `""` if impossible. 1 <= len(s), len(t) <= 10^5.
+**Problem:** Given two strings `s` and `t`, return the shortest substring of `s` that contains every character of `t`, including duplicates (multiplicity). If there is no such substring, return the empty string `""`. The answer is guaranteed to be unique.
+
+**Examples:**
+```
+Input: s = "ADOBECODEBANC", t = "ABC"
+Output: "BANC"
+Explanation: The substring "BANC" is the shortest window containing A, B, and C.
+
+Input: s = "a", t = "aa"
+Output: ""
+Explanation: t requires two 'a's but s has only one, so no valid window exists.
+```
+
+**Constraints:**
+- `m == s.length`
+- `n == t.length`
+- `1 <= m, n <= 10^5`
+- `s` and `t` consist of uppercase and lowercase English letters.
 
 **Approach:** Sliding window with a `need`/`have` count and a `formed` counter; shrink when valid. O(|s| + |t|) time.
 
@@ -763,7 +939,21 @@ String minWindow(String s, String t) {
 
 ### 13. Maximum Subarray  ·  LC 53  ·  Medium  ·  Array
 
-**Problem:** Find the contiguous subarray with the largest sum and return that sum. 1 <= len(nums) <= 10^5.
+**Problem:** Given an integer array `nums`, find the contiguous subarray (containing at least one number) that has the largest sum, and return that sum. A subarray is a contiguous, non-empty sequence of elements.
+
+**Examples:**
+```
+Input: nums = [-2,1,-3,4,-1,2,1,-5,4]
+Output: 6
+Explanation: The subarray [4,-1,2,1] has the largest sum, 6.
+
+Input: nums = [1]
+Output: 1
+```
+
+**Constraints:**
+- `1 <= nums.length <= 10^5`
+- `-10^4 <= nums[i] <= 10^4`
 
 **Approach:** Kadane's: at each index, either extend the previous subarray or start fresh. O(n) time, O(1) space.
 
@@ -810,7 +1000,22 @@ int maxSubArray(int[] nums) {
 
 ### 14. Merge Intervals  ·  LC 56  ·  Medium  ·  Array
 
-**Problem:** Merge all overlapping intervals. 1 <= len(intervals) <= 10^4.
+**Problem:** Given an array of intervals where `intervals[i] = [start_i, end_i]`, merge all overlapping intervals and return an array of the non-overlapping intervals that cover all the input intervals. Two intervals overlap if they share at least one point (including touching endpoints).
+
+**Examples:**
+```
+Input: intervals = [[1,3],[2,6],[8,10],[15,18]]
+Output: [[1,6],[8,10],[15,18]]
+Explanation: Intervals [1,3] and [2,6] overlap and merge into [1,6].
+
+Input: intervals = [[1,4],[4,5]]
+Output: [[1,5]]
+```
+
+**Constraints:**
+- `1 <= intervals.length <= 10^4`
+- `intervals[i].length == 2`
+- `0 <= start_i <= end_i <= 10^4`
 
 **Approach:** Sort by start; sweep merging current with previous when overlap. O(n log n) time.
 
@@ -864,7 +1069,22 @@ int[][] merge(int[][] intervals) {
 
 ### 15. Rotate Array  ·  LC 189  ·  Medium  ·  Array
 
-**Problem:** Rotate `nums` to the right by `k` steps in place; `k` may exceed `n`. Aim for O(1) extra space. 1 <= n <= 10^5, 0 <= k <= 10^5.
+**Problem:** Given an integer array `nums`, rotate the array to the right by `k` steps, where `k` is non-negative and may be larger than the array length. Perform the rotation in place. Try to solve it using O(1) extra space.
+
+**Examples:**
+```
+Input: nums = [1,2,3,4,5,6,7], k = 3
+Output: [5,6,7,1,2,3,4]
+Explanation: Rotating right by 3 moves the last three elements to the front.
+
+Input: nums = [-1,-100,3,99], k = 2
+Output: [3,99,-1,-100]
+```
+
+**Constraints:**
+- `1 <= nums.length <= 10^5`
+- `-2^31 <= nums[i] <= 2^31 - 1`
+- `0 <= k <= 10^5`
 
 **Approach:** First reduce k modulo n so rotations larger than the length wrap correctly. Then reverse the whole array, reverse the first k elements, and reverse the remaining n-k elements; the three reversals compose to a right rotation by k. This runs in O(n) time with O(1) extra space, avoiding an auxiliary copy.
 
@@ -936,7 +1156,22 @@ class Solution {
 
 ### 16. Product of Array Except Self  ·  LC 238  ·  Medium  ·  Array
 
-**Problem:** Return an array where `out[i]` is the product of all elements except `nums[i]`. No division allowed. O(n) time. 2 <= len(nums) <= 10^5.
+**Problem:** Given an integer array `nums`, return an array `answer` such that `answer[i]` equals the product of all the elements of `nums` except `nums[i]`. The result for each index is guaranteed to fit in a 32-bit integer. You must solve it without using the division operation and in O(n) time.
+
+**Examples:**
+```
+Input: nums = [1,2,3,4]
+Output: [24,12,8,6]
+Explanation: answer[0] = 2*3*4 = 24, answer[1] = 1*3*4 = 12, answer[2] = 1*2*4 = 8, answer[3] = 1*2*3 = 6.
+
+Input: nums = [-1,1,0,-3,3]
+Output: [0,0,9,0,0]
+```
+
+**Constraints:**
+- `2 <= nums.length <= 10^5`
+- `-30 <= nums[i] <= 30`
+- The product of any prefix or suffix of `nums` is guaranteed to fit in a 32-bit integer.
 
 **Approach:** Two sweeps storing prefix then suffix products into the output array. O(n) time, O(1) extra space (output not counted).
 
@@ -994,7 +1229,21 @@ int[] productExceptSelf(int[] nums) {
 
 ### 17. First Missing Positive  ·  LC 41  ·  Hard  ·  Array
 
-**Problem:** Given an unsorted array `nums`, find the smallest missing positive integer, in O(n) time and O(1) extra space. 1 <= n <= 10^5.
+**Problem:** Given an unsorted integer array `nums`, return the smallest positive integer that does not appear in the array. You must implement an algorithm that runs in O(n) time and uses O(1) auxiliary space (aside from the input array itself).
+
+**Examples:**
+```
+Input: nums = [1,2,0]
+Output: 3
+Explanation: The numbers 1 and 2 are present, so the smallest missing positive is 3.
+
+Input: nums = [3,4,-1,1]
+Output: 2
+```
+
+**Constraints:**
+- `1 <= nums.length <= 10^5`
+- `-2^31 <= nums[i] <= 2^31 - 1`
 
 **Approach:** Use the array itself as a hash table: for each position, repeatedly swap the value v into index v-1 as long as v is in the valid range [1, n] and not already placed. After this cyclic-sort pass every value that can occupy slot i sits at index i-1, so a second scan returns the first index where nums[i] != i+1; if all match, the answer is n+1. This works because the first missing positive must lie in [1, n+1], so only values in that window matter. O(n) time, O(1) space.
 
@@ -1058,7 +1307,22 @@ int firstMissingPositive(int[] nums) {
 
 ### 18. Set Matrix Zeroes  ·  LC 73  ·  Medium  ·  Matrix
 
-**Problem:** If a cell is 0, set its entire row and column to 0 in place. 1 <= m, n <= 200.
+**Problem:** Given an `m x n` integer matrix, if any element is 0, set its entire row and its entire column to 0. You must do this in place, modifying the matrix directly.
+
+**Examples:**
+```
+Input: matrix = [[1,1,1],[1,0,1],[1,1,1]]
+Output: [[1,0,1],[0,0,0],[1,0,1]]
+
+Input: matrix = [[0,1,2,0],[3,4,5,2],[1,3,1,5]]
+Output: [[0,0,0,0],[0,4,5,0],[0,3,1,0]]
+```
+
+**Constraints:**
+- `m == matrix.length`
+- `n == matrix[0].length`
+- `1 <= m, n <= 200`
+- `-2^31 <= matrix[i][j] <= 2^31 - 1`
 
 **Approach:** Use the first row/column as markers; track their original zero status separately. O(m*n) time, O(1) space.
 
@@ -1128,7 +1392,22 @@ void setZeroes(int[][] matrix) {
 
 ### 19. Spiral Matrix  ·  LC 54  ·  Medium  ·  Matrix
 
-**Problem:** Return all elements in spiral order. 1 <= m, n <= 10.
+**Problem:** Given an `m x n` matrix, return all of its elements in spiral order, starting from the top-left corner and traversing clockwise (right, then down, then left, then up, spiraling inward).
+
+**Examples:**
+```
+Input: matrix = [[1,2,3],[4,5,6],[7,8,9]]
+Output: [1,2,3,6,9,8,7,4,5]
+
+Input: matrix = [[1,2,3,4],[5,6,7,8],[9,10,11,12]]
+Output: [1,2,3,4,8,12,11,10,9,5,6,7]
+```
+
+**Constraints:**
+- `m == matrix.length`
+- `n == matrix[i].length`
+- `1 <= m, n <= 10`
+- `-100 <= matrix[i][j] <= 100`
 
 **Approach:** Track four bounds; walk inward layer by layer. O(m*n) time.
 
@@ -1211,7 +1490,21 @@ List<Integer> spiralOrder(int[][] matrix) {
 
 ### 20. Rotate Image  ·  LC 48  ·  Medium  ·  Matrix
 
-**Problem:** Rotate an n x n matrix 90 degrees clockwise in place. 1 <= n <= 20.
+**Problem:** You are given an `n x n` 2D matrix representing an image. Rotate the image by 90 degrees clockwise. You must rotate the image in place, meaning you have to modify the input matrix directly. Do not allocate another 2D matrix to perform the rotation.
+
+**Examples:**
+```
+Input: matrix = [[1,2,3],[4,5,6],[7,8,9]]
+Output: [[7,4,1],[8,5,2],[9,6,3]]
+
+Input: matrix = [[5,1,9,11],[2,4,8,10],[13,3,6,7],[15,14,12,16]]
+Output: [[15,13,2,5],[14,3,4,1],[12,6,8,9],[16,7,10,11]]
+```
+
+**Constraints:**
+- `n == matrix.length == matrix[i].length`
+- `1 <= n <= 20`
+- `-1000 <= matrix[i][j] <= 1000`
 
 **Approach:** Transpose then reverse each row. O(n^2) time, O(1) space.
 
@@ -1261,7 +1554,25 @@ void rotate(int[][] matrix) {
 
 ### 21. Search a 2D Matrix II  ·  LC 240  ·  Medium  ·  Matrix
 
-**Problem:** Given a matrix whose rows and columns are each sorted ascending, decide whether `target` exists. The matrix is not globally sorted, so one binary search over all cells does not apply. 1 <= m, n <= 300.
+**Problem:** Write an efficient algorithm that searches for a target value in an `m x n` integer matrix. The matrix has the following properties: integers in each row are sorted in ascending order from left to right, and integers in each column are sorted in ascending order from top to bottom. Note that the matrix is not globally sorted. Return `true` if `target` is found, and `false` otherwise.
+
+**Examples:**
+```
+Input: matrix = [[1,4,7,11,15],[2,5,8,12,19],[3,6,9,16,22],[10,13,14,17,24],[18,21,23,26,30]], target = 5
+Output: true
+
+Input: matrix = [[1,4,7,11,15],[2,5,8,12,19],[3,6,9,16,22],[10,13,14,17,24],[18,21,23,26,30]], target = 20
+Output: false
+```
+
+**Constraints:**
+- `m == matrix.length`
+- `n == matrix[i].length`
+- `1 <= n, m <= 300`
+- `-10^9 <= matrix[i][j] <= 10^9`
+- All the integers in each row are sorted in ascending order.
+- All the integers in each column are sorted in ascending order.
+- `-10^9 <= target <= 10^9`
 
 **Approach:** Start at the top-right corner and treat it as a search staircase: if the current value equals the target return true, if it is larger move left (that whole column below is too big), and if it is smaller move down (that whole row to the left is too small). Each comparison eliminates one full row or one full column, so the walk is monotonic and never revisits cells. This exploits the dual sorted order that a plain binary search cannot. O(m + n) time, O(1) space.
 
@@ -1324,7 +1635,25 @@ boolean searchMatrix(int[][] matrix, int target) {
 
 ### 22. Intersection of Two Linked Lists  ·  LC 160  ·  Easy  ·  Linked List
 
-**Problem:** Given the heads of two singly linked lists that may share a common tail, return the node where they first intersect (by reference, not value), or null. Combined length up to 5*10^4; O(1) extra space.
+**Problem:** Given the heads of two singly linked lists `headA` and `headB`, return the node at which the two lists intersect. If the two linked lists have no intersection, return `null`. The intersection is defined by reference (identity), not by value: the two lists share the same physical tail nodes starting from the intersection point. The lists must retain their original structure after your function returns. Aim for O(m + n) time and O(1) extra space.
+
+**Examples:**
+```
+Input: listA = [4,1,8,4,5], listB = [5,6,1,8,4,5], skipA = 2, skipB = 3
+Output: Intersected at node with value 8
+Explanation: The two lists share the nodes [8,4,5]; the first shared node has value 8.
+
+Input: listA = [2,6,4], listB = [1,5]
+Output: No intersection (null)
+```
+
+**Constraints:**
+- The number of nodes of `listA` is in the range `[0, 3 * 10^4]`.
+- The number of nodes of `listB` is in the range `[0, 3 * 10^4]`.
+- `1 <= Node.val <= 10^5`
+- `0 <= skipA < listA.length`
+- `0 <= skipB < listB.length`
+- `intersectVal` is `0` if the lists do not intersect; otherwise it equals the value of the first shared node.
 
 **Approach:** Advance two pointers, one per list; whenever a pointer reaches the end, redirect it to the head of the other list. After at most one such switch each pointer has traversed lenA + lenB nodes, so they arrive at the intersection simultaneously (or both reach null together when there is none). The redirection equalizes the differing prefix lengths without measuring them. O(m + n) time, O(1) space.
 
@@ -1374,7 +1703,20 @@ ListNode getIntersectionNode(ListNode headA, ListNode headB) {
 
 ### 23. Reverse Linked List  ·  LC 206  ·  Easy  ·  Linked List
 
-**Problem:** Reverse a singly linked list in place. 0 <= length <= 5000.
+**Problem:** Given the `head` of a singly linked list, reverse the list by relinking its nodes, and return the head of the reversed list.
+
+**Examples:**
+```
+Input: head = [1,2,3,4,5]
+Output: [5,4,3,2,1]
+
+Input: head = [1,2]
+Output: [2,1]
+```
+
+**Constraints:**
+- The number of nodes in the list is in the range `[0, 5000]`.
+- `-5000 <= Node.val <= 5000`
 
 **Approach:** Iterate, repointing `next` to a running `prev`. O(n) time, O(1) space.
 
@@ -1446,7 +1788,20 @@ ListNode reverseList(ListNode head) {
 
 ### 24. Palindrome Linked List  ·  LC 234  ·  Easy  ·  Linked List
 
-**Problem:** Determine whether a singly linked list's values read the same forwards and backwards. Target O(n) time and O(1) extra space. 1 <= n <= 10^5.
+**Problem:** Given the `head` of a singly linked list, return `true` if the sequence of node values reads the same forwards and backwards (i.e., is a palindrome), and `false` otherwise. Aim for O(n) time and O(1) extra space.
+
+**Examples:**
+```
+Input: head = [1,2,2,1]
+Output: true
+
+Input: head = [1,2]
+Output: false
+```
+
+**Constraints:**
+- The number of nodes in the list is in the range `[1, 10^5]`.
+- `0 <= Node.val <= 9`
 
 **Approach:** Find the middle with slow/fast pointers, reverse the second half in place, then compare it node-by-node against the front half; equality across the whole shorter half means the list is a palindrome. Splitting at the midpoint lets the two halves be walked in lockstep, and iterating only until the reversed (right) pointer is null correctly handles both even and odd lengths. O(n) time, O(1) space.
 
@@ -1530,7 +1885,22 @@ boolean isPalindrome(ListNode head) {
 
 ### 25. Linked List Cycle  ·  LC 141  ·  Easy  ·  Linked List
 
-**Problem:** Detect if a singly linked list has a cycle. 0 <= length <= 10^4.
+**Problem:** Given the `head` of a singly linked list, determine whether the list contains a cycle. A cycle exists if some node can be reached again by continuously following the `next` pointers. Internally, `pos` denotes the index of the node that the tail's `next` pointer connects to (`pos` is not passed as a parameter and is `-1` when there is no cycle). Return `true` if there is a cycle, and `false` otherwise.
+
+**Examples:**
+```
+Input: head = [3,2,0,-4], pos = 1
+Output: true
+Explanation: The tail node connects back to the second node (index 1), forming a cycle.
+
+Input: head = [1], pos = -1
+Output: false
+```
+
+**Constraints:**
+- The number of nodes in the list is in the range `[0, 10^4]`.
+- `-10^5 <= Node.val <= 10^5`
+- `pos` is `-1` or a valid index in the linked list.
 
 **Approach:** Floyd's tortoise and hare; if they meet, there is a cycle. O(n) time, O(1) space.
 
@@ -1581,7 +1951,22 @@ boolean hasCycle(ListNode head) {
 
 ### 26. Linked List Cycle II  ·  LC 142  ·  Medium  ·  Linked List
 
-**Problem:** If a cycle exists, return the node where it starts; otherwise null.
+**Problem:** Given the `head` of a singly linked list, return the node where the cycle begins. If there is no cycle, return `null`. Internally, `pos` denotes the index of the node that the tail's `next` pointer connects to (`pos` is not passed as a parameter and is `-1` when there is no cycle). Do not modify the linked list. Try to solve it using O(1) extra space.
+
+**Examples:**
+```
+Input: head = [3,2,0,-4], pos = 1
+Output: Node at index 1 (value 2)
+Explanation: There is a cycle whose entry is the node with value 2.
+
+Input: head = [1,2], pos = 0
+Output: Node at index 0 (value 1)
+```
+
+**Constraints:**
+- The number of nodes in the list is in the range `[0, 10^4]`.
+- `-10^5 <= Node.val <= 10^5`
+- `pos` is `-1` or a valid index in the linked list.
 
 **Approach:** Floyd's algorithm: detect meeting, then restart one pointer at head; they meet at the cycle start. O(n) time, O(1) space.
 
@@ -1644,7 +2029,21 @@ ListNode detectCycle(ListNode head) {
 
 ### 27. Merge Two Sorted Lists  ·  LC 21  ·  Easy  ·  Linked List
 
-**Problem:** Merge two sorted linked lists into one sorted list. 0 <= length of each <= 50.
+**Problem:** You are given the heads of two sorted singly linked lists `list1` and `list2`. Merge the two lists into a single sorted list by splicing together the existing nodes, and return the head of the merged list.
+
+**Examples:**
+```
+Input: list1 = [1,2,4], list2 = [1,3,4]
+Output: [1,1,2,3,4,4]
+
+Input: list1 = [], list2 = [0]
+Output: [0]
+```
+
+**Constraints:**
+- The number of nodes in both lists is in the range `[0, 50]`.
+- `-100 <= Node.val <= 100`
+- Both `list1` and `list2` are sorted in non-decreasing order.
 
 **Approach:** Dummy head; advance whichever current node is smaller. O(n + m) time, O(1) extra.
 
@@ -1702,7 +2101,22 @@ ListNode mergeTwoLists(ListNode a, ListNode b) {
 
 ### 28. Add Two Numbers  ·  LC 2  ·  Medium  ·  Linked List
 
-**Problem:** Two non-empty linked lists represent non-negative integers in reverse order. Add them and return the sum as a list. 1 <= len <= 100.
+**Problem:** You are given two non-empty singly linked lists representing two non-negative integers. The digits are stored in reverse order, and each node contains a single digit. Add the two numbers and return the sum as a linked list, also with digits stored in reverse order. You may assume the two numbers do not contain any leading zero, except the number 0 itself.
+
+**Examples:**
+```
+Input: l1 = [2,4,3], l2 = [5,6,4]
+Output: [7,0,8]
+Explanation: 342 + 465 = 807, whose digits stored in reverse order are [7,0,8].
+
+Input: l1 = [9,9,9,9,9,9,9], l2 = [9,9,9,9]
+Output: [8,9,9,9,0,0,0,1]
+```
+
+**Constraints:**
+- The number of nodes in each linked list is in the range `[1, 100]`.
+- `0 <= Node.val <= 9`
+- It is guaranteed that the list represents a number that does not have leading zeros.
 
 **Approach:** Walk both lists with a carry, building output node-by-node. O(max(n, m)) time, O(1) extra.
 
@@ -1766,7 +2180,23 @@ ListNode addTwoNumbers(ListNode l1, ListNode l2) {
 
 ### 29. Remove Nth Node From End of List  ·  LC 19  ·  Medium  ·  Linked List
 
-**Problem:** Remove the n-th node from end and return head. 1 <= n <= length <= 30.
+**Problem:** Given the `head` of a singly linked list, remove the `n`-th node from the end of the list and return its head. Try to do this in one pass.
+
+**Examples:**
+```
+Input: head = [1,2,3,4,5], n = 2
+Output: [1,2,3,5]
+Explanation: The 2nd node from the end (value 4) is removed.
+
+Input: head = [1], n = 1
+Output: []
+```
+
+**Constraints:**
+- The number of nodes in the list is `sz`.
+- `1 <= sz <= 30`
+- `0 <= Node.val <= 100`
+- `1 <= n <= sz`
 
 **Approach:** Two pointers with `n+1` gap; when fast reaches end, slow is at predecessor. O(L) time, O(1) space.
 
@@ -1817,7 +2247,20 @@ ListNode removeNthFromEnd(ListNode head, int n) {
 
 ### 30. Swap Nodes in Pairs  ·  LC 24  ·  Medium  ·  Linked List
 
-**Problem:** Swap every two adjacent nodes of a singly linked list by relinking (not by swapping values) and return the new head. An odd final node stays in place. 0 <= n <= 100.
+**Problem:** Given the `head` of a singly linked list, swap every two adjacent nodes and return the head of the modified list. You must solve the problem by actually relinking the nodes (not by modifying the values stored in the nodes). If the list has an odd number of nodes, the final node remains in place.
+
+**Examples:**
+```
+Input: head = [1,2,3,4]
+Output: [2,1,4,3]
+
+Input: head = [1,2,3]
+Output: [2,1,3]
+```
+
+**Constraints:**
+- The number of nodes in the list is in the range `[0, 100]`.
+- `0 <= Node.val <= 100`
 
 **Approach:** Use a dummy node in front of the head so the first pair has a stable predecessor, then iterate while a full pair remains: relink prev -> second -> first -> rest and advance prev to first for the next pair. The dummy removes the special-case handling of the head, and re-wiring pointers (not values) satisfies the problem's structural requirement. O(n) time, O(1) space.
 
@@ -1880,7 +2323,24 @@ ListNode swapPairs(ListNode head) {
 
 ### 31. Reverse Nodes in k-Group  ·  LC 25  ·  Hard  ·  Linked List
 
-**Problem:** Reverse the nodes of a singly linked list in groups of `k` by relinking; a final group with fewer than `k` nodes stays as-is. Return the new head. 1 <= n <= 5000, 1 <= k <= n.
+**Problem:** Given the head of a singly linked list, reverse the nodes of the list `k` at a time and return the modified list. `k` is a positive integer no greater than the length of the list. If the number of nodes is not a multiple of `k`, the nodes left over at the end remain in their original order. You must reverse the nodes by relinking them; you may not change the values inside the nodes.
+
+**Examples:**
+```
+Input: head = [1,2,3,4,5], k = 2
+Output: [2,1,4,3,5]
+```
+```
+Input: head = [1,2,3,4,5], k = 3
+Output: [3,2,1,4,5]
+```
+
+**Constraints:**
+- The number of nodes in the list is `n`.
+- `1 <= k <= n <= 5000`
+- `0 <= Node.val <= 1000`
+
+**Follow-up:** Can you solve the problem in `O(1)` extra memory space?
 
 **Approach:** Use a dummy node and a per-group pointer that always sits just before the group to be reversed. Before reversing, walk k steps to confirm a full group exists (otherwise stop, leaving the tail untouched); then reverse the group's links in place and stitch it back between the previous group and the next group. Because each node is visited a constant number of times, this runs in O(n) time and O(1) extra space.
 
@@ -1970,7 +2430,24 @@ public ListNode reverseKGroup(ListNode head, int k) {
 
 ### 32. Copy List with Random Pointer  ·  LC 138  ·  Medium  ·  Linked List
 
-**Problem:** Deep-copy a linked list whose nodes also have a `random` pointer to any node or null. 0 <= length <= 1000.
+**Problem:** Given the head of a linked list where each node contains an additional `random` pointer that may point to any node in the list or to null, construct a deep copy of the list. The copy consists of exactly `n` brand-new nodes, where each new node has the same value as its original, and its `next` and `random` pointers point to new nodes in the copied list such that the pointer relationships in the copy mirror those in the original. None of the pointers in the new list should point to nodes in the original list. Return the head of the copied list.
+
+**Examples:**
+```
+Input: head = [[7,null],[13,0],[11,4],[10,2],[1,0]]
+Output: [[7,null],[13,0],[11,4],[10,2],[1,0]]
+Explanation: Each entry is [val, random_index], where random_index is the
+0-based index of the node the random pointer points to, or null.
+```
+```
+Input: head = [[3,null],[3,0],[3,null]]
+Output: [[3,null],[3,0],[3,null]]
+```
+
+**Constraints:**
+- `0 <= n <= 1000`
+- `-10^4 <= Node.val <= 10^4`
+- `Node.random` is null or points to some node in the linked list.
 
 **Approach:** Hash original->clone in one pass; wire `next`/`random` in a second pass. O(n) time and space.
 
@@ -2050,7 +2527,24 @@ Node copyRandomList(Node head) {
 
 ### 33. Sort List  ·  LC 148  ·  Medium  ·  Linked List
 
-**Problem:** Sort a singly linked list into non-decreasing order by relinking nodes, in O(n log n) time. 0 <= n <= 5*10^4.
+**Problem:** Given the head of a singly linked list, sort the list in ascending (non-decreasing) order by relinking its nodes, and return the head of the sorted list.
+
+**Examples:**
+```
+Input: head = [4,2,1,3]
+Output: [1,2,3,4]
+```
+```
+Input: head = [-1,5,3,4,0]
+Output: [-1,0,3,4,5]
+```
+
+**Constraints:**
+- The number of nodes in the list is `n`.
+- `0 <= n <= 5 * 10^4`
+- `-10^5 <= Node.val <= 10^5`
+
+**Follow-up:** Can you sort the list in `O(n log n)` time and `O(1)` extra space (i.e., constant space)?
 
 **Approach:** Apply top-down merge sort tailored to linked lists: split the list into two halves with a slow/fast pointer, recursively sort each half, then merge the two sorted halves by comparing heads and relinking. Merge sort is the natural fit because linked lists lack random access (ruling out efficient quicksort partitioning) yet merging is trivial with pointers. This yields O(n log n) time and O(log n) space from the recursion stack.
 
@@ -2150,7 +2644,26 @@ public ListNode sortList(ListNode head) {
 
 ### 34. Merge k Sorted Lists  ·  LC 23  ·  Hard  ·  Linked List
 
-**Problem:** Merge `k` sorted linked lists into one sorted list. Total nodes N. 0 <= k <= 10^4.
+**Problem:** You are given an array of `k` linked lists, where each list is already sorted in ascending order. Merge all the lists into a single sorted linked list and return its head.
+
+**Examples:**
+```
+Input: lists = [[1,4,5],[1,3,4],[2,6]]
+Output: [1,1,2,3,4,4,5,6]
+Explanation: Merging the three sorted lists yields one sorted list.
+```
+```
+Input: lists = []
+Output: []
+```
+
+**Constraints:**
+- `k == lists.length`
+- `0 <= k <= 10^4`
+- `0 <= lists[i].length <= 500`
+- `-10^4 <= lists[i][j] <= 10^4`
+- Each `lists[i]` is sorted in ascending order.
+- The sum of `lists[i].length` will not exceed `10^4`.
 
 **Approach:** Min-heap of (val, idx, node). Pop smallest, push its next. O(N log k) time, O(k) space.
 
@@ -2214,7 +2727,38 @@ ListNode mergeKLists(ListNode[] lists) {
 
 ### 35. LRU Cache  ·  LC 146  ·  Medium  ·  Linked List
 
-**Problem:** Design `get(key)` and `put(key, value)` in O(1) with capacity `cap`. Evict least recently used when full. 1 <= cap <= 3000.
+**Problem:** Design a data structure that follows the Least Recently Used (LRU) cache eviction policy. Implement the `LRUCache` class:
+- `LRUCache(int capacity)` initializes the cache with a positive capacity `cap`.
+- `int get(int key)` returns the value of `key` if it exists, otherwise returns `-1`.
+- `void put(int key, int value)` updates the value of `key` if it exists; otherwise inserts the key-value pair. If adding a new entry causes the number of entries to exceed the capacity, evict the least recently used entry first.
+
+Both `get` and `put` must run in `O(1)` average time complexity. Any access to a key (via `get` or `put`) counts as a use, making that key the most recently used.
+
+**Examples:**
+```
+Input:
+["LRUCache","put","put","get","put","get","put","get","get","get"]
+[[2],[1,1],[2,2],[1],[3,3],[2],[4,4],[1],[3],[4]]
+Output:
+[null,null,null,1,null,-1,null,-1,3,4]
+Explanation:
+LRUCache lru = new LRUCache(2);
+lru.put(1, 1);            // cache = {1=1}
+lru.put(2, 2);            // cache = {1=1, 2=2}
+lru.get(1);               // returns 1, cache = {2=2, 1=1}
+lru.put(3, 3);            // evicts key 2, cache = {1=1, 3=3}
+lru.get(2);               // returns -1 (not found)
+lru.put(4, 4);            // evicts key 1, cache = {3=3, 4=4}
+lru.get(1);               // returns -1 (not found)
+lru.get(3);               // returns 3
+lru.get(4);               // returns 4
+```
+
+**Constraints:**
+- `1 <= cap <= 3000`
+- `0 <= key <= 10^4`
+- `0 <= value <= 10^5`
+- At most `2 * 10^5` calls will be made to `get` and `put`.
 
 **Approach:** Hash map + doubly linked list; map keys to nodes, list orders by recency. O(1) per op.
 
@@ -2289,7 +2833,28 @@ class LRUCache {
 
 ### 36. Binary Tree Inorder Traversal  ·  LC 94  ·  Easy  ·  Binary Tree
 
-**Problem:** Return the inorder traversal (left, node, right) of a binary tree's node values. 0 <= n <= 100. Follow-up: solve it iteratively.
+**Problem:** Given the root of a binary tree, return the inorder traversal of its nodes' values. Inorder traversal visits the left subtree, then the current node, then the right subtree.
+
+**Examples:**
+```
+Input: root = [1,null,2,3]
+Output: [1,3,2]
+```
+```
+Input: root = []
+Output: []
+```
+```
+Input: root = [1]
+Output: [1]
+```
+
+**Constraints:**
+- The number of nodes in the tree is `n`.
+- `0 <= n <= 100`
+- `-100 <= Node.val <= 100`
+
+**Follow-up:** A recursive solution is trivial; can you do it iteratively?
 
 **Approach:** Simulate the recursion with an explicit stack: repeatedly push nodes while descending left, then pop a node, record its value, and move to its right child. This reproduces the left-node-right ordering exactly because a node is only recorded once its entire left subtree has been consumed. It runs in O(n) time and O(h) space where h is the tree height (up to O(n) for a skewed tree).
 
@@ -2357,7 +2922,21 @@ public List<Integer> inorderTraversal(TreeNode root) {
 
 ### 37. Maximum Depth of Binary Tree  ·  LC 104  ·  Easy  ·  Binary Tree
 
-**Problem:** Return the maximum depth (number of nodes along longest root-to-leaf path). 0 <= nodes <= 10^4.
+**Problem:** Given the root of a binary tree, return its maximum depth. The maximum depth is the number of nodes along the longest path from the root node down to the farthest leaf node.
+
+**Examples:**
+```
+Input: root = [3,9,20,null,null,15,7]
+Output: 3
+```
+```
+Input: root = [1,null,2]
+Output: 2
+```
+
+**Constraints:**
+- The number of nodes in the tree is in the range `[0, 10^4]`.
+- `-100 <= Node.val <= 100`
 
 **Approach:** Recursive 1 + max(left, right) with null base case. O(n) time, O(h) stack.
 
@@ -2394,7 +2973,25 @@ int maxDepth(TreeNode root) {
 
 ### 38. Invert Binary Tree  ·  LC 226  ·  Easy  ·  Binary Tree
 
-**Problem:** Mirror a binary tree: swap left and right for every node. 0 <= nodes <= 100.
+**Problem:** Given the root of a binary tree, invert the tree by swapping the left and right children of every node, and return its root.
+
+**Examples:**
+```
+Input: root = [4,2,7,1,3,6,9]
+Output: [4,7,2,9,6,3,1]
+```
+```
+Input: root = [2,1,3]
+Output: [2,3,1]
+```
+```
+Input: root = []
+Output: []
+```
+
+**Constraints:**
+- The number of nodes in the tree is in the range `[0, 100]`.
+- `-100 <= Node.val <= 100`
 
 **Approach:** Recurse, swap children at each call. O(n) time, O(h) stack.
 
@@ -2457,7 +3054,23 @@ TreeNode invertTree(TreeNode root) {
 
 ### 39. Symmetric Tree  ·  LC 101  ·  Easy  ·  Binary Tree
 
-**Problem:** Determine whether a binary tree is a mirror image of itself about its center (left subtree reflects the right in structure and values). 1 <= n <= 1000.
+**Problem:** Given the root of a binary tree, determine whether it is symmetric, i.e., whether it is a mirror image of itself about its center.
+
+**Examples:**
+```
+Input: root = [1,2,2,3,4,4,3]
+Output: true
+```
+```
+Input: root = [1,2,2,null,3,null,3]
+Output: false
+```
+
+**Constraints:**
+- The number of nodes in the tree is in the range `[1, 1000]`.
+- `-100 <= Node.val <= 100`
+
+**Follow-up:** Could you solve it both recursively and iteratively?
 
 **Approach:** Compare the two subtrees pairwise with a helper that checks whether tree a is a mirror of tree b: both empty is symmetric, exactly one empty or unequal values is asymmetric, otherwise recurse on the outer pair (a.left vs b.right) and inner pair (a.right vs b.left). Mirroring requires crossing the children, which is why left is paired with right. This visits each node once for O(n) time and O(h) space for the recursion.
 
@@ -2508,7 +3121,22 @@ private boolean mirror(TreeNode a, TreeNode b) {
 
 ### 40. Diameter of Binary Tree  ·  LC 543  ·  Easy  ·  Binary Tree
 
-**Problem:** Return the diameter of a binary tree — the number of edges on the longest path between any two nodes (the path may not pass through the root). 1 <= n <= 10^4.
+**Problem:** Given the root of a binary tree, return the length of the diameter of the tree. The diameter is the length of the longest path between any two nodes in the tree, measured by the number of edges on that path. This path may or may not pass through the root.
+
+**Examples:**
+```
+Input: root = [1,2,3,4,5]
+Output: 3
+Explanation: The longest path is [4,2,1,3] or [5,2,1,3], which has 3 edges.
+```
+```
+Input: root = [1,2]
+Output: 1
+```
+
+**Constraints:**
+- The number of nodes in the tree is in the range `[1, 10^4]`.
+- `-100 <= Node.val <= 100`
 
 **Approach:** Run a single post-order DFS that returns the height of each subtree while tracking a running maximum. At every node the longest path passing through it equals the left height plus the right height (in edges), so we update the global best with that sum and return 1 + max(left, right) to the parent. Computing height once per node avoids the O(n^2) blowup of recomputing heights, giving O(n) time and O(h) space.
 
@@ -2572,7 +3200,25 @@ private int depth(TreeNode node) {
 
 ### 41. Binary Tree Level Order Traversal  ·  LC 102  ·  Medium  ·  Binary Tree
 
-**Problem:** Return values level by level, top to bottom. 0 <= nodes <= 2000.
+**Problem:** Given the root of a binary tree, return the level order traversal of its nodes' values, i.e., the values grouped by level from left to right, top to bottom. Return a list of lists, where each inner list contains the values of one level.
+
+**Examples:**
+```
+Input: root = [3,9,20,null,null,15,7]
+Output: [[3],[9,20],[15,7]]
+```
+```
+Input: root = [1]
+Output: [[1]]
+```
+```
+Input: root = []
+Output: []
+```
+
+**Constraints:**
+- The number of nodes in the tree is in the range `[0, 2000]`.
+- `-1000 <= Node.val <= 1000`
 
 **Approach:** BFS with a queue; collect each level's values. O(n) time and space.
 
@@ -2648,7 +3294,24 @@ List<List<Integer>> levelOrder(TreeNode root) {
 
 ### 42. Convert Sorted Array to Binary Search Tree  ·  LC 108  ·  Easy  ·  Binary Tree
 
-**Problem:** Given an ascending sorted array, build a height-balanced BST (subtree depths differ by at most 1) and return its root. Any valid tree is accepted. 1 <= n <= 10^4.
+**Problem:** Given an integer array `nums` sorted in strictly ascending order, convert it into a height-balanced binary search tree and return its root. A height-balanced binary tree is one in which the depths of the two subtrees of every node differ by no more than one. Any valid height-balanced BST is accepted.
+
+**Examples:**
+```
+Input: nums = [-10,-3,0,5,9]
+Output: [0,-3,9,-10,null,5]
+Explanation: [0,-10,5,null,-3,null,9] is also a valid answer.
+```
+```
+Input: nums = [1,3]
+Output: [3,1]
+Explanation: [1,null,3] is also accepted.
+```
+
+**Constraints:**
+- `1 <= nums.length <= 10^4`
+- `-10^4 <= nums[i] <= 10^4`
+- `nums` is sorted in strictly increasing order.
 
 **Approach:** Because the array is already sorted, the middle element can serve as the root and everything to its left/right forms the left/right subtree, which keeps the tree balanced by construction. Recurse on each half using index bounds instead of slicing to avoid copying. This visits each element once, giving O(n) time and O(log n) auxiliary stack space (plus O(n) for the output tree).
 
@@ -2734,7 +3397,23 @@ class Solution {
 
 ### 43. Validate Binary Search Tree  ·  LC 98  ·  Medium  ·  Binary Tree
 
-**Problem:** Return true if a binary tree is a valid BST. 1 <= nodes <= 10^4.
+**Problem:** Given the root of a binary tree, determine whether it is a valid binary search tree (BST). A valid BST is defined as follows: the left subtree of a node contains only nodes with values strictly less than the node's value, the right subtree contains only nodes with values strictly greater than the node's value, and both the left and right subtrees must themselves also be valid BSTs.
+
+**Examples:**
+```
+Input: root = [2,1,3]
+Output: true
+```
+```
+Input: root = [5,1,4,null,null,3,6]
+Output: false
+Explanation: The root's value is 5 but its right child's value is 4,
+which violates the BST property.
+```
+
+**Constraints:**
+- The number of nodes in the tree is in the range `[1, 10^4]`.
+- `-2^31 <= Node.val <= 2^31 - 1`
 
 **Approach:** DFS with `(low, high)` bounds tightened on each recursion. O(n) time, O(h) stack.
 
@@ -2784,7 +3463,24 @@ boolean go(TreeNode n, long lo, long hi) {
 
 ### 44. Kth Smallest Element in a BST  ·  LC 230  ·  Medium  ·  Binary Tree
 
-**Problem:** Return the k-th smallest value in a BST. 1 <= k <= nodes <= 10^4.
+**Problem:** Given the root of a binary search tree and an integer `k`, return the `k`-th smallest value (1-indexed) among all the node values in the tree.
+
+**Examples:**
+```
+Input: root = [3,1,4,null,2], k = 1
+Output: 1
+```
+```
+Input: root = [5,3,6,2,4,null,null,1], k = 3
+Output: 3
+```
+
+**Constraints:**
+- The number of nodes in the tree is `n`.
+- `1 <= k <= n <= 10^4`
+- `0 <= Node.val <= 10^4`
+
+**Follow-up:** If the BST is modified often (insertions and deletions) and you need to find the k-th smallest frequently, how would you optimize?
 
 **Approach:** Iterative in-order traversal; stop after k pops. O(h + k) time, O(h) stack.
 
@@ -2844,7 +3540,25 @@ int kthSmallest(TreeNode root, int k) {
 
 ### 45. Binary Tree Right Side View  ·  LC 199  ·  Medium  ·  Binary Tree
 
-**Problem:** Return the values of a binary tree's nodes visible from the right side, top to bottom (the rightmost node at each level). 0 <= n <= 100.
+**Problem:** Given the root of a binary tree, imagine yourself standing on its right side. Return the values of the nodes you can see, ordered from top to bottom. For each level, the visible node is the rightmost node of that level.
+
+**Examples:**
+```
+Input: root = [1,2,3,null,5,null,4]
+Output: [1,3,4]
+```
+```
+Input: root = [1,null,3]
+Output: [1,3]
+```
+```
+Input: root = []
+Output: []
+```
+
+**Constraints:**
+- The number of nodes in the tree is in the range `[0, 100]`.
+- `-100 <= Node.val <= 100`
 
 **Approach:** Do a level-order (breadth-first) traversal, processing the tree one level at a time; the last node dequeued in each level is the one visible from the right. Snapshotting the level size before iterating lets us know exactly where each level ends. Every node is enqueued and dequeued once, so it runs in O(n) time and O(w) space where w is the maximum tree width.
 
@@ -2947,7 +3661,22 @@ class Solution {
 
 ### 46. Flatten Binary Tree to Linked List  ·  LC 114  ·  Medium  ·  Binary Tree
 
-**Problem:** Flatten a binary tree in place into a right-leaning 'linked list' following preorder: each left child becomes null and each right child points to the next preorder node. 0 <= n <= 2000.
+**Problem:** Given the `root` of a binary tree, flatten the tree in place into a "linked list": use the same `TreeNode` class, where each node's right child points to the next node in a preorder traversal and each node's left child is `null`. The flattened tree should be in the same order as a preorder traversal.
+
+**Examples:**
+```
+Input: root = [1,2,5,3,4,null,6]
+Output: [1,null,2,null,3,null,4,null,5,null,6]
+Explanation: Preorder is 1,2,3,4,5,6; each node keeps only a right child.
+```
+```
+Input: root = []
+Output: []
+```
+
+**Constraints:**
+- The number of nodes in the tree is in the range `[0, 2000]`.
+- `-100 <= Node.val <= 100`
 
 **Approach:** Use the Morris-style threading trick: for each node that has a left subtree, find the rightmost node of that left subtree (the preorder predecessor of the right subtree), attach the current right subtree there, then move the whole left subtree to the right and clear the left pointer. Advancing along the right pointers processes the entire tree. Each edge is traversed a constant number of times, giving O(n) time and O(1) extra space.
 
@@ -3037,7 +3766,26 @@ class Solution {
 
 ### 47. Construct Binary Tree from Preorder and Inorder Traversal  ·  LC 105  ·  Medium  ·  Binary Tree
 
-**Problem:** Build a tree from `preorder` and `inorder` traversals with unique values. 1 <= length <= 3000.
+**Problem:** Given two integer arrays `preorder` and `inorder` where `preorder` is the preorder traversal of a binary tree and `inorder` is the inorder traversal of the same tree, construct and return the binary tree.
+
+**Examples:**
+```
+Input: preorder = [3,9,20,15,7], inorder = [9,3,15,20,7]
+Output: [3,9,20,null,null,15,7]
+```
+```
+Input: preorder = [-1], inorder = [-1]
+Output: [-1]
+```
+
+**Constraints:**
+- `1 <= preorder.length <= 3000`
+- `inorder.length == preorder.length`
+- `-3000 <= preorder[i], inorder[i] <= 3000`
+- `preorder` and `inorder` consist of unique values.
+- Each value of `inorder` also appears in `preorder`.
+- `preorder` is guaranteed to be the preorder traversal of the tree.
+- `inorder` is guaranteed to be the inorder traversal of the tree.
 
 **Approach:** First preorder element is root; locate it in inorder to split sizes; recurse. O(n) time with index map.
 
@@ -3107,7 +3855,23 @@ TreeNode go(int[] preorder, Map<Integer, Integer> idx, int l, int r) {
 
 ### 48. Path Sum III  ·  LC 437  ·  Medium  ·  Binary Tree
 
-**Problem:** Count the downward paths (parent-to-child, any start and end) in a binary tree whose node values sum to `target`. 0 <= n <= 1000, values in [-10^9, 10^9].
+**Problem:** Given the `root` of a binary tree and an integer `targetSum`, return the number of paths where the sum of the values along the path equals `targetSum`. The path does not need to start at the root or end at a leaf, but it must go downward (traveling only from parent nodes to child nodes).
+
+**Examples:**
+```
+Input: root = [10,5,-3,3,2,null,11,3,-2,null,1], targetSum = 8
+Output: 3
+Explanation: The paths summing to 8 are 5->3, 5->2->1, and -3->11.
+```
+```
+Input: root = [5,4,8,11,null,13,4,7,2,null,null,5,1], targetSum = 22
+Output: 3
+```
+
+**Constraints:**
+- The number of nodes in the tree is in the range `[0, 1000]`.
+- `-10^9 <= Node.val <= 10^9`
+- `-1000 <= targetSum <= 1000`
 
 **Approach:** Track the running prefix sum from the root to the current node and store counts of every prefix sum seen along the current path in a hash map; a path ending at the current node with the target sum exists once for each earlier prefix equal to current - target. Add the current prefix before recursing into children and remove it when backtracking so only ancestors on the active path are counted. Each node is visited once with O(1) map work, giving O(n) time and O(h) space for the map and recursion.
 
@@ -3211,7 +3975,26 @@ class Solution {
 
 ### 49. Lowest Common Ancestor of a Binary Tree  ·  LC 236  ·  Medium  ·  Binary Tree
 
-**Problem:** Find LCA of nodes `p` and `q` in a general binary tree. 2 <= nodes <= 10^5.
+**Problem:** Given the `root` of a binary tree and two nodes `p` and `q` in the tree, return their lowest common ancestor (LCA). The LCA of two nodes is the deepest node that has both of them as descendants, where a node is allowed to be a descendant of itself.
+
+**Examples:**
+```
+Input: root = [3,5,1,6,2,0,8,null,null,7,4], p = 5, q = 1
+Output: 3
+Explanation: The LCA of nodes 5 and 1 is 3.
+```
+```
+Input: root = [3,5,1,6,2,0,8,null,null,7,4], p = 5, q = 4
+Output: 5
+Explanation: The LCA of 5 and 4 is 5, since a node can be a descendant of itself.
+```
+
+**Constraints:**
+- The number of nodes in the tree is in the range `[2, 10^5]`.
+- `-10^9 <= Node.val <= 10^9`
+- All `Node.val` are unique.
+- `p != q`
+- `p` and `q` both exist in the tree.
 
 **Approach:** Recurse; return non-null subtree result. If both sides return non-null, current node is LCA. O(n) time, O(h) stack.
 
@@ -3258,7 +4041,23 @@ TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
 
 ### 50. Binary Tree Maximum Path Sum  ·  LC 124  ·  Hard  ·  Binary Tree
 
-**Problem:** Find the maximum sum of any path between any two nodes (path bends allowed). 1 <= nodes <= 3*10^4, values can be negative.
+**Problem:** Given the `root` of a binary tree, return the maximum path sum of any non-empty path. A path is a sequence of nodes where each pair of adjacent nodes is connected by an edge; a node may appear at most once, and the path need not pass through the root. The path sum is the sum of the values of the nodes on the path.
+
+**Examples:**
+```
+Input: root = [1,2,3]
+Output: 6
+Explanation: The optimal path 2 -> 1 -> 3 has a sum of 2 + 1 + 3 = 6.
+```
+```
+Input: root = [-10,9,20,null,null,15,7]
+Output: 42
+Explanation: The optimal path 15 -> 20 -> 7 has a sum of 15 + 20 + 7 = 42.
+```
+
+**Constraints:**
+- The number of nodes in the tree is in the range `[1, 3 * 10^4]`.
+- `-1000 <= Node.val <= 1000`
 
 **Approach:** Post-order; each node returns max gain ignoring branching, while updating global best with branching. O(n) time, O(h) stack.
 
@@ -3321,7 +4120,33 @@ int gain(TreeNode n) {
 
 ### 51. Number of Islands  ·  LC 200  ·  Medium  ·  Graph
 
-**Problem:** Count islands (groups of connected '1's, 4-directional) in a grid. 1 <= m, n <= 300.
+**Problem:** Given an `m x n` 2D grid `grid` of characters where `'1'` represents land and `'0'` represents water, return the number of islands. An island is a group of `'1'`s connected 4-directionally (horizontally or vertically). You may assume all four edges of the grid are surrounded by water.
+
+**Examples:**
+```
+Input: grid = [
+  ["1","1","1","1","0"],
+  ["1","1","0","1","0"],
+  ["1","1","0","0","0"],
+  ["0","0","0","0","0"]
+]
+Output: 1
+```
+```
+Input: grid = [
+  ["1","1","0","0","0"],
+  ["1","1","0","0","0"],
+  ["0","0","1","0","0"],
+  ["0","0","0","1","1"]
+]
+Output: 3
+```
+
+**Constraints:**
+- `m == grid.length`
+- `n == grid[i].length`
+- `1 <= m, n <= 300`
+- `grid[i][j]` is `'0'` or `'1'`.
 
 **Approach:** Iterate cells; on each '1' DFS-flood-fill to mark visited. O(m*n) time.
 
@@ -3390,7 +4215,29 @@ void dfs(char[][] grid, int r, int c) {
 
 ### 52. Rotting Oranges  ·  LC 994  ·  Medium  ·  Graph
 
-**Problem:** In an m x n grid of cells 0 (empty), 1 (fresh), 2 (rotten), each minute every fresh orange 4-directionally adjacent to a rotten one rots. Return the minutes until no fresh orange remains, or -1 if impossible. 1 <= m, n <= 10.
+**Problem:** You are given an `m x n` grid where each cell can have one of three values: `0` (empty), `1` (a fresh orange), or `2` (a rotten orange). Every minute, any fresh orange that is 4-directionally adjacent to a rotten orange becomes rotten. Return the minimum number of minutes that must elapse until no cell has a fresh orange. If this is impossible, return `-1`.
+
+**Examples:**
+```
+Input: grid = [[2,1,1],[1,1,0],[0,1,1]]
+Output: 4
+```
+```
+Input: grid = [[2,1,1],[0,1,1],[1,0,1]]
+Output: -1
+Explanation: The orange in the bottom-left corner is never adjacent to a rotten orange, so it stays fresh.
+```
+```
+Input: grid = [[0,2]]
+Output: 0
+Explanation: There are no fresh oranges at minute 0, so the answer is 0.
+```
+
+**Constraints:**
+- `m == grid.length`
+- `n == grid[i].length`
+- `1 <= m, n <= 10`
+- `grid[i][j]` is `0`, `1`, or `2`.
 
 **Approach:** Run a multi-source breadth-first search starting from all initially rotten oranges at once, processing the grid one minute (one BFS layer) at a time and counting fresh oranges as they rot. When the queue empties, any remaining fresh oranges are unreachable so the answer is -1; otherwise the number of layers processed is the elapsed time. Every cell is enqueued at most once, giving O(m*n) time and O(m*n) space.
 
@@ -3506,7 +4353,26 @@ class Solution {
 
 ### 53. Course Schedule  ·  LC 207  ·  Medium  ·  Graph
 
-**Problem:** Given prerequisites, determine if all courses can be finished. n <= 2000.
+**Problem:** There are `numCourses` courses labeled from `0` to `numCourses - 1`. You are given an array `prerequisites` where `prerequisites[i] = [ai, bi]` indicates that you must take course `bi` before course `ai`. Return `true` if you can finish all courses, otherwise return `false`.
+
+**Examples:**
+```
+Input: numCourses = 2, prerequisites = [[1,0]]
+Output: true
+Explanation: Take course 0, then course 1.
+```
+```
+Input: numCourses = 2, prerequisites = [[1,0],[0,1]]
+Output: false
+Explanation: Courses 0 and 1 depend on each other, forming a cycle.
+```
+
+**Constraints:**
+- `1 <= numCourses <= 2000`
+- `0 <= prerequisites.length <= 5000`
+- `prerequisites[i].length == 2`
+- `0 <= ai, bi < numCourses`
+- All the pairs `prerequisites[i]` are unique.
 
 **Approach:** Detect a cycle via Kahn's BFS (in-degree). O(V+E) time.
 
@@ -3578,7 +4444,33 @@ boolean canFinish(int numCourses, int[][] prerequisites) {
 
 ### 54. Implement Trie (Prefix Tree)  ·  LC 208  ·  Medium  ·  Graph
 
-**Problem:** Implement `insert`, `search`, and `startsWith` for a trie. 1 <= calls <= 3*10^4.
+**Problem:** Implement a trie (prefix tree) with the `Trie` class:
+- `Trie()` initializes the trie object.
+- `void insert(String word)` inserts `word` into the trie.
+- `boolean search(String word)` returns `true` if `word` is in the trie (i.e., was inserted before), and `false` otherwise.
+- `boolean startsWith(String prefix)` returns `true` if there is a previously inserted word that has the prefix `prefix`, and `false` otherwise.
+
+**Examples:**
+```
+Input:
+["Trie","insert","search","search","startsWith","insert","search"]
+[[],["apple"],["apple"],["app"],["app"],["app"],["app"]]
+Output:
+[null,null,true,false,true,null,true]
+Explanation:
+Trie trie = new Trie();
+trie.insert("apple");
+trie.search("apple");    // returns true
+trie.search("app");      // returns false
+trie.startsWith("app");  // returns true
+trie.insert("app");
+trie.search("app");      // returns true
+```
+
+**Constraints:**
+- `1 <= word.length, prefix.length <= 2000`
+- `word` and `prefix` consist only of lowercase English letters.
+- At most `3 * 10^4` calls in total will be made to `insert`, `search`, and `startsWith`.
 
 **Approach:** Nested map per character with a terminal flag. All ops O(L).
 
@@ -3673,7 +4565,27 @@ class Trie {
 
 ### 55. Permutations  ·  LC 46  ·  Medium  ·  Backtracking
 
-**Problem:** Return all permutations of distinct integers. 1 <= len(nums) <= 6.
+**Problem:** Given an array `nums` of distinct integers, return all the possible permutations. You may return the answer in any order.
+
+**Examples:**
+```
+Input: nums = [1,2,3]
+Output: [[1,2,3],[1,3,2],[2,1,3],[2,3,1],[3,1,2],[3,2,1]]
+Explanation: The permutations may be returned in any order.
+```
+```
+Input: nums = [0,1]
+Output: [[0,1],[1,0]]
+```
+```
+Input: nums = [1]
+Output: [[1]]
+```
+
+**Constraints:**
+- `1 <= nums.length <= 6`
+- `-10 <= nums[i] <= 10`
+- All the integers of `nums` are unique.
 
 **Approach:** Backtracking with a used-flag set. O(n * n!) time.
 
@@ -3746,7 +4658,23 @@ void go(int[] nums, boolean[] used, List<Integer> path, List<List<Integer>> out)
 
 ### 56. Subsets  ·  LC 78  ·  Medium  ·  Backtracking
 
-**Problem:** Return all subsets of a unique-int array. 1 <= len(nums) <= 10.
+**Problem:** Given an integer array `nums` of unique elements, return all possible subsets (the power set). The solution set must not contain duplicate subsets. You may return the answer in any order.
+
+**Examples:**
+```
+Input: nums = [1,2,3]
+Output: [[],[1],[2],[1,2],[3],[1,3],[2,3],[1,2,3]]
+Explanation: The subsets may be returned in any order.
+```
+```
+Input: nums = [0]
+Output: [[],[0]]
+```
+
+**Constraints:**
+- `1 <= nums.length <= 10`
+- `-10 <= nums[i] <= 10`
+- All the numbers of `nums` are unique.
 
 **Approach:** Backtrack including/excluding each element. O(2^n) time.
 
@@ -3805,7 +4733,26 @@ void go(int[] nums, int i, List<Integer> path, List<List<Integer>> out) {
 
 ### 57. Letter Combinations of a Phone Number  ·  LC 17  ·  Medium  ·  Backtracking
 
-**Problem:** Given digits 2-9, return all letter combinations they could represent. 0 <= len(digits) <= 4.
+**Problem:** Given a string `digits` containing digits from `2` to `9` inclusive, return all possible letter combinations that the number could represent. Return the answer in any order. The digit-to-letter mapping follows a telephone keypad: `2`->"abc", `3`->"def", `4`->"ghi", `5`->"jkl", `6`->"mno", `7`->"pqrs", `8`->"tuv", `9`->"wxyz". Note that `1` does not map to any letters.
+
+**Examples:**
+```
+Input: digits = "23"
+Output: ["ad","ae","af","bd","be","bf","cd","ce","cf"]
+Explanation: The combinations may be returned in any order.
+```
+```
+Input: digits = ""
+Output: []
+```
+```
+Input: digits = "2"
+Output: ["a","b","c"]
+```
+
+**Constraints:**
+- `0 <= digits.length <= 4`
+- `digits[i]` is a digit in the range `['2', '9']`.
 
 **Approach:** DFS over each digit's letters. O(3^n * 4^m) where 4-letter buttons contribute 4^m.
 
@@ -3873,7 +4820,28 @@ void go(String digits, int i, StringBuilder path, List<String> out) {
 
 ### 58. Combination Sum  ·  LC 39  ·  Medium  ·  Backtracking
 
-**Problem:** Return all unique combinations of distinct candidates summing to target; each can be used unlimited times. 1 <= len(candidates) <= 30.
+**Problem:** Given an array of distinct integers `candidates` and a target integer `target`, return a list of all unique combinations of `candidates` where the chosen numbers sum to `target`. You may return the combinations in any order. The same number may be chosen from `candidates` an unlimited number of times. Two combinations are unique if the frequency of at least one of the chosen numbers is different. It is guaranteed that the number of unique combinations that sum up to `target` is fewer than 150 for the given input.
+
+**Examples:**
+```
+Input: candidates = [2,3,6,7], target = 7
+Output: [[2,2,3],[7]]
+Explanation: 2 + 2 + 3 = 7 and 7 = 7. These are the only two combinations.
+```
+```
+Input: candidates = [2,3,5], target = 8
+Output: [[2,2,2,2],[2,3,3],[3,5]]
+```
+```
+Input: candidates = [2], target = 1
+Output: []
+```
+
+**Constraints:**
+- `1 <= candidates.length <= 30`
+- `2 <= candidates[i] <= 40`
+- All elements of `candidates` are distinct.
+- `1 <= target <= 40`
 
 **Approach:** Backtrack with an index to avoid duplicate orderings. O(2^t) worst case.
 
@@ -3942,7 +4910,21 @@ void go(int[] c, int i, int remain, List<Integer> path, List<List<Integer>> out)
 
 ### 59. Generate Parentheses  ·  LC 22  ·  Medium  ·  Backtracking
 
-**Problem:** Generate all combinations of n pairs of well-formed parentheses. 1 <= n <= 8.
+**Problem:** Given `n` pairs of parentheses, generate all combinations of well-formed parentheses. You may return the answer in any order.
+
+**Examples:**
+```
+Input: n = 3
+Output: ["((()))","(()())","(())()","()(())","()()()"]
+Explanation: The combinations may be returned in any order.
+```
+```
+Input: n = 1
+Output: ["()"]
+```
+
+**Constraints:**
+- `1 <= n <= 8`
 
 **Approach:** Backtrack maintaining counts of open/close used. O(C(n)) Catalan.
 
@@ -3999,7 +4981,28 @@ void go(String s, int op, int cl, int n, List<String> out) {
 
 ### 60. Word Search  ·  LC 79  ·  Medium  ·  Backtracking
 
-**Problem:** Given a 2D board and a word, return true if word exists as a path in the board (no cell reuse). 1 <= m, n <= 6 typically.
+**Problem:** Given an `m x n` grid of characters `board` and a string `word`, return `true` if `word` exists in the grid. The word can be constructed from letters of sequentially adjacent cells, where adjacent cells are horizontally or vertically neighboring. The same cell may not be used more than once.
+
+**Examples:**
+```
+Input: board = [["A","B","C","E"],["S","F","C","S"],["A","D","E","E"]], word = "ABCCED"
+Output: true
+```
+```
+Input: board = [["A","B","C","E"],["S","F","C","S"],["A","D","E","E"]], word = "SEE"
+Output: true
+```
+```
+Input: board = [["A","B","C","E"],["S","F","C","S"],["A","D","E","E"]], word = "ABCB"
+Output: false
+```
+
+**Constraints:**
+- `m == board.length`
+- `n == board[i].length`
+- `1 <= m, n <= 6`
+- `1 <= word.length <= 15`
+- `board` and `word` consist of only lowercase and uppercase English letters.
 
 **Approach:** DFS from each cell; mark visited by mutating board. O(m * n * 4^L) time.
 
@@ -4072,7 +5075,21 @@ boolean dfs(char[][] b, String w, int r, int c, int k) {
 
 ### 61. Palindrome Partitioning  ·  LC 131  ·  Medium  ·  Backtracking
 
-**Problem:** Partition lowercase string `s` into contiguous substrings where every piece is a palindrome, and return all such partitionings (any order). 1 <= len(s) <= 16.
+**Problem:** Given a string `s` consisting of lowercase English letters, partition `s` into contiguous substrings such that every substring is a palindrome. Return all possible palindrome partitionings of `s`. You may return the answer in any order.
+
+**Examples:**
+```
+Input: s = "aab"
+Output: [["a","a","b"],["aa","b"]]
+```
+```
+Input: s = "a"
+Output: [["a"]]
+```
+
+**Constraints:**
+- `1 <= s.length <= 16`
+- `s` contains only lowercase English letters
 
 **Approach:** Use backtracking: at each starting index, try every possible next cut, and recurse only when the candidate prefix is a palindrome, appending a complete partition when the index reaches the end. A two-pointer palindrome check keeps each test cheap, and pruning non-palindromic prefixes avoids exploring dead branches. This runs in O(n * 2^n) time (up to 2^(n-1) partition points, each producing an O(n) copy) and O(n) extra space for the recursion path.
 
@@ -4187,7 +5204,21 @@ class Solution {
 
 ### 62. N-Queens  ·  LC 51  ·  Hard  ·  Backtracking
 
-**Problem:** Place n queens on an n x n board so none attack each other. Return all distinct boards. 1 <= n <= 9.
+**Problem:** The n-queens puzzle asks you to place `n` queens on an `n x n` chessboard so that no two queens attack each other (no two share a row, column, or diagonal). Return all distinct solutions. Each solution is a board configuration represented as a list of `n` strings, where `'Q'` marks a queen and `'.'` marks an empty square. You may return the answer in any order.
+
+**Examples:**
+```
+Input: n = 4
+Output: [[".Q..","...Q","Q...","..Q."],["..Q.","Q...","...Q",".Q.."]]
+Explanation: There are two distinct solutions to the 4-queens puzzle.
+```
+```
+Input: n = 1
+Output: [["Q"]]
+```
+
+**Constraints:**
+- `1 <= n <= 9`
 
 **Approach:** Backtrack row by row tracking used columns and diagonals. O(n!) worst.
 
@@ -4274,7 +5305,27 @@ void go(int r, int n, Set<Integer> cols, Set<Integer> d1, Set<Integer> d2, int[]
 
 ### 63. Search Insert Position  ·  LC 35  ·  Easy  ·  Binary Search
 
-**Problem:** Given a sorted array of distinct integers and a `target`, return its index if present, else the index where it would be inserted to keep the array sorted. Must run in O(log n). 1 <= n <= 10^4.
+**Problem:** Given a sorted array of distinct integers `nums` and a `target` value, return the index of `target` if it is found in the array. If not, return the index where it would be inserted to keep the array sorted. You must write an algorithm that runs in `O(log n)` time.
+
+**Examples:**
+```
+Input: nums = [1,3,5,6], target = 5
+Output: 2
+```
+```
+Input: nums = [1,3,5,6], target = 2
+Output: 1
+```
+```
+Input: nums = [1,3,5,6], target = 7
+Output: 4
+```
+
+**Constraints:**
+- `1 <= nums.length <= 10^4`
+- `-10^4 <= nums[i] <= 10^4`
+- `nums` contains distinct values sorted in ascending order
+- `-10^4 <= target <= 10^4`
 
 **Approach:** Run a binary search for the leftmost position whose value is greater than or equal to target, using a half-open interval [lo, hi). Whenever the midpoint is smaller than target we move lo past it; otherwise the answer is at or before mid, so we shrink hi to mid. When the interval collapses, lo is exactly the insertion (or found) index. This is O(log n) time and O(1) space.
 
@@ -4336,7 +5387,23 @@ class Solution {
 
 ### 64. Search a 2D Matrix  ·  LC 74  ·  Medium  ·  Binary Search
 
-**Problem:** Given a matrix where each row is sorted and the first value of each row exceeds the last of the previous row, decide whether `target` exists. It behaves like one sorted sequence read row by row. O(log(m*n)) time. 1 <= m, n <= 100.
+**Problem:** You are given an `m x n` integer matrix with two properties: each row is sorted in non-decreasing order from left to right, and the first integer of each row is greater than the last integer of the previous row. Given an integer `target`, return `true` if `target` is in the matrix and `false` otherwise. You must write an algorithm that runs in `O(log(m * n))` time.
+
+**Examples:**
+```
+Input: matrix = [[1,3,5,7],[10,11,16,20],[23,30,34,60]], target = 3
+Output: true
+```
+```
+Input: matrix = [[1,3,5,7],[10,11,16,20],[23,30,34,60]], target = 13
+Output: false
+```
+
+**Constraints:**
+- `m == matrix.length`
+- `n == matrix[i].length`
+- `1 <= m, n <= 100`
+- `-10^4 <= matrix[i][j], target <= 10^4`
 
 **Approach:** Treat the matrix as a single sorted array of length m*n and binary search over indices 0..m*n-1, mapping index k to row k//n and column k%n. The row-ordering guarantees mean this virtual flattening is globally sorted, so standard binary search applies. This achieves the required O(log(m*n)) time with O(1) space.
 
@@ -4409,7 +5476,27 @@ class Solution {
 
 ### 65. Find First and Last Position of Element in Sorted Array  ·  LC 34  ·  Medium  ·  Binary Search
 
-**Problem:** Return start and end indices of `target` in a sorted array, or [-1, -1]. 0 <= len <= 10^5.
+**Problem:** Given an array of integers `nums` sorted in non-decreasing order, find the starting and ending index of a given `target` value. If `target` is not found in the array, return `[-1, -1]`. You must write an algorithm that runs in `O(log n)` time.
+
+**Examples:**
+```
+Input: nums = [5,7,7,8,8,10], target = 8
+Output: [3,4]
+```
+```
+Input: nums = [5,7,7,8,8,10], target = 6
+Output: [-1,-1]
+```
+```
+Input: nums = [], target = 0
+Output: [-1,-1]
+```
+
+**Constraints:**
+- `0 <= nums.length <= 10^5`
+- `-10^9 <= nums[i] <= 10^9`
+- `nums` is a non-decreasing array
+- `-10^9 <= target <= 10^9`
 
 **Approach:** Two binary searches for leftmost and rightmost match. O(log n) time.
 
@@ -4480,7 +5567,28 @@ int bs(int[] nums, int target, boolean left) {
 
 ### 66. Search in Rotated Sorted Array  ·  LC 33  ·  Medium  ·  Binary Search
 
-**Problem:** Search for `target` in a rotated sorted array of unique ints. Return index or -1. O(log n). 1 <= len(nums) <= 5000.
+**Problem:** There is an integer array `nums` sorted in ascending order with distinct values, which has been rotated at an unknown pivot index so that, for example, `[0,1,2,4,5,6,7]` might become `[4,5,6,7,0,1,2]`. Given the rotated array `nums` and an integer `target`, return the index of `target` if it is in `nums`, or `-1` if it is not. You must write an algorithm with `O(log n)` runtime complexity.
+
+**Examples:**
+```
+Input: nums = [4,5,6,7,0,1,2], target = 0
+Output: 4
+```
+```
+Input: nums = [4,5,6,7,0,1,2], target = 3
+Output: -1
+```
+```
+Input: nums = [1], target = 0
+Output: -1
+```
+
+**Constraints:**
+- `1 <= nums.length <= 5000`
+- `-10^4 <= nums[i] <= 10^4`
+- All values of `nums` are unique
+- `nums` is an ascending array that is possibly rotated
+- `-10^4 <= target <= 10^4`
 
 **Approach:** Modified binary search: one half is always sorted; check if target lies in it. O(log n) time, O(1) space.
 
@@ -4552,7 +5660,29 @@ int search(int[] nums, int target) {
 
 ### 67. Find Minimum in Rotated Sorted Array  ·  LC 153  ·  Medium  ·  Binary Search
 
-**Problem:** A sorted unique array was rotated at an unknown pivot. Find the minimum. O(log n). 1 <= len(nums) <= 5000.
+**Problem:** Suppose an array of length `n` sorted in ascending order with distinct values is rotated between 1 and `n` times at an unknown pivot. Given the rotated array `nums`, return the minimum element. You must write an algorithm that runs in `O(log n)` time.
+
+**Examples:**
+```
+Input: nums = [3,4,5,1,2]
+Output: 1
+Explanation: The original array was [1,2,3,4,5], rotated 3 times.
+```
+```
+Input: nums = [4,5,6,7,0,1,2]
+Output: 0
+```
+```
+Input: nums = [11,13,15,17]
+Output: 11
+```
+
+**Constraints:**
+- `n == nums.length`
+- `1 <= n <= 5000`
+- `-5000 <= nums[i] <= 5000`
+- All integers of `nums` are unique
+- `nums` is sorted and rotated between 1 and `n` times
 
 **Approach:** Binary search; compare `nums[mid]` to `nums[hi]` to decide which side holds the min. O(log n) time, O(1) space.
 
@@ -4604,7 +5734,27 @@ int findMin(int[] nums) {
 
 ### 68. Median of Two Sorted Arrays  ·  LC 4  ·  Hard  ·  Binary Search
 
-**Problem:** Find the median of two sorted arrays in O(log(min(m,n))). 0 <= m, n; combined len >= 1.
+**Problem:** Given two sorted arrays `nums1` and `nums2` of sizes `m` and `n` respectively, return the median of the two arrays combined. The overall run time complexity should be `O(log(m + n))`; an `O(log(min(m, n)))` solution is preferred.
+
+**Examples:**
+```
+Input: nums1 = [1,3], nums2 = [2]
+Output: 2.00000
+Explanation: The merged array is [1,2,3] and the median is 2.
+```
+```
+Input: nums1 = [1,2], nums2 = [3,4]
+Output: 2.50000
+Explanation: The merged array is [1,2,3,4] and the median is (2 + 3) / 2 = 2.5.
+```
+
+**Constraints:**
+- `nums1.length == m`
+- `nums2.length == n`
+- `0 <= m <= 1000`
+- `0 <= n <= 1000`
+- `1 <= m + n <= 2000`
+- `-10^6 <= nums1[i], nums2[i] <= 10^6`
 
 **Approach:** Binary search the partition of the smaller array such that left halves have correct size and max(left) <= min(right). O(log min(m,n)).
 
@@ -4692,7 +5842,25 @@ double findMedianSortedArrays(int[] a, int[] b) {
 
 ### 69. Valid Parentheses  ·  LC 20  ·  Easy  ·  Stack
 
-**Problem:** Determine if a string of `()[]{}` is properly nested and matched. 1 <= len(s) <= 10^4.
+**Problem:** Given a string `s` containing only the characters `'('`, `')'`, `'{'`, `'}'`, `'['`, and `']'`, determine whether the string is valid. A string is valid when every opening bracket is closed by a matching closing bracket of the same type, brackets are closed in the correct order, and every closing bracket has a corresponding opening bracket.
+
+**Examples:**
+```
+Input: s = "()[]{}"
+Output: true
+```
+```
+Input: s = "(]"
+Output: false
+```
+```
+Input: s = "([])"
+Output: true
+```
+
+**Constraints:**
+- `1 <= s.length <= 10^4`
+- `s` consists only of the characters `'()[]{}'`
 
 **Approach:** Push opens; on close, pop and verify match. O(n) time and space.
 
@@ -4749,7 +5917,37 @@ boolean isValid(String s) {
 
 ### 70. Min Stack  ·  LC 155  ·  Medium  ·  Stack
 
-**Problem:** Support `push`, `pop`, `top`, and `getMin` all in O(1). Up to 3*10^4 ops.
+**Problem:** Design a stack that supports push, pop, top, and retrieving the minimum element in constant time. Implement the `MinStack` class:
+- `MinStack()` initializes the stack object.
+- `void push(int val)` pushes `val` onto the stack.
+- `void pop()` removes the element on top of the stack.
+- `int top()` returns the element on top of the stack.
+- `int getMin()` returns the minimum element currently in the stack.
+
+Each of `push`, `pop`, `top`, and `getMin` must run in `O(1)` time.
+
+**Examples:**
+```
+Input:
+["MinStack","push","push","push","getMin","pop","top","getMin"]
+[[],[-2],[0],[-3],[],[],[],[]]
+Output:
+[null,null,null,null,-3,null,0,-2]
+Explanation:
+MinStack minStack = new MinStack();
+minStack.push(-2);
+minStack.push(0);
+minStack.push(-3);
+minStack.getMin(); // returns -3
+minStack.pop();
+minStack.top();    // returns 0
+minStack.getMin(); // returns -2
+```
+
+**Constraints:**
+- `-2^31 <= val <= 2^31 - 1`
+- Methods `pop`, `top`, and `getMin` are always called on non-empty stacks
+- At most `3 * 10^4` calls will be made to `push`, `pop`, `top`, and `getMin`
 
 **Approach:** Pair each value with the current minimum on a single stack. O(1) all ops.
 
@@ -4810,7 +6008,27 @@ class MinStack {
 
 ### 71. Decode String  ·  LC 394  ·  Medium  ·  Stack
 
-**Problem:** Decode a string using the pattern k[encoded], repeating the bracketed content `k` times; encodings may nest (e.g. `3[a2[c]]` -> `accaccacc`). Input has only digits, letters, and brackets. 1 <= len(s) <= 30, 1 <= k <= 300.
+**Problem:** Given an encoded string `s`, return its decoded form. The encoding rule is `k[encoded_string]`, meaning the `encoded_string` inside the brackets is repeated exactly `k` times, where `k` is a positive integer. The input is always valid, contains no extra whitespace, and square brackets are well-formed. Encodings may be nested, and any digits in the input represent repeat counts only (the original data contains no digits).
+
+**Examples:**
+```
+Input: s = "3[a]2[bc]"
+Output: "aaabcbc"
+```
+```
+Input: s = "3[a2[c]]"
+Output: "accaccacc"
+```
+```
+Input: s = "2[abc]3[cd]ef"
+Output: "abcabccdcdcdef"
+```
+
+**Constraints:**
+- `1 <= s.length <= 30`
+- `s` consists of lowercase English letters, digits, and square brackets `'[]'`
+- `s` is guaranteed to be a valid input
+- All integers in `s` are in the range `[1, 300]`
 
 **Approach:** Scan left to right maintaining two stacks: one for repeat counts and one for the string built before each open bracket. On '[' push the current count and accumulated string then reset them; on ']' pop the saved prefix and multiplier and splice the repeated inner string back in. This handles arbitrary nesting because each bracket level is restored exactly when its ']' is reached. It runs in O(N) time and O(N) space where N is the length of the decoded output.
 
@@ -4910,7 +6128,25 @@ class Solution {
 
 ### 72. Daily Temperatures  ·  LC 739  ·  Medium  ·  Stack
 
-**Problem:** For each day, return how many days until a warmer temperature, or 0. 1 <= len <= 10^5.
+**Problem:** Given an array of integers `temperatures` representing daily temperatures, return an array `answer` such that `answer[i]` is the number of days you have to wait after day `i` to get a warmer temperature. If there is no future day with a warmer temperature, set `answer[i] = 0`.
+
+**Examples:**
+```
+Input: temperatures = [73,74,75,71,69,72,76,73]
+Output: [1,1,4,2,1,1,0,0]
+```
+```
+Input: temperatures = [30,40,50,60]
+Output: [1,1,1,0]
+```
+```
+Input: temperatures = [30,60,90]
+Output: [1,1,0]
+```
+
+**Constraints:**
+- `1 <= temperatures.length <= 10^5`
+- `30 <= temperatures[i] <= 100`
 
 **Approach:** Monotonic decreasing stack of indices; on a warmer day, pop and record distance. O(n).
 
@@ -4968,7 +6204,22 @@ int[] dailyTemperatures(int[] temperatures) {
 
 ### 73. Largest Rectangle in Histogram  ·  LC 84  ·  Hard  ·  Stack
 
-**Problem:** Given bar heights, find the area of the largest rectangle. 1 <= len(heights) <= 10^5.
+**Problem:** Given an array `heights` representing the heights of bars in a histogram, where each bar has a width of `1`, return the area of the largest rectangle that can be formed within the histogram.
+
+**Examples:**
+```
+Input: heights = [2,1,5,6,2,3]
+Output: 10
+Explanation: The largest rectangle is formed by the bars of heights 5 and 6, giving area 5 * 2 = 10.
+```
+```
+Input: heights = [2,4]
+Output: 4
+```
+
+**Constraints:**
+- `1 <= heights.length <= 10^5`
+- `0 <= heights[i] <= 10^4`
 
 **Approach:** Monotonic stack of indices; when a shorter bar appears, pop and compute area. O(n) time.
 
@@ -5031,7 +6282,21 @@ int largestRectangleArea(int[] heights) {
 
 ### 74. Kth Largest Element in an Array  ·  LC 215  ·  Medium  ·  Heap
 
-**Problem:** Find the kth largest element in an unsorted array. 1 <= k <= len(nums) <= 10^5.
+**Problem:** Given an integer array `nums` and an integer `k`, return the `k`th largest element in the array. Note that it is the `k`th largest element in sorted order, not the `k`th distinct element. Can you solve it without fully sorting the array?
+
+**Examples:**
+```
+Input: nums = [3,2,1,5,6,4], k = 2
+Output: 5
+```
+```
+Input: nums = [3,2,3,1,2,4,5,5,6], k = 4
+Output: 4
+```
+
+**Constraints:**
+- `1 <= k <= nums.length <= 10^5`
+- `-10^4 <= nums[i] <= 10^4`
 
 **Approach:** Min-heap of size k; final root is answer. O(n log k) time.
 
@@ -5100,7 +6365,23 @@ int findKthLargest(int[] nums, int k) {
 
 ### 75. Top K Frequent Elements  ·  LC 347  ·  Medium  ·  Heap
 
-**Problem:** Return the k most frequent elements. 1 <= k <= unique <= len(nums) <= 10^5.
+**Problem:** Given an integer array `nums` and an integer `k`, return the `k` most frequent elements. You may return the answer in any order. It is guaranteed that the answer is unique.
+
+**Examples:**
+```
+Input: nums = [1,1,1,2,2,3], k = 2
+Output: [1,2]
+```
+```
+Input: nums = [1], k = 1
+Output: [1]
+```
+
+**Constraints:**
+- `1 <= nums.length <= 10^5`
+- `-10^4 <= nums[i] <= 10^4`
+- `k` is in the range `[1, the number of unique elements in the array]`
+- The answer is guaranteed to be unique
 
 **Approach:** Bucket sort by frequency (1..n); collect from highest bucket. O(n) time.
 
@@ -5167,7 +6448,28 @@ int[] topKFrequent(int[] nums, int k) {
 
 ### 76. Find Median from Data Stream  ·  LC 295  ·  Hard  ·  Heap
 
-**Problem:** Support `addNum(x)` and `findMedian()` over a growing stream. Up to 5*10^4 ops.
+**Problem:** Design the `MedianFinder` class that supports finding the median of a growing stream of integers. The median is the middle value of an ordered list; if the list has an even number of elements, the median is the average of the two middle values. Implement the following methods: `MedianFinder()` initializes the object with an empty data structure; `addNum(num)` adds the integer `num` into the data structure; `findMedian()` returns the median of all elements added so far. Answers within `10^-5` of the actual value are accepted.
+
+**Examples:**
+```
+Input:
+["MedianFinder", "addNum", "addNum", "findMedian", "addNum", "findMedian"]
+[[], [1], [2], [], [3], []]
+Output:
+[null, null, null, 1.5, null, 2.0]
+Explanation:
+MedianFinder mf = new MedianFinder();
+mf.addNum(1);        // stream: [1]
+mf.addNum(2);        // stream: [1, 2]
+mf.findMedian();     // returns 1.5 (average of 1 and 2)
+mf.addNum(3);        // stream: [1, 2, 3]
+mf.findMedian();     // returns 2.0
+```
+
+**Constraints:**
+- `-10^5 <= num <= 10^5`
+- `findMedian` is only called after at least one element has been added.
+- At most `5 * 10^4` calls will be made to `addNum` and `findMedian`.
 
 **Approach:** Two heaps: max-heap of lower half, min-heap of upper half; balance sizes. O(log n) add, O(1) median.
 
@@ -5258,7 +6560,23 @@ class MedianFinder {
 
 ### 77. Best Time to Buy and Sell Stock  ·  LC 121  ·  Easy  ·  Greedy
 
-**Problem:** Given daily `prices`, choose one day to buy and a later day to sell to maximize profit. Return max profit or 0 if none. 1 <= len(prices) <= 10^5.
+**Problem:** You are given an array `prices` where `prices[i]` is the price of a given stock on day `i`. Choose a single day to buy one unit of the stock and a different, later day to sell it, so as to maximize your profit. Return the maximum profit you can achieve from this transaction. If no profit is possible, return `0`.
+
+**Examples:**
+```
+Input: prices = [7,1,5,3,6,4]
+Output: 5
+Explanation: Buy on day 2 (price = 1) and sell on day 5 (price = 6), profit = 6 - 1 = 5.
+```
+```
+Input: prices = [7,6,4,3,1]
+Output: 0
+Explanation: Prices only decrease, so no profitable transaction is possible; the max profit is 0.
+```
+
+**Constraints:**
+- `1 <= prices.length <= 10^5`
+- `0 <= prices[i] <= 10^4`
 
 **Approach:** Track running minimum price; the answer is the max of `price - min_so_far`. O(n) time, O(1) space.
 
@@ -5306,7 +6624,23 @@ int maxProfit(int[] prices) {
 
 ### 78. Jump Game  ·  LC 55  ·  Medium  ·  Greedy
 
-**Problem:** Each element gives max jump length; can you reach the last index? 1 <= len(nums) <= 10^4.
+**Problem:** You are given an integer array `nums`. You start at the first index (index `0`), and each element `nums[i]` represents the maximum length you can jump forward from index `i`. Return `true` if you can reach the last index, and `false` otherwise.
+
+**Examples:**
+```
+Input: nums = [2,3,1,1,4]
+Output: true
+Explanation: Jump 1 step from index 0 to index 1, then 3 steps to the last index.
+```
+```
+Input: nums = [3,2,1,0,4]
+Output: false
+Explanation: You always arrive at index 3 whose maximum jump is 0, so you can never reach the last index.
+```
+
+**Constraints:**
+- `1 <= nums.length <= 10^4`
+- `0 <= nums[i] <= 10^5`
 
 **Approach:** Greedy: track farthest reachable index. O(n) time, O(1) space.
 
@@ -5354,7 +6688,23 @@ boolean canJump(int[] nums) {
 
 ### 79. Jump Game II  ·  LC 45  ·  Medium  ·  Greedy
 
-**Problem:** Given `nums` where each element is the max forward jump length from that index, return the minimum jumps to reach the last index from index 0 (always reachable). 1 <= n <= 10^4, 0 <= nums[i] <= 1000.
+**Problem:** You are given a 0-indexed integer array `nums` of length `n`. Starting at index `0`, each element `nums[i]` is the maximum length you can jump forward from index `i`; that is, from index `i` you can reach any index `j` with `i < j <= i + nums[i]` and `j < n`. Return the minimum number of jumps needed to reach index `n - 1`. The test cases guarantee that the last index is always reachable.
+
+**Examples:**
+```
+Input: nums = [2,3,1,1,4]
+Output: 2
+Explanation: Jump 1 step from index 0 to index 1, then 3 steps to the last index. Two jumps in total.
+```
+```
+Input: nums = [2,3,0,1,4]
+Output: 2
+```
+
+**Constraints:**
+- `1 <= nums.length <= 10^4`
+- `0 <= nums[i] <= 1000`
+- It is guaranteed that you can reach `nums[n - 1]`.
 
 **Approach:** Use a greedy BFS-by-levels: track the farthest index reachable overall and the end of the current jump's reach, and whenever the scan reaches that current end you must spend one more jump and extend the boundary to the farthest seen so far. Each contiguous block of indices reachable with the same number of jumps forms one BFS level, so counting boundary crossings yields the minimum. Iterating only up to the second-to-last index avoids an extra count when already at the goal. This is O(n) time and O(1) space.
 
@@ -5416,7 +6766,22 @@ class Solution {
 
 ### 80. Partition Labels  ·  LC 763  ·  Medium  ·  Greedy
 
-**Problem:** Split a lowercase string `s` into the maximum number of contiguous pieces such that each letter appears in exactly one piece. Return the piece lengths in order. 1 <= len(s) <= 500.
+**Problem:** You are given a string `s` consisting of lowercase English letters. Partition `s` into as many contiguous parts as possible so that each letter appears in at most one part. A part is a substring of `s`, and the concatenation of all parts in order must equal `s`. Return a list of integers representing the length of each part, in order.
+
+**Examples:**
+```
+Input: s = "ababcbacadefegdehijhklij"
+Output: [9,7,8]
+Explanation: The partition is "ababcbaca", "defegde", "hijhklij". Each letter appears in exactly one part. A partition like "ababcbaca", "defegde", "hijhkl", "ij" is invalid because it splits s into fewer combined pieces than possible while still keeping letters isolated—only 3 parts is the maximum.
+```
+```
+Input: s = "eccbbbbdec"
+Output: [10]
+```
+
+**Constraints:**
+- `1 <= s.length <= 500`
+- `s` consists of lowercase English letters.
 
 **Approach:** First record the last index at which each character occurs. Then sweep left to right, extending the current partition's end to the farthest last-occurrence of any character seen so far; when the running index reaches that end, no character inside can appear later, so we can safely cut here. This greedy cut is optimal because it makes each partition as small as possible while still self-contained. O(n) time, O(1) space (a fixed 26-slot table).
 
@@ -5485,7 +6850,22 @@ class Solution {
 
 ### 81. Climbing Stairs  ·  LC 70  ·  Easy  ·  Dynamic Programming
 
-**Problem:** Reach the top in 1 or 2 steps; count distinct ways. 1 <= n <= 45.
+**Problem:** You are climbing a staircase that takes `n` steps to reach the top. Each time you may climb either `1` or `2` steps. Return the number of distinct ways you can climb to the top.
+
+**Examples:**
+```
+Input: n = 2
+Output: 2
+Explanation: There are two ways: (1 + 1) and (2).
+```
+```
+Input: n = 3
+Output: 3
+Explanation: There are three ways: (1 + 1 + 1), (1 + 2), and (2 + 1).
+```
+
+**Constraints:**
+- `1 <= n <= 45`
 
 **Approach:** Fibonacci recurrence; iterate with two variables. O(n) time, O(1) space.
 
@@ -5525,7 +6905,20 @@ int climbStairs(int n) {
 
 ### 82. Pascal's Triangle  ·  LC 118  ·  Easy  ·  Dynamic Programming
 
-**Problem:** Return the first `numRows` rows of Pascal's Triangle, where each interior value is the sum of the two values diagonally above it. 1 <= numRows <= 30.
+**Problem:** Given an integer `numRows`, return the first `numRows` rows of Pascal's Triangle. In Pascal's Triangle, each row starts and ends with `1`, and every other value is the sum of the two values directly above it in the previous row.
+
+**Examples:**
+```
+Input: numRows = 5
+Output: [[1],[1,1],[1,2,1],[1,3,3,1],[1,4,6,4,1]]
+```
+```
+Input: numRows = 1
+Output: [[1]]
+```
+
+**Constraints:**
+- `1 <= numRows <= 30`
 
 **Approach:** Construct the triangle row by row: initialize each row filled with 1s (which correctly fixes both endpoints), then overwrite each interior cell with the sum of the two adjacent cells from the already-built previous row. Because every value depends only on the prior row, a straightforward bottom-up build produces all entries directly. O(numRows^2) time and O(numRows^2) space, which is optimal since the output itself has that many elements.
 
@@ -5586,7 +6979,23 @@ class Solution {
 
 ### 83. House Robber  ·  LC 198  ·  Medium  ·  Dynamic Programming
 
-**Problem:** Maximize sum from a row of houses without picking two adjacent. 1 <= len(nums) <= 100, 0 <= nums[i] <= 400.
+**Problem:** You are given an integer array `nums` representing the amount of money in each house along a street. You are a robber planning to rob houses, but you cannot rob two directly adjacent houses on the same night, or the alarm will trigger. Return the maximum amount of money you can rob without alerting the police.
+
+**Examples:**
+```
+Input: nums = [1,2,3,1]
+Output: 4
+Explanation: Rob house 0 (money = 1) and house 2 (money = 3); total = 1 + 3 = 4.
+```
+```
+Input: nums = [2,7,9,3,1]
+Output: 12
+Explanation: Rob house 0 (money = 2), house 2 (money = 9), and house 4 (money = 1); total = 2 + 9 + 1 = 12.
+```
+
+**Constraints:**
+- `1 <= nums.length <= 100`
+- `0 <= nums[i] <= 400`
 
 **Approach:** DP: best up to i = max(best[i-1], best[i-2] + nums[i]). O(n) time, O(1) space.
 
@@ -5634,7 +7043,22 @@ int rob(int[] nums) {
 
 ### 84. Perfect Squares  ·  LC 279  ·  Medium  ·  Dynamic Programming
 
-**Problem:** Given a positive integer n, return the least number of perfect-square integers (1, 4, 9, 16, ...) that sum exactly to n. For example n = 12 returns 3 (4 + 4 + 4) and n = 13 returns 2 (4 + 9). Constraints: 1 <= n <= 10^4.
+**Problem:** Given a positive integer `n`, return the least number of perfect squares that sum to exactly `n`. A perfect square is an integer that is the square of another integer (for example, `1`, `4`, `9`, and `16` are perfect squares, while `3` and `11` are not).
+
+**Examples:**
+```
+Input: n = 12
+Output: 3
+Explanation: 12 = 4 + 4 + 4.
+```
+```
+Input: n = 13
+Output: 2
+Explanation: 13 = 4 + 9.
+```
+
+**Constraints:**
+- `1 <= n <= 10^4`
 
 **Approach:** By Lagrange's four-square theorem the answer is always 1, 2, 3, or 4, so we just identify which. It is 1 iff n is a perfect square; by Legendre's three-square theorem it is 4 iff n has the form 4^k(8m+7); it is 2 iff some a with n - a^2 also a perfect square exists; otherwise it is 3. Checking these takes a loop up to sqrt(n), giving O(sqrt(n)) time and O(1) space.
 
@@ -5708,7 +7132,28 @@ class Solution {
 
 ### 85. Coin Change  ·  LC 322  ·  Medium  ·  Dynamic Programming
 
-**Problem:** Fewest coins to make amount; -1 if impossible. 1 <= len(coins) <= 12, 1 <= amount <= 10^4.
+**Problem:** You are given an integer array `coins` representing coins of different denominations and an integer `amount` representing a target total. Return the fewest number of coins needed to make up exactly `amount`. You have an unlimited supply of each denomination. If the amount cannot be made up by any combination of the coins, return `-1`.
+
+**Examples:**
+```
+Input: coins = [1,2,5], amount = 11
+Output: 3
+Explanation: 11 = 5 + 5 + 1.
+```
+```
+Input: coins = [2], amount = 3
+Output: -1
+Explanation: 3 cannot be formed using only coins of value 2.
+```
+```
+Input: coins = [1], amount = 0
+Output: 0
+```
+
+**Constraints:**
+- `1 <= coins.length <= 12`
+- `1 <= coins[i] <= 2^31 - 1`
+- `0 <= amount <= 10^4`
 
 **Approach:** Bottom-up DP: dp[a] = min(dp[a - c] + 1). O(amount * len(coins)).
 
@@ -5762,7 +7207,30 @@ int coinChange(int[] coins, int amount) {
 
 ### 86. Word Break  ·  LC 139  ·  Medium  ·  Dynamic Programming
 
-**Problem:** Determine whether `s` can be segmented into space-separated dictionary words. 1 <= len(s) <= 300.
+**Problem:** Given a string `s` and a dictionary of strings `wordDict`, return `true` if `s` can be segmented into a space-separated sequence of one or more words from `wordDict`. The same dictionary word may be reused multiple times in the segmentation.
+
+**Examples:**
+```
+Input: s = "leetcode", wordDict = ["leet","code"]
+Output: true
+Explanation: "leetcode" can be segmented as "leet code".
+```
+```
+Input: s = "applepenapple", wordDict = ["apple","pen"]
+Output: true
+Explanation: "applepenapple" can be segmented as "apple pen apple"; note that "apple" is reused.
+```
+```
+Input: s = "catsandog", wordDict = ["cats","dog","sand","and","cat"]
+Output: false
+```
+
+**Constraints:**
+- `1 <= s.length <= 300`
+- `1 <= wordDict.length <= 1000`
+- `1 <= wordDict[i].length <= 20`
+- `s` and `wordDict[i]` consist of only lowercase English letters.
+- All the strings of `wordDict` are unique.
 
 **Approach:** dp[i] = true if some j < i has dp[j] and s[j:i] in dict. O(n^2) time with set lookup.
 
@@ -5820,7 +7288,26 @@ boolean wordBreak(String s, List<String> wordDict) {
 
 ### 87. Longest Increasing Subsequence  ·  LC 300  ·  Medium  ·  Dynamic Programming
 
-**Problem:** Length of the longest strictly increasing subsequence. 1 <= len(nums) <= 2500 (or 10^5 for binary search variant).
+**Problem:** Given an integer array `nums`, return the length of the longest strictly increasing subsequence. A subsequence is obtained by deleting zero or more elements without changing the relative order of the remaining elements.
+
+**Examples:**
+```
+Input: nums = [10,9,2,5,3,7,101,18]
+Output: 4
+Explanation: The longest strictly increasing subsequence is [2,3,7,101], which has length 4.
+```
+```
+Input: nums = [0,1,0,3,2,3]
+Output: 4
+```
+```
+Input: nums = [7,7,7,7,7,7,7]
+Output: 1
+```
+
+**Constraints:**
+- `1 <= nums.length <= 2500`
+- `-10^4 <= nums[i] <= 10^4`
 
 **Approach:** Patience sort: maintain `tails` array; for each x, binary-search-insert. O(n log n) time.
 
@@ -5880,7 +7367,24 @@ int lengthOfLIS(int[] nums) {
 
 ### 88. Maximum Product Subarray  ·  LC 152  ·  Medium  ·  Dynamic Programming
 
-**Problem:** Find the contiguous subarray with the largest product. 1 <= len(nums) <= 2*10^4, fits 32-bit.
+**Problem:** Given an integer array `nums`, find the contiguous non-empty subarray that has the largest product, and return that product. The test cases are generated so that the answer fits in a 32-bit integer.
+
+**Examples:**
+```
+Input: nums = [2,3,-2,4]
+Output: 6
+Explanation: The subarray [2,3] has the largest product 6.
+```
+```
+Input: nums = [-2,0,-1]
+Output: 0
+Explanation: The result cannot be 2 because [-2,-1] is not a contiguous subarray.
+```
+
+**Constraints:**
+- `1 <= nums.length <= 2 * 10^4`
+- `-10 <= nums[i] <= 10`
+- The product of any contiguous subarray of `nums` is guaranteed to fit in a 32-bit integer.
 
 **Approach:** Track both running max and min since a negative can flip sign. O(n) time, O(1) space.
 
@@ -5936,7 +7440,23 @@ int maxProduct(int[] nums) {
 
 ### 89. Partition Equal Subset Sum  ·  LC 416  ·  Medium  ·  Dynamic Programming
 
-**Problem:** Decide if nums can be split into two equal-sum subsets. 1 <= len(nums) <= 200, sum <= 10000.
+**Problem:** Given an integer array `nums`, return `true` if the array can be partitioned into two subsets such that the sum of the elements in both subsets is equal, and `false` otherwise. Every element must belong to exactly one of the two subsets.
+
+**Examples:**
+```
+Input: nums = [1,5,11,5]
+Output: true
+Explanation: The array can be partitioned as [1,5,5] and [11], each with sum 11.
+```
+```
+Input: nums = [1,2,3,5]
+Output: false
+Explanation: The array cannot be partitioned into two subsets with equal sum.
+```
+
+**Constraints:**
+- `1 <= nums.length <= 200`
+- `1 <= nums[i] <= 100`
 
 **Approach:** 0/1 knapsack for target = total/2; bitset DP. O(n * target) time.
 
@@ -5997,7 +7517,27 @@ boolean canPartition(int[] nums) {
 
 ### 90. Longest Valid Parentheses  ·  LC 32  ·  Hard  ·  Dynamic Programming
 
-**Problem:** Given a string of '(' and ')', return the length of the longest contiguous well-formed parentheses substring (e.g. ")()())" -> 4). 0 <= len(s) <= 3*10^4.
+**Problem:** Given a string `s` containing only the characters `'('` and `')'`, return the length of the longest contiguous substring that is a well-formed (valid) parentheses sequence.
+
+**Examples:**
+```
+Input: s = "(()"
+Output: 2
+Explanation: The longest valid parentheses substring is "()", which has length 2.
+```
+```
+Input: s = ")()())"
+Output: 4
+Explanation: The longest valid parentheses substring is "()()", which has length 4.
+```
+```
+Input: s = ""
+Output: 0
+```
+
+**Constraints:**
+- `0 <= s.length <= 3 * 10^4`
+- `s[i]` is `'('` or `')'`.
 
 **Approach:** Keep a stack of indices seeded with -1 to act as a base boundary. Push the index of each '(' ; on each ')' pop, and if the stack becomes empty push the current index as a new boundary, otherwise the length of the valid run ending here is the current index minus the new stack top. This works because the stack top always holds the index just before the current valid segment. O(n) time, O(n) space.
 
@@ -6075,7 +7615,22 @@ class Solution {
 
 ### 91. Unique Paths  ·  LC 62  ·  Medium  ·  Multi-dim DP
 
-**Problem:** Count paths from top-left to bottom-right of m x n grid moving only right or down. 1 <= m, n <= 100.
+**Problem:** A robot starts at the top-left corner of an `m x n` grid and wants to reach the bottom-right corner. At each step it can move only one cell to the right or one cell down. Return the total number of distinct paths the robot can take.
+
+**Examples:**
+```
+Input: m = 3, n = 7
+Output: 28
+```
+```
+Input: m = 3, n = 2
+Output: 3
+Explanation: From the top-left corner there are 3 ways to reach the bottom-right corner: Right->Down->Down, Down->Down->Right, Down->Right->Down.
+```
+
+**Constraints:**
+- `1 <= m, n <= 100`
+- The answer is guaranteed to be at most `2 * 10^9`.
 
 **Approach:** DP with a single row; dp[j] += dp[j-1]. O(m*n) time, O(n) space.
 
@@ -6120,7 +7675,24 @@ int uniquePaths(int m, int n) {
 
 ### 92. Minimum Path Sum  ·  LC 64  ·  Medium  ·  Multi-dim DP
 
-**Problem:** Given an m x n grid of non-negative integers, moving only right or down, return the minimum path sum from top-left to bottom-right. 1 <= m, n <= 200, 0 <= grid[i][j] <= 200.
+**Problem:** Given an `m x n` grid `grid` filled with non-negative integers, find a path from the top-left corner to the bottom-right corner that minimizes the sum of the numbers along the path. At each step you may move only right or down. Return that minimum sum.
+
+**Examples:**
+```
+Input: grid = [[1,3,1],[1,5,1],[4,2,1]]
+Output: 7
+Explanation: The path 1 -> 3 -> 1 -> 1 -> 1 minimizes the sum.
+```
+```
+Input: grid = [[1,2,3],[4,5,6]]
+Output: 12
+```
+
+**Constraints:**
+- `m == grid.length`
+- `n == grid[i].length`
+- `1 <= m, n <= 200`
+- `0 <= grid[i][j] <= 200`
 
 **Approach:** Use dynamic programming where each cell holds the minimum cost to reach it: the first row and first column can only be reached one way (accumulate along them), and every other cell adds its own value to the smaller of the costs from directly above or directly left. Computing in place mutates the grid into the DP table, so no extra array is needed. O(m*n) time and O(1) extra space.
 
@@ -6185,7 +7757,22 @@ class Solution {
 
 ### 93. Longest Palindromic Substring  ·  LC 5  ·  Medium  ·  Multi-dim DP
 
-**Problem:** Return the longest palindromic substring of `s`. 1 <= len(s) <= 1000.
+**Problem:** Given a string `s`, return the longest substring of `s` that is a palindrome. A palindrome reads the same forwards and backwards. If there are multiple answers of the same length, any one of them is acceptable.
+
+**Examples:**
+```
+Input: s = "babad"
+Output: "bab"
+Explanation: "aba" is also a valid answer.
+```
+```
+Input: s = "cbbd"
+Output: "bb"
+```
+
+**Constraints:**
+- `1 <= s.length <= 1000`
+- `s` consists of only digits and English letters.
 
 **Approach:** Expand around each center (odd and even). O(n^2) time, O(1) space.
 
@@ -6249,7 +7836,23 @@ int[] grow(String s, int l, int r) {
 
 ### 94. Longest Common Subsequence  ·  LC 1143  ·  Medium  ·  Multi-dim DP
 
-**Problem:** Length of the LCS between two strings. 1 <= lens <= 1000.
+**Problem:** Given two strings `text1` and `text2`, return the length of their longest common subsequence. If there is no common subsequence, return `0`. A subsequence is a sequence derived from a string by deleting some or no characters without changing the relative order of the remaining characters. A common subsequence of two strings is a subsequence that is common to both.
+
+**Examples:**
+```
+Input: text1 = "abcde", text2 = "ace"
+Output: 3
+Explanation: The longest common subsequence is "ace", of length 3.
+```
+```
+Input: text1 = "abc", text2 = "def"
+Output: 0
+Explanation: There is no common subsequence.
+```
+
+**Constraints:**
+- `1 <= text1.length, text2.length <= 1000`
+- `text1` and `text2` consist of only lowercase English characters.
 
 **Approach:** 2D DP; match extends diagonal else max of (up, left). O(m*n) time, O(min) space.
 
@@ -6308,7 +7911,22 @@ int longestCommonSubsequence(String a, String b) {
 
 ### 95. Edit Distance  ·  LC 72  ·  Medium  ·  Multi-dim DP
 
-**Problem:** Minimum insert/delete/replace operations to convert `word1` to `word2`. 0 <= lens <= 500.
+**Problem:** Given two strings `word1` and `word2`, return the minimum number of operations required to convert `word1` into `word2`. You may perform the following operations on a string, each counting as one operation: insert a character, delete a character, or replace a character.
+
+**Examples:**
+```
+Input: word1 = "horse", word2 = "ros"
+Output: 3
+Explanation: horse -> rorse (replace 'h' with 'r') -> rose (delete 'r') -> ros (delete 'e').
+```
+```
+Input: word1 = "intention", word2 = "execution"
+Output: 5
+```
+
+**Constraints:**
+- `0 <= word1.length, word2.length <= 500`
+- `word1` and `word2` consist of lowercase English letters.
 
 **Approach:** Classic Levenshtein 2D DP. O(m*n) time, O(n) space.
 
@@ -6374,7 +7992,22 @@ int minDistance(String word1, String word2) {
 
 ### 96. Single Number  ·  LC 136  ·  Easy  ·  Techniques
 
-**Problem:** Every element except one appears twice; find the one. 1 <= len(nums) <= 3*10^4.
+**Problem:** Given a non-empty integer array `nums` in which every element appears exactly twice except for one element that appears only once, find and return that single element. You must implement a solution with linear runtime complexity and use only constant extra space.
+
+**Examples:**
+```
+Input: nums = [2,2,1]
+Output: 1
+```
+```
+Input: nums = [4,1,2,1,2]
+Output: 4
+```
+
+**Constraints:**
+- `1 <= nums.length <= 3 * 10^4`
+- `-3 * 10^4 <= nums[i] <= 3 * 10^4`
+- Each element appears exactly twice except for one element which appears only once.
 
 **Approach:** XOR all elements; duplicates cancel. O(n) time, O(1) space.
 
@@ -6414,7 +8047,24 @@ int singleNumber(int[] nums) {
 
 ### 97. Majority Element  ·  LC 169  ·  Easy  ·  Techniques
 
-**Problem:** Return the element that appears more than n/2 times in an array (guaranteed to exist). 1 <= n <= 5*10^4.
+**Problem:** Given an array `nums` of size `n`, return the majority element, which is the element that appears more than `⌊n / 2⌋` times. You may assume that the majority element always exists in the array.
+
+**Examples:**
+```
+Input: nums = [3,2,3]
+Output: 3
+```
+```
+Input: nums = [2,2,1,1,1,2,2]
+Output: 2
+```
+
+**Constraints:**
+- `n == nums.length`
+- `1 <= n <= 5 * 10^4`
+- `-10^9 <= nums[i] <= 10^9`
+
+**Follow-up:** Could you solve the problem in linear time and in `O(1)` space?
 
 **Approach:** Use the Boyer-Moore voting algorithm: keep a running candidate and a counter, incrementing when the current value matches the candidate and decrementing otherwise, resetting the candidate whenever the counter hits zero. Because the majority element occupies more than half the array, all cancellations from other elements cannot fully eliminate it, so it survives as the final candidate. O(n) time, O(1) space.
 
@@ -6467,7 +8117,24 @@ class Solution {
 
 ### 98. Sort Colors  ·  LC 75  ·  Medium  ·  Techniques
 
-**Problem:** Given an array of only 0, 1, 2 (red/white/blue), sort it in place without a library sort. 1 <= n <= 300.
+**Problem:** Given an array `nums` with `n` objects colored red, white, or blue, sort them in place so that objects of the same color are adjacent, in the order red, white, and blue. Use the integers `0`, `1`, and `2` to represent red, white, and blue respectively. You must solve this problem without using the library's sort function.
+
+**Examples:**
+```
+Input: nums = [2,0,2,1,1,0]
+Output: [0,0,1,1,2,2]
+```
+```
+Input: nums = [2,0,1]
+Output: [0,1,2]
+```
+
+**Constraints:**
+- `n == nums.length`
+- `1 <= n <= 300`
+- `nums[i]` is either `0`, `1`, or `2`.
+
+**Follow-up:** Could you come up with a one-pass algorithm using only constant extra space?
 
 **Approach:** Apply the Dutch National Flag algorithm with three pointers: low marks the boundary of settled 0s, high marks the boundary of settled 2s, and mid scans forward. On seeing a 0 swap it to the low region and advance both low and mid; on a 1 just advance mid; on a 2 swap it to the high region and shrink high without advancing mid, since the swapped-in value is still unexamined. This partitions the array in a single pass. O(n) time, O(1) space.
 
@@ -6537,7 +8204,26 @@ class Solution {
 
 ### 99. Next Permutation  ·  LC 31  ·  Medium  ·  Techniques
 
-**Problem:** Rearrange an integer array in place into the next lexicographically greater permutation; if none exists (descending), transform it into the smallest (ascending). 1 <= n <= 100.
+**Problem:** A permutation of an array of integers is an arrangement of its members into a sequence. The next permutation of an array is the next lexicographically greater arrangement of its numbers. If such an arrangement does not exist (the array is in descending order), the array must be rearranged into the lowest possible order (sorted in ascending order). Given an integer array `nums`, rearrange it in place into its next permutation. You must use only constant extra memory.
+
+**Examples:**
+```
+Input: nums = [1,2,3]
+Output: [1,3,2]
+```
+```
+Input: nums = [3,2,1]
+Output: [1,2,3]
+Explanation: [3,2,1] is the largest permutation, so it wraps around to the smallest.
+```
+```
+Input: nums = [1,1,5]
+Output: [1,5,1]
+```
+
+**Constraints:**
+- `1 <= nums.length <= 100`
+- `0 <= nums[i] <= 100`
 
 **Approach:** Scan from the right to find the first index i where nums[i] < nums[i+1]; this pivot is the rightmost position that can be increased. If it exists, find the rightmost element greater than nums[i] and swap them, which places the smallest possible larger value at the pivot. Finally reverse the suffix after i, turning its descending order into ascending to make it the smallest tail. O(n) time, O(1) space.
 
@@ -6605,7 +8291,23 @@ class Solution {
 
 ### 100. Find the Duplicate Number  ·  LC 287  ·  Medium  ·  Techniques
 
-**Problem:** Given n+1 integers each in [1, n], exactly one value repeats; return it without modifying the array and using only O(1) extra space. 1 <= n <= 10^5.
+**Problem:** Given an array of integers `nums` containing `n + 1` integers where each integer is in the range `[1, n]` inclusive, there is exactly one repeated number in `nums`. Return this repeated number. You must solve the problem without modifying the array `nums` and use only constant extra space.
+
+**Examples:**
+```
+Input: nums = [1,3,4,2,2]
+Output: 2
+```
+```
+Input: nums = [3,1,3,4,2]
+Output: 3
+```
+
+**Constraints:**
+- `1 <= n <= 10^5`
+- `nums.length == n + 1`
+- `1 <= nums[i] <= n`
+- All the integers in `nums` appear only once except for precisely one integer which appears two or more times.
 
 **Approach:** Treat each index as a node pointing to the node given by its value, which forms a linked list that must contain a cycle because the duplicate value makes two indices point to the same node. Use Floyd's tortoise-and-hare: advance a slow pointer one step and a fast pointer two steps until they meet inside the cycle, then reset one pointer to the start and move both one step at a time; their meeting point is the cycle entrance, which equals the duplicate. O(n) time, O(1) space.
 
