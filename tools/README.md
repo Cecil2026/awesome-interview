@@ -19,7 +19,6 @@ Small Python utilities + browser pages for interview prep practice. No external 
 | Rebuild question / file indexes | — | `python tools/build_index.py` (then optionally `python tools/run_service.py`) |
 | Validate the question bank | — | `python tools/validate.py` |
 | Start the local web service | — | `python tools/run_service.py --open` |
-| Run the service as a Windows background task | — | `.\tools\app.ps1 install` (run as Administrator) |
 | Bulk-translate `.md` → `.zh.md` via an LLM | — | `python tools/translate_to_zh.py` (needs `pip install anthropic` + `ANTHROPIC_API_KEY`) |
 
 If you're new here, run `python tools/run_service.py --open` and click a card on the Start page.
@@ -36,7 +35,6 @@ If you're new here, run `python tools/run_service.py --open` and click a card on
 | [build_index.py](build_index.py) | Rebuild `docs/questions.json` from all markdown files (used by the GitHub Pages picker and the daily-question workflow) |
 | [validate.py](validate.py) | Validate the question bank against the entry schema — missing `**Tags:**`, EN/ZH count mismatch, numbering gaps, stale `questions.json`, broken internal links. Run in CI via [validate.yml](../.github/workflows/validate.yml). |
 | [run_service.py](run_service.py) | Start a local browser-based service. Renders the intent-routed Start page at `/` and serves all of `docs/` (default port 8099, auto-kills an existing process holding the port). |
-| [app.ps1](app.ps1) | (Windows only) Manage `run_service.py` as a Scheduled Task via verb subcommands (`install`/`start`/`stop`/`restart`/`status`/`uninstall`): runs at boot, restarts on failure, adds a Windows Firewall inbound rule. Run as Administrator (except `status`). |
 | [translate_to_zh.py](translate_to_zh.py) | Batch-translate `*.md` to Simplified Chinese (`*.zh.md`) via an LLM API (**requires `pip install anthropic`** and `ANTHROPIC_API_KEY`) |
 
 ## Browser pages
@@ -80,13 +78,9 @@ python tools/validate.py
 
 # Start the local web service (auto-builds indexes, opens browser at the Start page):
 python tools/run_service.py --open
-
-# (Windows) Install as a background service that starts at boot:
-# Run from an *Administrator* PowerShell:
-.\tools\app.ps1 install
 ```
 
-All Python scripts accept `--help`; PowerShell uses `Get-Help .\tools\app.ps1 -Full`.
+All Python scripts accept `--help`.
 
 ## Chinese translations
 

@@ -31,10 +31,10 @@ New here? Open [docs/](docs/) (or run `python tools/run_service.py --open`) and 
 | [mock-interviews/](mock-interviews/) | Full transcript-style mock interviews — system design and behavioral | 6 |
 | [roadmap/](roadmap/) | 8-10 week study plans for frontend, backend, fullstack + a universal week-of checklist | 4 |
 | [behavioral/](behavioral/) | 50 STAR questions across 8 themes + the 16 Amazon Leadership Principles | 66 |
-| [tools/](tools/) | Timer, random picker, streak tracker, index builder, local installer, translator (stdlib Python + one PowerShell) | 7 |
+| [tools/](tools/) | Timer, random picker, streak tracker, index builder, local web service, translator (stdlib Python) | 10 |
 | [docs/](docs/) | Static site — Start router, random question picker, markdown reader, company comparison, resume → questions, and a multi-week plan generator | 1 |
 
-Every Q&A entry uses the same `### N. Question` heading format, so the picker and the daily-question workflow can drill into any file uniformly. Algorithm questions ship with Python, TypeScript, and Java implementations; the reader renders them as switchable tabs.
+Every Q&A entry uses the same `### N. Question` heading format, so the picker and the daily-question workflow can drill into any file uniformly. Algorithm questions carry a full, LeetCode-style problem statement (description + worked examples + complete constraints) and ship with Python, TypeScript, and Java implementations; the reader renders the solutions as switchable tabs.
 
 ## Quick start
 
@@ -91,25 +91,6 @@ On first run it generates `docs/questions.json` (via `tools/build_index.py`) and
 
 All pages have an EN / 简体中文 toggle and a Light / Dark theme toggle in the top-right. Both choices are stored in `localStorage` and persist across pages and reloads. The theme defaults to your OS preference (`prefers-color-scheme`) on first visit.
 
-### Run as a service on Windows (autostart at boot)
-
-[`tools/app.ps1`](tools/app.ps1) registers a Scheduled Task on the local Windows machine that runs `run_service.py` at boot, restarts on failure, and adds a Windows Firewall inbound rule for the port. One script, verb subcommands.
-
-```powershell
-# Open PowerShell as Administrator, then:
-cd C:\path\to\awesome-interview
-
-.\tools\app.ps1 install               # install on default port 8099
-.\tools\app.ps1 install -Port 9000    # custom port
-.\tools\app.ps1 status                # task + port + firewall status (no admin needed)
-.\tools\app.ps1 stop                  # stop the service
-.\tools\app.ps1 start                 # start the service
-.\tools\app.ps1 restart               # restart after editing markdown/code
-.\tools\app.ps1 uninstall             # stop + unregister + remove firewall rule
-```
-
-After install, the service is reachable at `http://localhost:8099/` and `http://<your-lan-ip>:8099/` (the script prints both URLs).
-
 ### Translating markdown content
 
 The reader supports a parallel-file convention for translated content:
@@ -150,7 +131,7 @@ Every question follows the same shape so it can be parsed, picked, and indexed:
 - bullet
 ```
 
-Algorithm entries additionally include `**Python:**`, `**TypeScript:**`, and `**Java:**` code blocks. The markdown reader renders consecutive `**Lang:**` + fenced-code pairs as switchable tabs, with the chosen language remembered in `localStorage` and applied across all questions. Company-interview entries add `**Position:**` and `**Years:**` fields.
+Algorithm entries use `**Problem:**` (a full statement with `**Examples:**` and `**Constraints:**`), `**Approach:**`, then `**Python:**`, `**TypeScript:**`, and `**Java:**` code blocks. The markdown reader renders consecutive `**Lang:**` + fenced-code pairs as switchable tabs, with the chosen language remembered in `localStorage` and applied across all questions. Company-interview entries add `**Position:**` and `**Years:**` fields.
 
 ## Contributing
 

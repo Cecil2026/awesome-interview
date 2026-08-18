@@ -31,10 +31,10 @@
 | [mock-interviews/](mock-interviews/) | 完整对话脚本的模拟面试——系统设计和行为面试 | 5 |
 | [roadmap/](roadmap/) | 前端、后端、全栈 8-10 周学习计划 + 一份通用面试周清单 | 4 |
 | [behavioral/](behavioral/) | 跨 8 个主题的 50 道 STAR 题目 + Amazon 16 条领导力准则 | 66 |
-| [tools/](tools/) | 计时器、随机抽题、连续打卡、索引构建、本地一键安装、翻译脚本（核心仅依赖 Python 标准库，外加一个 PowerShell 脚本） | 7 |
+| [tools/](tools/) | 计时器、随机抽题、连续打卡、索引构建、本地 Web 服务、翻译脚本（仅依赖 Python 标准库） | 10 |
 | [docs/](docs/) | 静态站点——Start 路由页、随机抽题、Markdown 阅读器、公司对比、简历 → 题目，以及多周计划生成器 | 1 |
 
-每道问答都采用统一的 `### N. Question` 标题格式，方便抽题工具和每日题目工作流从任意文件中统一抓取。算法题附带 Python、TypeScript、Java 三种实现；阅读器会把它们渲染成可切换的代码标签页。
+每道问答都采用统一的 `### N. Question` 标题格式，方便抽题工具和每日题目工作流从任意文件中统一抓取。算法题带有完整的 LeetCode 风格题目描述（描述 + 示例 + 完整约束），并附带 Python、TypeScript、Java 三种实现；阅读器会把解法渲染成可切换的代码标签页。
 
 ## 快速开始
 
@@ -91,25 +91,6 @@ python tools/run_service.py --no-kill      # 端口被占时直接报错，不�
 
 所有页面右上角都有 EN／简体中文切换和 Light／Dark 主题切换。两个选择都会存到 `localStorage`，跨页面和刷新都会保留。首次访问的主题默认跟随操作系统偏好（`prefers-color-scheme`）。
 
-### 一键安装为 Windows 后台服务（开机自启）
-
-[`tools/app.ps1`](tools/app.ps1) 会在本机 Windows 上注册一个 Scheduled Task：开机自动启动 `run_service.py`、崩溃后自动重启，并添加 Windows Firewall 入站规则。一个脚本，用动词子命令管理。
-
-```powershell
-# 以管理员身份打开 PowerShell，然后执行
-cd C:\path\to\awesome-interview
-
-.\tools\app.ps1 install               # 默认端口 8099
-.\tools\app.ps1 install -Port 9000    # 自定义端口
-.\tools\app.ps1 status                # 查看任务／端口／防火墙状态（无需管理员）
-.\tools\app.ps1 stop                  # 停止服务
-.\tools\app.ps1 start                 # 启动服务
-.\tools\app.ps1 restart               # 改了内容或代码后重启
-.\tools\app.ps1 uninstall             # 停服 + 注销任务 + 删除防火墙规则
-```
-
-装完后可访问 `http://localhost:8099/` 或 `http://<本机局域网 IP>:8099/`（脚本会自动检测并打印 LAN IP）。
-
 ### 翻译 Markdown 内容
 
 阅读器通过「并行文件」约定来呈现翻译版：
@@ -150,7 +131,7 @@ cd C:\path\to\awesome-interview
 - 要点
 ```
 
-算法题额外包含 `**Python:**`、`**TypeScript:**` 和 `**Java:**` 三种实现。阅读器会自动把连续的 `**Lang:**` + 代码块识别为可切换的标签页，所选语言会记到 `localStorage`，并在不同题目之间沿用。公司面试题额外包含 `**Position:**` 和 `**Years:**` 字段。
+算法题使用 `**Problem:**`（含 `**Examples:**` 与 `**Constraints:**` 的完整题面）、`**Approach:**`，再加 `**Python:**`、`**TypeScript:**`、`**Java:**` 三种实现。阅读器会自动把连续的 `**Lang:**` + 代码块识别为可切换的标签页，所选语言会记到 `localStorage`，并在不同题目之间沿用。公司面试题额外包含 `**Position:**` 和 `**Years:**` 字段。
 
 ## 贡献
 
