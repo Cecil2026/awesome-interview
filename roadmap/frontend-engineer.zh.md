@@ -44,6 +44,14 @@
 **里程碑（周末）**
 - 凭记忆在 5 分钟内讲清闭包、事件循环和 `this` 绑定。不看笔记用 O(n) 解出 Two Sum。
 
+**本周对应资源（本仓库）**
+
+| 学习目标 | 去哪里练 / 查阅 |
+| --- | --- |
+| 语言层 Q&A（作用域、闭包、this） | [knowledge/frontend.zh.md](../knowledge/frontend.zh.md) —— JavaScript 语言层问题 |
+| 算法热身 | [knowledge/algorithms.zh.md](../knowledge/algorithms.zh.md) |
+| 自我介绍 + STAR 故事库 | [behavioral/star-questions.zh.md](../behavioral/star-questions.zh.md) |
+
 ### 第 2 周：异步 JavaScript 与原型
 
 **重点：** 掌握 promise、async/await 以及原型链 — 这些几乎每场前端面试都会考。
@@ -68,6 +76,14 @@
 **里程碑（周末）**
 - 在白板上从零实现 `Promise.all`。从 microtask 的角度讲清 `.then` 与 `await` 的差异。
 
+**本周对应资源（本仓库）**
+
+| 学习目标 | 去哪里练 / 查阅 |
+| --- | --- |
+| 异步 / Promise / 原型链 Q&A | [knowledge/frontend.zh.md](../knowledge/frontend.zh.md) —— 异步与原型问题 |
+| 算法练习 | [knowledge/algorithms.zh.md](../knowledge/algorithms.zh.md) |
+| 打磨 STAR 故事 | [behavioral/star-questions.zh.md](../behavioral/star-questions.zh.md) |
+
 ### 第 3 周：HTML、CSS 与可访问性
 
 **重点：** 那些纯算法准备会忽略的前端面试部分。
@@ -91,6 +107,13 @@
 
 **里程碑（周末）**
 - 看一张 Twitter 卡片截图，在 30 分钟内用 HTML/CSS 复刻。讲清为什么 `aria-label` 和 `<label for>` 解决的是不同问题。
+
+**本周对应资源（本仓库）**
+
+| 学习目标 | 去哪里练 / 查阅 |
+| --- | --- |
+| HTML / CSS / 可访问性 Q&A | [knowledge/frontend.zh.md](../knowledge/frontend.zh.md) —— HTML/CSS/可访问性问题 |
+| STAR 故事 | [behavioral/star-questions.zh.md](../behavioral/star-questions.zh.md) |
 
 ### 第 4 周：框架深入（React、Vue 或 Angular）
 
@@ -124,6 +147,13 @@
 **里程碑（周末）**
 - 从零实现一个能用的 `useState`（或 Vue 的 `ref`）克隆。在 3 分钟内、不依赖图示讲清你所选框架的更新周期。
 
+**本周对应资源（本仓库）**
+
+| 学习目标 | 去哪里练 / 查阅 |
+| --- | --- |
+| 框架内部（React/Vue/Angular） | [knowledge/frontend.zh.md](../knowledge/frontend.zh.md) —— 框架深入段 |
+| STAR 故事 | [behavioral/star-questions.zh.md](../behavioral/star-questions.zh.md) |
+
 ### 第 5 周：Web 性能与工具链
 
 **重点：** Core Web Vitals、bundle 体积、渲染性能。这是高级前端面试拉开差距的地方。
@@ -147,6 +177,13 @@
 
 **里程碑（周末）**
 - 讲清什么会导致 CLS 分数偏高，以及最常见的 4 种修复方式。用 webpack-bundle-analyzer 或同类工具找出任意 bundle 中体积最大的前 3 个元凶。
+
+**本周对应资源（本仓库）**
+
+| 学习目标 | 去哪里练 / 查阅 |
+| --- | --- |
+| Core Web Vitals、bundle、渲染性能 | [knowledge/frontend.zh.md](../knowledge/frontend.zh.md) —— 性能与工具链问题 |
+| 打磨 STAR 故事 | [behavioral/star-questions.zh.md](../behavioral/star-questions.zh.md) |
 
 ### 第 6 周：前端系统设计与浏览器原理
 
@@ -173,6 +210,13 @@
 **里程碑（周末）**
 - 在 45 分钟内白板出一个聊天 UI 设计，涵盖组件、状态、网络与性能。从 URL 到像素，画出浏览器渲染管线。
 
+**本周对应资源（本仓库）**
+
+| 学习目标 | 去哪里练 / 查阅 |
+| --- | --- |
+| 前端系统设计 | [knowledge/system-design.zh.md](../knowledge/system-design.zh.md)(取前端相关场景);浏览器原理见 [knowledge/frontend.zh.md](../knowledge/frontend.zh.md) |
+| 限时算法复习 | [knowledge/algorithms.zh.md](../knowledge/algorithms.zh.md) |
+
 ### 第 7 周：JavaScript 谜题、行为面试与薄弱点专项
 
 **重点：**「刁钻」的面试题以及软实力。
@@ -194,6 +238,14 @@
 **里程碑（周末）**
 - 不运行代码，正确预测 5 段刁钻事件循环代码的 console 输出。不看笔记完整讲完 5 个 STAR 故事。
 
+**本周对应资源（本仓库）**
+
+| 学习目标 | 去哪里练 / 查阅 |
+| --- | --- |
+| 刁钻 JS 谜题 | [knowledge/frontend.zh.md](../knowledge/frontend.zh.md) |
+| 困难算法题 | [knowledge/algorithms.zh.md](../knowledge/algorithms.zh.md) |
+| 行为面模拟 | [behavioral/star-questions.zh.md](../behavioral/star-questions.zh.md) + [behavioral/amazon-leadership-principles.zh.md](../behavioral/amazon-leadership-principles.zh.md) |
+
 ### 第 8 周：模拟面试与复习
 
 **重点：** 模拟真实流程，找漏洞，补齐。
@@ -214,6 +266,16 @@
 
 **里程碑（周末）**
 - 完成一次完整模拟流程，并给自己每一轮都评为通过。如果做不到，找出失败的那一轮，额外花 2 天死磕它。
+
+**本周对应资源（本仓库）**
+
+| 学习目标 | 去哪里练 / 查阅 |
+| --- | --- |
+| 限时算法冲刺 | [knowledge/algorithms.zh.md](../knowledge/algorithms.zh.md) |
+| 前端系统设计模拟 | [mock-interviews/](../mock-interviews/) + [system-design-rubric](../mock-interviews/system-design-rubric.zh.md);[knowledge/system-design.zh.md](../knowledge/system-design.zh.md) |
+| 行为面模拟 | [behavioral/star-questions.zh.md](../behavioral/star-questions.zh.md) |
+| 目标公司题库 | [interviews/companies/](../interviews/companies/) |
+| 就绪清单 | [checklist.md](checklist.zh.md) |
 
 ## 最后一周清单
 

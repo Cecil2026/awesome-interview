@@ -43,6 +43,13 @@
 **里程碑（周末）**
 - 边讲边解 3 道随机中等题，每题 25 分钟。用 90 秒解释哈希冲突解决策略。
 
+**本周对应资源（本仓库）**
+
+| 学习目标 | 去哪里练 / 查阅 |
+| --- | --- |
+| 数组 / 字符串 / 哈希 | [knowledge/algorithms.zh.md](../knowledge/algorithms.zh.md) —— Hashing、Array、String 段 |
+| 自我介绍 + STAR 故事库 | [behavioral/star-questions.zh.md](../behavioral/star-questions.zh.md) |
+
 ### 第 2 周：算法 — 双指针、栈、链表、滑动窗口
 
 **重点：** 第二档的题型，补全电话面试的工具箱。
@@ -66,6 +73,13 @@
 **里程碑（周末）**
 - 凭记忆在 25 分钟内实现 LRU 缓存。冷启动解出 Minimum Window Substring。
 
+**本周对应资源（本仓库）**
+
+| 学习目标 | 去哪里练 / 查阅 |
+| --- | --- |
+| 双指针、栈、链表、滑动窗口 | [knowledge/algorithms.zh.md](../knowledge/algorithms.zh.md) —— Two Pointers、Linked List、Sliding Window 段 |
+| 打磨 STAR 故事 | [behavioral/star-questions.zh.md](../behavioral/star-questions.zh.md) |
+
 ### 第 3 周：算法 — 树、图、递归
 
 **重点：** 每次 onsite 都会出现的题型，也是第 4 周一切内容的基础。
@@ -87,6 +101,13 @@
 
 **里程碑（周末）**
 - 凭记忆实现 BFS 和 DFS。冷启动解出 "Validate BST" 和 "Course Schedule"。
+
+**本周对应资源（本仓库）**
+
+| 学习目标 | 去哪里练 / 查阅 |
+| --- | --- |
+| 树、图、递归 | [knowledge/algorithms.zh.md](../knowledge/algorithms.zh.md) —— Binary Tree、Graph 段 |
+| STAR 故事 | [behavioral/star-questions.zh.md](../behavioral/star-questions.zh.md) |
 
 ### 第 4 周：前端深入 第 1 部分 — 语言与框架内部
 
@@ -114,6 +135,13 @@
 
 **里程碑（周末）**
 - 从零实现 `useState`（或 Vue 的 `ref`）克隆。在 3 分钟内不依赖图示地解释你的框架更新周期。
+
+**本周对应资源（本仓库）**
+
+| 学习目标 | 去哪里练 / 查阅 |
+| --- | --- |
+| JS 语言 + 框架内部 | [knowledge/frontend.zh.md](../knowledge/frontend.zh.md) —— 语言层与框架段 |
+| 算法保持手感 | [knowledge/algorithms.zh.md](../knowledge/algorithms.zh.md) |
 
 ### 第 5 周：前端深入 第 2 部分 — HTML、CSS、性能
 
@@ -144,6 +172,13 @@
 **里程碑（周末）**
 - 看一张 Twitter 卡片截图，在 30 分钟内用 HTML/CSS 复刻。解释 CLS 偏高的原因以及 4 种最常见的修复方式。
 
+**本周对应资源（本仓库）**
+
+| 学习目标 | 去哪里练 / 查阅 |
+| --- | --- |
+| HTML、CSS、性能 | [knowledge/frontend.zh.md](../knowledge/frontend.zh.md) —— HTML/CSS/性能问题 |
+| 打磨 STAR 故事 | [behavioral/star-questions.zh.md](../behavioral/star-questions.zh.md) |
+
 ### 第 6 周：后端深入 第 1 部分 — 数据库与 API
 
 **重点：** 成为那个不靠猜就能回答"为什么这个查询慢"的候选人。
@@ -173,6 +208,13 @@
 
 **里程碑（周末）**
 - 看懂一份 EXPLAIN ANALYZE 的输出并指出慢操作。用具体例子解释 READ COMMITTED 与 REPEATABLE READ 的差异。阐述 offset 与 cursor 分页之间的权衡。
+
+**本周对应资源（本仓库）**
+
+| 学习目标 | 去哪里练 / 查阅 |
+| --- | --- |
+| 数据库、索引、事务、API 设计 | [knowledge/backend.zh.md](../knowledge/backend.zh.md) —— 第 1-17 题 |
+| 存储背景 | [knowledge/system-design.zh.md](../knowledge/system-design.zh.md) |
 
 ### 第 7 周：后端深入 第 2 部分 — 分布式系统
 
@@ -207,6 +249,13 @@
 **里程碑（周末）**
 - 用 3 句话解释 CAP 定理，并给出真实世界的 CP 与 AP 例子。在 45 分钟内白板出 URL 短链服务，含容量估算。
 
+**本周对应资源（本仓库）**
+
+| 学习目标 | 去哪里练 / 查阅 |
+| --- | --- |
+| 复制 / 分区 / 共识 / 一致性 | [knowledge/distributed.zh.md](../knowledge/distributed.zh.md);CAP 见 [knowledge/backend.zh.md](../knowledge/backend.zh.md) 第 15 题 |
+| 算法保持手感 | [knowledge/algorithms.zh.md](../knowledge/algorithms.zh.md) |
+
 ### 第 8 周：系统设计 — 跨前后端的全栈设计
 
 **重点：** 同时涉及前端、API、后端的设计 — 全栈面试真正会问的那一类。
@@ -235,6 +284,12 @@
 **里程碑（周末）**
 - 在 45 分钟内白板出协同编辑器设计，涵盖前端状态、同步协议、后端持久化。讲清 OT 与 CRDT 的权衡。
 
+**本周对应资源（本仓库）**
+
+| 学习目标 | 去哪里练 / 查阅 |
+| --- | --- |
+| 全栈设计（前端 + API + 后端） | [knowledge/system-design.zh.md](../knowledge/system-design.zh.md);实战范例 [mock-interviews/](../mock-interviews/) |
+
 ### 第 9 周：行为面试、岗位相关主题与薄弱点专项
 
 **重点：** 软实力，以及目标岗位预期的任何专门主题。
@@ -258,6 +313,14 @@
 **里程碑（周末）**
 - 不看笔记完整讲完 5 个 STAR 故事，每个不超过 2 分钟。在 5 分钟的回答里深入阐述一个岗位相关主题。
 
+**本周对应资源（本仓库）**
+
+| 学习目标 | 去哪里练 / 查阅 |
+| --- | --- |
+| STAR + 领导力原则 | [behavioral/star-questions.zh.md](../behavioral/star-questions.zh.md) + [behavioral/amazon-leadership-principles.zh.md](../behavioral/amazon-leadership-principles.zh.md) |
+| 岗位相关主题（按需选） | [knowledge/architecture.zh.md](../knowledge/architecture.zh.md) / [knowledge/devops.zh.md](../knowledge/devops.zh.md) / [knowledge/distributed.zh.md](../knowledge/distributed.zh.md) |
+| 困难算法冲刺 | [knowledge/algorithms.zh.md](../knowledge/algorithms.zh.md) |
+
 ### 第 10 周：模拟面试与最终复习
 
 **重点：** 模拟整个流程，找漏洞，补上。
@@ -279,6 +342,16 @@
 
 **里程碑（周末）**
 - 完成一次完整模拟流程并给自己在每一轮上评为通过。如果任一轮失败，在真实面试前额外花 2 天死磕那一点。
+
+**本周对应资源（本仓库）**
+
+| 学习目标 | 去哪里练 / 查阅 |
+| --- | --- |
+| 限时算法冲刺 | [knowledge/algorithms.zh.md](../knowledge/algorithms.zh.md) |
+| 系统设计模拟 | [mock-interviews/](../mock-interviews/) + [system-design-rubric](../mock-interviews/system-design-rubric.zh.md);[knowledge/system-design.zh.md](../knowledge/system-design.zh.md) |
+| 行为面模拟 | [behavioral/star-questions.zh.md](../behavioral/star-questions.zh.md) |
+| 目标公司题库 | [interviews/companies/](../interviews/companies/) |
+| 就绪清单 | [checklist.md](checklist.zh.md) |
 
 ## 最后一周清单
 

@@ -44,6 +44,14 @@ Mid-level frontend engineer with 2-5 years of production experience targeting pr
 **Milestone (end of week)**
 - Explain closures, the event loop, and `this` binding from memory in under 5 minutes total. Solve Two Sum in O(n) without notes.
 
+**In this repo this week**
+
+| Goal | Where to practice / look it up |
+| --- | --- |
+| Language-layer Q&A (scope, closures, this) | [knowledge/frontend.md](../knowledge/frontend.md) — JavaScript language questions |
+| Algorithm warmup | [knowledge/algorithms.md](../knowledge/algorithms.md) |
+| Self-intro + STAR story bank | [behavioral/star-questions.md](../behavioral/star-questions.md) |
+
 ### Week 2: Async JavaScript and prototypes
 
 **Focus:** master promises, async/await, and the prototype chain — these come up in nearly every frontend interview.
@@ -68,6 +76,14 @@ Mid-level frontend engineer with 2-5 years of production experience targeting pr
 **Milestone (end of week)**
 - Implement `Promise.all` from scratch on a whiteboard. Explain the difference between `.then` and `await` in terms of microtasks.
 
+**In this repo this week**
+
+| Goal | Where to practice / look it up |
+| --- | --- |
+| Async / promises / prototype Q&A | [knowledge/frontend.md](../knowledge/frontend.md) — async & prototype questions |
+| Algorithm practice | [knowledge/algorithms.md](../knowledge/algorithms.md) |
+| Polish STAR stories | [behavioral/star-questions.md](../behavioral/star-questions.md) |
+
 ### Week 3: HTML, CSS, and accessibility
 
 **Focus:** the parts of frontend interviews that pure algorithm prep ignores.
@@ -91,6 +107,13 @@ Mid-level frontend engineer with 2-5 years of production experience targeting pr
 
 **Milestone (end of week)**
 - Recreate a Twitter card layout in HTML/CSS from a screenshot in under 30 minutes. Explain why `aria-label` and `<label for>` solve different problems.
+
+**In this repo this week**
+
+| Goal | Where to practice / look it up |
+| --- | --- |
+| HTML / CSS / accessibility Q&A | [knowledge/frontend.md](../knowledge/frontend.md) — HTML/CSS/accessibility questions |
+| STAR stories | [behavioral/star-questions.md](../behavioral/star-questions.md) |
 
 ### Week 4: Framework deep dive (React, Vue, or Angular)
 
@@ -124,6 +147,13 @@ Mid-level frontend engineer with 2-5 years of production experience targeting pr
 **Milestone (end of week)**
 - Implement a working `useState` (or Vue `ref`) clone from scratch. Explain your framework's update cycle without diagrams in under 3 minutes.
 
+**In this repo this week**
+
+| Goal | Where to practice / look it up |
+| --- | --- |
+| Framework internals (React/Vue/Angular) | [knowledge/frontend.md](../knowledge/frontend.md) — framework deep-dive section |
+| STAR stories | [behavioral/star-questions.md](../behavioral/star-questions.md) |
+
 ### Week 5: Web performance and tooling
 
 **Focus:** Core Web Vitals, bundle size, render performance. This is where senior frontend interviews differentiate.
@@ -147,6 +177,13 @@ Mid-level frontend engineer with 2-5 years of production experience targeting pr
 
 **Milestone (end of week)**
 - Explain what causes a large CLS score and the 4 most common fixes. Take any bundle and identify the top 3 size offenders using webpack-bundle-analyzer or equivalent.
+
+**In this repo this week**
+
+| Goal | Where to practice / look it up |
+| --- | --- |
+| Core Web Vitals, bundling, render perf | [knowledge/frontend.md](../knowledge/frontend.md) — performance & tooling questions |
+| Polish STAR stories | [behavioral/star-questions.md](../behavioral/star-questions.md) |
 
 ### Week 6: Frontend system design and browser internals
 
@@ -173,6 +210,13 @@ Mid-level frontend engineer with 2-5 years of production experience targeting pr
 **Milestone (end of week)**
 - Whiteboard a chat UI design in 45 minutes that covers components, state, network, and performance. Diagram the browser rendering pipeline from URL to pixel.
 
+**In this repo this week**
+
+| Goal | Where to practice / look it up |
+| --- | --- |
+| Frontend system design | [knowledge/system-design.md](../knowledge/system-design.md) (frontend-relevant scenarios); browser internals in [knowledge/frontend.md](../knowledge/frontend.md) |
+| Timed algorithm review | [knowledge/algorithms.md](../knowledge/algorithms.md) |
+
 ### Week 7: JavaScript puzzles, behavioral, and weak-area drills
 
 **Focus:** the "tricky" interview questions and the soft side.
@@ -194,6 +238,14 @@ Mid-level frontend engineer with 2-5 years of production experience targeting pr
 **Milestone (end of week)**
 - Predict the console output of 5 tricky event-loop snippets correctly without running them. Deliver all 5 STAR stories without notes.
 
+**In this repo this week**
+
+| Goal | Where to practice / look it up |
+| --- | --- |
+| Tricky JS puzzles | [knowledge/frontend.md](../knowledge/frontend.md) |
+| Hard algorithm problems | [knowledge/algorithms.md](../knowledge/algorithms.md) |
+| Behavioral mock | [behavioral/README.md](../behavioral/README.md) + [behavioral/amazon-leadership-principles.md](../behavioral/amazon-leadership-principles.md) |
+
 ### Week 8: Mock interviews and review
 
 **Focus:** simulate the real thing, find leaks, plug them.
@@ -214,6 +266,16 @@ Mid-level frontend engineer with 2-5 years of production experience targeting pr
 
 **Milestone (end of week)**
 - Complete a full mock loop and score yourself a passing grade on each round. If you can't, identify which round failed and spend 2 extra days drilling that.
+
+**In this repo this week**
+
+| Goal | Where to practice / look it up |
+| --- | --- |
+| Timed algorithm drills | [knowledge/algorithms.md](../knowledge/algorithms.md) |
+| Frontend system design mocks | [mock-interviews/](../mock-interviews/) + [system-design-rubric](../mock-interviews/system-design-rubric.md); [knowledge/system-design.md](../knowledge/system-design.md) |
+| Behavioral mock | [behavioral/README.md](../behavioral/README.md) |
+| Target-company banks | [interviews/companies/](../interviews/companies/) |
+| Readiness checklist | [checklist.md](checklist.md) |
 
 ## Final week checklist
 

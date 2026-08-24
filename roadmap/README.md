@@ -2,13 +2,15 @@
 
 Timeline-based study plans for your next software engineering interview. Pick a plan, follow it week by week, and check items off as you go. Every roadmap assumes you already know how to write code in at least one language — these plans tune your existing skills toward interview performance, not from-scratch CS education.
 
-## The three plans
+## The plans
 
 | Plan | Length | Best for |
 |------|--------|----------|
 | [Frontend Engineer](./frontend-engineer.md) | 8 weeks | UI engineers targeting product-facing roles (React, Vue, Angular). Balanced algorithm prep, framework internals, and UI system design. |
 | [Backend Engineer](./backend-engineer.md) | 8 weeks | Server engineers targeting infrastructure, API, or platform roles. Algorithm-heavy with deep system design and distributed systems coverage. |
 | [Fullstack Engineer](./fullstack-engineer.md) | 10 weeks | Generalists applying to roles that interview on both halves of the stack. Longer plan because the surface area is larger. |
+| [Architect](./architect-engineer.md) | 8 weeks | Senior/Staff+ engineers targeting architect or tech-lead roles. System-design-heavy: architecture styles, data-intensive systems, cross-cutting concerns, and decision-making — light coding bar. |
+| [AI / Algorithm](./ai-algorithm.md) | 8 weeks | ML/AI engineers and researchers. ML system design, model intuition, and applied fundamentals. |
 
 ## How to pick a plan
 
@@ -17,6 +19,8 @@ Ask yourself which of these matches your target role:
 - **The job description spends more time on UI frameworks, accessibility, browser APIs, and design systems** → Frontend.
 - **The job description spends more time on services, databases, scalability, queues, or "design a system that handles N requests per second"** → Backend.
 - **The job description treats frontend and backend as equal, or you're applying to a startup that expects both** → Fullstack.
+- **The loop is dominated by system design, architecture tradeoffs, and cross-cutting concerns (reliability, security, cost) with only a light coding bar** → Architect.
+- **The role centers on ML/AI system design, model intuition, and applied fundamentals** → AI / Algorithm.
 
 If you're applying to multiple role types, pick the plan that matches your weaker side. You're already going to perform well on your strong side; the prep should move the floor.
 

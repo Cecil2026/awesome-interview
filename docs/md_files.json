@@ -1,6 +1,6 @@
 {
   "generated_by": "tools/run_service.py",
-  "total": 36,
+  "total": 37,
   "categories": [
     "behavioral",
     "interviews",
@@ -229,6 +229,13 @@
     },
     {
       "category": "roadmap",
+      "file": "roadmap/architect-engineer.md",
+      "translations": {
+        "zh": "roadmap/architect-engineer.zh.md"
+      }
+    },
+    {
+      "category": "roadmap",
       "file": "roadmap/backend-engineer.md",
       "translations": {
         "zh": "roadmap/backend-engineer.zh.md"
@@ -257,7 +264,10 @@
     },
     {
       "category": "overview",
-      "file": "SECURITY.md"
+      "file": "SECURITY.md",
+      "translations": {
+        "zh": "SECURITY.zh.md"
+      }
     }
   ]
 }

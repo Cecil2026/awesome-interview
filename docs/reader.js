@@ -205,6 +205,7 @@
     'mock-interviews/system-design-rubric.md': { en: 'System Design: Rubric', zh: '系统设计：评分标准' },
     'mock-interviews/system-design-url-shortener.md': { en: 'System Design: URL Shortener', zh: '系统设计：短链接' },
     'roadmap/ai-algorithm.md': { en: 'AI / Algorithm', zh: 'AI / 算法' },
+    'roadmap/architect-engineer.md': { en: 'Architect', zh: '架构师' },
     'roadmap/backend-engineer.md': { en: 'Backend Engineer', zh: '后端工程师' },
     'roadmap/checklist.md': { en: 'Checklist', zh: '清单' },
     'roadmap/frontend-engineer.md': { en: 'Frontend Engineer', zh: '前端工程师' },
@@ -497,8 +498,28 @@
     return { html, headings };
   }
 
+  // Sidebar curation. These files/categories are hidden from the left file list
+  // only — they stay in `files` so cross-document links and zh lookups still work.
+  const SIDEBAR_HIDDEN_CATEGORIES = new Set(['behavioral']);
+  const SIDEBAR_HIDDEN_FILES = new Set(['roadmap/checklist.md']);
+  // Explicit category order; anything not listed is appended alphabetically.
+  // `overview` sits last, below `roadmap`.
+  const CATEGORY_ORDER = ['knowledge', 'interviews', 'mock-interviews', 'roadmap', 'overview'];
+
+  function sidebarVisible(items) {
+    return items.filter(
+      (f) => !SIDEBAR_HIDDEN_FILES.has(f.file) && !SIDEBAR_HIDDEN_CATEGORIES.has(f.category)
+    );
+  }
+
+  function orderedCategories(cats) {
+    const known = CATEGORY_ORDER.filter((c) => cats.includes(c));
+    const extra = cats.filter((c) => !CATEGORY_ORDER.includes(c)).sort();
+    return [...known, ...extra];
+  }
+
   function renderFileList(items) {
-    const grouped = items.reduce((acc, file) => {
+    const grouped = sidebarVisible(items).reduce((acc, file) => {
       if (!acc[file.category]) acc[file.category] = [];
       acc[file.category].push(file);
       return acc;
@@ -506,7 +527,7 @@
 
     fileListEl.innerHTML = '';
 
-    Object.keys(grouped).sort().forEach((category) => {
+    orderedCategories(Object.keys(grouped)).forEach((category) => {
       const section = document.createElement('details');
       section.className = 'category-group';
       section.open = true;
@@ -664,11 +685,12 @@
         || fileLabel(file.file).toLowerCase().includes(term);
     });
     renderFileList(filtered);
-    updateFileCount(filtered.length);
-    if (filtered.length === 0) {
+    const shown = sidebarVisible(filtered).length;
+    updateFileCount(shown);
+    if (shown === 0) {
       setStatus('statusNoSearchMatches');
     } else {
-      setStatus('statusFilesShown', { count: filtered.length });
+      setStatus('statusFilesShown', { count: shown });
     }
   }
 
@@ -1014,8 +1036,9 @@
         setStatus('statusNoFilesFound');
         return;
       }
-      updateFileCount(files.length);
-      setStatus('statusFilesLoaded', { count: files.length });
+      const visibleCount = sidebarVisible(files).length;
+      updateFileCount(visibleCount);
+      setStatus('statusFilesLoaded', { count: visibleCount });
       renderFileList(files);
 
       const params = new URLSearchParams(window.location.search);

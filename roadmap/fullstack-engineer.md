@@ -43,6 +43,13 @@ Mid-level fullstack engineer with 3-6 years of experience targeting product engi
 **Milestone (end of week)**
 - Solve 3 random medium problems in 25 minutes each, narrating out loud. Explain hash collision strategies in 90 seconds.
 
+**In this repo this week**
+
+| Goal | Where to practice / look it up |
+| --- | --- |
+| Array / string / hashing | [knowledge/algorithms.md](../knowledge/algorithms.md) — Hashing, Array, String sections |
+| Self-intro + STAR story bank | [behavioral/star-questions.md](../behavioral/star-questions.md) |
+
 ### Week 2: Algorithms — two pointers, stack, linked lists, sliding window
 
 **Focus:** the second tier of patterns that round out a phone screen toolkit.
@@ -66,6 +73,13 @@ Mid-level fullstack engineer with 3-6 years of experience targeting product engi
 **Milestone (end of week)**
 - Implement LRU cache from memory in 25 minutes. Solve Minimum Window Substring cold.
 
+**In this repo this week**
+
+| Goal | Where to practice / look it up |
+| --- | --- |
+| Two pointers, stack, linked list, sliding window | [knowledge/algorithms.md](../knowledge/algorithms.md) — Two Pointers, Linked List, Sliding Window sections |
+| Polish STAR stories | [behavioral/star-questions.md](../behavioral/star-questions.md) |
+
 ### Week 3: Algorithms — trees, graphs, recursion
 
 **Focus:** the patterns that appear in every onsite, and the foundation for everything in week 4.
@@ -87,6 +101,13 @@ Mid-level fullstack engineer with 3-6 years of experience targeting product engi
 
 **Milestone (end of week)**
 - Implement BFS and DFS from memory. Solve "Validate BST" and "Course Schedule" cold.
+
+**In this repo this week**
+
+| Goal | Where to practice / look it up |
+| --- | --- |
+| Trees, graphs, recursion | [knowledge/algorithms.md](../knowledge/algorithms.md) — Binary Tree, Graph sections |
+| STAR stories | [behavioral/star-questions.md](../behavioral/star-questions.md) |
 
 ### Week 4: Frontend deep dive part 1 — language and framework internals
 
@@ -114,6 +135,13 @@ Mid-level fullstack engineer with 3-6 years of experience targeting product engi
 
 **Milestone (end of week)**
 - Implement `useState` (or Vue `ref`) clone from scratch. Explain your framework's update cycle in under 3 minutes without diagrams.
+
+**In this repo this week**
+
+| Goal | Where to practice / look it up |
+| --- | --- |
+| JS language + framework internals | [knowledge/frontend.md](../knowledge/frontend.md) — language & framework sections |
+| Algorithm upkeep | [knowledge/algorithms.md](../knowledge/algorithms.md) |
 
 ### Week 5: Frontend deep dive part 2 — HTML, CSS, performance
 
@@ -144,6 +172,13 @@ Mid-level fullstack engineer with 3-6 years of experience targeting product engi
 **Milestone (end of week)**
 - Recreate a Twitter card layout in HTML/CSS from a screenshot in 30 minutes. Explain causes of high CLS and the 4 most common fixes.
 
+**In this repo this week**
+
+| Goal | Where to practice / look it up |
+| --- | --- |
+| HTML, CSS, performance | [knowledge/frontend.md](../knowledge/frontend.md) — HTML/CSS/performance questions |
+| Polish STAR stories | [behavioral/star-questions.md](../behavioral/star-questions.md) |
+
 ### Week 6: Backend deep dive part 1 — databases and APIs
 
 **Focus:** be the candidate who can answer "why is this query slow" without guessing.
@@ -173,6 +208,13 @@ Mid-level fullstack engineer with 3-6 years of experience targeting product engi
 
 **Milestone (end of week)**
 - Read an EXPLAIN ANALYZE output and identify the slow operation. Explain the difference between READ COMMITTED and REPEATABLE READ with a concrete example. Articulate the tradeoffs between offset and cursor pagination.
+
+**In this repo this week**
+
+| Goal | Where to practice / look it up |
+| --- | --- |
+| Databases, indexes, transactions, API design | [knowledge/backend.md](../knowledge/backend.md) — Q1-Q17 |
+| Storage context | [knowledge/system-design.md](../knowledge/system-design.md) |
 
 ### Week 7: Backend deep dive part 2 — distributed systems
 
@@ -207,6 +249,13 @@ Mid-level fullstack engineer with 3-6 years of experience targeting product engi
 **Milestone (end of week)**
 - Explain CAP theorem in 3 sentences with a real-world CP example and AP example. Whiteboard a URL shortener with capacity estimation in 45 minutes.
 
+**In this repo this week**
+
+| Goal | Where to practice / look it up |
+| --- | --- |
+| Replication / partitioning / consensus / consistency | [knowledge/distributed.md](../knowledge/distributed.md); CAP in [knowledge/backend.md](../knowledge/backend.md) Q15 |
+| Algorithm upkeep | [knowledge/algorithms.md](../knowledge/algorithms.md) |
+
 ### Week 8: System design — fullstack designs that span both layers
 
 **Focus:** designs that touch frontend, API, and backend together — the kind fullstack interviews actually ask.
@@ -235,6 +284,12 @@ Mid-level fullstack engineer with 3-6 years of experience targeting product engi
 **Milestone (end of week)**
 - Whiteboard a collaborative editor design in 45 minutes covering frontend state, sync protocol, and backend persistence. Articulate OT vs CRDT tradeoffs.
 
+**In this repo this week**
+
+| Goal | Where to practice / look it up |
+| --- | --- |
+| Fullstack designs (frontend + API + backend) | [knowledge/system-design.md](../knowledge/system-design.md); worked mocks [mock-interviews/](../mock-interviews/) |
+
 ### Week 9: Behavioral, role-specific topics, and weak-area drills
 
 **Focus:** the soft side, and any specialized topic the target role expects.
@@ -258,6 +313,14 @@ Mid-level fullstack engineer with 3-6 years of experience targeting product engi
 **Milestone (end of week)**
 - Deliver 5 STAR stories without notes, each under 2 minutes. Articulate one role-specific topic in depth in a 5-minute response.
 
+**In this repo this week**
+
+| Goal | Where to practice / look it up |
+| --- | --- |
+| STAR + leadership principles | [behavioral/README.md](../behavioral/README.md) + [behavioral/amazon-leadership-principles.md](../behavioral/amazon-leadership-principles.md) |
+| Role-specific topic (pick) | [knowledge/architecture.md](../knowledge/architecture.md) / [knowledge/devops.md](../knowledge/devops.md) / [knowledge/distributed.md](../knowledge/distributed.md) |
+| Hard algorithm drills | [knowledge/algorithms.md](../knowledge/algorithms.md) |
+
 ### Week 10: Mock interviews and final review
 
 **Focus:** simulate the full loop, find leaks, plug them.
@@ -279,6 +342,16 @@ Mid-level fullstack engineer with 3-6 years of experience targeting product engi
 
 **Milestone (end of week)**
 - Complete a full mock loop and rate yourself a passing grade on each round. If any round fails, spend 2 extra days on that weakness before the real interview.
+
+**In this repo this week**
+
+| Goal | Where to practice / look it up |
+| --- | --- |
+| Timed algorithm drills | [knowledge/algorithms.md](../knowledge/algorithms.md) |
+| System design mocks | [mock-interviews/](../mock-interviews/) + [system-design-rubric](../mock-interviews/system-design-rubric.md); [knowledge/system-design.md](../knowledge/system-design.md) |
+| Behavioral mock | [behavioral/README.md](../behavioral/README.md) |
+| Target-company banks | [interviews/companies/](../interviews/companies/) |
+| Readiness checklist | [checklist.md](checklist.md) |
 
 ## Final week checklist
 

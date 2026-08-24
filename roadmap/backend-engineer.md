@@ -44,6 +44,13 @@ Mid-level backend engineer with 3-5 years of experience targeting L5-equivalent 
 **Milestone (end of week)**
 - Solve 3 random medium problems in 25 minutes each, narrating out loud. Explain hash table collision resolution in 90 seconds.
 
+**In this repo this week**
+
+| Goal | Where to practice / look it up |
+| --- | --- |
+| Array / string / hashing problems | [knowledge/algorithms.md](../knowledge/algorithms.md) — Hashing, Two Pointers, Array, String sections |
+| Self-intro + STAR story bank | [behavioral/star-questions.md](../behavioral/star-questions.md) |
+
 ### Week 2: Trees, graphs, and traversal patterns
 
 **Focus:** the bread-and-butter of backend technical screens.
@@ -67,6 +74,13 @@ Mid-level backend engineer with 3-5 years of experience targeting L5-equivalent 
 
 **Milestone (end of week)**
 - Implement BFS, DFS, and Dijkstra from memory in your interview language. Solve "Course Schedule II" cold in 30 minutes.
+
+**In this repo this week**
+
+| Goal | Where to practice / look it up |
+| --- | --- |
+| Tree / graph / trie / topo / union-find | [knowledge/algorithms.md](../knowledge/algorithms.md) — Binary Tree, Graph, Trie, Topological, Union-Find sections |
+| Polish STAR stories | [behavioral/star-questions.md](../behavioral/star-questions.md) |
 
 ### Week 3: Dynamic programming and backtracking
 
@@ -92,6 +106,14 @@ Mid-level backend engineer with 3-5 years of experience targeting L5-equivalent 
 
 **Milestone (end of week)**
 - Solve "Edit Distance" and "Word Break" cold without notes. Articulate the DP state for a problem you've never seen in under 5 minutes.
+
+**In this repo this week**
+
+| Goal | Where to practice / look it up |
+| --- | --- |
+| 1D / 2D DP, backtracking | [knowledge/algorithms.md](../knowledge/algorithms.md) — Dynamic Programming, Backtracking sections |
+| Database fundamentals (with DDIA) | [knowledge/backend.md](../knowledge/backend.md) — ACID / isolation / indexes (Q7-Q13) |
+| STAR stories | [behavioral/star-questions.md](../behavioral/star-questions.md) |
 
 ### Week 4: Databases — internals, indexes, transactions
 
@@ -121,6 +143,14 @@ Mid-level backend engineer with 3-5 years of experience targeting L5-equivalent 
 **Milestone (end of week)**
 - Read an EXPLAIN ANALYZE output and identify the slow operation. Explain the difference between READ COMMITTED and REPEATABLE READ with a concrete example.
 
+**In this repo this week**
+
+| Goal | Where to practice / look it up |
+| --- | --- |
+| Heap / binary search / sliding window | [knowledge/algorithms.md](../knowledge/algorithms.md) |
+| Indexes, transactions, isolation, locking | [knowledge/backend.md](../knowledge/backend.md) — Q7-Q17 |
+| Storage & consistency context | [knowledge/system-design.md](../knowledge/system-design.md) |
+
 ### Week 5: Distributed systems
 
 **Focus:** the vocabulary and the tradeoffs. You will not implement Raft in an interview, but you must speak its language.
@@ -149,6 +179,13 @@ Mid-level backend engineer with 3-5 years of experience targeting L5-equivalent 
 **Milestone (end of week)**
 - Explain CAP theorem accurately in 3 sentences and give a real-world example of a CP system and an AP system. Describe Raft leader election in 5 minutes without notes.
 
+**In this repo this week**
+
+| Goal | Where to practice / look it up |
+| --- | --- |
+| Mixed algorithm review | [knowledge/algorithms.md](../knowledge/algorithms.md) |
+| Replication / partitioning / consensus / consistency | [knowledge/distributed.md](../knowledge/distributed.md); CAP & PACELC in [knowledge/backend.md](../knowledge/backend.md) Q15 |
+
 ### Week 6: System design — the classic five
 
 **Focus:** rehearse the five canonical designs until they are reflex.
@@ -176,6 +213,13 @@ Mid-level backend engineer with 3-5 years of experience targeting L5-equivalent 
 
 **Milestone (end of week)**
 - Whiteboard a URL shortener end to end in 45 minutes including capacity estimation. Explain the celebrity problem in news feed design and two ways to handle it.
+
+**In this repo this week**
+
+| Goal | Where to practice / look it up |
+| --- | --- |
+| Timed algorithm review | [knowledge/algorithms.md](../knowledge/algorithms.md) |
+| The classic five designs | [knowledge/system-design.md](../knowledge/system-design.md); worked mocks [mock-interviews/](../mock-interviews/) (URL shortener, chat, rate limiter) |
 
 ### Week 7: Concurrency, language deep-dive, behavioral
 
@@ -207,6 +251,15 @@ Mid-level backend engineer with 3-5 years of experience targeting L5-equivalent 
 **Milestone (end of week)**
 - Explain your language's concurrency model in 5 minutes and give two real bugs you've fixed in it. Whiteboard one new system design in 45 minutes.
 
+**In this repo this week**
+
+| Goal | Where to practice / look it up |
+| --- | --- |
+| Hard algorithm problems | [knowledge/algorithms.md](../knowledge/algorithms.md) |
+| Concurrency: locks / deadlock / memory order | [knowledge/backend.md](../knowledge/backend.md) Q18+; [knowledge/distributed.md](../knowledge/distributed.md) |
+| Language deep-dive (GIL, memory model, ...) | [knowledge/backend.md](../knowledge/backend.md) Q19+ |
+| Extra system design | [knowledge/system-design.md](../knowledge/system-design.md) |
+
 ### Week 8: Mock interviews and weak-area review
 
 **Focus:** simulate the loop. Find leaks. Plug them.
@@ -228,6 +281,16 @@ Mid-level backend engineer with 3-5 years of experience targeting L5-equivalent 
 
 **Milestone (end of week)**
 - Complete one full mock loop and rate yourself a passing grade on each round. If any round fails, spend 2 extra days drilling that specific weakness before the real interview.
+
+**In this repo this week**
+
+| Goal | Where to practice / look it up |
+| --- | --- |
+| Timed algorithm drills | [knowledge/algorithms.md](../knowledge/algorithms.md) |
+| System design mocks | [mock-interviews/](../mock-interviews/) + [system-design-rubric](../mock-interviews/system-design-rubric.md) |
+| Behavioral mock | [behavioral/README.md](../behavioral/README.md) + [behavioral/amazon-leadership-principles.md](../behavioral/amazon-leadership-principles.md) |
+| Target-company banks | [interviews/companies/](../interviews/companies/) |
+| Readiness checklist | [checklist.md](checklist.md) |
 
 ## Final week checklist
 

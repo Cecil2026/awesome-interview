@@ -44,6 +44,13 @@
 **里程碑（周末）**
 - 边讲边解 3 道随机中等题，每题 25 分钟。用 90 秒讲清哈希表的冲突处理方案。
 
+**本周对应资源（本仓库）**
+
+| 学习目标 | 去哪里练 / 查阅 |
+| --- | --- |
+| 数组 / 字符串 / 哈希 算法题 | [knowledge/algorithms.zh.md](../knowledge/algorithms.zh.md) —— Hashing、Two Pointers、Array、String 段 |
+| 自我介绍 + STAR 故事库 | [behavioral/star-questions.zh.md](../behavioral/star-questions.zh.md) |
+
 ### 第 2 周：树、图与遍历模式
 
 **重点：** 后端技术筛的核心题型。
@@ -67,6 +74,13 @@
 
 **里程碑（周末）**
 - 用你的面试语言凭记忆实现 BFS、DFS 和 Dijkstra。在 30 分钟内冷启动解出「Course Schedule II」。
+
+**本周对应资源（本仓库）**
+
+| 学习目标 | 去哪里练 / 查阅 |
+| --- | --- |
+| 树 / 图 / 字典树 / 拓扑 / 并查集 | [knowledge/algorithms.zh.md](../knowledge/algorithms.zh.md) —— Binary Tree、Graph、Trie、Topological、Union-Find 段 |
+| 打磨 STAR 故事 | [behavioral/star-questions.zh.md](../behavioral/star-questions.zh.md) |
 
 ### 第 3 周：动态规划与回溯
 
@@ -92,6 +106,14 @@
 
 **里程碑（周末）**
 - 不看笔记冷启动解出「Edit Distance」和「Word Break」。对一道从未见过的题，在 5 分钟内说清 DP 状态。
+
+**本周对应资源（本仓库）**
+
+| 学习目标 | 去哪里练 / 查阅 |
+| --- | --- |
+| 一维 / 二维 DP、回溯 | [knowledge/algorithms.zh.md](../knowledge/algorithms.zh.md) —— Dynamic Programming、Backtracking 段 |
+| 数据库入门（配合 DDIA） | [knowledge/backend.zh.md](../knowledge/backend.zh.md) —— ACID / 隔离级别 / 索引（第 7-13 题） |
+| STAR 故事 | [behavioral/star-questions.zh.md](../behavioral/star-questions.zh.md) |
 
 ### 第 4 周：数据库 — 内核、索引、事务
 
@@ -121,6 +143,14 @@
 **里程碑（周末）**
 - 看懂一份 EXPLAIN ANALYZE 的输出并指出慢操作。用具体例子解释 READ COMMITTED 与 REPEATABLE READ 的差异。
 
+**本周对应资源（本仓库）**
+
+| 学习目标 | 去哪里练 / 查阅 |
+| --- | --- |
+| 堆 / 二分 / 滑动窗口 | [knowledge/algorithms.zh.md](../knowledge/algorithms.zh.md) |
+| 索引、事务、隔离级别、锁 | [knowledge/backend.zh.md](../knowledge/backend.zh.md) —— 第 7-17 题 |
+| 存储与一致性背景 | [knowledge/system-design.zh.md](../knowledge/system-design.zh.md) |
+
 ### 第 5 周：分布式系统
 
 **重点：** 词汇与取舍。你不会在面试里实现 Raft，但你必须能用它的语言交流。
@@ -149,6 +179,13 @@
 **里程碑（周末）**
 - 用 3 句话准确解释 CAP 定理，并各给出一个 CP 系统和 AP 系统的真实例子。不看笔记用 5 分钟讲清 Raft 主节点选举。
 
+**本周对应资源（本仓库）**
+
+| 学习目标 | 去哪里练 / 查阅 |
+| --- | --- |
+| 综合算法复习 | [knowledge/algorithms.zh.md](../knowledge/algorithms.zh.md) |
+| 复制 / 分区 / 共识 / 一致性 | [knowledge/distributed.zh.md](../knowledge/distributed.zh.md);CAP & PACELC 见 [knowledge/backend.zh.md](../knowledge/backend.zh.md) 第 15 题 |
+
 ### 第 6 周：系统设计 — 经典五题
 
 **重点：** 把五个标志性设计反复练到形成反射。
@@ -176,6 +213,13 @@
 
 **里程碑（周末）**
 - 在 45 分钟内端到端白板出 URL 短链服务，包括容量估算。解释信息流设计中的名人问题，并给出两种处理方式。
+
+**本周对应资源（本仓库）**
+
+| 学习目标 | 去哪里练 / 查阅 |
+| --- | --- |
+| 限时算法复习 | [knowledge/algorithms.zh.md](../knowledge/algorithms.zh.md) |
+| 五大经典系统设计 | [knowledge/system-design.zh.md](../knowledge/system-design.zh.md);实战范例 [mock-interviews/](../mock-interviews/)（短链、聊天、限流器） |
 
 ### 第 7 周：并发、语言深入、行为面试
 
@@ -207,6 +251,15 @@
 **里程碑（周末）**
 - 用 5 分钟解释你所选语言的并发模型，并给出你修过的 2 个真实 bug。在 45 分钟内白板出一个新的系统设计。
 
+**本周对应资源（本仓库）**
+
+| 学习目标 | 去哪里练 / 查阅 |
+| --- | --- |
+| 困难算法题 | [knowledge/algorithms.zh.md](../knowledge/algorithms.zh.md) |
+| 并发：锁 / 死锁 / 内存序 | [knowledge/backend.zh.md](../knowledge/backend.zh.md) 第 18 题起;[knowledge/distributed.zh.md](../knowledge/distributed.zh.md) |
+| 语言深入（GIL、内存模型等） | [knowledge/backend.zh.md](../knowledge/backend.zh.md) 第 19 题起 |
+| 额外的系统设计 | [knowledge/system-design.zh.md](../knowledge/system-design.zh.md) |
+
 ### 第 8 周：模拟面试与薄弱点复习
 
 **重点：** 模拟真实面试流程。找出漏洞，补齐。
@@ -228,6 +281,16 @@
 
 **里程碑（周末）**
 - 完成 1 次完整模拟流程，并给自己每一轮都评为通过。若任一轮失败，在真实面试前额外花 2 天专攻那个具体薄弱点。
+
+**本周对应资源（本仓库）**
+
+| 学习目标 | 去哪里练 / 查阅 |
+| --- | --- |
+| 限时算法冲刺 | [knowledge/algorithms.zh.md](../knowledge/algorithms.zh.md) |
+| 系统设计模拟 | [mock-interviews/](../mock-interviews/) + [system-design-rubric](../mock-interviews/system-design-rubric.zh.md) |
+| 行为面模拟 | [behavioral/star-questions.zh.md](../behavioral/star-questions.zh.md) + [behavioral/amazon-leadership-principles.zh.md](../behavioral/amazon-leadership-principles.zh.md) |
+| 目标公司题库 | [interviews/companies/](../interviews/companies/) |
+| 就绪清单 | [checklist.md](checklist.zh.md) |
 
 ## 最后一周清单
 
