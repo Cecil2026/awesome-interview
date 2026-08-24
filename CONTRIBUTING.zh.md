@@ -93,7 +93,7 @@ CI 会在每次 push 和 PR 时自动跑一遍。
   并获得**维护者／代码负责人（Code Owner）批准**之后才能合并。
 - 维护者（[@Cecil2026](https://github.com/Cecil2026)）是整个仓库的代码负责人
   （见 [.github/CODEOWNERS](.github/CODEOWNERS)），所有合并均由其执行。
-- 提交贡献即表示你同意该贡献以项目的 [LICENSE](LICENSE)（GNU AGPL-3.0）授权。
+- 提交贡献即表示你同意该贡献以项目的 [LICENSE](LICENSE)（MIT）授权。
 
 ## 行为准则
 

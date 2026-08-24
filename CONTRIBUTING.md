@@ -108,7 +108,7 @@ This is an open project: anyone may fork it and open pull requests. However,
   for the whole repo (see [.github/CODEOWNERS](.github/CODEOWNERS)) and performs
   all merges.
 - By submitting a contribution you agree it is licensed under the project's
-  [LICENSE](LICENSE) (GNU AGPL-3.0).
+  [LICENSE](LICENSE) (MIT).
 
 ## Code of conduct
 

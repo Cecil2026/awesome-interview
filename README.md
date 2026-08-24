@@ -1,6 +1,6 @@
 # awesome-interview
 
-[![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](LICENSE)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](#contributing)
 [![Daily question](https://img.shields.io/badge/daily-question-blue.svg)](.github/workflows/daily-question.yml)
 [![Pages](https://img.shields.io/badge/random-picker-blueviolet.svg)](docs/picker.html)
@@ -148,10 +148,10 @@ Add or correct anything you like. The numbering inside each file is a guide, not
 
 Copyright (C) 2026 Cecil2026.
 
-This project is licensed under the **GNU Affero General Public License v3.0** — see
-[LICENSE](LICENSE) for the full text. In short: you may use, study, modify, and
-redistribute it, but derivative works (including software you run as a network
-service) must be released under the same license and offer their source to users.
+This project is licensed under the **MIT License** — see [LICENSE](LICENSE) for the
+full text. In short: you may use, copy, modify, and redistribute it, including in
+commercial and closed-source work, as long as you keep the copyright and license
+notice. It is provided as-is, without warranty.
 
 Contributions are accepted under the same license; merging is reserved to the
 maintainer (see [CONTRIBUTING.md](CONTRIBUTING.md#project-governance)).

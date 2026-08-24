@@ -1,6 +1,6 @@
 # awesome-interview
 
-[![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](LICENSE)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](#contributing)
 [![Daily question](https://img.shields.io/badge/daily-question-blue.svg)](.github/workflows/daily-question.yml)
 [![Pages](https://img.shields.io/badge/random-picker-blueviolet.svg)](docs/picker.html)
@@ -145,9 +145,9 @@ python tools/run_service.py --no-kill      # 端口被占时直接报错，不�
 
 Copyright (C) 2026 Cecil2026。
 
-本项目采用 **GNU Affero 通用公共许可证 v3.0（AGPL-3.0）** — 完整条款见
-[LICENSE](LICENSE)。简而言之：你可以使用、研究、修改和再分发，但衍生作品
-（包括以网络服务形式运行的版本）必须以相同许可证开源，并向用户提供源码。
+本项目采用 **MIT 许可证** — 完整条款见 [LICENSE](LICENSE)。简而言之：你可以
+使用、复制、修改和再分发（包括用于商业及闭源项目），只要保留版权与许可证声明
+即可。本项目按「原样」提供，不附带任何担保。
 
 贡献以同一许可证接受；合并权限仅保留给维护者
 （见 [CONTRIBUTING.md](CONTRIBUTING.md#project-governance)）。
