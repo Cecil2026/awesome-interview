@@ -128,9 +128,12 @@
     .reader pre code { background: transparent; color: inherit; padding: 0; border-radius: 0; }
     .reader blockquote { margin: 1.5rem 0; padding-left: 18px; border-left: 4px solid var(--border-strong); color: var(--text-muted); background: var(--bg-card); border-radius: 10px; }
     .reader ul, .reader ol { margin: 1rem 0 1rem 1.5rem; }
-    .reader table { width: 100%; border-collapse: collapse; margin: 1.2rem 0; }
+    .reader .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 1.2rem 0; }
+    .reader table { width: 100%; border-collapse: collapse; }
+    .reader .table-wrap table { margin: 0; }
     .reader th, .reader td { border: 1px solid var(--table-border); padding: 12px 14px; }
     .reader th { background: var(--bg-card); }
+    @media (max-width: 640px) { .reader .table-wrap table { min-width: 520px; } .reader th, .reader td { padding: 10px 12px; } }
     .reader a { color: var(--accent); }
     .status { margin-top: 6px; color: var(--text-faint); font-size: 0.95rem; }
     .translation-notice { margin: 0 0 18px; padding: 10px 14px; border-radius: 10px; background: var(--notice-bg); border: 1px solid var(--notice-border); color: var(--notice-text); font-size: 0.9rem; }

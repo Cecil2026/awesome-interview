@@ -21,3 +21,9 @@ svc.err
 __pycache__/
 *.pyc
 .venv/
+
+# Node / Capacitor (APK packaging) — all regenerable
+node_modules/
+package-lock.json
+www/
+android/

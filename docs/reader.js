@@ -435,9 +435,9 @@
           const cells = splitRow(lines[i]);
           body += '<tr>' + cells.map((c) => `<td>${inlineFormat(c)}</td>`).join('') + '</tr>';
         }
-        html += '<table><thead><tr>'
+        html += '<div class="table-wrap"><table><thead><tr>'
           + header.map((c) => `<th>${inlineFormat(c)}</th>`).join('')
-          + '</tr></thead><tbody>' + body + '</tbody></table>';
+          + '</tr></thead><tbody>' + body + '</tbody></table></div>';
         continue;
       }
 
