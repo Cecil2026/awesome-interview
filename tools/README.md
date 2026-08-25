@@ -32,7 +32,7 @@ If you're new here, run `python tools/run_service.py --open` and click a card on
 | [daily_plan.py](daily_plan.py) | Generate a markdown daily study plan (3 algo + 1 system design + 1 behavioral by default) with time budgets, checklists, and a self-eval section that links to the [system-design rubric](../mock-interviews/system-design-rubric.md). Reads `docs/questions.json`. Pass `--review N` to prepend due spaced-repetition questions. |
 | [review.py](review.py) | Spaced-repetition scheduler (SM-2). `grade <id> --quality 0-5` records a recall, `due` lists what's due today, `stats` shows coverage + mastery. Shares state with `streak.py` in `~/.awesome-interview-streak.json`. |
 | [streak.py](streak.py) | Track your daily prep streak (writes to `~/.awesome-interview-streak.json`) |
-| [build_index.py](build_index.py) | Rebuild `docs/questions.json` from all markdown files (used by the GitHub Pages picker and the daily-question workflow) |
+| [build_index.py](build_index.py) | Rebuild `docs/questions.json` from all markdown files (used by the GitHub Pages picker) |
 | [validate.py](validate.py) | Validate the question bank against the entry schema — missing `**Tags:**`, EN/ZH count mismatch, numbering gaps, stale `questions.json`, broken internal links. Run in CI via [validate.yml](../.github/workflows/validate.yml). |
 | [run_service.py](run_service.py) | Start a local browser-based service. Renders the intent-routed Start page at `/` and serves all of `docs/` (default port 8099, auto-kills an existing process holding the port). |
 | [translate_to_zh.py](translate_to_zh.py) | Batch-translate `*.md` to Simplified Chinese (`*.zh.md`) via an LLM API (**requires `pip install anthropic`** and `ANTHROPIC_API_KEY`) |

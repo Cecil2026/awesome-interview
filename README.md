@@ -2,7 +2,6 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](#contributing)
-[![Daily question](https://img.shields.io/badge/daily-question-blue.svg)](.github/workflows/daily-question.yml)
 [![Pages](https://img.shields.io/badge/random-picker-blueviolet.svg)](docs/picker.html)
 
 A curated, opinionated interview-prep workspace. Algorithm drills with Python/TypeScript/Java solutions, framework deep dives, system design, AI/ML, behavioral STAR scaffolds, real-company question banks, week-by-week roadmaps, and a couple of scripts to keep you honest about practicing. Every page supports EN ↔ 中文 and light/dark theme.
@@ -34,7 +33,7 @@ New here? Open [docs/](docs/) (or run `python tools/run_service.py --open`) and 
 | [tools/](tools/) | Timer, random picker, streak tracker, index builder, local web service, translator (stdlib Python) | 10 |
 | [docs/](docs/) | Static site — Start router, random question picker, markdown reader, company comparison, resume → questions, and a multi-week plan generator | 1 |
 
-Every Q&A entry uses the same `### N. Question` heading format, so the picker and the daily-question workflow can drill into any file uniformly. Algorithm questions carry a full, LeetCode-style problem statement (description + worked examples + complete constraints) and ship with Python, TypeScript, and Java implementations; the reader renders the solutions as switchable tabs.
+Every Q&A entry uses the same `### N. Question` heading format, so the picker can drill into any file uniformly. Algorithm questions carry a full, LeetCode-style problem statement (description + worked examples + complete constraints) and ship with Python, TypeScript, and Java implementations; the reader renders the solutions as switchable tabs.
 
 ## Quick start
 
@@ -115,7 +114,7 @@ Requires Node 18+, JDK 17, and the Android SDK. Full instructions (icons, versio
 
 ## How to use this repo
 
-**Daily** — let the [daily-question workflow](.github/workflows/daily-question.yml) open a fresh GitHub issue every morning; answer it in the issue thread.
+**Daily** — run `python tools/random_pick.py knowledge/` (or open the [random picker](docs/picker.html)) and answer whatever comes out.
 
 **Weekly** — pick a roadmap (e.g. [backend-engineer.md](roadmap/backend-engineer.md)) and check off the week's items as you go. Mock yourself with a [mock-interviews/](mock-interviews/) transcript on the weekend.
 

@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
 """Walk all markdown files and rebuild docs/questions.json.
 
-Each entry is the minimum needed by the GitHub Pages random picker and the
-daily-question workflow: title, source file, line number, category, topics
-(if present in the body).
+Each entry is the minimum needed by the GitHub Pages random picker: title,
+source file, line number, category, topics (if present in the body).
 
 Usage:
     python tools/build_index.py                  # writes docs/questions.json

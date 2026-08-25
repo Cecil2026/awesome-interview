@@ -18,8 +18,8 @@ nothing to install — if you have Python 3 on your PATH, you can run everything
 
 ### Entry schema
 
-Every Q&A entry uses the same heading so the picker, the daily-question workflow,
-and the validator can drill into any file uniformly:
+Every Q&A entry uses the same heading so the picker and the validator can drill
+into any file uniformly:
 
 ```markdown
 ### N. Question title

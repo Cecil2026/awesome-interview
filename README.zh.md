@@ -2,7 +2,6 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](#contributing)
-[![Daily question](https://img.shields.io/badge/daily-question-blue.svg)](.github/workflows/daily-question.yml)
 [![Pages](https://img.shields.io/badge/random-picker-blueviolet.svg)](docs/picker.html)
 
 一个精心整理、带主观取舍的面试准备工作区。算法刷题（Python／TypeScript／Java 三语言实现）、框架深入、系统设计、AI/ML、行为面试 STAR 模板、真实公司题库、按周划分的学习路线，以及几个帮你保持练习习惯的小脚本。所有页面支持 EN ↔ 中文 与浅色／深色主题切换。
@@ -34,7 +33,7 @@
 | [tools/](tools/) | 计时器、随机抽题、连续打卡、索引构建、本地 Web 服务、翻译脚本（仅依赖 Python 标准库） | 10 |
 | [docs/](docs/) | 静态站点——Start 路由页、随机抽题、Markdown 阅读器、公司对比、简历 → 题目，以及多周计划生成器 | 1 |
 
-每道问答都采用统一的 `### N. Question` 标题格式，方便抽题工具和每日题目工作流从任意文件中统一抓取。算法题带有完整的 LeetCode 风格题目描述（描述 + 示例 + 完整约束），并附带 Python、TypeScript、Java 三种实现；阅读器会把解法渲染成可切换的代码标签页。
+每道问答都采用统一的 `### N. Question` 标题格式，方便抽题工具从任意文件中统一抓取。算法题带有完整的 LeetCode 风格题目描述（描述 + 示例 + 完整约束），并附带 Python、TypeScript、Java 三种实现；阅读器会把解法渲染成可切换的代码标签页。
 
 ## 快速开始
 
@@ -115,7 +114,7 @@ npm run apk          # -> android/app/build/outputs/apk/debug/awesome-interview.
 
 ## 这个仓库怎么用
 
-**每日** — 让 [每日题目工作流](.github/workflows/daily-question.yml) 每天早上自动开一个 GitHub issue，直接在 issue 里作答。
+**每日** — 运行 `python tools/random_pick.py knowledge/`（或打开[随机抽题页](docs/picker.html)），抽到什么答什么。
 
 **每周** — 选一条路线（例如 [backend-engineer.md](roadmap/backend-engineer.md)），按周打勾。周末用一段 [mock-interviews/](mock-interviews/) 脚本给自己来一场模拟。
 
