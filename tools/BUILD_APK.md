@@ -54,6 +54,30 @@ create a signing key and build a signed release in Android Studio
 调试 APK 仅供个人测试。要广泛分发或上架 Play,需要在 Android Studio 里生成
 签名密钥并构建签名的 release 版本。
 
+## App name, icon, APK filename / 应用名、图标、APK 文件名
+
+- **App name** (label under the icon) is `Awesome Interview`, set in
+  `android/app/src/main/res/values/strings.xml` (`app_name`). Capacitor seeds it
+  from `appName` in `capacitor.config.json`.
+- **Icon & splash** are generated from source images in `assets/` (an "Ai"
+  lettermark on a blue→purple gradient). To change them, edit `tools/make_icon.py`
+  (colors/letters) or drop in your own `assets/icon.png` (1024×1024), then:
+  ```bash
+  python tools/make_icon.py            # only if regenerating from the script
+  npx @capacitor/assets generate --android
+  ```
+  This repopulates every density under `android/app/src/main/res/`.
+- **APK filename** is `awesome-interview-<buildType>.apk`, set via the
+  `applicationVariants` block in `android/app/build.gradle`.
+
+> Command-line Gradle needs **JDK 17** on `JAVA_HOME` (AGP 8.x requirement).
+> If `./gradlew` fails with a "Java 8 / could not resolve gradle:8.2.1" error,
+> your `JAVA_HOME` points at an old JDK. Fix for the current shell:
+> ```bash
+> export JAVA_HOME="C:\\Program Files\\BellSoft\\LibericaJDK-17"
+> ```
+> Android Studio uses its own bundled JDK 17, so building inside it is unaffected.
+
 ## How it fits together / 原理
 
 - `tools/build_www.py` assembles `www/` by copying `docs/` and every Markdown

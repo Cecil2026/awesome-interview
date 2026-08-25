@@ -22,8 +22,9 @@ __pycache__/
 *.pyc
 .venv/
 
-# Node / Capacitor (APK packaging) — all regenerable
+# Node / Capacitor (APK packaging)
 node_modules/
 package-lock.json
 www/
-android/
+# android/ is tracked (icons, build.gradle customizations). Its own
+# android/.gitignore excludes build outputs, copied web assets, and local config.
