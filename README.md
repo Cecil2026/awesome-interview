@@ -102,6 +102,17 @@ When the language is set to 中文, the reader serves `*.zh.md` if it exists; ot
 
 To generate translations in bulk via an LLM, use [`tools/translate_to_zh.py`](tools/translate_to_zh.py) (requires `pip install anthropic` and `ANTHROPIC_API_KEY`). Run with `--dry-run` first to preview what would be translated. See [tools/README.md](tools/README.md#generating-translations-in-bulk) for full usage.
 
+## Android app
+
+The same static site can be packaged into an **offline Android app** (a Capacitor WebView shell — no Python on the device). Grab a prebuilt APK from [Releases](../../releases), or build your own:
+
+```bash
+npm install          # once
+npm run apk          # -> android/app/build/outputs/apk/debug/awesome-interview.apk
+```
+
+Requires Node 18+, JDK 17, and the Android SDK. Full instructions (icons, versioning, publishing a release) are in [tools/BUILD_APK.md](tools/BUILD_APK.md).
+
 ## How to use this repo
 
 **Daily** — let the [daily-question workflow](.github/workflows/daily-question.yml) open a fresh GitHub issue every morning; answer it in the issue thread.

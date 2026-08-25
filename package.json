@@ -6,7 +6,9 @@
   "scripts": {
     "build:www": "python tools/build_www.py",
     "sync": "npm run build:www && npx cap sync android",
-    "open:android": "npx cap open android"
+    "open:android": "npx cap open android",
+    "apk": "bash tools/build_apk.sh",
+    "apk:icons": "bash tools/build_apk.sh --icons"
   },
   "dependencies": {
     "@capacitor/android": "^6.1.0",

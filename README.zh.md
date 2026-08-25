@@ -102,6 +102,17 @@ python tools/run_service.py --no-kill      # 端口被占时直接报错，不�
 
 如需通过 LLM 批量生成翻译，可使用 [`tools/translate_to_zh.py`](tools/translate_to_zh.py)（需要 `pip install anthropic` 并设置 `ANTHROPIC_API_KEY`）。先用 `--dry-run` 预览将要翻译哪些内容。完整用法见 [tools/README.md](tools/README.md#generating-translations-in-bulk)。
 
+## 安卓 App
+
+同一套静态站点可以打包成**离线安卓 App**（基于 Capacitor 的 WebView 壳，手机上不跑 Python）。可从 [Releases](../../releases) 下载预构建的 APK，或自己构建：
+
+```bash
+npm install          # 仅首次
+npm run apk          # -> android/app/build/outputs/apk/debug/awesome-interview.apk
+```
+
+需要 Node 18+、JDK 17 和 Android SDK。完整说明（图标、版本号、发布 release）见 [tools/BUILD_APK.md](tools/BUILD_APK.md)。
+
 ## 这个仓库怎么用
 
 **每日** — 让 [每日题目工作流](.github/workflows/daily-question.yml) 每天早上自动开一个 GitHub issue，直接在 issue 里作答。
