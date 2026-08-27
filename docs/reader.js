@@ -59,6 +59,7 @@
       intro: 'Reader for all markdown-based modules. Click a document on the left to render it here.',
       searchPlaceholder: 'Search by file, category, or keyword',
       fileLabel: 'Files:',
+      filesButton: 'Files',
       openRawMarkdown: 'Open raw markdown',
       currentPathDefault: 'Select a file to read',
       chooseMarkdownTitle: 'Choose a markdown file',
@@ -112,6 +113,7 @@
       intro: '浏览项目里所有的 Markdown 模块。点击左侧任意文档即可在右侧渲染查看。',
       searchPlaceholder: '按文件、类别或关键词搜索',
       fileLabel: '文件数：',
+      filesButton: '文件',
       openRawMarkdown: '打开原始 Markdown',
       currentPathDefault: '请选择要阅读的文件',
       chooseMarkdownTitle: '选择一个 Markdown 文件',
@@ -262,6 +264,8 @@
     fileLabelEl.textContent = t('fileLabel');
     rawLink.textContent = t('openRawMarkdown');
     if (practiceLabelEl) practiceLabelEl.textContent = t('practiceMode');
+    const sidebarToggleLabel = document.getElementById('sidebar-toggle-label');
+    if (sidebarToggleLabel) sidebarToggleLabel.textContent = t('filesButton');
     currentPathEl.textContent = activePath || t('currentPathDefault');
     if (!activePath) {
       const titleEl = document.getElementById('reader-title');
@@ -547,6 +551,7 @@
         anchor.addEventListener('click', (event) => {
           event.preventDefault();
           loadFile(file.file);
+          closeSidebar();
         });
         if (file.file === activePath) {
           anchor.classList.add('active');
@@ -739,6 +744,27 @@
         loadFile(cleanPath, fragment ? `#${fragment}` : '');
       }
     }
+  });
+
+  const layoutEl = document.querySelector('.layout');
+  const sidebarToggleEl = document.getElementById('sidebar-toggle');
+  const sidebarBackdropEl = document.getElementById('sidebar-backdrop');
+
+  function setSidebar(open) {
+    if (!layoutEl) return;
+    layoutEl.classList.toggle('sidebar-open', open);
+    if (sidebarToggleEl) sidebarToggleEl.setAttribute('aria-expanded', open ? 'true' : 'false');
+  }
+  function closeSidebar() { setSidebar(false); }
+
+  if (sidebarToggleEl) {
+    sidebarToggleEl.addEventListener('click', () => {
+      setSidebar(!layoutEl.classList.contains('sidebar-open'));
+    });
+  }
+  if (sidebarBackdropEl) sidebarBackdropEl.addEventListener('click', closeSidebar);
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') closeSidebar();
   });
 
   searchEl.addEventListener('input', filterFiles);
