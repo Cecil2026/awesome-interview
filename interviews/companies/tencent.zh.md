@@ -19,7 +19,7 @@ sources: 一亩三分地、牛客网、LeetCode-cn、niuke.com
 
 腾讯的面试在基础设施和游戏岗位上偏 C++（腾讯在微信、QQ、王者荣耀、PUBG Mobile、英雄联盟后端等都有庞大的 C++ 团队）。游戏/IM 岗位期望网络知识——TCP 窗口、NAT 穿透、自定义 UDP 协议、丢包处理。系统设计围绕微信量级（10 亿+ MAU）的社交/消息和游戏后端（帧同步、状态同步、匹配）。行为面试比美国公司轻；他们会探查跨事业群（BG）协作的能力，因为腾讯结构上跨 BG 协作本身就难。
 
-## 题目
+## 链表
 
 ### 1. 两数相加（链表）
 
@@ -112,86 +112,7 @@ ListNode addTwoNumbers(ListNode l1, ListNode l2) {
 
 ---
 
-### 2. 字符串相加
-
-**难度：** 简单
-**主题：** strings, math
-**岗位：** SWE
-**级别：** T2-T3
-
-**问题：** 给定两个非负整数字符串，返回其和字符串（不用内置 BigInt）。
-
-**思路：** 双指针从末尾，带进位，追加每位。结果反转。O(max(n, m))。腾讯常用热身题，检验基本正确性。
-
-**Python：**
-```python
-def add_strings(num1: str, num2: str) -> str:
-    i, j, carry = len(num1) - 1, len(num2) - 1, 0
-    out: list[str] = []
-    while i >= 0 or j >= 0 or carry:
-        a = ord(num1[i]) - 48 if i >= 0 else 0
-        b = ord(num2[j]) - 48 if j >= 0 else 0
-        carry, d = divmod(a + b + carry, 10)
-        out.append(chr(d + 48))
-        i -= 1
-        j -= 1
-    return "".join(reversed(out))
-```
-
-**TypeScript：**
-```typescript
-function addStrings(num1: string, num2: string): string {
-  let i = num1.length - 1, j = num2.length - 1, carry = 0;
-  const out: string[] = [];
-  while (i >= 0 || j >= 0 || carry) {
-    const a = i >= 0 ? num1.charCodeAt(i) - 48 : 0;
-    const b = j >= 0 ? num2.charCodeAt(j) - 48 : 0;
-    const s = a + b + carry;
-    carry = Math.floor(s / 10);
-    out.push(String.fromCharCode((s % 10) + 48));
-    i--; j--;
-  }
-  return out.reverse().join("");
-}
-```
-
-**Java：**
-```java
-String addStrings(String num1, String num2) {
-  int i = num1.length() - 1, j = num2.length() - 1, carry = 0;
-  StringBuilder out = new StringBuilder();
-  while (i >= 0 || j >= 0 || carry != 0) {
-    int a = i >= 0 ? num1.charAt(i) - '0' : 0;
-    int b = j >= 0 ? num2.charAt(j) - '0' : 0;
-    int s = a + b + carry;
-    carry = s / 10;
-    out.append((char) ('0' + s % 10));
-    i--; j--;
-  }
-  return out.reverse().toString();
-}
-```
-
-**要点：**
-- 只要有任一下标或进位剩余就继续循环。
-- 用字符编码做算术，避免对每位调用 `parseInt`。
-- 先按倒序追加，最后只反转一次。
-
-**常见追问：**
-- 不用 big-int 做字符串相乘。
-- 任意进制（二进制、十六进制）下的非负整数相加。
-- 含小数点的字符串相加。
-- 支持负数——转换到减法。
-
-**常见坑：**
-- 循环后忘了处理最后进位。
-- 逐位用 `Integer.parseInt`——慢且不必要。
-
-**标签：** #algorithm
-
----
-
-### 3. 环形链表 II
+### 2. 环形链表 II
 
 **难度：** 中等
 **主题：** linked-list, two-pointer, floyd
@@ -271,238 +192,9 @@ ListNode detectCycle(ListNode head) {
 
 ---
 
-### 4. 全排列
+## 树
 
-**难度：** 中等
-**主题：** backtracking, recursion
-**岗位：** SWE
-**级别：** T2-T3
-
-**问题：** 给定不重复整数数组，返回所有可能的排列。
-
-**思路：** 回溯——当前下标与后续每个下标交换，递归，再换回。或用 `used[]` 布尔数组。O(n * n!)。追问：含重复——先排序，当 `used[i-1]` 为 false 且 `nums[i] == nums[i-1]` 时跳过。
-
-**Python：**
-```python
-def permute(nums: list[int]) -> list[list[int]]:
-    out: list[list[int]] = []
-    def go(start: int) -> None:
-        if start == len(nums):
-            out.append(nums[:])
-            return
-        for i in range(start, len(nums)):
-            nums[start], nums[i] = nums[i], nums[start]
-            go(start + 1)
-            nums[start], nums[i] = nums[i], nums[start]
-    go(0)
-    return out
-```
-
-**TypeScript：**
-```typescript
-function permute(nums: number[]): number[][] {
-  const out: number[][] = [];
-  const go = (start: number): void => {
-    if (start === nums.length) { out.push(nums.slice()); return; }
-    for (let i = start; i < nums.length; i++) {
-      [nums[start], nums[i]] = [nums[i], nums[start]];
-      go(start + 1);
-      [nums[start], nums[i]] = [nums[i], nums[start]];
-    }
-  };
-  go(0);
-  return out;
-}
-```
-
-**Java：**
-```java
-List<List<Integer>> permute(int[] nums) {
-  List<List<Integer>> out = new ArrayList<>();
-  go(nums, 0, out);
-  return out;
-}
-
-void go(int[] nums, int start, List<List<Integer>> out) {
-  if (start == nums.length) {
-    List<Integer> snap = new ArrayList<>();
-    for (int x : nums) snap.add(x);
-    out.add(snap);
-    return;
-  }
-  for (int i = start; i < nums.length; i++) {
-    int t = nums[start]; nums[start] = nums[i]; nums[i] = t;
-    go(nums, start + 1, out);
-    t = nums[start]; nums[start] = nums[i]; nums[i] = t;
-  }
-}
-```
-
-**要点：**
-- 原地交换可省去显式 `used[]` 数组。
-- 回溯返回前务必还原交换，保持原数组状态。
-- 通过 `slice`/`[:]` 拷贝快照，避免后续修改破坏已记录结果。
-
-**常见追问：**
-- Permutations II——输入含重复，排序 + 跳过去重。
-- Next Permutation——原地变换为下一个字典序。
-- 第 k 个排列——阶乘进制，不枚举。
-- 带约束的排列（相邻不重复等）。
-
-**常见坑：**
-- 忘了在加入输出前拷贝 `nums`——后续交换覆盖结果。
-- 交换后还想靠排序去重——不变量丢失。
-
-**标签：** #algorithm
-
----
-
-### 5. 最大子数组和（Kadane）
-
-**难度：** 简单
-**主题：** dp, arrays, greedy
-**岗位：** SWE
-**级别：** T2-T3
-
-**问题：** 给定整数数组，找出和最大的连续子数组。
-
-**思路：** Kadane：维护 `current = max(num, current + num)`、`best = max(best, current)`。O(n) 时间，O(1) 空间。处理全负数（返回单个最大元素）。追问：同时返回起止下标。
-
-**Python：**
-```python
-def max_subarray(nums: list[int]) -> int:
-    cur = best = nums[0]
-    for x in nums[1:]:
-        cur = max(x, cur + x)
-        best = max(best, cur)
-    return best
-```
-
-**TypeScript：**
-```typescript
-function maxSubArray(nums: number[]): number {
-  let cur = nums[0], best = nums[0];
-  for (let i = 1; i < nums.length; i++) {
-    cur = Math.max(nums[i], cur + nums[i]);
-    best = Math.max(best, cur);
-  }
-  return best;
-}
-```
-
-**Java：**
-```java
-int maxSubArray(int[] nums) {
-  int cur = nums[0], best = nums[0];
-  for (int i = 1; i < nums.length; i++) {
-    cur = Math.max(nums[i], cur + nums[i]);
-    best = Math.max(best, cur);
-  }
-  return best;
-}
-```
-
-**要点：**
-- `cur` 表示以当前下标结尾的最大子数组和。
-- 两者均初始化为 `nums[0]`，全负数也能返回最大元素。
-- 分治写法也能 O(n log n)，但相对小题大做。
-
-**常见追问：**
-- 返回实际子数组（start/end 下标），而不仅是和。
-- 最大 *乘积* 子数组——负数缘故同时跟踪最大与最小。
-- 环形最大子数组。
-- 限定至多 k 个元素的最大子数组。
-
-**常见坑：**
-- `cur` 与 `best` 初为 0——全负输入出错。
-- 从下标 0 开始循环还加了 `nums[0]`——用 `nums[0]` 初始化后从 1 开始。
-
-**标签：** #algorithm
-
----
-
-### 6. 原地反转字符串
-
-**难度：** 简单
-**主题：** strings, two-pointer
-**岗位：** SWE
-**级别：** T2
-
-**问题：** 原地反转 `char[]`。然后：原地反转句子中的单词顺序（`"the sky is blue"` → `"blue is sky the"`）。
-
-**思路：** 第一部分：双指针交换。第二部分：先整体反转，再逐词反转。O(n) 时间，O(1) 额外空间。腾讯 C++ 经典题——面试官还会问 `std::string` 的 SSO 和 C++11 之前的 COW 语义。
-
-**Python：**
-```python
-def reverse_words(chars: list[str]) -> None:
-    def rev(l: int, r: int) -> None:
-        while l < r:
-            chars[l], chars[r] = chars[r], chars[l]
-            l += 1
-            r -= 1
-    rev(0, len(chars) - 1)
-    l = 0
-    for r in range(len(chars) + 1):
-        if r == len(chars) or chars[r] == " ":
-            rev(l, r - 1)
-            l = r + 1
-```
-
-**TypeScript：**
-```typescript
-function reverseWords(chars: string[]): void {
-  const rev = (l: number, r: number): void => {
-    while (l < r) { [chars[l], chars[r]] = [chars[r], chars[l]]; l++; r--; }
-  };
-  rev(0, chars.length - 1);
-  let l = 0;
-  for (let r = 0; r <= chars.length; r++) {
-    if (r === chars.length || chars[r] === " ") {
-      rev(l, r - 1);
-      l = r + 1;
-    }
-  }
-}
-```
-
-**Java：**
-```java
-void reverseWords(char[] chars) {
-  rev(chars, 0, chars.length - 1);
-  int l = 0;
-  for (int r = 0; r <= chars.length; r++) {
-    if (r == chars.length || chars[r] == ' ') {
-      rev(chars, l, r - 1);
-      l = r + 1;
-    }
-  }
-}
-
-void rev(char[] a, int l, int r) {
-  while (l < r) { char t = a[l]; a[l++] = a[r]; a[r--] = t; }
-}
-```
-
-**要点：**
-- 先整体反转，再原地反转每个单词即可。
-- Python/JS 字符串不可变，输入用可变字符 `list`/`array`。
-- 仅用少量下标变量，O(1) 额外空间。
-
-**常见追问：**
-- 反转句中单词（LeetCode 151）——压缩多个空格。
-- 仅反转元音字母。
-- 原地反转句子同时保留末尾标点位置。
-- 安全反转 UTF-8 字节串（不能拆多字节字符）。
-
-**常见坑：**
-- 面试官要求原地时还用 `s[::-1]`——O(n) 额外空间。
-- 只在单个空格上 split，遗漏多空格分隔。
-
-**标签：** #coding
-
----
-
-### 7. BST 的最近公共祖先
+### 3. BST 的最近公共祖先
 
 **难度：** 简单
 **主题：** tree, bst, recursion
@@ -586,287 +278,309 @@ TreeNode lowestCommonAncestorBST(TreeNode root, TreeNode p, TreeNode q) {
 
 ---
 
-### 8. 最小栈
+### 4. 单词拆分 II
 
-**难度：** 简单
-**主题：** stack, design
-**岗位：** SWE
-**级别：** T2-T3
+**难度：** 困难
+**主题：** dp, backtracking, memoization, trie
+**岗位：** T3-1
+**级别：** T3
 
-**问题：** 设计支持 `push`、`pop`、`top` 和 `getMin` 全部 O(1) 的栈。
+**问题：** 给定字符串 `s` 和字典，返回所有可以将 `s` 用空格分割为字典词的句子。
 
-**思路：** 两栈：主栈 + min 栈（新值 ≤ 当前 min 时才推 min 栈；pop 同步）。或单栈存 `(value, current_min)` 对。所有操作 O(1)。
+**思路：** 后缀上做回溯 + 记忆化（后缀起点 → 句子列表）。每个使前缀是字典词的切点，对后缀递归。按起点缓存结果。Trie 做前缀查找加速扫描。最坏指数（受输出限制）。
 
 **Python：**
 ```python
-class MinStack:
-    def __init__(self) -> None:
-        self.stk: list[tuple[int, int]] = []  # (value, running_min)
+from functools import lru_cache
 
-    def push(self, val: int) -> None:
-        cur_min = val if not self.stk else min(val, self.stk[-1][1])
-        self.stk.append((val, cur_min))
-
-    def pop(self) -> None:
-        self.stk.pop()
-
-    def top(self) -> int:
-        return self.stk[-1][0]
-
-    def get_min(self) -> int:
-        return self.stk[-1][1]
+def word_break(s: str, word_dict: list[str]) -> list[str]:
+    words = set(word_dict)
+    @lru_cache(maxsize=None)
+    def go(start: int) -> list[str]:
+        if start == len(s):
+            return [""]
+        result: list[str] = []
+        for end in range(start + 1, len(s) + 1):
+            w = s[start:end]
+            if w in words:
+                for rest in go(end):
+                    result.append(w if not rest else w + " " + rest)
+        return result
+    return go(0)
 ```
 
 **TypeScript：**
 ```typescript
-class MinStack {
-  private stk: Array<[number, number]> = [];
-  push(val: number): void {
-    const m = this.stk.length === 0 ? val : Math.min(val, this.stk[this.stk.length - 1][1]);
-    this.stk.push([val, m]);
-  }
-  pop(): void { this.stk.pop(); }
-  top(): number { return this.stk[this.stk.length - 1][0]; }
-  getMin(): number { return this.stk[this.stk.length - 1][1]; }
+function wordBreak(s: string, wordDict: string[]): string[] {
+  const words = new Set(wordDict);
+  const memo = new Map<number, string[]>();
+  const go = (start: number): string[] => {
+    if (memo.has(start)) return memo.get(start)!;
+    if (start === s.length) return [""];
+    const result: string[] = [];
+    for (let end = start + 1; end <= s.length; end++) {
+      const w = s.slice(start, end);
+      if (words.has(w)) {
+        for (const rest of go(end)) result.push(rest === "" ? w : w + " " + rest);
+      }
+    }
+    memo.set(start, result);
+    return result;
+  };
+  return go(0);
 }
 ```
 
 **Java：**
 ```java
-class MinStack {
-  private final Deque<int[]> stk = new ArrayDeque<>();  // {value, runningMin}
-  public void push(int val) {
-    int m = stk.isEmpty() ? val : Math.min(val, stk.peek()[1]);
-    stk.push(new int[]{val, m});
+Map<Integer, List<String>> memoWB;
+Set<String> wordsWB;
+String sWB;
+
+List<String> wordBreak(String s, List<String> wordDict) {
+  memoWB = new HashMap<>();
+  wordsWB = new HashSet<>(wordDict);
+  sWB = s;
+  return goWB(0);
+}
+
+List<String> goWB(int start) {
+  if (memoWB.containsKey(start)) return memoWB.get(start);
+  List<String> result = new ArrayList<>();
+  if (start == sWB.length()) { result.add(""); return result; }
+  for (int end = start + 1; end <= sWB.length(); end++) {
+    String w = sWB.substring(start, end);
+    if (wordsWB.contains(w)) {
+      for (String rest : goWB(end)) result.add(rest.isEmpty() ? w : w + " " + rest);
+    }
   }
-  public void pop() { stk.pop(); }
-  public int top() { return stk.peek()[0]; }
-  public int getMin() { return stk.peek()[1]; }
+  memoWB.put(start, result);
+  return result;
 }
 ```
 
 **要点：**
-- 每个栈元素自带运行最小值，所有操作均 O(1)。
-- 当最小值重复较多时，双栈写法更省空间。
-- 是否需要处理空栈取决于题目约定，这里假定调用前非空。
+- 按后缀起点记忆化，每个下标只展开一次。
+- 用空串作为递归终止标记。
+- 字典大时可结合 Trie/最长前缀加速扫描。
 
-**常见追问：**
-- Max Stack（O(1) 取最大）以及 O(log n) 的 `popMax`。
-- 双栈实现队列——摊销 O(1) 每操作。
-- 滑动窗口最值——单调双端队列。
-- 线程安全的 Min Stack——同步或无锁。
-
-**常见坑：**
-- 只用单变量保存全局最小值——弹出后错误。
-- pop 后访问上一个最小值时越界——始终随条目保存。
-
-**标签：** #coding
+**标签：** #algorithm
 
 ---
 
-### 9. 设计微信消息后端
+### 5. 连接词
 
 **难度：** 困难
-**主题：** system-design, im, websockets, presence, scale
-**岗位：** 高级 SWE
-**级别：** T3-T4
+**主题：** dp, trie, strings
+**岗位：** T3-1
+**级别：** T3
 
-**问题：** 设计支持 10 亿+ MAU、1:1 聊天、群聊（500 人）和全球在线状态的微信消息后端。
+**问题：** 给定不重复字符串数组，返回所有由数组中至少两个其他字符串拼接而成的字符串。
 
-**思路：** 每客户端到最近接入网关一条持久 TCP/MQTT（按 user_id 分片）。消息流：网关 → 路由服务（在在线注册表查接收方网关）→ 接收方网关 → 设备。离线消息持久化到 KV，重连时推送。群聊：在每群路由服务做扇出；500 人这量级可行。在线状态：每区域内存存储，全球用带 TTL 的 gossip（最终一致 OK）。消息热存 7 天 + 冷存 90 天。讨论：端到端加密（腾讯出于中国法律合规历史上不做 E2E——直说）、单聊会话内消息有序（每会话序列号）、多设备同步、超大群（广播群另有设计）。
+**思路：** 对每个词，用其他词（或所有词，要求 `>=2` 段）跑 Word Break DP。`dp[i]` 表示 `word[0..i)` 可分割。优化：按长度排序，使用增量集合。常见 O(N * L^2)。
 
-**常见追问：**
-- 多设备同步——手机加电脑同时登录，同一条消息一致抵达。
-- 跨设备消息顺序——服务端为每会话下发序列号。
-- 超大群（公众号式广播）——推变拉，带游标。
-- 离线转在线补拉——流式窗口 vs 全量拉。
-- 跨区域国际用户的延迟——anycast 网关还是分区域路由？
+**Python：**
+```python
+def find_all_concatenated_words(words: list[str]) -> list[str]:
+    words.sort(key=len)
+    seen: set[str] = set()
+    out: list[str] = []
+    def composable(w: str) -> bool:
+        if not seen:
+            return False
+        n = len(w)
+        dp = [False] * (n + 1)
+        dp[0] = True
+        for i in range(1, n + 1):
+            for j in range(i):
+                if dp[j] and w[j:i] in seen:
+                    dp[i] = True
+                    break
+        return dp[n]
+    for w in words:
+        if composable(w):
+            out.append(w)
+        seen.add(w)
+    return out
+```
 
-**常见坑：**
-- 承诺 E2E 加密，但设计实际镜像/归档了消息。
-- 大群直接扇出——超过 ~500 人不可扩。
+**TypeScript：**
+```typescript
+function findAllConcatenatedWordsInADict(words: string[]): string[] {
+  words.sort((a, b) => a.length - b.length);
+  const seen = new Set<string>();
+  const out: string[] = [];
+  const composable = (w: string): boolean => {
+    if (seen.size === 0) return false;
+    const n = w.length;
+    const dp = new Array<boolean>(n + 1).fill(false);
+    dp[0] = true;
+    for (let i = 1; i <= n; i++) {
+      for (let j = 0; j < i; j++) {
+        if (dp[j] && seen.has(w.slice(j, i))) { dp[i] = true; break; }
+      }
+    }
+    return dp[n];
+  };
+  for (const w of words) {
+    if (composable(w)) out.push(w);
+    seen.add(w);
+  }
+  return out;
+}
+```
 
-**标签：** #system-design
+**Java：**
+```java
+List<String> findAllConcatenatedWordsInADict(String[] words) {
+  Arrays.sort(words, Comparator.comparingInt(String::length));
+  Set<String> seen = new HashSet<>();
+  List<String> out = new ArrayList<>();
+  for (String w : words) {
+    if (composableCW(w, seen)) out.add(w);
+    seen.add(w);
+  }
+  return out;
+}
+
+boolean composableCW(String w, Set<String> seen) {
+  if (seen.isEmpty()) return false;
+  int n = w.length();
+  boolean[] dp = new boolean[n + 1];
+  dp[0] = true;
+  for (int i = 1; i <= n; i++) {
+    for (int j = 0; j < i; j++) {
+      if (dp[j] && seen.contains(w.substring(j, i))) { dp[i] = true; break; }
+    }
+  }
+  return dp[n];
+}
+```
+
+**要点：**
+- 按长度排序使候选字典只含更短的词。
+- 当前词尚未加入集合，天然保证至少由两段拼接。
+- 总复杂度 O(N * L^2)：每个词在增量集合上做一次 Word Break。
+
+**标签：** #algorithm
 
 ---
 
-### 10. 设计微信朋友圈
+### 6. 计算右侧小于当前元素的个数
 
 **难度：** 困难
-**主题：** system-design, feed, privacy, fanout
-**岗位：** 高级 SWE
-**级别：** T3-T4
+**主题：** bit, merge-sort, segment-tree
+**岗位：** T3-1
+**级别：** T3
 
-**问题：** 设计微信朋友圈——仅好友可见的信息流，严格隐私控制。
+**问题：** 对每个 `nums[i]`，求 `j > i` 且 `nums[j] < nums[i]` 的数量。
 
-**思路：** 封闭图谱 feed（不同于 Twitter/微博）——只有好友能看到帖子。push/pull 混合（同 News Feed）。关键隐私性质：某帖的评论和点赞仅对*发帖人*的共同好友可见。所以展示帖时，服务端按观看者与评论者是否也是好友过滤——读时通过好友图交集完成（缓存交集结果）。照片放 CDN，URL 带短期签名（无公开可发现 URL）。讨论："三天可见"实现为每帖 TTL 标志、评论/点赞通过 IM 系统（第 9 题）发消息式通知、爆款帖处理（封闭图中少见但可能——重度缓存）。
+**思路：** 带索引归并排序：右半元素被放到左半元素前时，对应左半元素计数加一。或对压缩后的值从右往左用树状数组前缀查询。O(n log n)。
 
-**常见追问：**
-- "仅三天可见"——存 TTL 还是读时过滤？
-- 拉黑/解除好友后缓存的 feed 必须立即更新。
-- 截图转发照片——加可见水印还是接受泄露？
-- 跨区域复制——用户出国后 feed 从哪里提供？
-- 好友图交集的读时代价——缓存、预计算，还是两者均有？
+**Python：**
+```python
+def count_smaller(nums: list[int]) -> list[int]:
+    n = len(nums)
+    counts = [0] * n
+    indices = list(range(n))
+    def sort(lo: int, hi: int) -> list[int]:
+        if lo >= hi:
+            return [indices[lo]] if lo == hi else []
+        mid = (lo + hi) // 2
+        left = sort(lo, mid)
+        right = sort(mid + 1, hi)
+        merged: list[int] = []
+        i = j = 0
+        while i < len(left) or j < len(right):
+            if j == len(right) or (i < len(left) and nums[left[i]] <= nums[right[j]]):
+                counts[left[i]] += j
+                merged.append(left[i])
+                i += 1
+            else:
+                merged.append(right[j])
+                j += 1
+        for k, idx in enumerate(merged):
+            indices[lo + k] = idx
+        return merged
+    sort(0, n - 1)
+    return counts
+```
 
-**常见坑：**
-- 展示了非共同好友的评论——隐私违规，极易被发现。
-- 封闭图中也可能有热帖（某个好友很有影响力），需提前预案。
+**TypeScript：**
+```typescript
+function countSmaller(nums: number[]): number[] {
+  const n = nums.length;
+  const counts = new Array<number>(n).fill(0);
+  const indices = Array.from({ length: n }, (_, i) => i);
+  const sort = (lo: number, hi: number): number[] => {
+    if (lo > hi) return [];
+    if (lo === hi) return [indices[lo]];
+    const mid = (lo + hi) >> 1;
+    const left = sort(lo, mid), right = sort(mid + 1, hi);
+    const merged: number[] = [];
+    let i = 0, j = 0;
+    while (i < left.length || j < right.length) {
+      if (j === right.length || (i < left.length && nums[left[i]] <= nums[right[j]])) {
+        counts[left[i]] += j;
+        merged.push(left[i++]);
+      } else merged.push(right[j++]);
+    }
+    for (let k = 0; k < merged.length; k++) indices[lo + k] = merged[k];
+    return merged;
+  };
+  sort(0, n - 1);
+  return counts;
+}
+```
 
-**标签：** #system-design
+**Java：**
+```java
+int[] numsCS;
+int[] countsCS;
+int[] indicesCS;
 
----
+List<Integer> countSmaller(int[] nums) {
+  int n = nums.length;
+  numsCS = nums;
+  countsCS = new int[n];
+  indicesCS = new int[n];
+  for (int i = 0; i < n; i++) indicesCS[i] = i;
+  sortCS(0, n - 1);
+  List<Integer> out = new ArrayList<>(n);
+  for (int c : countsCS) out.add(c);
+  return out;
+}
 
-### 11. 设计多人游戏服务器（王者荣耀风格）
+int[] sortCS(int lo, int hi) {
+  if (lo > hi) return new int[0];
+  if (lo == hi) return new int[]{indicesCS[lo]};
+  int mid = (lo + hi) >>> 1;
+  int[] left = sortCS(lo, mid), right = sortCS(mid + 1, hi);
+  int[] merged = new int[left.length + right.length];
+  int i = 0, j = 0, k = 0;
+  while (i < left.length || j < right.length) {
+    if (j == right.length || (i < left.length && numsCS[left[i]] <= numsCS[right[j]])) {
+      countsCS[left[i]] += j;
+      merged[k++] = left[i++];
+    } else merged[k++] = right[j++];
+  }
+  System.arraycopy(merged, 0, indicesCS, lo, merged.length);
+  return merged;
+}
+```
 
-**难度：** 困难
-**主题：** system-design, gaming, low-latency, state-sync
-**岗位：** 高级 SWE
-**级别：** T3-T4
+**要点：**
+- 对索引而非数值排序，保证每个元素的计数始终可寻址。
+- 取走左侧元素时，`j` 即为已见的更小右侧元素个数。
+- 用 `<=` 而非 `<` 处理相等，避免重复计数。
 
-**问题：** 设计实时 5v5 MOBA（如王者荣耀）的后端。延迟预算：感知 <100ms。
-
-**思路：** 匹配服务（考虑技术 + 区域 + 组队）→ 游戏服务器分配器（多区域 dedicated 游戏服 K8s 池）。游戏服跑权威模拟。**帧同步（lockstep）**：客户端只发输入（小包），所有客户端跑相同的确定性模拟，所有输入到齐推进一帧。腾讯 MOBA 的选择——带宽极小，输入-only 模型方便反作弊。代价：1 个慢客户端 = 全等。**状态同步**：服务端模拟，发状态 diff——FPS 常用。网络：自定义 UDP 协议（含可靠层）；TCP 不适合游戏流量。讨论：时钟同步（类 NTP）、丢包容忍（重发输入，状态同步要预测）、重连（从最近一帧重放输入）、作弊检测（抽样比赛服务端重放）。
-
-**标签：** #system-design
-
----
-
-### 12. 设计 QQ / 微信音视频通话
-
-**难度：** 困难
-**主题：** system-design, webrtc, sfu, nat-traversal, codecs
-**岗位：** 高级 SWE
-**级别：** T3-T4
-
-**问题：** 设计微信的语音/视频通话基础设施（1:1 和最多 9 人多方）。
-
-**思路：** 信令走 IM 通道（SDP offer/answer 通过消息）。媒体：WebRTC 风格 + ICE 做 NAT 穿透（STUN/TURN 服务器）。1:1 优先 P2P（延迟低、服务器成本低）。多方：SFU（选择性转发单元）——每客户端上传一路，服务端不转码地转发给其他 N-1 人（延迟低、扩展尚可）。编解码：音频 Opus，视频 H.264/H.265，自适应码率。客户端做回声消除、降噪、抖动缓冲。讨论：TURN 中继成本（许多用户在对称 NAT 后）、区域媒体服务器、网络劣化下的带宽自适应。
-
-**标签：** #system-design
-
----
-
-### 13. 设计腾讯云对象存储（COS）
-
-**难度：** 困难
-**主题：** system-design, blob-storage, replication, consistency
-**岗位：** 高级 SWE
-**级别：** T3-T4
-
-**问题：** 设计腾讯 COS——S3 兼容 API 的对象存储。
-
-**思路：** 前端 S3 兼容 API → 元数据服务（按 bucket+key 分片）→ 存储层采用纠删码（Reed-Solomon 10+4），跨多节点/机架/AZ。区域内强一致由元数据协调器（Paxos）保证。跨区域异步复制做灾备。讨论：纠删码 vs 3 副本权衡（节省约 50% 存储，但读端 CPU/网络更多）、大对象分片上传、生命周期到冷存储（类 Archive Storage）、热 key 处理（CDN + 副本扇出应对爆量读）。
-
-**标签：** #system-design
-
----
-
-### 14. 设计直播打赏 / 弹幕系统
-
-**难度：** 困难
-**主题：** system-design, real-time, fanout, monetization
-**岗位：** 高级 SWE
-**级别：** T3-T4
-
-**问题：** 设计腾讯视频 / NOW 直播中的打赏和弹幕系统，让观众在直播中实时送虚拟礼物（含支付）并聊天。
-
-**思路：** 礼物购买：事务化流程（扣用户钱包 → 记录礼物事件 → 广播）。钱包写是一致性关键步骤；其余可最终一致。评论/礼物事件 → 单直播 Kafka topic → 扇出到观众 WebSocket 网关。超热直播（1M+ 同时在线）下，限速 + 采样展示；全部异步入 DB。土豪特效（特殊动画）在广播队列里优先级高。讨论：礼物反欺诈（单用户突然飙量 = 潜在盗刷）、主播分成的税务/合规、流过热时优雅降级（先丢低价值评论）。
-
-**标签：** #system-design
-
----
-
-### 15. 讲一次你跨团队协作的经历
-
-**难度：** 中等
-**主题：** behavioral, collaboration, cross-bg
-**岗位：** SWE
-**级别：** T2-T3
-
-**问题：** 讲一次你与另一团队或 BG 一起交付项目的经历。难点在哪？
-
-**思路：** 腾讯的 BG 结构让跨团队协作文化上较难——他们查你能不能驾驭。展示：(1) 你提前建立了关系（不是被卡了才升级），(2) 你理解对方优先级（不同 OKR、不同领导），(3) 你提出 win-win 框架，(4) 你们共同交付。提具体摩擦（资源、排期错位）以及你是怎么化解的，会很加分。
-
-**标签：** #behavioral
-
----
-
-### 16. 主动修了职责外问题的经历
-
-**难度：** 中等
-**主题：** behavioral, ownership, initiative
-**岗位：** SWE
-**级别：** T2-T3
-
-**问题：** 讲一次你发现问题主动修复、且无人要求的经历。
-
-**思路：** 腾讯看重"主动"工程师。展示：(1) 具体问题（生产 bug、技术债、缺少工具），(2) 你没等优先级——用个人或非排期时间，(3) 你确保修复经过 review 并被采纳（不是孤胆牛仔式 commit），(4) 影响：可量化地帮到团队。别挑那种修复其实就是你直接职责的故事。
-
-**标签：** #behavioral
+**标签：** #algorithm
 
 ---
 
-### 17. 处理生产事故的经历
+## 图
 
-**难度：** 中等
-**主题：** behavioral, incident-response, ownership
-**岗位：** 高级 SWE
-**级别：** T3-T4
-
-**问题：** 讲一次你主导的生产事故。发生了什么？你怎么应对？事后做了什么改变？
-
-**思路：** 挑真事故（不是"差点出事"）。展示：(1) 你冷静分流——先缓解、后 RCA，(2) 你期间持续向干系人通报（每 15-30 分钟状态更新），(3) 你做了无指责复盘并产出具体行动项，(4) 你跟进行动项而不是仅记录。量化影响（宕机分钟、影响用户数）和修复后的提升（MTTR 降低 X）。
-
-**标签：** #behavioral
-
----
-
-### 18. 你为什么想加入腾讯
-
-**难度：** 简单
-**主题：** behavioral, motivation, fit
-**岗位：** SWE
-**级别：** T2-T3
-
-**问题：** 为什么是腾讯？想去哪个 BG/团队？
-
-**思路：** 要具体。别说"大厂"或"股票"。挑：(1) 具体产品（微信生态、你热爱并想参与的某款游戏），(2) 腾讯强势的技术领域（游戏技术、IM、云），(3) BG 文化（IEG 游戏、WXG 微信——风格相当不同）。提腾讯开源贡献（TARS、ncnn 做 ML 推理）能体现你做了功课。
-
-**标签：** #behavioral
-
----
-
-### 19. TCP 深挖：高 RTT 链路上 TCP 吞吐为何下降？
-
-**难度：** 困难
-**主题：** networking, tcp, performance
-**岗位：** 高级 SWE
-**级别：** T3-T4
-
-**问题：** 跨地域服务（上海 → 美东，200ms RTT）TCP 吞吐远低于可用带宽。为什么？怎么修？
-
-**思路：** 带宽时延积（BDP）：高 RTT 下吞吐 = window_size / RTT。默认 TCP 发送/接收缓冲可能太小——计算：1 Gbps × 0.2s = 200 Mbits = 25 MB BDP，但 Linux 默认发送缓冲约 4MB。修复：(1) 调大 `net.ipv4.tcp_rmem` / `tcp_wmem`，(2) 启用 TCP window scaling（RFC 7323——通常默认开但要检查），(3) 拥塞控制改用 BBR（高 BDP 下比 CUBIC 好），(4) 用并行连接放大有效吞吐，(5) 真正的批量传输考虑 QUIC 或基于 UDP 的协议。测量：`tc`、`ss -i`、`iperf3` 打基线。腾讯就是因为这种场景做了自研传输协议（如跨地域游戏流量）。
-
-**标签：** #domain-knowledge
-
----
-
-### 20. 实时多人游戏的反作弊
-
-**难度：** 困难
-**主题：** gaming, security, anti-cheat
-**岗位：** 高级 SWE
-**级别：** T3-T4
-
-**问题：** 一款新的 PUBG Mobile 作弊工具广泛流传（自瞄 + 透视）。讲讲你会怎么架构反作弊来检测和应对。
-
-**思路：** 多层：(1) **服务端权威**——绝不信客户端报告的伤害/位置；服务端做命中判定。透视需要*客户端*渲染本不该有的数据——通过可见性剔除不发送看不到的敌人数据来防。代价：服务端 CPU 更高。(2) **行为检测**——服务端 ML 分析瞄准轨迹、爆头率、反应时间；异常打标，人工或 ML review，影子封号。(3) **客户端完整性**——防篡改（代码混淆、原生 checksum、PC 端内核态反作弊）。检测已知作弊签名。(4) **举报 + 回放**——玩家举报触发服务端回放复审，部分由 ML 完成。(5) **软惩罚**——影子封号（让作弊者互相匹配）优先于硬封号（给作弊作者的迭代信号更少）。讨论假阳性代价（误封诚实玩家对留存灾难性）和反作弊与作弊者的永恒猫鼠游戏。
-
-**标签：** #domain-knowledge
-
----
-
-### 21. 网络延迟时间
+### 7. 网络延迟时间
 
 **难度：** 中等
 **主题：** graph, dijkstra, shortest-path
@@ -948,7 +662,7 @@ int networkDelayTime(int[][] times, int n, int k) {
 
 ---
 
-### 22. K 站中转内最便宜的航班
+### 8. K 站中转内最便宜的航班
 
 **难度：** 中等
 **主题：** graph, bfs, dp, bellman-ford
@@ -1018,7 +732,7 @@ int findCheapestPrice(int n, int[][] flights, int src, int dst, int k) {
 
 ---
 
-### 23. 概率最大的路径
+### 9. 概率最大的路径
 
 **难度：** 中等
 **主题：** graph, dijkstra, shortest-path
@@ -1113,80 +827,7 @@ double maxProbability(int n, int[][] edges, double[] succProb, int start, int en
 
 ---
 
-### 24. 最低加油次数
-
-**难度：** 困难
-**主题：** greedy, heap, dp
-**岗位：** T3-1
-**级别：** T3-T4
-
-**问题：** 汽车初始油量 `startFuel`，目标位置 `target`。途中加油站 `stations[i] = [position, liters]`。返回到达目标的最少加油次数（或 -1）。
-
-**思路：** 贪心 + 最大堆。尽量往前开；当无法到达下一站/终点时，从已经经过的加油站中弹出油量最多的（弹最大堆顶）加油。计数加一。O(n log n)。也可 DP 按站数转移，但堆解更清晰。
-
-**Python：**
-```python
-import heapq
-
-def min_refuel_stops(target: int, start_fuel: int, stations: list[list[int]]) -> int:
-    heap: list[int] = []  # negated liters
-    fuel, i, stops = start_fuel, 0, 0
-    while fuel < target:
-        while i < len(stations) and stations[i][0] <= fuel:
-            heapq.heappush(heap, -stations[i][1])
-            i += 1
-        if not heap:
-            return -1
-        fuel += -heapq.heappop(heap)
-        stops += 1
-    return stops
-```
-
-**TypeScript：**
-```typescript
-function minRefuelStops(target: number, startFuel: number, stations: number[][]): number {
-  const heap: number[] = [];  // negated liters
-  let fuel = startFuel, i = 0, stops = 0;
-  while (fuel < target) {
-    while (i < stations.length && stations[i][0] <= fuel) {
-      heap.push(-stations[i][1]);
-      heap.sort((a, b) => a - b);
-      i++;
-    }
-    if (heap.length === 0) return -1;
-    fuel += -heap.shift()!;
-    stops++;
-  }
-  return stops;
-}
-```
-
-**Java：**
-```java
-int minRefuelStops(int target, int startFuel, int[][] stations) {
-  PriorityQueue<Integer> heap = new PriorityQueue<>(Comparator.reverseOrder());
-  long fuel = startFuel;
-  int i = 0, stops = 0;
-  while (fuel < target) {
-    while (i < stations.length && stations[i][0] <= fuel) heap.offer(stations[i++][1]);
-    if (heap.isEmpty()) return -1;
-    fuel += heap.poll();
-    stops++;
-  }
-  return stops;
-}
-```
-
-**要点：**
-- 把已经经过的加油站当作"油料储备"，没油时再取。
-- 每次取储备中油量最多的，使单次加油的行程增量最大化。
-- 假设加油站按位置升序；否则先排序。
-
-**标签：** #algorithm
-
----
-
-### 25. 公交路线
+### 10. 公交路线
 
 **难度：** 困难
 **主题：** graph, bfs
@@ -1287,7 +928,7 @@ int numBusesToDestination(int[][] routes, int source, int target) {
 
 ---
 
-### 26. 网络中的关键连接
+### 11. 网络中的关键连接
 
 **难度：** 困难
 **主题：** graph, dfs, tarjan, bridges
@@ -1391,7 +1032,7 @@ void dfsBridge(int u, int parent) {
 
 ---
 
-### 27. 无向图中连通分量的数目
+### 12. 无向图中连通分量的数目
 
 **难度：** 中等
 **主题：** graph, union-find, dfs
@@ -1467,7 +1108,7 @@ int findUF(int x) {
 
 ---
 
-### 28. 省份数量（朋友圈）
+### 13. 省份数量（朋友圈）
 
 **难度：** 中等
 **主题：** graph, union-find, dfs
@@ -1544,7 +1185,7 @@ void dfsProv(int[][] m, boolean[] visited, int u) {
 
 ---
 
-### 29. 冗余连接
+### 14. 冗余连接
 
 **难度：** 中等
 **主题：** graph, union-find, cycle
@@ -1619,7 +1260,7 @@ int findRC(int x) {
 
 ---
 
-### 30. 课程表
+### 15. 课程表
 
 **难度：** 中等
 **主题：** graph, topological-sort, dfs, bfs
@@ -1698,7 +1339,7 @@ boolean canFinish(int numCourses, int[][] prerequisites) {
 
 ---
 
-### 31. 课程表 II
+### 16. 课程表 II
 
 **难度：** 中等
 **主题：** graph, topological-sort
@@ -1778,7 +1419,7 @@ int[] findOrder(int numCourses, int[][] prerequisites) {
 
 ---
 
-### 32. 火星词典
+### 17. 火星词典
 
 **难度：** 困难
 **主题：** graph, topological-sort, strings
@@ -1890,981 +1531,608 @@ String alienOrder(String[] words) {
 
 ---
 
-### 33. 石子游戏
+### 18. 游戏服务器拓扑的最小生成树
 
 **难度：** 中等
-**主题：** dp, game-theory, minimax
+**主题：** graph, mst, kruskal, prim, union-find
 **岗位：** T2-3
 **级别：** T2-T3
 
-**问题：** 偶数长石堆数组。两人轮流拿最左或最右一堆。双方都最优，先手是否必胜？
+**问题：** 给定 `n` 台游戏服务器节点和每对之间专线成本，求互联全部节点的最小总成本。
 
-**思路：** DP `dp[i][j] = max(piles[i] - dp[i+1][j], piles[j] - dp[i][j-1])`，表示当前玩家在 `piles[i..j]` 上能取得的最优分差。答案：`dp[0][n-1] > 0`。O(n^2) 时间/空间。脑筋急转弯答案：偶数 n 且总和为偶时恒为 true，但面试官想看 DP。
+**思路：** Kruskal 求 MST：排序边，并查集逐条加入最便宜的非成环边，共 `n-1` 条。O(E log E)。Prim + 最小堆 O(E log V)——稠密图更优。腾讯基础设施视角：可讨论按延迟加权 vs 按成本加权。
 
 **Python：**
 ```python
-def stone_game(piles: list[int]) -> bool:
-    n = len(piles)
-    dp = [row[:] for row in [[0] * n] * n]
-    for i in range(n):
-        dp[i][i] = piles[i]
-    for length in range(2, n + 1):
-        for i in range(n - length + 1):
-            j = i + length - 1
-            dp[i][j] = max(piles[i] - dp[i + 1][j], piles[j] - dp[i][j - 1])
-    return dp[0][n - 1] > 0
+def min_spanning_tree(n: int, edges: list[tuple[int, int, int]]) -> int:
+    parent = list(range(n))
+    def find(x: int) -> int:
+        while parent[x] != x:
+            parent[x] = parent[parent[x]]
+            x = parent[x]
+        return x
+    edges.sort(key=lambda e: e[2])
+    total, used = 0, 0
+    for u, v, w in edges:
+        ru, rv = find(u), find(v)
+        if ru != rv:
+            parent[ru] = rv
+            total += w
+            used += 1
+            if used == n - 1:
+                break
+    return total if used == n - 1 else -1
 ```
 
 **TypeScript：**
 ```typescript
-function stoneGame(piles: number[]): boolean {
-  const n = piles.length;
-  const dp: number[][] = Array.from({ length: n }, () => new Array(n).fill(0));
-  for (let i = 0; i < n; i++) dp[i][i] = piles[i];
-  for (let len = 2; len <= n; len++) {
-    for (let i = 0; i + len - 1 < n; i++) {
-      const j = i + len - 1;
-      dp[i][j] = Math.max(piles[i] - dp[i + 1][j], piles[j] - dp[i][j - 1]);
-    }
-  }
-  return dp[0][n - 1] > 0;
-}
-```
-
-**Java：**
-```java
-boolean stoneGame(int[] piles) {
-  int n = piles.length;
-  int[][] dp = new int[n][n];
-  for (int i = 0; i < n; i++) dp[i][i] = piles[i];
-  for (int len = 2; len <= n; len++) {
-    for (int i = 0; i + len - 1 < n; i++) {
-      int j = i + len - 1;
-      dp[i][j] = Math.max(piles[i] - dp[i + 1][j], piles[j] - dp[i][j - 1]);
-    }
-  }
-  return dp[0][n - 1] > 0;
-}
-```
-
-**要点：**
-- `dp[i][j]` 表示当前先手在该区间上能稳取的最大分差。
-- 按区间长度填表，保证子区间已就绪。
-- 递推中的减号已经隐含了对手也最优行动。
-
-**标签：** #algorithm
-
----
-
-### 34. Nim 游戏
-
-**难度：** 简单
-**主题：** game-theory, math
-**岗位：** T2-3
-**级别：** T2-T3
-
-**问题：** `n` 颗石头，每人每轮拿 1、2 或 3 颗，拿到最后一颗者胜。你先手——能否必胜？
-
-**思路：** 必败位为 `n % 4 == 0`。面对 4 的倍数者最优下必败（对手镜像维持你处于 4 的倍数）。O(1)。准备好归纳证明。
-
-**Python：**
-```python
-def can_win_nim(n: int) -> bool:
-    return n % 4 != 0
-```
-
-**TypeScript：**
-```typescript
-function canWinNim(n: number): boolean {
-  return n % 4 !== 0;
-}
-```
-
-**Java：**
-```java
-boolean canWinNim(int n) {
-  return n % 4 != 0;
-}
-```
-
-**要点：**
-- 4 的倍数为必败位，其余皆必胜。
-- 镜像策略：对方总用 `4 - 你拿数` 让你始终停留在 4 的倍数。
-- 归纳证明：任意非 4 倍数都能一步走到 4 的倍数。
-
-**标签：** #algorithm
-
----
-
-### 35. 预测赢家
-
-**难度：** 中等
-**主题：** dp, game-theory, minimax, recursion
-**岗位：** T2-3
-**级别：** T2-T3
-
-**问题：** 给定分数数组，两人轮流从两端取数。最优策略下玩家 1 是否能赢或平。
-
-**思路：** 与石子游戏同 DP：`dp[i][j]` = 当前玩家在 `nums[i..j]` 上能取得的最大分差。自顶向下记忆化也可。O(n^2)。答案：`dp[0][n-1] >= 0`。腾讯变体：问如何用 1D 滚动数组优化到 O(n)。
-
-**Python：**
-```python
-def predict_the_winner(nums: list[int]) -> bool:
-    n = len(nums)
-    dp = nums[:]  # dp[i] for current j; init j=i
-    for i in range(n - 2, -1, -1):
-        for j in range(i + 1, n):
-            dp[j] = max(nums[i] - dp[j], nums[j] - dp[j - 1])
-    return dp[n - 1] >= 0
-```
-
-**TypeScript：**
-```typescript
-function PredictTheWinner(nums: number[]): boolean {
-  const n = nums.length;
-  const dp = nums.slice();
-  for (let i = n - 2; i >= 0; i--) {
-    for (let j = i + 1; j < n; j++) {
-      dp[j] = Math.max(nums[i] - dp[j], nums[j] - dp[j - 1]);
-    }
-  }
-  return dp[n - 1] >= 0;
-}
-```
-
-**Java：**
-```java
-boolean predictTheWinner(int[] nums) {
-  int n = nums.length;
-  int[] dp = nums.clone();
-  for (int i = n - 2; i >= 0; i--) {
-    for (int j = i + 1; j < n; j++) {
-      dp[j] = Math.max(nums[i] - dp[j], nums[j] - dp[j - 1]);
-    }
-  }
-  return dp[n - 1] >= 0;
-}
-```
-
-**要点：**
-- `dp[i][j]` 仅依赖 `dp[i+1][j]` 与 `dp[i][j-1]`，可压成 1D。
-- 初始化 `dp[j] = nums[j]` 表示 `i == j` 的基线。
-- 平局也算先手获胜，所以判定 `>= 0`。
-
-**标签：** #algorithm
-
----
-
-### 36. 我能赢吗
-
-**难度：** 中等
-**主题：** dp, game-theory, bitmask, memoization
-**岗位：** T3-1
-**级别：** T3
-
-**问题：** 数字 1..`maxChoosableInteger`，不放回，两人轮流取；先使累计和 ≥ `desiredTotal` 者胜。判断先手是否必胜。
-
-**思路：** 状压 DP（`maxChoosable ≤ 20`）。记忆化 `state → win/lose`。对每个未选数：若选了立即赢，或对手在新状态必败，则当前胜。边界：总和 < 目标即不可能（返回 false）。O(2^n * n)。
-
-**Python：**
-```python
-from functools import lru_cache
-
-def can_i_win(max_choosable: int, desired_total: int) -> bool:
-    if max_choosable * (max_choosable + 1) // 2 < desired_total:
-        return False
-    @lru_cache(maxsize=None)
-    def win(state: int, remaining: int) -> bool:
-        for i in range(1, max_choosable + 1):
-            bit = 1 << (i - 1)
-            if state & bit:
-                continue
-            if i >= remaining or not win(state | bit, remaining - i):
-                return True
-        return False
-    return win(0, desired_total)
-```
-
-**TypeScript：**
-```typescript
-function canIWin(maxChoosable: number, desiredTotal: number): boolean {
-  if ((maxChoosable * (maxChoosable + 1)) / 2 < desiredTotal) return false;
-  const memo = new Map<number, boolean>();
-  const win = (state: number, remaining: number): boolean => {
-    if (memo.has(state)) return memo.get(state)!;
-    for (let i = 1; i <= maxChoosable; i++) {
-      const bit = 1 << (i - 1);
-      if (state & bit) continue;
-      if (i >= remaining || !win(state | bit, remaining - i)) {
-        memo.set(state, true); return true;
-      }
-    }
-    memo.set(state, false); return false;
+function minSpanningTree(n: number, edges: Array<[number, number, number]>): number {
+  const parent = Array.from({ length: n }, (_, i) => i);
+  const find = (x: number): number => {
+    while (parent[x] !== x) { parent[x] = parent[parent[x]]; x = parent[x]; }
+    return x;
   };
-  return win(0, desiredTotal);
+  edges.sort((a, b) => a[2] - b[2]);
+  let total = 0, used = 0;
+  for (const [u, v, w] of edges) {
+    const ru = find(u), rv = find(v);
+    if (ru !== rv) {
+      parent[ru] = rv;
+      total += w;
+      if (++used === n - 1) break;
+    }
+  }
+  return used === n - 1 ? total : -1;
 }
 ```
 
 **Java：**
 ```java
-Map<Integer, Boolean> memoCIW;
-int maxChoosableCIW;
+int[] parMST;
 
-boolean canIWin(int maxChoosable, int desiredTotal) {
-  if (maxChoosable * (maxChoosable + 1) / 2 < desiredTotal) return false;
-  memoCIW = new HashMap<>();
-  maxChoosableCIW = maxChoosable;
-  return winCIW(0, desiredTotal);
-}
-
-boolean winCIW(int state, int remaining) {
-  if (memoCIW.containsKey(state)) return memoCIW.get(state);
-  for (int i = 1; i <= maxChoosableCIW; i++) {
-    int bit = 1 << (i - 1);
-    if ((state & bit) != 0) continue;
-    if (i >= remaining || !winCIW(state | bit, remaining - i)) {
-      memoCIW.put(state, true); return true;
+int minSpanningTree(int n, int[][] edges) {
+  parMST = new int[n];
+  for (int i = 0; i < n; i++) parMST[i] = i;
+  Arrays.sort(edges, (a, b) -> a[2] - b[2]);
+  int total = 0, used = 0;
+  for (int[] e : edges) {
+    int ru = findMST(e[0]), rv = findMST(e[1]);
+    if (ru != rv) {
+      parMST[ru] = rv;
+      total += e[2];
+      if (++used == n - 1) break;
     }
   }
-  memoCIW.put(state, false); return false;
+  return used == n - 1 ? total : -1;
+}
+
+int findMST(int x) {
+  while (parMST[x] != x) { parMST[x] = parMST[parMST[x]]; x = parMST[x]; }
+  return x;
 }
 ```
 
 **要点：**
-- 位掩码表示已选数集合，`n ≤ 20` 时可放入一个 int。
-- 仅以 `state` 为键记忆，`remaining` 由 `state` 唯一决定。
-- 早返：当所有数之和小于目标时直接判负。
+- 排序边后，每次贪心选择最小且能连通新分量的边。
+- 选满 `n - 1` 条边即可提前结束。
+- 图不连通时（合并次数不足）返回 -1。
 
 **标签：** #algorithm
 
 ---
 
-### 37. 翻转游戏 II
-
-**难度：** 中等
-**主题：** game-theory, dp, memoization, sprague-grundy
-**岗位：** T3-1
-**级别：** T3
-
-**问题：** 由 `+`、`-` 组成的字符串。每次将相邻 `++` 翻成 `--`。判断先手是否必胜。
-
-**思路：** 在字符串状态上递归 + 记忆化。对每个 `++` 位置，翻转后递归对手——对手败则当前胜。可用 Sprague-Grundy 定理（独立连续段 Grundy 数异或）优化到 O(n^2)。无 SG 最坏指数级。
-
-**Python：**
-```python
-def can_win(s: str) -> bool:
-    memo: dict[str, bool] = {}
-    def go(state: str) -> bool:
-        if state in memo:
-            return memo[state]
-        for i in range(len(state) - 1):
-            if state[i:i + 2] == "++":
-                nxt = state[:i] + "--" + state[i + 2:]
-                if not go(nxt):
-                    memo[state] = True
-                    return True
-        memo[state] = False
-        return False
-    return go(s)
-```
-
-**TypeScript：**
-```typescript
-function canWin(s: string): boolean {
-  const memo = new Map<string, boolean>();
-  const go = (state: string): boolean => {
-    if (memo.has(state)) return memo.get(state)!;
-    for (let i = 0; i + 1 < state.length; i++) {
-      if (state[i] === "+" && state[i + 1] === "+") {
-        const nxt = state.slice(0, i) + "--" + state.slice(i + 2);
-        if (!go(nxt)) { memo.set(state, true); return true; }
-      }
-    }
-    memo.set(state, false); return false;
-  };
-  return go(s);
-}
-```
-
-**Java：**
-```java
-Map<String, Boolean> memoFG = new HashMap<>();
-
-boolean canWin(String s) {
-  if (memoFG.containsKey(s)) return memoFG.get(s);
-  for (int i = 0; i + 1 < s.length(); i++) {
-    if (s.charAt(i) == '+' && s.charAt(i + 1) == '+') {
-      String nxt = s.substring(0, i) + "--" + s.substring(i + 2);
-      if (!canWin(nxt)) { memoFG.put(s, true); return true; }
-    }
-  }
-  memoFG.put(s, false); return false;
-}
-```
-
-**要点：**
-- 当前玩家只要能让对手陷入必败态即胜。
-- 按字符串状态记忆化，避免重复计算同形局面。
-- Grundy 数把独立段压成 O(n^2)，但记忆化版本更直观。
-
-**标签：** #algorithm
-
----
-
-### 38. 猜数字大小 II
-
-**难度：** 中等
-**主题：** dp, minimax, game-theory
-**岗位：** T3-1
-**级别：** T3
-
-**问题：** 选 1..n 中一数。每次猜 `x` 花 `$x`；猜错被告知大小直到猜中。返回保证胜出所需的最少金额（最坏情况）。
-
-**思路：** Minimax DP。`dp[i][j]` = 区间 `[i, j]` 的最低保证花费。枚举每个 `k` 作猜测：`cost(k) = k + max(dp[i][k-1], dp[k+1][j])`，取 min。O(n^3)。区间 DP，按长度填表。
-
-**Python：**
-```python
-def get_money_amount(n: int) -> int:
-    dp = [[0] * (n + 2) for _ in range(n + 2)]
-    for length in range(2, n + 1):
-        for i in range(1, n - length + 2):
-            j = i + length - 1
-            dp[i][j] = min(k + max(dp[i][k - 1], dp[k + 1][j]) for k in range(i, j))
-    return dp[1][n]
-```
-
-**TypeScript：**
-```typescript
-function getMoneyAmount(n: number): number {
-  const dp: number[][] = Array.from({ length: n + 2 }, () => new Array(n + 2).fill(0));
-  for (let len = 2; len <= n; len++) {
-    for (let i = 1; i + len - 1 <= n; i++) {
-      const j = i + len - 1;
-      let best = Infinity;
-      for (let k = i; k < j; k++) {
-        best = Math.min(best, k + Math.max(dp[i][k - 1], dp[k + 1][j]));
-      }
-      dp[i][j] = best;
-    }
-  }
-  return dp[1][n];
-}
-```
-
-**Java：**
-```java
-int getMoneyAmount(int n) {
-  int[][] dp = new int[n + 2][n + 2];
-  for (int len = 2; len <= n; len++) {
-    for (int i = 1; i + len - 1 <= n; i++) {
-      int j = i + len - 1;
-      int best = Integer.MAX_VALUE;
-      for (int k = i; k < j; k++) {
-        best = Math.min(best, k + Math.max(dp[i][k - 1], dp[k + 1][j]));
-      }
-      dp[i][j] = best;
-    }
-  }
-  return dp[1][n];
-}
-```
-
-**要点：**
-- 最坏情况博弈：对方（隐藏数）总挑代价更高的一侧。
-- 按区间长度递增填表，先备齐子区间。
-- 下标使用 1-based 以匹配值域 `[1, n]`。
-
-**标签：** #algorithm
-
----
-
-### 39. 通配符匹配
+### 19. 二分图最大匹配（玩家到服务器分配）
 
 **难度：** 困难
-**主题：** dp, strings
-**岗位：** T3-1
-**级别：** T3
-
-**问题：** 实现通配符匹配：`?` 匹配任意单字符，`*` 匹配任意序列（含空）。要求整串匹配。
-
-**思路：** 2D DP `dp[i][j]` 表示 `s[0..i)` 与 `p[0..j)` 是否匹配。`*`：`dp[i][j] = dp[i][j-1]（空）|| dp[i-1][j]（延伸）`。`?`：`dp[i][j] = dp[i-1][j-1]`。前导 `*` 时初始化 `dp[0][j]`。O(n*m)。
-
-**Python：**
-```python
-def is_match_wildcard(s: str, p: str) -> bool:
-    n, m = len(s), len(p)
-    dp = [[False] * (m + 1) for _ in range(n + 1)]
-    dp[0][0] = True
-    for j in range(1, m + 1):
-        if p[j - 1] == "*":
-            dp[0][j] = dp[0][j - 1]
-    for i in range(1, n + 1):
-        for j in range(1, m + 1):
-            if p[j - 1] == "*":
-                dp[i][j] = dp[i][j - 1] or dp[i - 1][j]
-            elif p[j - 1] == "?" or p[j - 1] == s[i - 1]:
-                dp[i][j] = dp[i - 1][j - 1]
-    return dp[n][m]
-```
-
-**TypeScript：**
-```typescript
-function isMatchWildcard(s: string, p: string): boolean {
-  const n = s.length, m = p.length;
-  const dp: boolean[][] = Array.from({ length: n + 1 }, () => new Array(m + 1).fill(false));
-  dp[0][0] = true;
-  for (let j = 1; j <= m; j++) if (p[j - 1] === "*") dp[0][j] = dp[0][j - 1];
-  for (let i = 1; i <= n; i++) {
-    for (let j = 1; j <= m; j++) {
-      if (p[j - 1] === "*") dp[i][j] = dp[i][j - 1] || dp[i - 1][j];
-      else if (p[j - 1] === "?" || p[j - 1] === s[i - 1]) dp[i][j] = dp[i - 1][j - 1];
-    }
-  }
-  return dp[n][m];
-}
-```
-
-**Java：**
-```java
-boolean isMatchWildcard(String s, String p) {
-  int n = s.length(), m = p.length();
-  boolean[][] dp = new boolean[n + 1][m + 1];
-  dp[0][0] = true;
-  for (int j = 1; j <= m; j++) if (p.charAt(j - 1) == '*') dp[0][j] = dp[0][j - 1];
-  for (int i = 1; i <= n; i++) {
-    for (int j = 1; j <= m; j++) {
-      char pc = p.charAt(j - 1);
-      if (pc == '*') dp[i][j] = dp[i][j - 1] || dp[i - 1][j];
-      else if (pc == '?' || pc == s.charAt(i - 1)) dp[i][j] = dp[i - 1][j - 1];
-    }
-  }
-  return dp[n][m];
-}
-```
-
-**要点：**
-- `*` 既可匹配空串（`dp[i][j-1]`），也可继续吃字符（`dp[i-1][j]`）。
-- 全是 `*` 的前缀需要把 `dp[0][j]` 初始化为 true。
-- `?` 恰好匹配一个字符，按字面字符处理即可。
-
-**标签：** #algorithm
-
----
-
-### 40. 正则表达式匹配
-
-**难度：** 困难
-**主题：** dp, strings, recursion
+**主题：** graph, matching, hungarian, bipartite, dfs
 **岗位：** T3-1
 **级别：** T3-T4
 
-**问题：** 实现支持 `.`（任意单字符）与 `*`（前一元素的 0 次或多次）的正则匹配。整串匹配。
+**问题：** 给定玩家与游戏服务器及兼容性约束（区域、ping 阈值），最大化将玩家分配到服务器的数量（1 玩家 ↔ 1 服务器，容量内）。
 
-**思路：** DP `dp[i][j]`。若 `p[j-1] == '*'`：取 0 次（`dp[i][j-2]`）或 1 次及以上且 `s[i-1]` 与 `p[j-2]` 匹配（`dp[i-1][j]`）。否则：字符/点匹配 → `dp[i-1][j-1]`。`a*b*c*` 之类的初始化要细心。O(n*m)。
+**思路：** 用匈牙利算法（Kuhn）做二分匹配：对每个未匹配玩家，沿增广路径 DFS 找未匹配/可增广路径，沿路径切换匹配。O(V * E)。带权最大匹配可用带势函数的匈牙利或最小费用最大流。规模大时讨论 Hopcroft–Karp 的 O(E√V)。
 
 **Python：**
 ```python
-def is_match_regex(s: str, p: str) -> bool:
-    n, m = len(s), len(p)
-    dp = [[False] * (m + 1) for _ in range(n + 1)]
-    dp[0][0] = True
-    for j in range(2, m + 1):
-        if p[j - 1] == "*":
-            dp[0][j] = dp[0][j - 2]
-    for i in range(1, n + 1):
-        for j in range(1, m + 1):
-            if p[j - 1] == "*":
-                dp[i][j] = dp[i][j - 2]
-                if p[j - 2] == "." or p[j - 2] == s[i - 1]:
-                    dp[i][j] = dp[i][j] or dp[i - 1][j]
-            elif p[j - 1] == "." or p[j - 1] == s[i - 1]:
-                dp[i][j] = dp[i - 1][j - 1]
-    return dp[n][m]
+def max_bipartite_matching(num_players: int, num_servers: int, edges: list[tuple[int, int]]) -> int:
+    graph: list[list[int]] = [[] for _ in range(num_players)]
+    for p, s in edges:
+        graph[p].append(s)
+    match_to: list[int] = [-1] * num_servers
+    def try_assign(p: int, seen: list[bool]) -> bool:
+        for s in graph[p]:
+            if seen[s]:
+                continue
+            seen[s] = True
+            if match_to[s] == -1 or try_assign(match_to[s], seen):
+                match_to[s] = p
+                return True
+        return False
+    matched = 0
+    for p in range(num_players):
+        seen = [False] * num_servers
+        if try_assign(p, seen):
+            matched += 1
+    return matched
 ```
 
 **TypeScript：**
 ```typescript
-function isMatchRegex(s: string, p: string): boolean {
-  const n = s.length, m = p.length;
-  const dp: boolean[][] = Array.from({ length: n + 1 }, () => new Array(m + 1).fill(false));
-  dp[0][0] = true;
-  for (let j = 2; j <= m; j++) if (p[j - 1] === "*") dp[0][j] = dp[0][j - 2];
-  for (let i = 1; i <= n; i++) {
-    for (let j = 1; j <= m; j++) {
-      if (p[j - 1] === "*") {
-        dp[i][j] = dp[i][j - 2];
-        if (p[j - 2] === "." || p[j - 2] === s[i - 1]) dp[i][j] = dp[i][j] || dp[i - 1][j];
-      } else if (p[j - 1] === "." || p[j - 1] === s[i - 1]) {
-        dp[i][j] = dp[i - 1][j - 1];
+function maxBipartiteMatching(numPlayers: number, numServers: number, edges: Array<[number, number]>): number {
+  const graph: number[][] = Array.from({ length: numPlayers }, () => []);
+  for (const [p, s] of edges) graph[p].push(s);
+  const matchTo = new Array<number>(numServers).fill(-1);
+  const tryAssign = (p: number, seen: boolean[]): boolean => {
+    for (const s of graph[p]) {
+      if (seen[s]) continue;
+      seen[s] = true;
+      if (matchTo[s] === -1 || tryAssign(matchTo[s], seen)) {
+        matchTo[s] = p;
+        return true;
       }
     }
-  }
-  return dp[n][m];
-}
-```
-
-**Java：**
-```java
-boolean isMatchRegex(String s, String p) {
-  int n = s.length(), m = p.length();
-  boolean[][] dp = new boolean[n + 1][m + 1];
-  dp[0][0] = true;
-  for (int j = 2; j <= m; j++) if (p.charAt(j - 1) == '*') dp[0][j] = dp[0][j - 2];
-  for (int i = 1; i <= n; i++) {
-    for (int j = 1; j <= m; j++) {
-      char pc = p.charAt(j - 1);
-      if (pc == '*') {
-        dp[i][j] = dp[i][j - 2];
-        char prev = p.charAt(j - 2);
-        if (prev == '.' || prev == s.charAt(i - 1)) dp[i][j] = dp[i][j] || dp[i - 1][j];
-      } else if (pc == '.' || pc == s.charAt(i - 1)) {
-        dp[i][j] = dp[i - 1][j - 1];
-      }
-    }
-  }
-  return dp[n][m];
-}
-```
-
-**要点：**
-- `x*` 要么整段忽略（`dp[i][j-2]`），要么再多吃一个字符（`dp[i-1][j]`）。
-- 初始化 `dp[0][j]` 以支持 `a*b*c*` 这种空匹配模式。
-- `.` 可代替任意单字符，需在 `*` 分支也处理。
-
-**标签：** #algorithm
-
----
-
-### 41. 最长回文子串
-
-**难度：** 中等
-**主题：** strings, dp, two-pointer
-**岗位：** T2-3
-**级别：** T2-T3
-
-**问题：** 返回 `s` 的最长回文子串。
-
-**思路：** 中心扩展：对每个 i 分别按奇偶长度扩展；维护最长。O(n^2) 时间，O(1) 空间。O(n) — Manacher 算法（面试很少强求但可加分）。别和最长回文*子序列*混淆。
-
-**Python：**
-```python
-def longest_palindrome(s: str) -> str:
-    def grow(l: int, r: int) -> tuple[int, int]:
-        while l >= 0 and r < len(s) and s[l] == s[r]:
-            l -= 1
-            r += 1
-        return l + 1, r - 1
-    bl, br = 0, 0
-    for i in range(len(s)):
-        for l, r in (grow(i, i), grow(i, i + 1)):
-            if r - l > br - bl:
-                bl, br = l, r
-    return s[bl:br + 1]
-```
-
-**TypeScript：**
-```typescript
-function longestPalindrome(s: string): string {
-  const grow = (l: number, r: number): [number, number] => {
-    while (l >= 0 && r < s.length && s[l] === s[r]) { l--; r++; }
-    return [l + 1, r - 1];
+    return false;
   };
-  let bl = 0, br = 0;
-  for (let i = 0; i < s.length; i++) {
-    for (const [l, r] of [grow(i, i), grow(i, i + 1)]) {
-      if (r - l > br - bl) { bl = l; br = r; }
-    }
+  let matched = 0;
+  for (let p = 0; p < numPlayers; p++) {
+    const seen = new Array<boolean>(numServers).fill(false);
+    if (tryAssign(p, seen)) matched++;
   }
-  return s.slice(bl, br + 1);
+  return matched;
 }
 ```
 
 **Java：**
 ```java
-int blLP = 0, brLP = 0;
+List<List<Integer>> graphBM;
+int[] matchTo;
 
-String longestPalindrome(String s) {
-  for (int i = 0; i < s.length(); i++) {
-    grow(s, i, i);
-    grow(s, i, i + 1);
+int maxBipartiteMatching(int numPlayers, int numServers, int[][] edges) {
+  graphBM = new ArrayList<>();
+  for (int i = 0; i < numPlayers; i++) graphBM.add(new ArrayList<>());
+  for (int[] e : edges) graphBM.get(e[0]).add(e[1]);
+  matchTo = new int[numServers];
+  Arrays.fill(matchTo, -1);
+  int matched = 0;
+  for (int p = 0; p < numPlayers; p++) {
+    boolean[] seen = new boolean[numServers];
+    if (tryAssign(p, seen)) matched++;
   }
-  return s.substring(blLP, brLP + 1);
+  return matched;
 }
 
-void grow(String s, int l, int r) {
-  while (l >= 0 && r < s.length() && s.charAt(l) == s.charAt(r)) { l--; r++; }
-  l++; r--;
-  if (r - l > brLP - blLP) { blLP = l; brLP = r; }
+boolean tryAssign(int p, boolean[] seen) {
+  for (int s : graphBM.get(p)) {
+    if (seen[s]) continue;
+    seen[s] = true;
+    if (matchTo[s] == -1 || tryAssign(matchTo[s], seen)) { matchTo[s] = p; return true; }
+  }
+  return false;
 }
 ```
 
 **要点：**
-- 同时尝试奇数中心和偶数中心两种扩展。
-- 通过长度比较记录最优起止，避免反复切片。
-- Manacher 可达 O(n)，但中心扩展在常见规模下已够用。
+- 每名玩家独立重置 `seen`，保证每次增广搜索互不干扰。
+- 增广路径：把已匹配的玩家换到其他服务器即可释放当前位置。
+- 数据规模极大时改用 Hopcroft-Karp，复杂度降至 O(E sqrt(V))。
 
 **标签：** #algorithm
 
 ---
 
-### 42. 最长回文子序列
+## 堆 / 优先队列
 
-**难度：** 中等
-**主题：** dp, strings
-**岗位：** T2-3
-**级别：** T2-T3
+### 20. 最低加油次数
 
-**问题：** 返回 `s` 中最长回文子序列长度（不必连续）。
+**难度：** 困难
+**主题：** greedy, heap, dp
+**岗位：** T3-1
+**级别：** T3-T4
 
-**思路：** 区间 DP `dp[i][j]` = `s[i..j]` 上的 LPS 长度。若 `s[i] == s[j]`：`dp[i][j] = dp[i+1][j-1] + 2`，否则：`max(dp[i+1][j], dp[i][j-1])`。按长度填。O(n^2)。技巧：等价于 `s` 与 reverse(`s`) 的 LCS。
+**问题：** 汽车初始油量 `startFuel`，目标位置 `target`。途中加油站 `stations[i] = [position, liters]`。返回到达目标的最少加油次数（或 -1）。
+
+**思路：** 贪心 + 最大堆。尽量往前开；当无法到达下一站/终点时，从已经经过的加油站中弹出油量最多的（弹最大堆顶）加油。计数加一。O(n log n)。也可 DP 按站数转移，但堆解更清晰。
 
 **Python：**
 ```python
-def longest_palindrome_subseq(s: str) -> int:
-    n = len(s)
-    dp = [[0] * n for _ in range(n)]
-    for i in range(n):
-        dp[i][i] = 1
-    for length in range(2, n + 1):
-        for i in range(n - length + 1):
-            j = i + length - 1
-            if s[i] == s[j]:
-                dp[i][j] = dp[i + 1][j - 1] + 2
-            else:
-                dp[i][j] = max(dp[i + 1][j], dp[i][j - 1])
-    return dp[0][n - 1]
+import heapq
+
+def min_refuel_stops(target: int, start_fuel: int, stations: list[list[int]]) -> int:
+    heap: list[int] = []  # negated liters
+    fuel, i, stops = start_fuel, 0, 0
+    while fuel < target:
+        while i < len(stations) and stations[i][0] <= fuel:
+            heapq.heappush(heap, -stations[i][1])
+            i += 1
+        if not heap:
+            return -1
+        fuel += -heapq.heappop(heap)
+        stops += 1
+    return stops
 ```
 
 **TypeScript：**
 ```typescript
-function longestPalindromeSubseq(s: string): number {
-  const n = s.length;
-  const dp: number[][] = Array.from({ length: n }, () => new Array(n).fill(0));
-  for (let i = 0; i < n; i++) dp[i][i] = 1;
-  for (let len = 2; len <= n; len++) {
-    for (let i = 0; i + len - 1 < n; i++) {
-      const j = i + len - 1;
-      dp[i][j] = s[i] === s[j] ? dp[i + 1][j - 1] + 2 : Math.max(dp[i + 1][j], dp[i][j - 1]);
+function minRefuelStops(target: number, startFuel: number, stations: number[][]): number {
+  const heap: number[] = [];  // negated liters
+  let fuel = startFuel, i = 0, stops = 0;
+  while (fuel < target) {
+    while (i < stations.length && stations[i][0] <= fuel) {
+      heap.push(-stations[i][1]);
+      heap.sort((a, b) => a - b);
+      i++;
     }
+    if (heap.length === 0) return -1;
+    fuel += -heap.shift()!;
+    stops++;
   }
-  return dp[0][n - 1];
+  return stops;
 }
 ```
 
 **Java：**
 ```java
-int longestPalindromeSubseq(String s) {
-  int n = s.length();
-  int[][] dp = new int[n][n];
-  for (int i = 0; i < n; i++) dp[i][i] = 1;
-  for (int len = 2; len <= n; len++) {
-    for (int i = 0; i + len - 1 < n; i++) {
-      int j = i + len - 1;
-      dp[i][j] = s.charAt(i) == s.charAt(j)
-          ? dp[i + 1][j - 1] + 2
-          : Math.max(dp[i + 1][j], dp[i][j - 1]);
-    }
+int minRefuelStops(int target, int startFuel, int[][] stations) {
+  PriorityQueue<Integer> heap = new PriorityQueue<>(Comparator.reverseOrder());
+  long fuel = startFuel;
+  int i = 0, stops = 0;
+  while (fuel < target) {
+    while (i < stations.length && stations[i][0] <= fuel) heap.offer(stations[i++][1]);
+    if (heap.isEmpty()) return -1;
+    fuel += heap.poll();
+    stops++;
   }
-  return dp[0][n - 1];
+  return stops;
 }
 ```
 
 **要点：**
-- 区间 DP 按长度填，保证子区间先就绪。
-- 单字符自身是长度 1 的回文，先初始化主对角线。
-- 等价于 `s` 与 reverse(`s`) 的 LCS，O(n^2)。
+- 把已经经过的加油站当作"油料储备"，没油时再取。
+- 每次取储备中油量最多的，使单次加油的行程增量最大化。
+- 假设加油站按位置升序；否则先排序。
 
 **标签：** #algorithm
 
 ---
 
-### 43. 分割回文串
+### 21. 数据流的中位数
 
-**难度：** 中等
-**主题：** backtracking, dp, strings
-**岗位：** T2-3
-**级别：** T2-T3
+**难度：** 困难
+**主题：** heap, design, data-stream
+**岗位：** T3-1
+**级别：** T3-T4
 
-**问题：** 将 `s` 划分使每段都是回文。返回所有划分方案。
+**问题：** 设计支持 `addNum(int)` 和 `findMedian()` 的类，流式输入。
 
-**思路：** 回溯：在下标 `i`，尝试每个前缀 `s[i..j]`；若回文则从 `j+1` 递归。预处理回文表 `isP[i][j]`（O(n^2)）加速。最坏 O(n * 2^n)（输出指数级）。
+**思路：** 双堆：`lo`（大顶堆）存较小一半，`hi`（小顶堆）存较大一半。维持 `len(lo) - len(hi) ∈ {0, 1}`。Add：入 lo，弹顶推 hi，若 hi 更大则回弹。Median：取 lo 顶或两顶均值。O(log n) add，O(1) 查询。
 
 **Python：**
 ```python
-def partition(s: str) -> list[list[str]]:
-    n = len(s)
-    is_p = [[False] * n for _ in range(n)]
-    for j in range(n):
-        for i in range(j + 1):
-            if s[i] == s[j] and (j - i < 2 or is_p[i + 1][j - 1]):
-                is_p[i][j] = True
-    out: list[list[str]] = []
-    path: list[str] = []
-    def go(start: int) -> None:
-        if start == n:
-            out.append(path[:])
-            return
-        for end in range(start, n):
-            if is_p[start][end]:
-                path.append(s[start:end + 1])
-                go(end + 1)
-                path.pop()
-    go(0)
+import heapq
+
+class MedianFinder:
+    def __init__(self) -> None:
+        self.lo: list[int] = []  # max-heap via negation
+        self.hi: list[int] = []  # min-heap
+
+    def add_num(self, num: int) -> None:
+        heapq.heappush(self.lo, -num)
+        heapq.heappush(self.hi, -heapq.heappop(self.lo))
+        if len(self.hi) > len(self.lo):
+            heapq.heappush(self.lo, -heapq.heappop(self.hi))
+
+    def find_median(self) -> float:
+        if len(self.lo) > len(self.hi):
+            return float(-self.lo[0])
+        return (-self.lo[0] + self.hi[0]) / 2
+```
+
+**TypeScript：**
+```typescript
+class MedianFinder {
+  private lo: number[] = [];  // max-heap (negate)
+  private hi: number[] = [];  // min-heap
+  private push(heap: number[], v: number): void {
+    heap.push(v); heap.sort((a, b) => a - b);
+  }
+  addNum(num: number): void {
+    this.push(this.lo, -num);
+    this.push(this.hi, -this.lo.shift()!);
+    if (this.hi.length > this.lo.length) this.push(this.lo, -this.hi.shift()!);
+  }
+  findMedian(): number {
+    return this.lo.length > this.hi.length ? -this.lo[0] : (-this.lo[0] + this.hi[0]) / 2;
+  }
+}
+```
+
+**Java：**
+```java
+class MedianFinder {
+  private final PriorityQueue<Integer> lo = new PriorityQueue<>(Comparator.reverseOrder());
+  private final PriorityQueue<Integer> hi = new PriorityQueue<>();
+
+  public void addNum(int num) {
+    lo.offer(num);
+    hi.offer(lo.poll());
+    if (hi.size() > lo.size()) lo.offer(hi.poll());
+  }
+
+  public double findMedian() {
+    return lo.size() > hi.size() ? lo.peek() : (lo.peek() + hi.peek()) / 2.0;
+  }
+}
+```
+
+**要点：**
+- `lo` 始终装较小一半（向上取整 n/2），`hi` 装较大一半。
+- 每次插入后通过一次倒堆完成再平衡。
+- 奇数个时取 `lo` 顶，偶数个时取两顶均值。
+
+**标签：** #algorithm
+
+---
+
+### 22. 滑动窗口中位数
+
+**难度：** 困难
+**主题：** heap, sliding-window, design
+**岗位：** T3-1
+**级别：** T3-T4
+
+**问题：** 给定数组和窗口大小 `k`，返回每个滑动窗口的中位数。
+
+**思路：** 双堆 + 延迟删除（待删除哈希表）。每步：加入新数；将滑出的数标记删除；清理堆顶将失效项弹出；调整两堆大小。O(n log k)。或用有序多重集合（C++ `multiset`）。
+
+**Python：**
+```python
+from sortedcontainers import SortedList
+
+def median_sliding_window(nums: list[int], k: int) -> list[float]:
+    window = SortedList(nums[:k])
+    out: list[float] = []
+    def median() -> float:
+        if k % 2:
+            return float(window[k // 2])
+        return (window[k // 2 - 1] + window[k // 2]) / 2
+    out.append(median())
+    for i in range(k, len(nums)):
+        window.remove(nums[i - k])
+        window.add(nums[i])
+        out.append(median())
     return out
 ```
 
 **TypeScript：**
 ```typescript
-function partition(s: string): string[][] {
-  const n = s.length;
-  const isP: boolean[][] = Array.from({ length: n }, () => new Array(n).fill(false));
-  for (let j = 0; j < n; j++) {
-    for (let i = 0; i <= j; i++) {
-      if (s[i] === s[j] && (j - i < 2 || isP[i + 1][j - 1])) isP[i][j] = true;
-    }
-  }
-  const out: string[][] = [];
-  const path: string[] = [];
-  const go = (start: number): void => {
-    if (start === n) { out.push(path.slice()); return; }
-    for (let end = start; end < n; end++) {
-      if (isP[start][end]) {
-        path.push(s.slice(start, end + 1));
-        go(end + 1);
-        path.pop();
-      }
-    }
+function medianSlidingWindow(nums: number[], k: number): number[] {
+  const window = nums.slice(0, k).sort((a, b) => a - b);
+  const out: number[] = [];
+  const bisect = (v: number): number => {
+    let lo = 0, hi = window.length;
+    while (lo < hi) { const m = (lo + hi) >> 1; if (window[m] < v) lo = m + 1; else hi = m; }
+    return lo;
   };
-  go(0);
+  const median = (): number =>
+    k % 2 ? window[k >> 1] : (window[(k >> 1) - 1] + window[k >> 1]) / 2;
+  out.push(median());
+  for (let i = k; i < nums.length; i++) {
+    window.splice(bisect(nums[i - k]), 1);
+    window.splice(bisect(nums[i]), 0, nums[i]);
+    out.push(median());
+  }
   return out;
 }
 ```
 
 **Java：**
 ```java
-List<List<String>> partition(String s) {
-  int n = s.length();
-  boolean[][] isP = new boolean[n][n];
-  for (int j = 0; j < n; j++) {
-    for (int i = 0; i <= j; i++) {
-      if (s.charAt(i) == s.charAt(j) && (j - i < 2 || isP[i + 1][j - 1])) isP[i][j] = true;
-    }
+double[] medianSlidingWindow(int[] nums, int k) {
+  TreeMap<Integer, Integer> window = new TreeMap<>();
+  for (int i = 0; i < k; i++) window.merge(nums[i], 1, Integer::sum);
+  int n = nums.length;
+  double[] out = new double[n - k + 1];
+  out[0] = medianOf(window, k);
+  for (int i = k; i < n; i++) {
+    int outV = nums[i - k];
+    if (window.get(outV) == 1) window.remove(outV); else window.merge(outV, -1, Integer::sum);
+    window.merge(nums[i], 1, Integer::sum);
+    out[i - k + 1] = medianOf(window, k);
   }
-  List<List<String>> out = new ArrayList<>();
-  goPP(s, 0, isP, new ArrayList<>(), out);
   return out;
 }
 
-void goPP(String s, int start, boolean[][] isP, List<String> path, List<List<String>> out) {
-  if (start == s.length()) { out.add(new ArrayList<>(path)); return; }
-  for (int end = start; end < s.length(); end++) {
-    if (isP[start][end]) {
-      path.add(s.substring(start, end + 1));
-      goPP(s, end + 1, isP, path, out);
-      path.remove(path.size() - 1);
-    }
+double medianOf(TreeMap<Integer, Integer> window, int k) {
+  int[] mids = k % 2 == 1 ? new int[]{k / 2} : new int[]{k / 2 - 1, k / 2};
+  long sum = 0; int seen = 0, idx = 0;
+  for (var e : window.entrySet()) {
+    int next = seen + e.getValue();
+    while (idx < mids.length && mids[idx] < next) { sum += e.getKey(); idx++; }
+    seen = next;
+    if (idx == mids.length) break;
   }
+  return sum / (double) mids.length;
 }
 ```
 
 **要点：**
-- 预处理 `isP` 把回溯里的回文判断降到 O(1)。
-- 复用可变 `path`，命中终点时快照入结果。
-- 最坏输出指数级（如全相同字符的串）。
+- 有序多重集合（Python `SortedList`、C++ `multiset`）模型最干净。
+- 插入与删除均 O(log k)，按下标取中位数 O(1)。
+- 不依赖外部库时，可用双堆 + 延迟删除替代。
 
 **标签：** #algorithm
 
 ---
 
-### 44. 单词拆分 II
+### 23. 最小区间覆盖 K 个有序列表
 
 **难度：** 困难
-**主题：** dp, backtracking, memoization, trie
+**主题：** heap, sliding-window
 **岗位：** T3-1
 **级别：** T3
 
-**问题：** 给定字符串 `s` 和字典，返回所有可以将 `s` 用空格分割为字典词的句子。
+**问题：** 给定 `k` 个有序列表，求最小区间 `[a, b]`，使每个列表至少有一个元素落在其中。
 
-**思路：** 后缀上做回溯 + 记忆化（后缀起点 → 句子列表）。每个使前缀是字典词的切点，对后缀递归。按起点缓存结果。Trie 做前缀查找加速扫描。最坏指数（受输出限制）。
+**思路：** 小顶堆保存每个列表当前一个元素及索引。维护当前堆中最大值。弹出最小；当前区间 `[min, max]`，更优则更新。该列表下推一位——耗尽则停。入新元素，更新 max。O(N log k)。
 
 **Python：**
 ```python
-from functools import lru_cache
+import heapq
 
-def word_break(s: str, word_dict: list[str]) -> list[str]:
-    words = set(word_dict)
-    @lru_cache(maxsize=None)
-    def go(start: int) -> list[str]:
-        if start == len(s):
-            return [""]
-        result: list[str] = []
-        for end in range(start + 1, len(s) + 1):
-            w = s[start:end]
-            if w in words:
-                for rest in go(end):
-                    result.append(w if not rest else w + " " + rest)
-        return result
-    return go(0)
+def smallest_range(nums: list[list[int]]) -> list[int]:
+    heap: list[tuple[int, int, int]] = []  # (val, list_idx, pos)
+    cur_max = float("-inf")
+    for i, row in enumerate(nums):
+        heapq.heappush(heap, (row[0], i, 0))
+        cur_max = max(cur_max, row[0])
+    best_lo, best_hi = -10**9, 10**9
+    while heap:
+        v, i, j = heapq.heappop(heap)
+        if cur_max - v < best_hi - best_lo:
+            best_lo, best_hi = v, int(cur_max)
+        if j + 1 == len(nums[i]):
+            return [best_lo, best_hi]
+        nxt = nums[i][j + 1]
+        cur_max = max(cur_max, nxt)
+        heapq.heappush(heap, (nxt, i, j + 1))
+    return [best_lo, best_hi]
 ```
 
 **TypeScript：**
 ```typescript
-function wordBreak(s: string, wordDict: string[]): string[] {
-  const words = new Set(wordDict);
-  const memo = new Map<number, string[]>();
-  const go = (start: number): string[] => {
-    if (memo.has(start)) return memo.get(start)!;
-    if (start === s.length) return [""];
-    const result: string[] = [];
-    for (let end = start + 1; end <= s.length; end++) {
-      const w = s.slice(start, end);
-      if (words.has(w)) {
-        for (const rest of go(end)) result.push(rest === "" ? w : w + " " + rest);
-      }
-    }
-    memo.set(start, result);
-    return result;
-  };
-  return go(0);
+function smallestRange(nums: number[][]): number[] {
+  const heap: Array<[number, number, number]> = [];
+  let curMax = -Infinity;
+  nums.forEach((row, i) => { heap.push([row[0], i, 0]); curMax = Math.max(curMax, row[0]); });
+  heap.sort((a, b) => a[0] - b[0]);
+  let bestLo = -1e9, bestHi = 1e9;
+  while (heap.length) {
+    const [v, i, j] = heap.shift()!;
+    if (curMax - v < bestHi - bestLo) { bestLo = v; bestHi = curMax; }
+    if (j + 1 === nums[i].length) return [bestLo, bestHi];
+    const nxt = nums[i][j + 1];
+    curMax = Math.max(curMax, nxt);
+    heap.push([nxt, i, j + 1]);
+    heap.sort((a, b) => a[0] - b[0]);
+  }
+  return [bestLo, bestHi];
 }
 ```
 
 **Java：**
 ```java
-Map<Integer, List<String>> memoWB;
-Set<String> wordsWB;
-String sWB;
-
-List<String> wordBreak(String s, List<String> wordDict) {
-  memoWB = new HashMap<>();
-  wordsWB = new HashSet<>(wordDict);
-  sWB = s;
-  return goWB(0);
-}
-
-List<String> goWB(int start) {
-  if (memoWB.containsKey(start)) return memoWB.get(start);
-  List<String> result = new ArrayList<>();
-  if (start == sWB.length()) { result.add(""); return result; }
-  for (int end = start + 1; end <= sWB.length(); end++) {
-    String w = sWB.substring(start, end);
-    if (wordsWB.contains(w)) {
-      for (String rest : goWB(end)) result.add(rest.isEmpty() ? w : w + " " + rest);
-    }
+int[] smallestRange(List<List<Integer>> nums) {
+  PriorityQueue<int[]> heap = new PriorityQueue<>((a, b) -> a[0] - b[0]);
+  int curMax = Integer.MIN_VALUE;
+  for (int i = 0; i < nums.size(); i++) {
+    int v = nums.get(i).get(0);
+    heap.offer(new int[]{v, i, 0});
+    curMax = Math.max(curMax, v);
   }
-  memoWB.put(start, result);
-  return result;
+  int bestLo = 0, bestHi = Integer.MAX_VALUE;
+  while (!heap.isEmpty()) {
+    int[] cur = heap.poll();
+    int v = cur[0], i = cur[1], j = cur[2];
+    if ((long) curMax - v < (long) bestHi - bestLo) { bestLo = v; bestHi = curMax; }
+    if (j + 1 == nums.get(i).size()) return new int[]{bestLo, bestHi};
+    int nxt = nums.get(i).get(j + 1);
+    curMax = Math.max(curMax, nxt);
+    heap.offer(new int[]{nxt, i, j + 1});
+  }
+  return new int[]{bestLo, bestHi};
 }
 ```
 
 **要点：**
-- 按后缀起点记忆化，每个下标只展开一次。
-- 用空串作为递归终止标记。
-- 字典大时可结合 Trie/最长前缀加速扫描。
+- 窗口隐式为 `[heap_min, cur_max]`，每个列表恰有一项在内。
+- 任意列表耗尽即可终止，因为该列表指针无法继续推进。
+- 每次入堆时懒更新 `cur_max`，避免扫描整堆。
 
 **标签：** #algorithm
 
 ---
 
-### 45. 连接词
+## 栈 / 队列
 
-**难度：** 困难
-**主题：** dp, trie, strings
-**岗位：** T3-1
-**级别：** T3
+### 24. 最小栈
 
-**问题：** 给定不重复字符串数组，返回所有由数组中至少两个其他字符串拼接而成的字符串。
+**难度：** 简单
+**主题：** stack, design
+**岗位：** SWE
+**级别：** T2-T3
 
-**思路：** 对每个词，用其他词（或所有词，要求 `>=2` 段）跑 Word Break DP。`dp[i]` 表示 `word[0..i)` 可分割。优化：按长度排序，使用增量集合。常见 O(N * L^2)。
+**问题：** 设计支持 `push`、`pop`、`top` 和 `getMin` 全部 O(1) 的栈。
+
+**思路：** 两栈：主栈 + min 栈（新值 ≤ 当前 min 时才推 min 栈；pop 同步）。或单栈存 `(value, current_min)` 对。所有操作 O(1)。
 
 **Python：**
 ```python
-def find_all_concatenated_words(words: list[str]) -> list[str]:
-    words.sort(key=len)
-    seen: set[str] = set()
-    out: list[str] = []
-    def composable(w: str) -> bool:
-        if not seen:
-            return False
-        n = len(w)
-        dp = [False] * (n + 1)
-        dp[0] = True
-        for i in range(1, n + 1):
-            for j in range(i):
-                if dp[j] and w[j:i] in seen:
-                    dp[i] = True
-                    break
-        return dp[n]
-    for w in words:
-        if composable(w):
-            out.append(w)
-        seen.add(w)
-    return out
+class MinStack:
+    def __init__(self) -> None:
+        self.stk: list[tuple[int, int]] = []  # (value, running_min)
+
+    def push(self, val: int) -> None:
+        cur_min = val if not self.stk else min(val, self.stk[-1][1])
+        self.stk.append((val, cur_min))
+
+    def pop(self) -> None:
+        self.stk.pop()
+
+    def top(self) -> int:
+        return self.stk[-1][0]
+
+    def get_min(self) -> int:
+        return self.stk[-1][1]
 ```
 
 **TypeScript：**
 ```typescript
-function findAllConcatenatedWordsInADict(words: string[]): string[] {
-  words.sort((a, b) => a.length - b.length);
-  const seen = new Set<string>();
-  const out: string[] = [];
-  const composable = (w: string): boolean => {
-    if (seen.size === 0) return false;
-    const n = w.length;
-    const dp = new Array<boolean>(n + 1).fill(false);
-    dp[0] = true;
-    for (let i = 1; i <= n; i++) {
-      for (let j = 0; j < i; j++) {
-        if (dp[j] && seen.has(w.slice(j, i))) { dp[i] = true; break; }
-      }
-    }
-    return dp[n];
-  };
-  for (const w of words) {
-    if (composable(w)) out.push(w);
-    seen.add(w);
+class MinStack {
+  private stk: Array<[number, number]> = [];
+  push(val: number): void {
+    const m = this.stk.length === 0 ? val : Math.min(val, this.stk[this.stk.length - 1][1]);
+    this.stk.push([val, m]);
   }
-  return out;
+  pop(): void { this.stk.pop(); }
+  top(): number { return this.stk[this.stk.length - 1][0]; }
+  getMin(): number { return this.stk[this.stk.length - 1][1]; }
 }
 ```
 
 **Java：**
 ```java
-List<String> findAllConcatenatedWordsInADict(String[] words) {
-  Arrays.sort(words, Comparator.comparingInt(String::length));
-  Set<String> seen = new HashSet<>();
-  List<String> out = new ArrayList<>();
-  for (String w : words) {
-    if (composableCW(w, seen)) out.add(w);
-    seen.add(w);
+class MinStack {
+  private final Deque<int[]> stk = new ArrayDeque<>();  // {value, runningMin}
+  public void push(int val) {
+    int m = stk.isEmpty() ? val : Math.min(val, stk.peek()[1]);
+    stk.push(new int[]{val, m});
   }
-  return out;
-}
-
-boolean composableCW(String w, Set<String> seen) {
-  if (seen.isEmpty()) return false;
-  int n = w.length();
-  boolean[] dp = new boolean[n + 1];
-  dp[0] = true;
-  for (int i = 1; i <= n; i++) {
-    for (int j = 0; j < i; j++) {
-      if (dp[j] && seen.contains(w.substring(j, i))) { dp[i] = true; break; }
-    }
-  }
-  return dp[n];
+  public void pop() { stk.pop(); }
+  public int top() { return stk.peek()[0]; }
+  public int getMin() { return stk.peek()[1]; }
 }
 ```
 
 **要点：**
-- 按长度排序使候选字典只含更短的词。
-- 当前词尚未加入集合，天然保证至少由两段拼接。
-- 总复杂度 O(N * L^2)：每个词在增量集合上做一次 Word Break。
+- 每个栈元素自带运行最小值，所有操作均 O(1)。
+- 当最小值重复较多时，双栈写法更省空间。
+- 是否需要处理空栈取决于题目约定，这里假定调用前非空。
 
-**标签：** #algorithm
+**常见追问：**
+- Max Stack（O(1) 取最大）以及 O(log n) 的 `popMax`。
+- 双栈实现队列——摊销 O(1) 每操作。
+- 滑动窗口最值——单调双端队列。
+- 线程安全的 Min Stack——同步或无锁。
+
+**常见坑：**
+- 只用单变量保存全局最小值——弹出后错误。
+- pop 后访问上一个最小值时越界——始终随条目保存。
+
+**标签：** #coding
 
 ---
 
-### 46. 原子的数量
+### 25. 原子的数量
 
 **难度：** 困难
 **主题：** stack, parsing, hashmap, strings
@@ -2994,7 +2262,7 @@ String countOfAtoms(String formula) {
 
 ---
 
-### 47. 基本计算器 II
+### 26. 基本计算器 II
 
 **难度：** 中等
 **主题：** stack, parsing, strings
@@ -3080,7 +2348,7 @@ int calculate(String s) {
 
 ---
 
-### 48. 字符串解码
+### 27. 字符串解码
 
 **难度：** 中等
 **主题：** stack, parsing, recursion, strings
@@ -3157,7 +2425,7 @@ String decodeString(String s) {
 
 ---
 
-### 49. 迷你解析器（扁平嵌套列表迭代器）
+### 28. 迷你解析器（扁平嵌套列表迭代器）
 
 **难度：** 中等
 **主题：** stack, parsing, design, strings
@@ -3254,7 +2522,1187 @@ NestedInteger deserialize(String s) {
 
 ---
 
-### 50. 翻转对
+## 动态规划
+
+### 29. 最大子数组和（Kadane）
+
+**难度：** 简单
+**主题：** dp, arrays, greedy
+**岗位：** SWE
+**级别：** T2-T3
+
+**问题：** 给定整数数组，找出和最大的连续子数组。
+
+**思路：** Kadane：维护 `current = max(num, current + num)`、`best = max(best, current)`。O(n) 时间，O(1) 空间。处理全负数（返回单个最大元素）。追问：同时返回起止下标。
+
+**Python：**
+```python
+def max_subarray(nums: list[int]) -> int:
+    cur = best = nums[0]
+    for x in nums[1:]:
+        cur = max(x, cur + x)
+        best = max(best, cur)
+    return best
+```
+
+**TypeScript：**
+```typescript
+function maxSubArray(nums: number[]): number {
+  let cur = nums[0], best = nums[0];
+  for (let i = 1; i < nums.length; i++) {
+    cur = Math.max(nums[i], cur + nums[i]);
+    best = Math.max(best, cur);
+  }
+  return best;
+}
+```
+
+**Java：**
+```java
+int maxSubArray(int[] nums) {
+  int cur = nums[0], best = nums[0];
+  for (int i = 1; i < nums.length; i++) {
+    cur = Math.max(nums[i], cur + nums[i]);
+    best = Math.max(best, cur);
+  }
+  return best;
+}
+```
+
+**要点：**
+- `cur` 表示以当前下标结尾的最大子数组和。
+- 两者均初始化为 `nums[0]`，全负数也能返回最大元素。
+- 分治写法也能 O(n log n)，但相对小题大做。
+
+**常见追问：**
+- 返回实际子数组（start/end 下标），而不仅是和。
+- 最大 *乘积* 子数组——负数缘故同时跟踪最大与最小。
+- 环形最大子数组。
+- 限定至多 k 个元素的最大子数组。
+
+**常见坑：**
+- `cur` 与 `best` 初为 0——全负输入出错。
+- 从下标 0 开始循环还加了 `nums[0]`——用 `nums[0]` 初始化后从 1 开始。
+
+**标签：** #algorithm
+
+---
+
+### 30. 石子游戏
+
+**难度：** 中等
+**主题：** dp, game-theory, minimax
+**岗位：** T2-3
+**级别：** T2-T3
+
+**问题：** 偶数长石堆数组。两人轮流拿最左或最右一堆。双方都最优，先手是否必胜？
+
+**思路：** DP `dp[i][j] = max(piles[i] - dp[i+1][j], piles[j] - dp[i][j-1])`，表示当前玩家在 `piles[i..j]` 上能取得的最优分差。答案：`dp[0][n-1] > 0`。O(n^2) 时间/空间。脑筋急转弯答案：偶数 n 且总和为偶时恒为 true，但面试官想看 DP。
+
+**Python：**
+```python
+def stone_game(piles: list[int]) -> bool:
+    n = len(piles)
+    dp = [row[:] for row in [[0] * n] * n]
+    for i in range(n):
+        dp[i][i] = piles[i]
+    for length in range(2, n + 1):
+        for i in range(n - length + 1):
+            j = i + length - 1
+            dp[i][j] = max(piles[i] - dp[i + 1][j], piles[j] - dp[i][j - 1])
+    return dp[0][n - 1] > 0
+```
+
+**TypeScript：**
+```typescript
+function stoneGame(piles: number[]): boolean {
+  const n = piles.length;
+  const dp: number[][] = Array.from({ length: n }, () => new Array(n).fill(0));
+  for (let i = 0; i < n; i++) dp[i][i] = piles[i];
+  for (let len = 2; len <= n; len++) {
+    for (let i = 0; i + len - 1 < n; i++) {
+      const j = i + len - 1;
+      dp[i][j] = Math.max(piles[i] - dp[i + 1][j], piles[j] - dp[i][j - 1]);
+    }
+  }
+  return dp[0][n - 1] > 0;
+}
+```
+
+**Java：**
+```java
+boolean stoneGame(int[] piles) {
+  int n = piles.length;
+  int[][] dp = new int[n][n];
+  for (int i = 0; i < n; i++) dp[i][i] = piles[i];
+  for (int len = 2; len <= n; len++) {
+    for (int i = 0; i + len - 1 < n; i++) {
+      int j = i + len - 1;
+      dp[i][j] = Math.max(piles[i] - dp[i + 1][j], piles[j] - dp[i][j - 1]);
+    }
+  }
+  return dp[0][n - 1] > 0;
+}
+```
+
+**要点：**
+- `dp[i][j]` 表示当前先手在该区间上能稳取的最大分差。
+- 按区间长度填表，保证子区间已就绪。
+- 递推中的减号已经隐含了对手也最优行动。
+
+**标签：** #algorithm
+
+---
+
+### 31. 预测赢家
+
+**难度：** 中等
+**主题：** dp, game-theory, minimax, recursion
+**岗位：** T2-3
+**级别：** T2-T3
+
+**问题：** 给定分数数组，两人轮流从两端取数。最优策略下玩家 1 是否能赢或平。
+
+**思路：** 与石子游戏同 DP：`dp[i][j]` = 当前玩家在 `nums[i..j]` 上能取得的最大分差。自顶向下记忆化也可。O(n^2)。答案：`dp[0][n-1] >= 0`。腾讯变体：问如何用 1D 滚动数组优化到 O(n)。
+
+**Python：**
+```python
+def predict_the_winner(nums: list[int]) -> bool:
+    n = len(nums)
+    dp = nums[:]  # dp[i] for current j; init j=i
+    for i in range(n - 2, -1, -1):
+        for j in range(i + 1, n):
+            dp[j] = max(nums[i] - dp[j], nums[j] - dp[j - 1])
+    return dp[n - 1] >= 0
+```
+
+**TypeScript：**
+```typescript
+function PredictTheWinner(nums: number[]): boolean {
+  const n = nums.length;
+  const dp = nums.slice();
+  for (let i = n - 2; i >= 0; i--) {
+    for (let j = i + 1; j < n; j++) {
+      dp[j] = Math.max(nums[i] - dp[j], nums[j] - dp[j - 1]);
+    }
+  }
+  return dp[n - 1] >= 0;
+}
+```
+
+**Java：**
+```java
+boolean predictTheWinner(int[] nums) {
+  int n = nums.length;
+  int[] dp = nums.clone();
+  for (int i = n - 2; i >= 0; i--) {
+    for (int j = i + 1; j < n; j++) {
+      dp[j] = Math.max(nums[i] - dp[j], nums[j] - dp[j - 1]);
+    }
+  }
+  return dp[n - 1] >= 0;
+}
+```
+
+**要点：**
+- `dp[i][j]` 仅依赖 `dp[i+1][j]` 与 `dp[i][j-1]`，可压成 1D。
+- 初始化 `dp[j] = nums[j]` 表示 `i == j` 的基线。
+- 平局也算先手获胜，所以判定 `>= 0`。
+
+**标签：** #algorithm
+
+---
+
+### 32. 我能赢吗
+
+**难度：** 中等
+**主题：** dp, game-theory, bitmask, memoization
+**岗位：** T3-1
+**级别：** T3
+
+**问题：** 数字 1..`maxChoosableInteger`，不放回，两人轮流取；先使累计和 ≥ `desiredTotal` 者胜。判断先手是否必胜。
+
+**思路：** 状压 DP（`maxChoosable ≤ 20`）。记忆化 `state → win/lose`。对每个未选数：若选了立即赢，或对手在新状态必败，则当前胜。边界：总和 < 目标即不可能（返回 false）。O(2^n * n)。
+
+**Python：**
+```python
+from functools import lru_cache
+
+def can_i_win(max_choosable: int, desired_total: int) -> bool:
+    if max_choosable * (max_choosable + 1) // 2 < desired_total:
+        return False
+    @lru_cache(maxsize=None)
+    def win(state: int, remaining: int) -> bool:
+        for i in range(1, max_choosable + 1):
+            bit = 1 << (i - 1)
+            if state & bit:
+                continue
+            if i >= remaining or not win(state | bit, remaining - i):
+                return True
+        return False
+    return win(0, desired_total)
+```
+
+**TypeScript：**
+```typescript
+function canIWin(maxChoosable: number, desiredTotal: number): boolean {
+  if ((maxChoosable * (maxChoosable + 1)) / 2 < desiredTotal) return false;
+  const memo = new Map<number, boolean>();
+  const win = (state: number, remaining: number): boolean => {
+    if (memo.has(state)) return memo.get(state)!;
+    for (let i = 1; i <= maxChoosable; i++) {
+      const bit = 1 << (i - 1);
+      if (state & bit) continue;
+      if (i >= remaining || !win(state | bit, remaining - i)) {
+        memo.set(state, true); return true;
+      }
+    }
+    memo.set(state, false); return false;
+  };
+  return win(0, desiredTotal);
+}
+```
+
+**Java：**
+```java
+Map<Integer, Boolean> memoCIW;
+int maxChoosableCIW;
+
+boolean canIWin(int maxChoosable, int desiredTotal) {
+  if (maxChoosable * (maxChoosable + 1) / 2 < desiredTotal) return false;
+  memoCIW = new HashMap<>();
+  maxChoosableCIW = maxChoosable;
+  return winCIW(0, desiredTotal);
+}
+
+boolean winCIW(int state, int remaining) {
+  if (memoCIW.containsKey(state)) return memoCIW.get(state);
+  for (int i = 1; i <= maxChoosableCIW; i++) {
+    int bit = 1 << (i - 1);
+    if ((state & bit) != 0) continue;
+    if (i >= remaining || !winCIW(state | bit, remaining - i)) {
+      memoCIW.put(state, true); return true;
+    }
+  }
+  memoCIW.put(state, false); return false;
+}
+```
+
+**要点：**
+- 位掩码表示已选数集合，`n ≤ 20` 时可放入一个 int。
+- 仅以 `state` 为键记忆，`remaining` 由 `state` 唯一决定。
+- 早返：当所有数之和小于目标时直接判负。
+
+**标签：** #algorithm
+
+---
+
+### 33. 翻转游戏 II
+
+**难度：** 中等
+**主题：** game-theory, dp, memoization, sprague-grundy
+**岗位：** T3-1
+**级别：** T3
+
+**问题：** 由 `+`、`-` 组成的字符串。每次将相邻 `++` 翻成 `--`。判断先手是否必胜。
+
+**思路：** 在字符串状态上递归 + 记忆化。对每个 `++` 位置，翻转后递归对手——对手败则当前胜。可用 Sprague-Grundy 定理（独立连续段 Grundy 数异或）优化到 O(n^2)。无 SG 最坏指数级。
+
+**Python：**
+```python
+def can_win(s: str) -> bool:
+    memo: dict[str, bool] = {}
+    def go(state: str) -> bool:
+        if state in memo:
+            return memo[state]
+        for i in range(len(state) - 1):
+            if state[i:i + 2] == "++":
+                nxt = state[:i] + "--" + state[i + 2:]
+                if not go(nxt):
+                    memo[state] = True
+                    return True
+        memo[state] = False
+        return False
+    return go(s)
+```
+
+**TypeScript：**
+```typescript
+function canWin(s: string): boolean {
+  const memo = new Map<string, boolean>();
+  const go = (state: string): boolean => {
+    if (memo.has(state)) return memo.get(state)!;
+    for (let i = 0; i + 1 < state.length; i++) {
+      if (state[i] === "+" && state[i + 1] === "+") {
+        const nxt = state.slice(0, i) + "--" + state.slice(i + 2);
+        if (!go(nxt)) { memo.set(state, true); return true; }
+      }
+    }
+    memo.set(state, false); return false;
+  };
+  return go(s);
+}
+```
+
+**Java：**
+```java
+Map<String, Boolean> memoFG = new HashMap<>();
+
+boolean canWin(String s) {
+  if (memoFG.containsKey(s)) return memoFG.get(s);
+  for (int i = 0; i + 1 < s.length(); i++) {
+    if (s.charAt(i) == '+' && s.charAt(i + 1) == '+') {
+      String nxt = s.substring(0, i) + "--" + s.substring(i + 2);
+      if (!canWin(nxt)) { memoFG.put(s, true); return true; }
+    }
+  }
+  memoFG.put(s, false); return false;
+}
+```
+
+**要点：**
+- 当前玩家只要能让对手陷入必败态即胜。
+- 按字符串状态记忆化，避免重复计算同形局面。
+- Grundy 数把独立段压成 O(n^2)，但记忆化版本更直观。
+
+**标签：** #algorithm
+
+---
+
+### 34. 猜数字大小 II
+
+**难度：** 中等
+**主题：** dp, minimax, game-theory
+**岗位：** T3-1
+**级别：** T3
+
+**问题：** 选 1..n 中一数。每次猜 `x` 花 `$x`；猜错被告知大小直到猜中。返回保证胜出所需的最少金额（最坏情况）。
+
+**思路：** Minimax DP。`dp[i][j]` = 区间 `[i, j]` 的最低保证花费。枚举每个 `k` 作猜测：`cost(k) = k + max(dp[i][k-1], dp[k+1][j])`，取 min。O(n^3)。区间 DP，按长度填表。
+
+**Python：**
+```python
+def get_money_amount(n: int) -> int:
+    dp = [[0] * (n + 2) for _ in range(n + 2)]
+    for length in range(2, n + 1):
+        for i in range(1, n - length + 2):
+            j = i + length - 1
+            dp[i][j] = min(k + max(dp[i][k - 1], dp[k + 1][j]) for k in range(i, j))
+    return dp[1][n]
+```
+
+**TypeScript：**
+```typescript
+function getMoneyAmount(n: number): number {
+  const dp: number[][] = Array.from({ length: n + 2 }, () => new Array(n + 2).fill(0));
+  for (let len = 2; len <= n; len++) {
+    for (let i = 1; i + len - 1 <= n; i++) {
+      const j = i + len - 1;
+      let best = Infinity;
+      for (let k = i; k < j; k++) {
+        best = Math.min(best, k + Math.max(dp[i][k - 1], dp[k + 1][j]));
+      }
+      dp[i][j] = best;
+    }
+  }
+  return dp[1][n];
+}
+```
+
+**Java：**
+```java
+int getMoneyAmount(int n) {
+  int[][] dp = new int[n + 2][n + 2];
+  for (int len = 2; len <= n; len++) {
+    for (int i = 1; i + len - 1 <= n; i++) {
+      int j = i + len - 1;
+      int best = Integer.MAX_VALUE;
+      for (int k = i; k < j; k++) {
+        best = Math.min(best, k + Math.max(dp[i][k - 1], dp[k + 1][j]));
+      }
+      dp[i][j] = best;
+    }
+  }
+  return dp[1][n];
+}
+```
+
+**要点：**
+- 最坏情况博弈：对方（隐藏数）总挑代价更高的一侧。
+- 按区间长度递增填表，先备齐子区间。
+- 下标使用 1-based 以匹配值域 `[1, n]`。
+
+**标签：** #algorithm
+
+---
+
+### 35. 通配符匹配
+
+**难度：** 困难
+**主题：** dp, strings
+**岗位：** T3-1
+**级别：** T3
+
+**问题：** 实现通配符匹配：`?` 匹配任意单字符，`*` 匹配任意序列（含空）。要求整串匹配。
+
+**思路：** 2D DP `dp[i][j]` 表示 `s[0..i)` 与 `p[0..j)` 是否匹配。`*`：`dp[i][j] = dp[i][j-1]（空）|| dp[i-1][j]（延伸）`。`?`：`dp[i][j] = dp[i-1][j-1]`。前导 `*` 时初始化 `dp[0][j]`。O(n*m)。
+
+**Python：**
+```python
+def is_match_wildcard(s: str, p: str) -> bool:
+    n, m = len(s), len(p)
+    dp = [[False] * (m + 1) for _ in range(n + 1)]
+    dp[0][0] = True
+    for j in range(1, m + 1):
+        if p[j - 1] == "*":
+            dp[0][j] = dp[0][j - 1]
+    for i in range(1, n + 1):
+        for j in range(1, m + 1):
+            if p[j - 1] == "*":
+                dp[i][j] = dp[i][j - 1] or dp[i - 1][j]
+            elif p[j - 1] == "?" or p[j - 1] == s[i - 1]:
+                dp[i][j] = dp[i - 1][j - 1]
+    return dp[n][m]
+```
+
+**TypeScript：**
+```typescript
+function isMatchWildcard(s: string, p: string): boolean {
+  const n = s.length, m = p.length;
+  const dp: boolean[][] = Array.from({ length: n + 1 }, () => new Array(m + 1).fill(false));
+  dp[0][0] = true;
+  for (let j = 1; j <= m; j++) if (p[j - 1] === "*") dp[0][j] = dp[0][j - 1];
+  for (let i = 1; i <= n; i++) {
+    for (let j = 1; j <= m; j++) {
+      if (p[j - 1] === "*") dp[i][j] = dp[i][j - 1] || dp[i - 1][j];
+      else if (p[j - 1] === "?" || p[j - 1] === s[i - 1]) dp[i][j] = dp[i - 1][j - 1];
+    }
+  }
+  return dp[n][m];
+}
+```
+
+**Java：**
+```java
+boolean isMatchWildcard(String s, String p) {
+  int n = s.length(), m = p.length();
+  boolean[][] dp = new boolean[n + 1][m + 1];
+  dp[0][0] = true;
+  for (int j = 1; j <= m; j++) if (p.charAt(j - 1) == '*') dp[0][j] = dp[0][j - 1];
+  for (int i = 1; i <= n; i++) {
+    for (int j = 1; j <= m; j++) {
+      char pc = p.charAt(j - 1);
+      if (pc == '*') dp[i][j] = dp[i][j - 1] || dp[i - 1][j];
+      else if (pc == '?' || pc == s.charAt(i - 1)) dp[i][j] = dp[i - 1][j - 1];
+    }
+  }
+  return dp[n][m];
+}
+```
+
+**要点：**
+- `*` 既可匹配空串（`dp[i][j-1]`），也可继续吃字符（`dp[i-1][j]`）。
+- 全是 `*` 的前缀需要把 `dp[0][j]` 初始化为 true。
+- `?` 恰好匹配一个字符，按字面字符处理即可。
+
+**标签：** #algorithm
+
+---
+
+### 36. 正则表达式匹配
+
+**难度：** 困难
+**主题：** dp, strings, recursion
+**岗位：** T3-1
+**级别：** T3-T4
+
+**问题：** 实现支持 `.`（任意单字符）与 `*`（前一元素的 0 次或多次）的正则匹配。整串匹配。
+
+**思路：** DP `dp[i][j]`。若 `p[j-1] == '*'`：取 0 次（`dp[i][j-2]`）或 1 次及以上且 `s[i-1]` 与 `p[j-2]` 匹配（`dp[i-1][j]`）。否则：字符/点匹配 → `dp[i-1][j-1]`。`a*b*c*` 之类的初始化要细心。O(n*m)。
+
+**Python：**
+```python
+def is_match_regex(s: str, p: str) -> bool:
+    n, m = len(s), len(p)
+    dp = [[False] * (m + 1) for _ in range(n + 1)]
+    dp[0][0] = True
+    for j in range(2, m + 1):
+        if p[j - 1] == "*":
+            dp[0][j] = dp[0][j - 2]
+    for i in range(1, n + 1):
+        for j in range(1, m + 1):
+            if p[j - 1] == "*":
+                dp[i][j] = dp[i][j - 2]
+                if p[j - 2] == "." or p[j - 2] == s[i - 1]:
+                    dp[i][j] = dp[i][j] or dp[i - 1][j]
+            elif p[j - 1] == "." or p[j - 1] == s[i - 1]:
+                dp[i][j] = dp[i - 1][j - 1]
+    return dp[n][m]
+```
+
+**TypeScript：**
+```typescript
+function isMatchRegex(s: string, p: string): boolean {
+  const n = s.length, m = p.length;
+  const dp: boolean[][] = Array.from({ length: n + 1 }, () => new Array(m + 1).fill(false));
+  dp[0][0] = true;
+  for (let j = 2; j <= m; j++) if (p[j - 1] === "*") dp[0][j] = dp[0][j - 2];
+  for (let i = 1; i <= n; i++) {
+    for (let j = 1; j <= m; j++) {
+      if (p[j - 1] === "*") {
+        dp[i][j] = dp[i][j - 2];
+        if (p[j - 2] === "." || p[j - 2] === s[i - 1]) dp[i][j] = dp[i][j] || dp[i - 1][j];
+      } else if (p[j - 1] === "." || p[j - 1] === s[i - 1]) {
+        dp[i][j] = dp[i - 1][j - 1];
+      }
+    }
+  }
+  return dp[n][m];
+}
+```
+
+**Java：**
+```java
+boolean isMatchRegex(String s, String p) {
+  int n = s.length(), m = p.length();
+  boolean[][] dp = new boolean[n + 1][m + 1];
+  dp[0][0] = true;
+  for (int j = 2; j <= m; j++) if (p.charAt(j - 1) == '*') dp[0][j] = dp[0][j - 2];
+  for (int i = 1; i <= n; i++) {
+    for (int j = 1; j <= m; j++) {
+      char pc = p.charAt(j - 1);
+      if (pc == '*') {
+        dp[i][j] = dp[i][j - 2];
+        char prev = p.charAt(j - 2);
+        if (prev == '.' || prev == s.charAt(i - 1)) dp[i][j] = dp[i][j] || dp[i - 1][j];
+      } else if (pc == '.' || pc == s.charAt(i - 1)) {
+        dp[i][j] = dp[i - 1][j - 1];
+      }
+    }
+  }
+  return dp[n][m];
+}
+```
+
+**要点：**
+- `x*` 要么整段忽略（`dp[i][j-2]`），要么再多吃一个字符（`dp[i-1][j]`）。
+- 初始化 `dp[0][j]` 以支持 `a*b*c*` 这种空匹配模式。
+- `.` 可代替任意单字符，需在 `*` 分支也处理。
+
+**标签：** #algorithm
+
+---
+
+### 37. 最长回文子串
+
+**难度：** 中等
+**主题：** strings, dp, two-pointer
+**岗位：** T2-3
+**级别：** T2-T3
+
+**问题：** 返回 `s` 的最长回文子串。
+
+**思路：** 中心扩展：对每个 i 分别按奇偶长度扩展；维护最长。O(n^2) 时间，O(1) 空间。O(n) — Manacher 算法（面试很少强求但可加分）。别和最长回文*子序列*混淆。
+
+**Python：**
+```python
+def longest_palindrome(s: str) -> str:
+    def grow(l: int, r: int) -> tuple[int, int]:
+        while l >= 0 and r < len(s) and s[l] == s[r]:
+            l -= 1
+            r += 1
+        return l + 1, r - 1
+    bl, br = 0, 0
+    for i in range(len(s)):
+        for l, r in (grow(i, i), grow(i, i + 1)):
+            if r - l > br - bl:
+                bl, br = l, r
+    return s[bl:br + 1]
+```
+
+**TypeScript：**
+```typescript
+function longestPalindrome(s: string): string {
+  const grow = (l: number, r: number): [number, number] => {
+    while (l >= 0 && r < s.length && s[l] === s[r]) { l--; r++; }
+    return [l + 1, r - 1];
+  };
+  let bl = 0, br = 0;
+  for (let i = 0; i < s.length; i++) {
+    for (const [l, r] of [grow(i, i), grow(i, i + 1)]) {
+      if (r - l > br - bl) { bl = l; br = r; }
+    }
+  }
+  return s.slice(bl, br + 1);
+}
+```
+
+**Java：**
+```java
+int blLP = 0, brLP = 0;
+
+String longestPalindrome(String s) {
+  for (int i = 0; i < s.length(); i++) {
+    grow(s, i, i);
+    grow(s, i, i + 1);
+  }
+  return s.substring(blLP, brLP + 1);
+}
+
+void grow(String s, int l, int r) {
+  while (l >= 0 && r < s.length() && s.charAt(l) == s.charAt(r)) { l--; r++; }
+  l++; r--;
+  if (r - l > brLP - blLP) { blLP = l; brLP = r; }
+}
+```
+
+**要点：**
+- 同时尝试奇数中心和偶数中心两种扩展。
+- 通过长度比较记录最优起止，避免反复切片。
+- Manacher 可达 O(n)，但中心扩展在常见规模下已够用。
+
+**标签：** #algorithm
+
+---
+
+### 38. 最长回文子序列
+
+**难度：** 中等
+**主题：** dp, strings
+**岗位：** T2-3
+**级别：** T2-T3
+
+**问题：** 返回 `s` 中最长回文子序列长度（不必连续）。
+
+**思路：** 区间 DP `dp[i][j]` = `s[i..j]` 上的 LPS 长度。若 `s[i] == s[j]`：`dp[i][j] = dp[i+1][j-1] + 2`，否则：`max(dp[i+1][j], dp[i][j-1])`。按长度填。O(n^2)。技巧：等价于 `s` 与 reverse(`s`) 的 LCS。
+
+**Python：**
+```python
+def longest_palindrome_subseq(s: str) -> int:
+    n = len(s)
+    dp = [[0] * n for _ in range(n)]
+    for i in range(n):
+        dp[i][i] = 1
+    for length in range(2, n + 1):
+        for i in range(n - length + 1):
+            j = i + length - 1
+            if s[i] == s[j]:
+                dp[i][j] = dp[i + 1][j - 1] + 2
+            else:
+                dp[i][j] = max(dp[i + 1][j], dp[i][j - 1])
+    return dp[0][n - 1]
+```
+
+**TypeScript：**
+```typescript
+function longestPalindromeSubseq(s: string): number {
+  const n = s.length;
+  const dp: number[][] = Array.from({ length: n }, () => new Array(n).fill(0));
+  for (let i = 0; i < n; i++) dp[i][i] = 1;
+  for (let len = 2; len <= n; len++) {
+    for (let i = 0; i + len - 1 < n; i++) {
+      const j = i + len - 1;
+      dp[i][j] = s[i] === s[j] ? dp[i + 1][j - 1] + 2 : Math.max(dp[i + 1][j], dp[i][j - 1]);
+    }
+  }
+  return dp[0][n - 1];
+}
+```
+
+**Java：**
+```java
+int longestPalindromeSubseq(String s) {
+  int n = s.length();
+  int[][] dp = new int[n][n];
+  for (int i = 0; i < n; i++) dp[i][i] = 1;
+  for (int len = 2; len <= n; len++) {
+    for (int i = 0; i + len - 1 < n; i++) {
+      int j = i + len - 1;
+      dp[i][j] = s.charAt(i) == s.charAt(j)
+          ? dp[i + 1][j - 1] + 2
+          : Math.max(dp[i + 1][j], dp[i][j - 1]);
+    }
+  }
+  return dp[0][n - 1];
+}
+```
+
+**要点：**
+- 区间 DP 按长度填，保证子区间先就绪。
+- 单字符自身是长度 1 的回文，先初始化主对角线。
+- 等价于 `s` 与 reverse(`s`) 的 LCS，O(n^2)。
+
+**标签：** #algorithm
+
+---
+
+### 39. 分割回文串
+
+**难度：** 中等
+**主题：** backtracking, dp, strings
+**岗位：** T2-3
+**级别：** T2-T3
+
+**问题：** 将 `s` 划分使每段都是回文。返回所有划分方案。
+
+**思路：** 回溯：在下标 `i`，尝试每个前缀 `s[i..j]`；若回文则从 `j+1` 递归。预处理回文表 `isP[i][j]`（O(n^2)）加速。最坏 O(n * 2^n)（输出指数级）。
+
+**Python：**
+```python
+def partition(s: str) -> list[list[str]]:
+    n = len(s)
+    is_p = [[False] * n for _ in range(n)]
+    for j in range(n):
+        for i in range(j + 1):
+            if s[i] == s[j] and (j - i < 2 or is_p[i + 1][j - 1]):
+                is_p[i][j] = True
+    out: list[list[str]] = []
+    path: list[str] = []
+    def go(start: int) -> None:
+        if start == n:
+            out.append(path[:])
+            return
+        for end in range(start, n):
+            if is_p[start][end]:
+                path.append(s[start:end + 1])
+                go(end + 1)
+                path.pop()
+    go(0)
+    return out
+```
+
+**TypeScript：**
+```typescript
+function partition(s: string): string[][] {
+  const n = s.length;
+  const isP: boolean[][] = Array.from({ length: n }, () => new Array(n).fill(false));
+  for (let j = 0; j < n; j++) {
+    for (let i = 0; i <= j; i++) {
+      if (s[i] === s[j] && (j - i < 2 || isP[i + 1][j - 1])) isP[i][j] = true;
+    }
+  }
+  const out: string[][] = [];
+  const path: string[] = [];
+  const go = (start: number): void => {
+    if (start === n) { out.push(path.slice()); return; }
+    for (let end = start; end < n; end++) {
+      if (isP[start][end]) {
+        path.push(s.slice(start, end + 1));
+        go(end + 1);
+        path.pop();
+      }
+    }
+  };
+  go(0);
+  return out;
+}
+```
+
+**Java：**
+```java
+List<List<String>> partition(String s) {
+  int n = s.length();
+  boolean[][] isP = new boolean[n][n];
+  for (int j = 0; j < n; j++) {
+    for (int i = 0; i <= j; i++) {
+      if (s.charAt(i) == s.charAt(j) && (j - i < 2 || isP[i + 1][j - 1])) isP[i][j] = true;
+    }
+  }
+  List<List<String>> out = new ArrayList<>();
+  goPP(s, 0, isP, new ArrayList<>(), out);
+  return out;
+}
+
+void goPP(String s, int start, boolean[][] isP, List<String> path, List<List<String>> out) {
+  if (start == s.length()) { out.add(new ArrayList<>(path)); return; }
+  for (int end = start; end < s.length(); end++) {
+    if (isP[start][end]) {
+      path.add(s.substring(start, end + 1));
+      goPP(s, end + 1, isP, path, out);
+      path.remove(path.size() - 1);
+    }
+  }
+}
+```
+
+**要点：**
+- 预处理 `isP` 把回溯里的回文判断降到 O(1)。
+- 复用可变 `path`，命中终点时快照入结果。
+- 最坏输出指数级（如全相同字符的串）。
+
+**标签：** #algorithm
+
+---
+
+### 40. 基于技术的匹配（均衡分队）
+
+**难度：** 困难
+**主题：** dp, partition, subset-sum, gaming
+**岗位：** T3-1
+**级别：** T3-T4
+
+**问题：** 给定 `2n` 个玩家技术评分的数组，分成两个大小为 `n` 的队，使队伍分差的绝对值最小。对应王者荣耀匹配。
+
+**思路：** 限定恰选 `n` 个的子集和 DP。`dp[k][s]` = 能否选出 `k` 个之和为 `s`。填完后在 `k = n` 的可达 `s` 中找最接近 `total / 2`。O(n * total)。规模更大时启发式/近似。可顺势讨论 MMR 方差、排队时长 vs 匹配质量的权衡。
+
+**Python：**
+```python
+def min_team_diff(skills: list[int]) -> int:
+    total = sum(skills)
+    n = len(skills) // 2
+    # dp[k] = set of sums achievable using exactly k elements
+    dp: list[set[int]] = [set() for _ in range(n + 1)]
+    dp[0].add(0)
+    for s in skills:
+        for k in range(n, 0, -1):
+            for prev in dp[k - 1]:
+                dp[k].add(prev + s)
+    best = total
+    for s in dp[n]:
+        best = min(best, abs(total - 2 * s))
+    return best
+```
+
+**TypeScript：**
+```typescript
+function minTeamDiff(skills: number[]): number {
+  const total = skills.reduce((a, b) => a + b, 0);
+  const n = skills.length / 2;
+  const dp: Array<Set<number>> = Array.from({ length: n + 1 }, () => new Set());
+  dp[0].add(0);
+  for (const s of skills) {
+    for (let k = n; k >= 1; k--) {
+      for (const prev of dp[k - 1]) dp[k].add(prev + s);
+    }
+  }
+  let best = total;
+  for (const s of dp[n]) best = Math.min(best, Math.abs(total - 2 * s));
+  return best;
+}
+```
+
+**Java：**
+```java
+int minTeamDiff(int[] skills) {
+  int total = 0;
+  for (int s : skills) total += s;
+  int n = skills.length / 2;
+  List<Set<Integer>> dp = new ArrayList<>();
+  for (int i = 0; i <= n; i++) dp.add(new HashSet<>());
+  dp.get(0).add(0);
+  for (int s : skills) {
+    for (int k = n; k >= 1; k--) {
+      Set<Integer> add = new HashSet<>();
+      for (int prev : dp.get(k - 1)) add.add(prev + s);
+      dp.get(k).addAll(add);
+    }
+  }
+  int best = total;
+  for (int s : dp.get(n)) best = Math.min(best, Math.abs(total - 2 * s));
+  return best;
+}
+```
+
+**要点：**
+- `k` 倒序遍历，避免同一玩家被重复纳入。
+- 最终在 `dp[n]` 中找最接近 `total / 2` 的可达和。
+- 数据规模更大时改用位图 DP 或随机化搜索。
+
+**标签：** #algorithm
+
+---
+
+## 回溯
+
+### 41. 全排列
+
+**难度：** 中等
+**主题：** backtracking, recursion
+**岗位：** SWE
+**级别：** T2-T3
+
+**问题：** 给定不重复整数数组，返回所有可能的排列。
+
+**思路：** 回溯——当前下标与后续每个下标交换，递归，再换回。或用 `used[]` 布尔数组。O(n * n!)。追问：含重复——先排序，当 `used[i-1]` 为 false 且 `nums[i] == nums[i-1]` 时跳过。
+
+**Python：**
+```python
+def permute(nums: list[int]) -> list[list[int]]:
+    out: list[list[int]] = []
+    def go(start: int) -> None:
+        if start == len(nums):
+            out.append(nums[:])
+            return
+        for i in range(start, len(nums)):
+            nums[start], nums[i] = nums[i], nums[start]
+            go(start + 1)
+            nums[start], nums[i] = nums[i], nums[start]
+    go(0)
+    return out
+```
+
+**TypeScript：**
+```typescript
+function permute(nums: number[]): number[][] {
+  const out: number[][] = [];
+  const go = (start: number): void => {
+    if (start === nums.length) { out.push(nums.slice()); return; }
+    for (let i = start; i < nums.length; i++) {
+      [nums[start], nums[i]] = [nums[i], nums[start]];
+      go(start + 1);
+      [nums[start], nums[i]] = [nums[i], nums[start]];
+    }
+  };
+  go(0);
+  return out;
+}
+```
+
+**Java：**
+```java
+List<List<Integer>> permute(int[] nums) {
+  List<List<Integer>> out = new ArrayList<>();
+  go(nums, 0, out);
+  return out;
+}
+
+void go(int[] nums, int start, List<List<Integer>> out) {
+  if (start == nums.length) {
+    List<Integer> snap = new ArrayList<>();
+    for (int x : nums) snap.add(x);
+    out.add(snap);
+    return;
+  }
+  for (int i = start; i < nums.length; i++) {
+    int t = nums[start]; nums[start] = nums[i]; nums[i] = t;
+    go(nums, start + 1, out);
+    t = nums[start]; nums[start] = nums[i]; nums[i] = t;
+  }
+}
+```
+
+**要点：**
+- 原地交换可省去显式 `used[]` 数组。
+- 回溯返回前务必还原交换，保持原数组状态。
+- 通过 `slice`/`[:]` 拷贝快照，避免后续修改破坏已记录结果。
+
+**常见追问：**
+- Permutations II——输入含重复，排序 + 跳过去重。
+- Next Permutation——原地变换为下一个字典序。
+- 第 k 个排列——阶乘进制，不枚举。
+- 带约束的排列（相邻不重复等）。
+
+**常见坑：**
+- 忘了在加入输出前拷贝 `nums`——后续交换覆盖结果。
+- 交换后还想靠排序去重——不变量丢失。
+
+**标签：** #algorithm
+
+---
+
+## 数组 / 字符串
+
+### 42. 字符串相加
+
+**难度：** 简单
+**主题：** strings, math
+**岗位：** SWE
+**级别：** T2-T3
+
+**问题：** 给定两个非负整数字符串，返回其和字符串（不用内置 BigInt）。
+
+**思路：** 双指针从末尾，带进位，追加每位。结果反转。O(max(n, m))。腾讯常用热身题，检验基本正确性。
+
+**Python：**
+```python
+def add_strings(num1: str, num2: str) -> str:
+    i, j, carry = len(num1) - 1, len(num2) - 1, 0
+    out: list[str] = []
+    while i >= 0 or j >= 0 or carry:
+        a = ord(num1[i]) - 48 if i >= 0 else 0
+        b = ord(num2[j]) - 48 if j >= 0 else 0
+        carry, d = divmod(a + b + carry, 10)
+        out.append(chr(d + 48))
+        i -= 1
+        j -= 1
+    return "".join(reversed(out))
+```
+
+**TypeScript：**
+```typescript
+function addStrings(num1: string, num2: string): string {
+  let i = num1.length - 1, j = num2.length - 1, carry = 0;
+  const out: string[] = [];
+  while (i >= 0 || j >= 0 || carry) {
+    const a = i >= 0 ? num1.charCodeAt(i) - 48 : 0;
+    const b = j >= 0 ? num2.charCodeAt(j) - 48 : 0;
+    const s = a + b + carry;
+    carry = Math.floor(s / 10);
+    out.push(String.fromCharCode((s % 10) + 48));
+    i--; j--;
+  }
+  return out.reverse().join("");
+}
+```
+
+**Java：**
+```java
+String addStrings(String num1, String num2) {
+  int i = num1.length() - 1, j = num2.length() - 1, carry = 0;
+  StringBuilder out = new StringBuilder();
+  while (i >= 0 || j >= 0 || carry != 0) {
+    int a = i >= 0 ? num1.charAt(i) - '0' : 0;
+    int b = j >= 0 ? num2.charAt(j) - '0' : 0;
+    int s = a + b + carry;
+    carry = s / 10;
+    out.append((char) ('0' + s % 10));
+    i--; j--;
+  }
+  return out.reverse().toString();
+}
+```
+
+**要点：**
+- 只要有任一下标或进位剩余就继续循环。
+- 用字符编码做算术，避免对每位调用 `parseInt`。
+- 先按倒序追加，最后只反转一次。
+
+**常见追问：**
+- 不用 big-int 做字符串相乘。
+- 任意进制（二进制、十六进制）下的非负整数相加。
+- 含小数点的字符串相加。
+- 支持负数——转换到减法。
+
+**常见坑：**
+- 循环后忘了处理最后进位。
+- 逐位用 `Integer.parseInt`——慢且不必要。
+
+**标签：** #algorithm
+
+---
+
+### 43. 原地反转字符串
+
+**难度：** 简单
+**主题：** strings, two-pointer
+**岗位：** SWE
+**级别：** T2
+
+**问题：** 原地反转 `char[]`。然后：原地反转句子中的单词顺序（`"the sky is blue"` → `"blue is sky the"`）。
+
+**思路：** 第一部分：双指针交换。第二部分：先整体反转，再逐词反转。O(n) 时间，O(1) 额外空间。腾讯 C++ 经典题——面试官还会问 `std::string` 的 SSO 和 C++11 之前的 COW 语义。
+
+**Python：**
+```python
+def reverse_words(chars: list[str]) -> None:
+    def rev(l: int, r: int) -> None:
+        while l < r:
+            chars[l], chars[r] = chars[r], chars[l]
+            l += 1
+            r -= 1
+    rev(0, len(chars) - 1)
+    l = 0
+    for r in range(len(chars) + 1):
+        if r == len(chars) or chars[r] == " ":
+            rev(l, r - 1)
+            l = r + 1
+```
+
+**TypeScript：**
+```typescript
+function reverseWords(chars: string[]): void {
+  const rev = (l: number, r: number): void => {
+    while (l < r) { [chars[l], chars[r]] = [chars[r], chars[l]]; l++; r--; }
+  };
+  rev(0, chars.length - 1);
+  let l = 0;
+  for (let r = 0; r <= chars.length; r++) {
+    if (r === chars.length || chars[r] === " ") {
+      rev(l, r - 1);
+      l = r + 1;
+    }
+  }
+}
+```
+
+**Java：**
+```java
+void reverseWords(char[] chars) {
+  rev(chars, 0, chars.length - 1);
+  int l = 0;
+  for (int r = 0; r <= chars.length; r++) {
+    if (r == chars.length || chars[r] == ' ') {
+      rev(chars, l, r - 1);
+      l = r + 1;
+    }
+  }
+}
+
+void rev(char[] a, int l, int r) {
+  while (l < r) { char t = a[l]; a[l++] = a[r]; a[r--] = t; }
+}
+```
+
+**要点：**
+- 先整体反转，再原地反转每个单词即可。
+- Python/JS 字符串不可变，输入用可变字符 `list`/`array`。
+- 仅用少量下标变量，O(1) 额外空间。
+
+**常见追问：**
+- 反转句中单词（LeetCode 151）——压缩多个空格。
+- 仅反转元音字母。
+- 原地反转句子同时保留末尾标点位置。
+- 安全反转 UTF-8 字节串（不能拆多字节字符）。
+
+**常见坑：**
+- 面试官要求原地时还用 `s[::-1]`——O(n) 额外空间。
+- 只在单个空格上 split，遗漏多空格分隔。
+
+**标签：** #coding
+
+---
+
+### 44. Nim 游戏
+
+**难度：** 简单
+**主题：** game-theory, math
+**岗位：** T2-3
+**级别：** T2-T3
+
+**问题：** `n` 颗石头，每人每轮拿 1、2 或 3 颗，拿到最后一颗者胜。你先手——能否必胜？
+
+**思路：** 必败位为 `n % 4 == 0`。面对 4 的倍数者最优下必败（对手镜像维持你处于 4 的倍数）。O(1)。准备好归纳证明。
+
+**Python：**
+```python
+def can_win_nim(n: int) -> bool:
+    return n % 4 != 0
+```
+
+**TypeScript：**
+```typescript
+function canWinNim(n: number): boolean {
+  return n % 4 !== 0;
+}
+```
+
+**Java：**
+```java
+boolean canWinNim(int n) {
+  return n % 4 != 0;
+}
+```
+
+**要点：**
+- 4 的倍数为必败位，其余皆必胜。
+- 镜像策略：对方总用 `4 - 你拿数` 让你始终停留在 4 的倍数。
+- 归纳证明：任意非 4 倍数都能一步走到 4 的倍数。
+
+**标签：** #algorithm
+
+---
+
+### 45. 翻转对
 
 **难度：** 困难
 **主题：** merge-sort, bit, divide-and-conquer
@@ -3337,119 +3785,7 @@ int sortRP(int lo, int hi) {
 
 ---
 
-### 51. 计算右侧小于当前元素的个数
-
-**难度：** 困难
-**主题：** bit, merge-sort, segment-tree
-**岗位：** T3-1
-**级别：** T3
-
-**问题：** 对每个 `nums[i]`，求 `j > i` 且 `nums[j] < nums[i]` 的数量。
-
-**思路：** 带索引归并排序：右半元素被放到左半元素前时，对应左半元素计数加一。或对压缩后的值从右往左用树状数组前缀查询。O(n log n)。
-
-**Python：**
-```python
-def count_smaller(nums: list[int]) -> list[int]:
-    n = len(nums)
-    counts = [0] * n
-    indices = list(range(n))
-    def sort(lo: int, hi: int) -> list[int]:
-        if lo >= hi:
-            return [indices[lo]] if lo == hi else []
-        mid = (lo + hi) // 2
-        left = sort(lo, mid)
-        right = sort(mid + 1, hi)
-        merged: list[int] = []
-        i = j = 0
-        while i < len(left) or j < len(right):
-            if j == len(right) or (i < len(left) and nums[left[i]] <= nums[right[j]]):
-                counts[left[i]] += j
-                merged.append(left[i])
-                i += 1
-            else:
-                merged.append(right[j])
-                j += 1
-        for k, idx in enumerate(merged):
-            indices[lo + k] = idx
-        return merged
-    sort(0, n - 1)
-    return counts
-```
-
-**TypeScript：**
-```typescript
-function countSmaller(nums: number[]): number[] {
-  const n = nums.length;
-  const counts = new Array<number>(n).fill(0);
-  const indices = Array.from({ length: n }, (_, i) => i);
-  const sort = (lo: number, hi: number): number[] => {
-    if (lo > hi) return [];
-    if (lo === hi) return [indices[lo]];
-    const mid = (lo + hi) >> 1;
-    const left = sort(lo, mid), right = sort(mid + 1, hi);
-    const merged: number[] = [];
-    let i = 0, j = 0;
-    while (i < left.length || j < right.length) {
-      if (j === right.length || (i < left.length && nums[left[i]] <= nums[right[j]])) {
-        counts[left[i]] += j;
-        merged.push(left[i++]);
-      } else merged.push(right[j++]);
-    }
-    for (let k = 0; k < merged.length; k++) indices[lo + k] = merged[k];
-    return merged;
-  };
-  sort(0, n - 1);
-  return counts;
-}
-```
-
-**Java：**
-```java
-int[] numsCS;
-int[] countsCS;
-int[] indicesCS;
-
-List<Integer> countSmaller(int[] nums) {
-  int n = nums.length;
-  numsCS = nums;
-  countsCS = new int[n];
-  indicesCS = new int[n];
-  for (int i = 0; i < n; i++) indicesCS[i] = i;
-  sortCS(0, n - 1);
-  List<Integer> out = new ArrayList<>(n);
-  for (int c : countsCS) out.add(c);
-  return out;
-}
-
-int[] sortCS(int lo, int hi) {
-  if (lo > hi) return new int[0];
-  if (lo == hi) return new int[]{indicesCS[lo]};
-  int mid = (lo + hi) >>> 1;
-  int[] left = sortCS(lo, mid), right = sortCS(mid + 1, hi);
-  int[] merged = new int[left.length + right.length];
-  int i = 0, j = 0, k = 0;
-  while (i < left.length || j < right.length) {
-    if (j == right.length || (i < left.length && numsCS[left[i]] <= numsCS[right[j]])) {
-      countsCS[left[i]] += j;
-      merged[k++] = left[i++];
-    } else merged[k++] = right[j++];
-  }
-  System.arraycopy(merged, 0, indicesCS, lo, merged.length);
-  return merged;
-}
-```
-
-**要点：**
-- 对索引而非数值排序，保证每个元素的计数始终可寻址。
-- 取走左侧元素时，`j` 即为已见的更小右侧元素个数。
-- 用 `<=` 而非 `<` 处理相等，避免重复计数。
-
-**标签：** #algorithm
-
----
-
-### 52. 区间和的个数
+### 46. 区间和的个数
 
 **难度：** 困难
 **主题：** merge-sort, prefix-sum, bit
@@ -3545,264 +3881,7 @@ int sortCRS(int lo, int hi) {
 
 ---
 
-### 53. 数据流的中位数
-
-**难度：** 困难
-**主题：** heap, design, data-stream
-**岗位：** T3-1
-**级别：** T3-T4
-
-**问题：** 设计支持 `addNum(int)` 和 `findMedian()` 的类，流式输入。
-
-**思路：** 双堆：`lo`（大顶堆）存较小一半，`hi`（小顶堆）存较大一半。维持 `len(lo) - len(hi) ∈ {0, 1}`。Add：入 lo，弹顶推 hi，若 hi 更大则回弹。Median：取 lo 顶或两顶均值。O(log n) add，O(1) 查询。
-
-**Python：**
-```python
-import heapq
-
-class MedianFinder:
-    def __init__(self) -> None:
-        self.lo: list[int] = []  # max-heap via negation
-        self.hi: list[int] = []  # min-heap
-
-    def add_num(self, num: int) -> None:
-        heapq.heappush(self.lo, -num)
-        heapq.heappush(self.hi, -heapq.heappop(self.lo))
-        if len(self.hi) > len(self.lo):
-            heapq.heappush(self.lo, -heapq.heappop(self.hi))
-
-    def find_median(self) -> float:
-        if len(self.lo) > len(self.hi):
-            return float(-self.lo[0])
-        return (-self.lo[0] + self.hi[0]) / 2
-```
-
-**TypeScript：**
-```typescript
-class MedianFinder {
-  private lo: number[] = [];  // max-heap (negate)
-  private hi: number[] = [];  // min-heap
-  private push(heap: number[], v: number): void {
-    heap.push(v); heap.sort((a, b) => a - b);
-  }
-  addNum(num: number): void {
-    this.push(this.lo, -num);
-    this.push(this.hi, -this.lo.shift()!);
-    if (this.hi.length > this.lo.length) this.push(this.lo, -this.hi.shift()!);
-  }
-  findMedian(): number {
-    return this.lo.length > this.hi.length ? -this.lo[0] : (-this.lo[0] + this.hi[0]) / 2;
-  }
-}
-```
-
-**Java：**
-```java
-class MedianFinder {
-  private final PriorityQueue<Integer> lo = new PriorityQueue<>(Comparator.reverseOrder());
-  private final PriorityQueue<Integer> hi = new PriorityQueue<>();
-
-  public void addNum(int num) {
-    lo.offer(num);
-    hi.offer(lo.poll());
-    if (hi.size() > lo.size()) lo.offer(hi.poll());
-  }
-
-  public double findMedian() {
-    return lo.size() > hi.size() ? lo.peek() : (lo.peek() + hi.peek()) / 2.0;
-  }
-}
-```
-
-**要点：**
-- `lo` 始终装较小一半（向上取整 n/2），`hi` 装较大一半。
-- 每次插入后通过一次倒堆完成再平衡。
-- 奇数个时取 `lo` 顶，偶数个时取两顶均值。
-
-**标签：** #algorithm
-
----
-
-### 54. 滑动窗口中位数
-
-**难度：** 困难
-**主题：** heap, sliding-window, design
-**岗位：** T3-1
-**级别：** T3-T4
-
-**问题：** 给定数组和窗口大小 `k`，返回每个滑动窗口的中位数。
-
-**思路：** 双堆 + 延迟删除（待删除哈希表）。每步：加入新数；将滑出的数标记删除；清理堆顶将失效项弹出；调整两堆大小。O(n log k)。或用有序多重集合（C++ `multiset`）。
-
-**Python：**
-```python
-from sortedcontainers import SortedList
-
-def median_sliding_window(nums: list[int], k: int) -> list[float]:
-    window = SortedList(nums[:k])
-    out: list[float] = []
-    def median() -> float:
-        if k % 2:
-            return float(window[k // 2])
-        return (window[k // 2 - 1] + window[k // 2]) / 2
-    out.append(median())
-    for i in range(k, len(nums)):
-        window.remove(nums[i - k])
-        window.add(nums[i])
-        out.append(median())
-    return out
-```
-
-**TypeScript：**
-```typescript
-function medianSlidingWindow(nums: number[], k: number): number[] {
-  const window = nums.slice(0, k).sort((a, b) => a - b);
-  const out: number[] = [];
-  const bisect = (v: number): number => {
-    let lo = 0, hi = window.length;
-    while (lo < hi) { const m = (lo + hi) >> 1; if (window[m] < v) lo = m + 1; else hi = m; }
-    return lo;
-  };
-  const median = (): number =>
-    k % 2 ? window[k >> 1] : (window[(k >> 1) - 1] + window[k >> 1]) / 2;
-  out.push(median());
-  for (let i = k; i < nums.length; i++) {
-    window.splice(bisect(nums[i - k]), 1);
-    window.splice(bisect(nums[i]), 0, nums[i]);
-    out.push(median());
-  }
-  return out;
-}
-```
-
-**Java：**
-```java
-double[] medianSlidingWindow(int[] nums, int k) {
-  TreeMap<Integer, Integer> window = new TreeMap<>();
-  for (int i = 0; i < k; i++) window.merge(nums[i], 1, Integer::sum);
-  int n = nums.length;
-  double[] out = new double[n - k + 1];
-  out[0] = medianOf(window, k);
-  for (int i = k; i < n; i++) {
-    int outV = nums[i - k];
-    if (window.get(outV) == 1) window.remove(outV); else window.merge(outV, -1, Integer::sum);
-    window.merge(nums[i], 1, Integer::sum);
-    out[i - k + 1] = medianOf(window, k);
-  }
-  return out;
-}
-
-double medianOf(TreeMap<Integer, Integer> window, int k) {
-  int[] mids = k % 2 == 1 ? new int[]{k / 2} : new int[]{k / 2 - 1, k / 2};
-  long sum = 0; int seen = 0, idx = 0;
-  for (var e : window.entrySet()) {
-    int next = seen + e.getValue();
-    while (idx < mids.length && mids[idx] < next) { sum += e.getKey(); idx++; }
-    seen = next;
-    if (idx == mids.length) break;
-  }
-  return sum / (double) mids.length;
-}
-```
-
-**要点：**
-- 有序多重集合（Python `SortedList`、C++ `multiset`）模型最干净。
-- 插入与删除均 O(log k)，按下标取中位数 O(1)。
-- 不依赖外部库时，可用双堆 + 延迟删除替代。
-
-**标签：** #algorithm
-
----
-
-### 55. 最小区间覆盖 K 个有序列表
-
-**难度：** 困难
-**主题：** heap, sliding-window
-**岗位：** T3-1
-**级别：** T3
-
-**问题：** 给定 `k` 个有序列表，求最小区间 `[a, b]`，使每个列表至少有一个元素落在其中。
-
-**思路：** 小顶堆保存每个列表当前一个元素及索引。维护当前堆中最大值。弹出最小；当前区间 `[min, max]`，更优则更新。该列表下推一位——耗尽则停。入新元素，更新 max。O(N log k)。
-
-**Python：**
-```python
-import heapq
-
-def smallest_range(nums: list[list[int]]) -> list[int]:
-    heap: list[tuple[int, int, int]] = []  # (val, list_idx, pos)
-    cur_max = float("-inf")
-    for i, row in enumerate(nums):
-        heapq.heappush(heap, (row[0], i, 0))
-        cur_max = max(cur_max, row[0])
-    best_lo, best_hi = -10**9, 10**9
-    while heap:
-        v, i, j = heapq.heappop(heap)
-        if cur_max - v < best_hi - best_lo:
-            best_lo, best_hi = v, int(cur_max)
-        if j + 1 == len(nums[i]):
-            return [best_lo, best_hi]
-        nxt = nums[i][j + 1]
-        cur_max = max(cur_max, nxt)
-        heapq.heappush(heap, (nxt, i, j + 1))
-    return [best_lo, best_hi]
-```
-
-**TypeScript：**
-```typescript
-function smallestRange(nums: number[][]): number[] {
-  const heap: Array<[number, number, number]> = [];
-  let curMax = -Infinity;
-  nums.forEach((row, i) => { heap.push([row[0], i, 0]); curMax = Math.max(curMax, row[0]); });
-  heap.sort((a, b) => a[0] - b[0]);
-  let bestLo = -1e9, bestHi = 1e9;
-  while (heap.length) {
-    const [v, i, j] = heap.shift()!;
-    if (curMax - v < bestHi - bestLo) { bestLo = v; bestHi = curMax; }
-    if (j + 1 === nums[i].length) return [bestLo, bestHi];
-    const nxt = nums[i][j + 1];
-    curMax = Math.max(curMax, nxt);
-    heap.push([nxt, i, j + 1]);
-    heap.sort((a, b) => a[0] - b[0]);
-  }
-  return [bestLo, bestHi];
-}
-```
-
-**Java：**
-```java
-int[] smallestRange(List<List<Integer>> nums) {
-  PriorityQueue<int[]> heap = new PriorityQueue<>((a, b) -> a[0] - b[0]);
-  int curMax = Integer.MIN_VALUE;
-  for (int i = 0; i < nums.size(); i++) {
-    int v = nums.get(i).get(0);
-    heap.offer(new int[]{v, i, 0});
-    curMax = Math.max(curMax, v);
-  }
-  int bestLo = 0, bestHi = Integer.MAX_VALUE;
-  while (!heap.isEmpty()) {
-    int[] cur = heap.poll();
-    int v = cur[0], i = cur[1], j = cur[2];
-    if ((long) curMax - v < (long) bestHi - bestLo) { bestLo = v; bestHi = curMax; }
-    if (j + 1 == nums.get(i).size()) return new int[]{bestLo, bestHi};
-    int nxt = nums.get(i).get(j + 1);
-    curMax = Math.max(curMax, nxt);
-    heap.offer(new int[]{nxt, i, j + 1});
-  }
-  return new int[]{bestLo, bestHi};
-}
-```
-
-**要点：**
-- 窗口隐式为 `[heap_min, cur_max]`，每个列表恰有一项在内。
-- 任意列表耗尽即可终止，因为该列表指针无法继续推进。
-- 每次入堆时懒更新 `cur_max`，避免扫描整堆。
-
-**标签：** #algorithm
-
----
-
-### 56. 只出现一次的数字 II
+### 47. 只出现一次的数字 II
 
 **难度：** 中等
 **主题：** bit-manipulation, math
@@ -3856,7 +3935,93 @@ int singleNumber(int[] nums) {
 
 ---
 
-### 57. 只出现一次的数字 III
+### 48. 数字范围按位与
+
+**难度：** 中等
+**主题：** bit-manipulation, math
+**岗位：** T2-3
+**级别：** T2-T3
+
+**问题：** 给定 `[m, n]`，返回区间内所有整数按位与的结果。
+
+**思路：** 结果等于 `m` 与 `n` 二进制的公共前缀。同时右移至相等，记移位数；再左移回去。或：当 `m < n`，`n = n & (n - 1)`。O(log n)。
+
+**Python：**
+```python
+def range_bitwise_and(m: int, n: int) -> int:
+    while m < n:
+        n &= n - 1
+    return n
+```
+
+**TypeScript：**
+```typescript
+function rangeBitwiseAnd(m: number, n: number): number {
+  while (m < n) n &= n - 1;
+  return n;
+}
+```
+
+**Java：**
+```java
+int rangeBitwiseAnd(int m, int n) {
+  while (m < n) n &= n - 1;
+  return n;
+}
+```
+
+**要点：**
+- `n & (n - 1)` 会清掉 `n` 最低位的 1。
+- 反复执行直到 `n <= m`，剩下的即两数的公共高位前缀。
+- 每轮去掉一个 1，复杂度 O(log n)。
+
+**标签：** #algorithm
+
+---
+
+### 49. 4 的幂
+
+**难度：** 简单
+**主题：** bit-manipulation, math
+**岗位：** T2-3
+**级别：** T2
+
+**问题：** 给定整数 `n`，判断是否为 4 的幂。
+
+**思路：** `n > 0 && (n & (n-1)) == 0 && (n & 0x55555555) != 0`。前两个条件保证是 2 的幂；掩码保证唯一的 1 在奇数位。O(1)。常见位技巧热身。
+
+**Python：**
+```python
+def is_power_of_four(n: int) -> bool:
+    return n > 0 and (n & (n - 1)) == 0 and (n & 0x55555555) != 0
+```
+
+**TypeScript：**
+```typescript
+function isPowerOfFour(n: number): boolean {
+  return n > 0 && (n & (n - 1)) === 0 && (n & 0x55555555) !== 0;
+}
+```
+
+**Java：**
+```java
+boolean isPowerOfFour(int n) {
+  return n > 0 && (n & (n - 1)) == 0 && (n & 0x55555555) != 0;
+}
+```
+
+**要点：**
+- 前两个条件保证 `n` 是正的 2 的幂。
+- 掩码 `0x55555555` 只在偶数位（1、4、16…）有 1。
+- 三个条件均 O(1)，无循环也无除法。
+
+**标签：** #algorithm
+
+---
+
+## 其他算法
+
+### 50. 只出现一次的数字 III
 
 **难度：** 中等
 **主题：** bit-manipulation, xor
@@ -3922,354 +4087,211 @@ int[] singleNumberIII(int[] nums) {
 
 ---
 
-### 58. 数字范围按位与
+## 系统设计
 
-**难度：** 中等
-**主题：** bit-manipulation, math
-**岗位：** T2-3
-**级别：** T2-T3
+### 51. 设计微信消息后端
 
-**问题：** 给定 `[m, n]`，返回区间内所有整数按位与的结果。
+**难度：** 困难
+**主题：** system-design, im, websockets, presence, scale
+**岗位：** 高级 SWE
+**级别：** T3-T4
 
-**思路：** 结果等于 `m` 与 `n` 二进制的公共前缀。同时右移至相等，记移位数；再左移回去。或：当 `m < n`，`n = n & (n - 1)`。O(log n)。
+**问题：** 设计支持 10 亿+ MAU、1:1 聊天、群聊（500 人）和全球在线状态的微信消息后端。
 
-**Python：**
-```python
-def range_bitwise_and(m: int, n: int) -> int:
-    while m < n:
-        n &= n - 1
-    return n
-```
+**思路：** 每客户端到最近接入网关一条持久 TCP/MQTT（按 user_id 分片）。消息流：网关 → 路由服务（在在线注册表查接收方网关）→ 接收方网关 → 设备。离线消息持久化到 KV，重连时推送。群聊：在每群路由服务做扇出；500 人这量级可行。在线状态：每区域内存存储，全球用带 TTL 的 gossip（最终一致 OK）。消息热存 7 天 + 冷存 90 天。讨论：端到端加密（腾讯出于中国法律合规历史上不做 E2E——直说）、单聊会话内消息有序（每会话序列号）、多设备同步、超大群（广播群另有设计）。
 
-**TypeScript：**
-```typescript
-function rangeBitwiseAnd(m: number, n: number): number {
-  while (m < n) n &= n - 1;
-  return n;
-}
-```
+**常见追问：**
+- 多设备同步——手机加电脑同时登录，同一条消息一致抵达。
+- 跨设备消息顺序——服务端为每会话下发序列号。
+- 超大群（公众号式广播）——推变拉，带游标。
+- 离线转在线补拉——流式窗口 vs 全量拉。
+- 跨区域国际用户的延迟——anycast 网关还是分区域路由？
 
-**Java：**
-```java
-int rangeBitwiseAnd(int m, int n) {
-  while (m < n) n &= n - 1;
-  return n;
-}
-```
+**常见坑：**
+- 承诺 E2E 加密，但设计实际镜像/归档了消息。
+- 大群直接扇出——超过 ~500 人不可扩。
 
-**要点：**
-- `n & (n - 1)` 会清掉 `n` 最低位的 1。
-- 反复执行直到 `n <= m`，剩下的即两数的公共高位前缀。
-- 每轮去掉一个 1，复杂度 O(log n)。
-
-**标签：** #algorithm
+**标签：** #system-design
 
 ---
 
-### 59. 4 的幂
+### 52. 设计微信朋友圈
+
+**难度：** 困难
+**主题：** system-design, feed, privacy, fanout
+**岗位：** 高级 SWE
+**级别：** T3-T4
+
+**问题：** 设计微信朋友圈——仅好友可见的信息流，严格隐私控制。
+
+**思路：** 封闭图谱 feed（不同于 Twitter/微博）——只有好友能看到帖子。push/pull 混合（同 News Feed）。关键隐私性质：某帖的评论和点赞仅对*发帖人*的共同好友可见。所以展示帖时，服务端按观看者与评论者是否也是好友过滤——读时通过好友图交集完成（缓存交集结果）。照片放 CDN，URL 带短期签名（无公开可发现 URL）。讨论："三天可见"实现为每帖 TTL 标志、评论/点赞通过 IM 系统（第 9 题）发消息式通知、爆款帖处理（封闭图中少见但可能——重度缓存）。
+
+**常见追问：**
+- "仅三天可见"——存 TTL 还是读时过滤？
+- 拉黑/解除好友后缓存的 feed 必须立即更新。
+- 截图转发照片——加可见水印还是接受泄露？
+- 跨区域复制——用户出国后 feed 从哪里提供？
+- 好友图交集的读时代价——缓存、预计算，还是两者均有？
+
+**常见坑：**
+- 展示了非共同好友的评论——隐私违规，极易被发现。
+- 封闭图中也可能有热帖（某个好友很有影响力），需提前预案。
+
+**标签：** #system-design
+
+---
+
+### 53. 设计多人游戏服务器（王者荣耀风格）
+
+**难度：** 困难
+**主题：** system-design, gaming, low-latency, state-sync
+**岗位：** 高级 SWE
+**级别：** T3-T4
+
+**问题：** 设计实时 5v5 MOBA（如王者荣耀）的后端。延迟预算：感知 <100ms。
+
+**思路：** 匹配服务（考虑技术 + 区域 + 组队）→ 游戏服务器分配器（多区域 dedicated 游戏服 K8s 池）。游戏服跑权威模拟。**帧同步（lockstep）**：客户端只发输入（小包），所有客户端跑相同的确定性模拟，所有输入到齐推进一帧。腾讯 MOBA 的选择——带宽极小，输入-only 模型方便反作弊。代价：1 个慢客户端 = 全等。**状态同步**：服务端模拟，发状态 diff——FPS 常用。网络：自定义 UDP 协议（含可靠层）；TCP 不适合游戏流量。讨论：时钟同步（类 NTP）、丢包容忍（重发输入，状态同步要预测）、重连（从最近一帧重放输入）、作弊检测（抽样比赛服务端重放）。
+
+**标签：** #system-design
+
+---
+
+### 54. 设计 QQ / 微信音视频通话
+
+**难度：** 困难
+**主题：** system-design, webrtc, sfu, nat-traversal, codecs
+**岗位：** 高级 SWE
+**级别：** T3-T4
+
+**问题：** 设计微信的语音/视频通话基础设施（1:1 和最多 9 人多方）。
+
+**思路：** 信令走 IM 通道（SDP offer/answer 通过消息）。媒体：WebRTC 风格 + ICE 做 NAT 穿透（STUN/TURN 服务器）。1:1 优先 P2P（延迟低、服务器成本低）。多方：SFU（选择性转发单元）——每客户端上传一路，服务端不转码地转发给其他 N-1 人（延迟低、扩展尚可）。编解码：音频 Opus，视频 H.264/H.265，自适应码率。客户端做回声消除、降噪、抖动缓冲。讨论：TURN 中继成本（许多用户在对称 NAT 后）、区域媒体服务器、网络劣化下的带宽自适应。
+
+**标签：** #system-design
+
+---
+
+### 55. 设计腾讯云对象存储（COS）
+
+**难度：** 困难
+**主题：** system-design, blob-storage, replication, consistency
+**岗位：** 高级 SWE
+**级别：** T3-T4
+
+**问题：** 设计腾讯 COS——S3 兼容 API 的对象存储。
+
+**思路：** 前端 S3 兼容 API → 元数据服务（按 bucket+key 分片）→ 存储层采用纠删码（Reed-Solomon 10+4），跨多节点/机架/AZ。区域内强一致由元数据协调器（Paxos）保证。跨区域异步复制做灾备。讨论：纠删码 vs 3 副本权衡（节省约 50% 存储，但读端 CPU/网络更多）、大对象分片上传、生命周期到冷存储（类 Archive Storage）、热 key 处理（CDN + 副本扇出应对爆量读）。
+
+**标签：** #system-design
+
+---
+
+### 56. 设计直播打赏 / 弹幕系统
+
+**难度：** 困难
+**主题：** system-design, real-time, fanout, monetization
+**岗位：** 高级 SWE
+**级别：** T3-T4
+
+**问题：** 设计腾讯视频 / NOW 直播中的打赏和弹幕系统，让观众在直播中实时送虚拟礼物（含支付）并聊天。
+
+**思路：** 礼物购买：事务化流程（扣用户钱包 → 记录礼物事件 → 广播）。钱包写是一致性关键步骤；其余可最终一致。评论/礼物事件 → 单直播 Kafka topic → 扇出到观众 WebSocket 网关。超热直播（1M+ 同时在线）下，限速 + 采样展示；全部异步入 DB。土豪特效（特殊动画）在广播队列里优先级高。讨论：礼物反欺诈（单用户突然飙量 = 潜在盗刷）、主播分成的税务/合规、流过热时优雅降级（先丢低价值评论）。
+
+**标签：** #system-design
+
+---
+
+## 行为面试
+
+### 57. 讲一次你跨团队协作的经历
+
+**难度：** 中等
+**主题：** behavioral, collaboration, cross-bg
+**岗位：** SWE
+**级别：** T2-T3
+
+**问题：** 讲一次你与另一团队或 BG 一起交付项目的经历。难点在哪？
+
+**思路：** 腾讯的 BG 结构让跨团队协作文化上较难——他们查你能不能驾驭。展示：(1) 你提前建立了关系（不是被卡了才升级），(2) 你理解对方优先级（不同 OKR、不同领导），(3) 你提出 win-win 框架，(4) 你们共同交付。提具体摩擦（资源、排期错位）以及你是怎么化解的，会很加分。
+
+**标签：** #behavioral
+
+---
+
+### 58. 主动修了职责外问题的经历
+
+**难度：** 中等
+**主题：** behavioral, ownership, initiative
+**岗位：** SWE
+**级别：** T2-T3
+
+**问题：** 讲一次你发现问题主动修复、且无人要求的经历。
+
+**思路：** 腾讯看重"主动"工程师。展示：(1) 具体问题（生产 bug、技术债、缺少工具），(2) 你没等优先级——用个人或非排期时间，(3) 你确保修复经过 review 并被采纳（不是孤胆牛仔式 commit），(4) 影响：可量化地帮到团队。别挑那种修复其实就是你直接职责的故事。
+
+**标签：** #behavioral
+
+---
+
+### 59. 处理生产事故的经历
+
+**难度：** 中等
+**主题：** behavioral, incident-response, ownership
+**岗位：** 高级 SWE
+**级别：** T3-T4
+
+**问题：** 讲一次你主导的生产事故。发生了什么？你怎么应对？事后做了什么改变？
+
+**思路：** 挑真事故（不是"差点出事"）。展示：(1) 你冷静分流——先缓解、后 RCA，(2) 你期间持续向干系人通报（每 15-30 分钟状态更新），(3) 你做了无指责复盘并产出具体行动项，(4) 你跟进行动项而不是仅记录。量化影响（宕机分钟、影响用户数）和修复后的提升（MTTR 降低 X）。
+
+**标签：** #behavioral
+
+---
+
+### 60. 你为什么想加入腾讯
 
 **难度：** 简单
-**主题：** bit-manipulation, math
-**岗位：** T2-3
-**级别：** T2
-
-**问题：** 给定整数 `n`，判断是否为 4 的幂。
-
-**思路：** `n > 0 && (n & (n-1)) == 0 && (n & 0x55555555) != 0`。前两个条件保证是 2 的幂；掩码保证唯一的 1 在奇数位。O(1)。常见位技巧热身。
-
-**Python：**
-```python
-def is_power_of_four(n: int) -> bool:
-    return n > 0 and (n & (n - 1)) == 0 and (n & 0x55555555) != 0
-```
-
-**TypeScript：**
-```typescript
-function isPowerOfFour(n: number): boolean {
-  return n > 0 && (n & (n - 1)) === 0 && (n & 0x55555555) !== 0;
-}
-```
-
-**Java：**
-```java
-boolean isPowerOfFour(int n) {
-  return n > 0 && (n & (n - 1)) == 0 && (n & 0x55555555) != 0;
-}
-```
-
-**要点：**
-- 前两个条件保证 `n` 是正的 2 的幂。
-- 掩码 `0x55555555` 只在偶数位（1、4、16…）有 1。
-- 三个条件均 O(1)，无循环也无除法。
-
-**标签：** #algorithm
-
----
-
-### 60. 基于技术的匹配（均衡分队）
-
-**难度：** 困难
-**主题：** dp, partition, subset-sum, gaming
-**岗位：** T3-1
-**级别：** T3-T4
-
-**问题：** 给定 `2n` 个玩家技术评分的数组，分成两个大小为 `n` 的队，使队伍分差的绝对值最小。对应王者荣耀匹配。
-
-**思路：** 限定恰选 `n` 个的子集和 DP。`dp[k][s]` = 能否选出 `k` 个之和为 `s`。填完后在 `k = n` 的可达 `s` 中找最接近 `total / 2`。O(n * total)。规模更大时启发式/近似。可顺势讨论 MMR 方差、排队时长 vs 匹配质量的权衡。
-
-**Python：**
-```python
-def min_team_diff(skills: list[int]) -> int:
-    total = sum(skills)
-    n = len(skills) // 2
-    # dp[k] = set of sums achievable using exactly k elements
-    dp: list[set[int]] = [set() for _ in range(n + 1)]
-    dp[0].add(0)
-    for s in skills:
-        for k in range(n, 0, -1):
-            for prev in dp[k - 1]:
-                dp[k].add(prev + s)
-    best = total
-    for s in dp[n]:
-        best = min(best, abs(total - 2 * s))
-    return best
-```
-
-**TypeScript：**
-```typescript
-function minTeamDiff(skills: number[]): number {
-  const total = skills.reduce((a, b) => a + b, 0);
-  const n = skills.length / 2;
-  const dp: Array<Set<number>> = Array.from({ length: n + 1 }, () => new Set());
-  dp[0].add(0);
-  for (const s of skills) {
-    for (let k = n; k >= 1; k--) {
-      for (const prev of dp[k - 1]) dp[k].add(prev + s);
-    }
-  }
-  let best = total;
-  for (const s of dp[n]) best = Math.min(best, Math.abs(total - 2 * s));
-  return best;
-}
-```
-
-**Java：**
-```java
-int minTeamDiff(int[] skills) {
-  int total = 0;
-  for (int s : skills) total += s;
-  int n = skills.length / 2;
-  List<Set<Integer>> dp = new ArrayList<>();
-  for (int i = 0; i <= n; i++) dp.add(new HashSet<>());
-  dp.get(0).add(0);
-  for (int s : skills) {
-    for (int k = n; k >= 1; k--) {
-      Set<Integer> add = new HashSet<>();
-      for (int prev : dp.get(k - 1)) add.add(prev + s);
-      dp.get(k).addAll(add);
-    }
-  }
-  int best = total;
-  for (int s : dp.get(n)) best = Math.min(best, Math.abs(total - 2 * s));
-  return best;
-}
-```
-
-**要点：**
-- `k` 倒序遍历，避免同一玩家被重复纳入。
-- 最终在 `dp[n]` 中找最接近 `total / 2` 的可达和。
-- 数据规模更大时改用位图 DP 或随机化搜索。
-
-**标签：** #algorithm
-
----
-
-### 61. 游戏服务器拓扑的最小生成树
-
-**难度：** 中等
-**主题：** graph, mst, kruskal, prim, union-find
-**岗位：** T2-3
+**主题：** behavioral, motivation, fit
+**岗位：** SWE
 **级别：** T2-T3
 
-**问题：** 给定 `n` 台游戏服务器节点和每对之间专线成本，求互联全部节点的最小总成本。
+**问题：** 为什么是腾讯？想去哪个 BG/团队？
 
-**思路：** Kruskal 求 MST：排序边，并查集逐条加入最便宜的非成环边，共 `n-1` 条。O(E log E)。Prim + 最小堆 O(E log V)——稠密图更优。腾讯基础设施视角：可讨论按延迟加权 vs 按成本加权。
+**思路：** 要具体。别说"大厂"或"股票"。挑：(1) 具体产品（微信生态、你热爱并想参与的某款游戏），(2) 腾讯强势的技术领域（游戏技术、IM、云），(3) BG 文化（IEG 游戏、WXG 微信——风格相当不同）。提腾讯开源贡献（TARS、ncnn 做 ML 推理）能体现你做了功课。
 
-**Python：**
-```python
-def min_spanning_tree(n: int, edges: list[tuple[int, int, int]]) -> int:
-    parent = list(range(n))
-    def find(x: int) -> int:
-        while parent[x] != x:
-            parent[x] = parent[parent[x]]
-            x = parent[x]
-        return x
-    edges.sort(key=lambda e: e[2])
-    total, used = 0, 0
-    for u, v, w in edges:
-        ru, rv = find(u), find(v)
-        if ru != rv:
-            parent[ru] = rv
-            total += w
-            used += 1
-            if used == n - 1:
-                break
-    return total if used == n - 1 else -1
-```
-
-**TypeScript：**
-```typescript
-function minSpanningTree(n: number, edges: Array<[number, number, number]>): number {
-  const parent = Array.from({ length: n }, (_, i) => i);
-  const find = (x: number): number => {
-    while (parent[x] !== x) { parent[x] = parent[parent[x]]; x = parent[x]; }
-    return x;
-  };
-  edges.sort((a, b) => a[2] - b[2]);
-  let total = 0, used = 0;
-  for (const [u, v, w] of edges) {
-    const ru = find(u), rv = find(v);
-    if (ru !== rv) {
-      parent[ru] = rv;
-      total += w;
-      if (++used === n - 1) break;
-    }
-  }
-  return used === n - 1 ? total : -1;
-}
-```
-
-**Java：**
-```java
-int[] parMST;
-
-int minSpanningTree(int n, int[][] edges) {
-  parMST = new int[n];
-  for (int i = 0; i < n; i++) parMST[i] = i;
-  Arrays.sort(edges, (a, b) -> a[2] - b[2]);
-  int total = 0, used = 0;
-  for (int[] e : edges) {
-    int ru = findMST(e[0]), rv = findMST(e[1]);
-    if (ru != rv) {
-      parMST[ru] = rv;
-      total += e[2];
-      if (++used == n - 1) break;
-    }
-  }
-  return used == n - 1 ? total : -1;
-}
-
-int findMST(int x) {
-  while (parMST[x] != x) { parMST[x] = parMST[parMST[x]]; x = parMST[x]; }
-  return x;
-}
-```
-
-**要点：**
-- 排序边后，每次贪心选择最小且能连通新分量的边。
-- 选满 `n - 1` 条边即可提前结束。
-- 图不连通时（合并次数不足）返回 -1。
-
-**标签：** #algorithm
+**标签：** #behavioral
 
 ---
 
-### 62. 二分图最大匹配（玩家到服务器分配）
+## 领域知识
+
+### 61. TCP 深挖：高 RTT 链路上 TCP 吞吐为何下降？
 
 **难度：** 困难
-**主题：** graph, matching, hungarian, bipartite, dfs
-**岗位：** T3-1
+**主题：** networking, tcp, performance
+**岗位：** 高级 SWE
 **级别：** T3-T4
 
-**问题：** 给定玩家与游戏服务器及兼容性约束（区域、ping 阈值），最大化将玩家分配到服务器的数量（1 玩家 ↔ 1 服务器，容量内）。
+**问题：** 跨地域服务（上海 → 美东，200ms RTT）TCP 吞吐远低于可用带宽。为什么？怎么修？
 
-**思路：** 用匈牙利算法（Kuhn）做二分匹配：对每个未匹配玩家，沿增广路径 DFS 找未匹配/可增广路径，沿路径切换匹配。O(V * E)。带权最大匹配可用带势函数的匈牙利或最小费用最大流。规模大时讨论 Hopcroft–Karp 的 O(E√V)。
+**思路：** 带宽时延积（BDP）：高 RTT 下吞吐 = window_size / RTT。默认 TCP 发送/接收缓冲可能太小——计算：1 Gbps × 0.2s = 200 Mbits = 25 MB BDP，但 Linux 默认发送缓冲约 4MB。修复：(1) 调大 `net.ipv4.tcp_rmem` / `tcp_wmem`，(2) 启用 TCP window scaling（RFC 7323——通常默认开但要检查），(3) 拥塞控制改用 BBR（高 BDP 下比 CUBIC 好），(4) 用并行连接放大有效吞吐，(5) 真正的批量传输考虑 QUIC 或基于 UDP 的协议。测量：`tc`、`ss -i`、`iperf3` 打基线。腾讯就是因为这种场景做了自研传输协议（如跨地域游戏流量）。
 
-**Python：**
-```python
-def max_bipartite_matching(num_players: int, num_servers: int, edges: list[tuple[int, int]]) -> int:
-    graph: list[list[int]] = [[] for _ in range(num_players)]
-    for p, s in edges:
-        graph[p].append(s)
-    match_to: list[int] = [-1] * num_servers
-    def try_assign(p: int, seen: list[bool]) -> bool:
-        for s in graph[p]:
-            if seen[s]:
-                continue
-            seen[s] = True
-            if match_to[s] == -1 or try_assign(match_to[s], seen):
-                match_to[s] = p
-                return True
-        return False
-    matched = 0
-    for p in range(num_players):
-        seen = [False] * num_servers
-        if try_assign(p, seen):
-            matched += 1
-    return matched
-```
+**标签：** #domain-knowledge
 
-**TypeScript：**
-```typescript
-function maxBipartiteMatching(numPlayers: number, numServers: number, edges: Array<[number, number]>): number {
-  const graph: number[][] = Array.from({ length: numPlayers }, () => []);
-  for (const [p, s] of edges) graph[p].push(s);
-  const matchTo = new Array<number>(numServers).fill(-1);
-  const tryAssign = (p: number, seen: boolean[]): boolean => {
-    for (const s of graph[p]) {
-      if (seen[s]) continue;
-      seen[s] = true;
-      if (matchTo[s] === -1 || tryAssign(matchTo[s], seen)) {
-        matchTo[s] = p;
-        return true;
-      }
-    }
-    return false;
-  };
-  let matched = 0;
-  for (let p = 0; p < numPlayers; p++) {
-    const seen = new Array<boolean>(numServers).fill(false);
-    if (tryAssign(p, seen)) matched++;
-  }
-  return matched;
-}
-```
+---
 
-**Java：**
-```java
-List<List<Integer>> graphBM;
-int[] matchTo;
+### 62. 实时多人游戏的反作弊
 
-int maxBipartiteMatching(int numPlayers, int numServers, int[][] edges) {
-  graphBM = new ArrayList<>();
-  for (int i = 0; i < numPlayers; i++) graphBM.add(new ArrayList<>());
-  for (int[] e : edges) graphBM.get(e[0]).add(e[1]);
-  matchTo = new int[numServers];
-  Arrays.fill(matchTo, -1);
-  int matched = 0;
-  for (int p = 0; p < numPlayers; p++) {
-    boolean[] seen = new boolean[numServers];
-    if (tryAssign(p, seen)) matched++;
-  }
-  return matched;
-}
+**难度：** 困难
+**主题：** gaming, security, anti-cheat
+**岗位：** 高级 SWE
+**级别：** T3-T4
 
-boolean tryAssign(int p, boolean[] seen) {
-  for (int s : graphBM.get(p)) {
-    if (seen[s]) continue;
-    seen[s] = true;
-    if (matchTo[s] == -1 || tryAssign(matchTo[s], seen)) { matchTo[s] = p; return true; }
-  }
-  return false;
-}
-```
+**问题：** 一款新的 PUBG Mobile 作弊工具广泛流传（自瞄 + 透视）。讲讲你会怎么架构反作弊来检测和应对。
 
-**要点：**
-- 每名玩家独立重置 `seen`，保证每次增广搜索互不干扰。
-- 增广路径：把已匹配的玩家换到其他服务器即可释放当前位置。
-- 数据规模极大时改用 Hopcroft-Karp，复杂度降至 O(E sqrt(V))。
+**思路：** 多层：(1) **服务端权威**——绝不信客户端报告的伤害/位置；服务端做命中判定。透视需要*客户端*渲染本不该有的数据——通过可见性剔除不发送看不到的敌人数据来防。代价：服务端 CPU 更高。(2) **行为检测**——服务端 ML 分析瞄准轨迹、爆头率、反应时间；异常打标，人工或 ML review，影子封号。(3) **客户端完整性**——防篡改（代码混淆、原生 checksum、PC 端内核态反作弊）。检测已知作弊签名。(4) **举报 + 回放**——玩家举报触发服务端回放复审，部分由 ML 完成。(5) **软惩罚**——影子封号（让作弊者互相匹配）优先于硬封号（给作弊作者的迭代信号更少）。讨论假阳性代价（误封诚实玩家对留存灾难性）和反作弊与作弊者的永恒猫鼠游戏。
 
-**标签：** #algorithm
+**标签：** #domain-knowledge
 
 ---
 

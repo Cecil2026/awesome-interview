@@ -19,9 +19,2173 @@ sources: Glassdoor, LeetCode Discuss (apple tag), Blind, levels.fyi
 
 Apple's interview is the most team-dependent of the FAANGs. A Safari frontend role looks nothing like a CoreAudio role looks nothing like a Siri ML role. This file leans toward a generalist SWE / frontend angle that's broadly applicable. Common threads across teams: deep domain knowledge expected (you should be expert at *something*), privacy-by-design awareness, attention to user-facing detail, and a preference for senior engineers who can own a problem end-to-end. The bar for code quality is high — polish matters.
 
-## Questions
+## Linked List
 
-### 1. Three Sum
+### 1. Merge Two Sorted Lists
+
+**Difficulty:** Easy
+**Topics:** linked-list, recursion
+**Position:** SWE
+**Years:** ICT3
+
+**Question:** Merge two sorted linked lists into one sorted list.
+
+**Approach:** Dummy head node, two pointers, append smaller, advance, repeat. Append remainder. O(n+m), O(1). Recursive variant: `merge(a, b) = a < b ? a + merge(a.next, b) : b + merge(a, b.next)` — clean but O(n+m) stack.
+
+**Python:**
+```python
+class ListNode:
+    def __init__(self, val: int = 0, next: "ListNode | None" = None) -> None:
+        self.val = val
+        self.next = next
+
+def merge_two_lists(a: ListNode | None, b: ListNode | None) -> ListNode | None:
+    dummy = ListNode()
+    tail = dummy
+    while a and b:
+        if a.val <= b.val:
+            tail.next, a = a, a.next
+        else:
+            tail.next, b = b, b.next
+        tail = tail.next
+    tail.next = a or b
+    return dummy.next
+```
+
+**TypeScript:**
+```typescript
+class ListNode {
+  val: number;
+  next: ListNode | null;
+  constructor(val = 0, next: ListNode | null = null) { this.val = val; this.next = next; }
+}
+
+function mergeTwoLists(a: ListNode | null, b: ListNode | null): ListNode | null {
+  const dummy = new ListNode();
+  let tail = dummy;
+  while (a && b) {
+    if (a.val <= b.val) { tail.next = a; a = a.next; }
+    else { tail.next = b; b = b.next; }
+    tail = tail.next!;
+  }
+  tail.next = a ?? b;
+  return dummy.next;
+}
+```
+
+**Java:**
+```java
+class ListNode {
+    int val; ListNode next;
+    ListNode() {}
+    ListNode(int val, ListNode next) { this.val = val; this.next = next; }
+}
+class Solution {
+    public ListNode mergeTwoLists(ListNode a, ListNode b) {
+        ListNode dummy = new ListNode(), tail = dummy;
+        while (a != null && b != null) {
+            if (a.val <= b.val) { tail.next = a; a = a.next; }
+            else { tail.next = b; b = b.next; }
+            tail = tail.next;
+        }
+        tail.next = (a != null) ? a : b;
+        return dummy.next;
+    }
+}
+```
+
+**Key points:**
+- Dummy head removes special-casing for the first node.
+- Append the non-null tail in O(1) once one list is consumed.
+- Stable ordering between equal values preserves list semantics.
+
+**Follow-ups:**
+- Merge K sorted lists — heap of heads, or pairwise merge in O(N log K).
+- Lists too large for memory — external merge on disk.
+- Lists are doubly linked — fix `prev` pointers without re-traversing.
+- In-place merge without dummy node — careful first-node selection.
+
+**Common Pitfalls:**
+- Forgetting to advance `tail` after attaching — builds a self-loop.
+- Not attaching the leftover tail (`tail.next = a or b`) — truncates the result.
+
+**Tags:** #algorithm
+
+---
+
+### 2. LRU Cache
+
+**Difficulty:** Medium
+**Topics:** ood, hashmap, linked-list
+**Position:** SWE
+**Years:** ICT3-ICT4
+
+**Question:** Design an LRU cache with O(1) `get` and `put`.
+
+**Approach:** Hashmap `key -> node` + doubly linked list (head=most recent, tail=oldest). On `get`, move node to head. On `put` overflow, drop tail. Apple may ask follow-up: make it thread-safe (lock per bucket, or compare-and-swap on Node).
+
+**Python:**
+```python
+from collections import OrderedDict
+
+class LRUCache:
+    def __init__(self, capacity: int) -> None:
+        self.cap = capacity
+        self.d: OrderedDict[int, int] = OrderedDict()
+
+    def get(self, key: int) -> int:
+        if key not in self.d:
+            return -1
+        self.d.move_to_end(key)
+        return self.d[key]
+
+    def put(self, key: int, value: int) -> None:
+        if key in self.d:
+            self.d.move_to_end(key)
+        self.d[key] = value
+        if len(self.d) > self.cap:
+            self.d.popitem(last=False)
+```
+
+**TypeScript:**
+```typescript
+class LRUCache {
+  private cap: number;
+  private m: Map<number, number>;
+  constructor(capacity: number) { this.cap = capacity; this.m = new Map(); }
+  get(key: number): number {
+    if (!this.m.has(key)) return -1;
+    const v = this.m.get(key)!;
+    this.m.delete(key); this.m.set(key, v);
+    return v;
+  }
+  put(key: number, value: number): void {
+    if (this.m.has(key)) this.m.delete(key);
+    this.m.set(key, value);
+    if (this.m.size > this.cap) {
+      const oldest = this.m.keys().next().value as number;
+      this.m.delete(oldest);
+    }
+  }
+}
+```
+
+**Java:**
+```java
+import java.util.*;
+class LRUCache extends LinkedHashMap<Integer, Integer> {
+    private final int cap;
+    public LRUCache(int capacity) {
+        super(capacity, 0.75f, true);
+        this.cap = capacity;
+    }
+    public int get(int key) { return getOrDefault(key, -1); }
+    public void put(int key, int value) { super.put(key, value); }
+    @Override
+    protected boolean removeEldestEntry(Map.Entry<Integer, Integer> eldest) {
+        return size() > cap;
+    }
+}
+```
+
+**Key points:**
+- Python `OrderedDict` and JS `Map` preserve insertion order — re-insert on access marks "most recent".
+- Eviction is just popping the first key in O(1).
+- Production code uses a hashmap + custom doubly linked list to keep pointers stable under concurrency.
+
+**Follow-ups:**
+- Make it thread-safe — lock per bucket vs single lock; discuss contention.
+- LFU (Least Frequently Used) variant — different data structures, harder eviction.
+- TTL-expiring entries layered on top of LRU.
+- Distributed LRU across nodes — consistent hashing + per-node local cache.
+
+**Common Pitfalls:**
+- Using a plain dict and scanning for the oldest — O(n) `put`, not O(1).
+- Forgetting to move on `get`, so reads don't count as recency.
+
+**Tags:** #algorithm
+
+---
+
+### 3. Remove Nth Node from End of List
+
+**Difficulty:** Medium
+**Topics:** linked-list, two-pointer
+**Position:** ICT3
+**Years:** ICT3
+
+**Question:** Remove the n-th node from the end of a singly linked list in one pass.
+
+**Approach:** Dummy head. Advance `fast` n+1 steps. Move `fast` and `slow` together until `fast` is null. `slow.next` is the node to remove; `slow.next = slow.next.next`. O(L) time, O(1) space.
+
+**Python:**
+```python
+def remove_nth_from_end(head: ListNode | None, n: int) -> ListNode | None:
+    dummy = ListNode(0, head)
+    fast: ListNode | None = dummy
+    slow: ListNode | None = dummy
+    for _ in range(n + 1):
+        fast = fast.next  # type: ignore
+    while fast:
+        fast = fast.next
+        slow = slow.next  # type: ignore
+    slow.next = slow.next.next  # type: ignore
+    return dummy.next
+```
+
+**TypeScript:**
+```typescript
+function removeNthFromEnd(head: ListNode | null, n: number): ListNode | null {
+  const dummy = new ListNode(0, head);
+  let fast: ListNode | null = dummy, slow: ListNode | null = dummy;
+  for (let i = 0; i < n + 1; i++) fast = fast!.next;
+  while (fast) { fast = fast.next; slow = slow!.next; }
+  slow!.next = slow!.next!.next;
+  return dummy.next;
+}
+```
+
+**Java:**
+```java
+class Solution {
+    public ListNode removeNthFromEnd(ListNode head, int n) {
+        ListNode dummy = new ListNode(0, head);
+        ListNode fast = dummy, slow = dummy;
+        for (int i = 0; i < n + 1; i++) fast = fast.next;
+        while (fast != null) { fast = fast.next; slow = slow.next; }
+        slow.next = slow.next.next;
+        return dummy.next;
+    }
+}
+```
+
+**Key points:**
+- Dummy head simplifies removal when the target is the original head.
+- Gap of `n + 1` lands `slow` on the node before the one to remove.
+- Single pass — no length precomputation needed.
+
+**Tags:** #algorithm
+
+---
+
+### 4. Add Two Numbers (Linked List)
+
+**Difficulty:** Medium
+**Topics:** linked-list, math
+**Position:** ICT3
+**Years:** ICT3-ICT4
+
+**Question:** Two numbers stored as linked lists in reverse order (each node holds one digit). Return their sum as a linked list.
+
+**Approach:** Walk both lists with a carry. At each step, `sum = a + b + carry`; new node has `sum % 10`; carry = `sum / 10`. Continue until both lists exhausted and carry is 0. Use dummy head. O(max(n, m)) time.
+
+**Python:**
+```python
+def add_two_numbers(l1: ListNode | None, l2: ListNode | None) -> ListNode | None:
+    dummy = ListNode()
+    tail = dummy
+    carry = 0
+    while l1 or l2 or carry:
+        s = carry + (l1.val if l1 else 0) + (l2.val if l2 else 0)
+        carry, digit = divmod(s, 10)
+        tail.next = ListNode(digit)
+        tail = tail.next
+        if l1: l1 = l1.next
+        if l2: l2 = l2.next
+    return dummy.next
+```
+
+**TypeScript:**
+```typescript
+function addTwoNumbers(l1: ListNode | null, l2: ListNode | null): ListNode | null {
+  const dummy = new ListNode();
+  let tail = dummy, carry = 0;
+  while (l1 || l2 || carry) {
+    const s = carry + (l1?.val ?? 0) + (l2?.val ?? 0);
+    carry = Math.floor(s / 10);
+    tail.next = new ListNode(s % 10);
+    tail = tail.next;
+    l1 = l1?.next ?? null;
+    l2 = l2?.next ?? null;
+  }
+  return dummy.next;
+}
+```
+
+**Java:**
+```java
+class Solution {
+    public ListNode addTwoNumbers(ListNode l1, ListNode l2) {
+        ListNode dummy = new ListNode(), tail = dummy;
+        int carry = 0;
+        while (l1 != null || l2 != null || carry > 0) {
+            int s = carry + (l1 != null ? l1.val : 0) + (l2 != null ? l2.val : 0);
+            carry = s / 10;
+            tail.next = new ListNode(s % 10, null);
+            tail = tail.next;
+            if (l1 != null) l1 = l1.next;
+            if (l2 != null) l2 = l2.next;
+        }
+        return dummy.next;
+    }
+}
+```
+
+**Key points:**
+- Loop condition must include `carry` for the trailing digit (e.g., 5 + 5 = 10).
+- Treat missing nodes as zero so unequal lengths fall out naturally.
+- Output is in the same reverse-digit order as input.
+
+**Tags:** #algorithm
+
+---
+
+### 5. Copy List with Random Pointer
+
+**Difficulty:** Medium
+**Topics:** linked-list, hashmap
+**Position:** ICT4
+**Years:** ICT4
+
+**Question:** Deep copy a linked list where each node has `next` and a `random` pointer to any node.
+
+**Approach:** Two passes with hashmap `old -> new`: first pass creates clones, second pass wires `next` and `random`. O(n) time, O(n) space. O(1) extra space variant: interleave clones inline (A->A'->B->B'->...), set randoms, then split.
+
+**Python:**
+```python
+class RandomNode:
+    def __init__(self, val: int, next: "RandomNode | None" = None, random: "RandomNode | None" = None) -> None:
+        self.val = val; self.next = next; self.random = random
+
+def copy_random_list(head: RandomNode | None) -> RandomNode | None:
+    if not head:
+        return None
+    m: dict[RandomNode, RandomNode] = {}
+    cur = head
+    while cur:
+        m[cur] = RandomNode(cur.val)
+        cur = cur.next
+    cur = head
+    while cur:
+        m[cur].next = m.get(cur.next) if cur.next else None
+        m[cur].random = m.get(cur.random) if cur.random else None
+        cur = cur.next
+    return m[head]
+```
+
+**TypeScript:**
+```typescript
+class RandomNode {
+  val: number;
+  next: RandomNode | null;
+  random: RandomNode | null;
+  constructor(v: number, n: RandomNode | null = null, r: RandomNode | null = null) { this.val = v; this.next = n; this.random = r; }
+}
+
+function copyRandomList(head: RandomNode | null): RandomNode | null {
+  if (!head) return null;
+  const m = new Map<RandomNode, RandomNode>();
+  let cur: RandomNode | null = head;
+  while (cur) { m.set(cur, new RandomNode(cur.val)); cur = cur.next; }
+  cur = head;
+  while (cur) {
+    m.get(cur)!.next = cur.next ? m.get(cur.next)! : null;
+    m.get(cur)!.random = cur.random ? m.get(cur.random)! : null;
+    cur = cur.next;
+  }
+  return m.get(head)!;
+}
+```
+
+**Java:**
+```java
+import java.util.*;
+class Node {
+    int val; Node next, random;
+    Node(int val) { this.val = val; }
+}
+class Solution {
+    public Node copyRandomList(Node head) {
+        if (head == null) return null;
+        Map<Node, Node> m = new HashMap<>();
+        for (Node cur = head; cur != null; cur = cur.next) m.put(cur, new Node(cur.val));
+        for (Node cur = head; cur != null; cur = cur.next) {
+            m.get(cur).next = m.get(cur.next);
+            m.get(cur).random = m.get(cur.random);
+        }
+        return m.get(head);
+    }
+}
+```
+
+**Key points:**
+- First pass creates the clones; second pass wires pointers via the map.
+- Handles null `next` and `random` without special cases.
+- An O(1)-space variant interleaves clones into the original list, then splits.
+
+**Tags:** #algorithm
+
+---
+
+### 6. Linked List Cycle
+
+**Difficulty:** Easy
+**Topics:** linked-list, two-pointer
+**Position:** ICT3
+**Years:** ICT3
+
+**Question:** Determine whether a linked list has a cycle. Bonus: return the cycle's start node.
+
+**Approach:** Floyd's tortoise and hare. `slow` advances 1, `fast` advances 2. If they meet, cycle exists. To find start, reset one pointer to head and advance both by 1 until they meet. O(n) time, O(1) space.
+
+**Python:**
+```python
+def detect_cycle(head: ListNode | None) -> ListNode | None:
+    slow = fast = head
+    while fast and fast.next:
+        slow = slow.next  # type: ignore
+        fast = fast.next.next
+        if slow is fast:
+            p = head
+            while p is not slow:
+                p = p.next  # type: ignore
+                slow = slow.next  # type: ignore
+            return p
+    return None
+```
+
+**TypeScript:**
+```typescript
+function detectCycle(head: ListNode | null): ListNode | null {
+  let slow = head, fast = head;
+  while (fast && fast.next) {
+    slow = slow!.next;
+    fast = fast.next.next;
+    if (slow === fast) {
+      let p = head;
+      while (p !== slow) { p = p!.next; slow = slow!.next; }
+      return p;
+    }
+  }
+  return null;
+}
+```
+
+**Java:**
+```java
+class Solution {
+    public ListNode detectCycle(ListNode head) {
+        ListNode slow = head, fast = head;
+        while (fast != null && fast.next != null) {
+            slow = slow.next;
+            fast = fast.next.next;
+            if (slow == fast) {
+                ListNode p = head;
+                while (p != slow) { p = p.next; slow = slow.next; }
+                return p;
+            }
+        }
+        return null;
+    }
+}
+```
+
+**Key points:**
+- The fast pointer doubles up the slow pointer until they meet inside the cycle.
+- The distance from head to cycle start equals the distance from meeting point to cycle start (mod cycle length).
+- Using a hash set is O(n) extra space; Floyd's is O(1).
+
+**Tags:** #algorithm
+
+---
+
+### 7. Intersection of Two Linked Lists
+
+**Difficulty:** Easy
+**Topics:** linked-list, two-pointer
+**Position:** ICT3
+**Years:** ICT3
+
+**Question:** Given two singly linked lists that may merge at some node, return the intersection node, or null.
+
+**Approach:** Two pointers `a, b` start at heads. When `a` hits end, redirect to `headB`; same for `b`. They traverse `lenA + lenB` and meet at intersection (or null). O(n+m) time, O(1) space.
+
+**Python:**
+```python
+def get_intersection_node(headA: ListNode | None, headB: ListNode | None) -> ListNode | None:
+    if not headA or not headB:
+        return None
+    a, b = headA, headB
+    while a is not b:
+        a = a.next if a else headB
+        b = b.next if b else headA
+    return a
+```
+
+**TypeScript:**
+```typescript
+function getIntersectionNode(headA: ListNode | null, headB: ListNode | null): ListNode | null {
+  if (!headA || !headB) return null;
+  let a: ListNode | null = headA, b: ListNode | null = headB;
+  while (a !== b) {
+    a = a ? a.next : headB;
+    b = b ? b.next : headA;
+  }
+  return a;
+}
+```
+
+**Java:**
+```java
+class Solution {
+    public ListNode getIntersectionNode(ListNode headA, ListNode headB) {
+        if (headA == null || headB == null) return null;
+        ListNode a = headA, b = headB;
+        while (a != b) {
+            a = (a == null) ? headB : a.next;
+            b = (b == null) ? headA : b.next;
+        }
+        return a;
+    }
+}
+```
+
+**Key points:**
+- Swapping heads on null equalizes the total walk to `lenA + lenB`.
+- The pointers meet at the intersection node, or both at `null` if disjoint.
+- Compare node identity, not values — duplicate values are allowed.
+
+**Tags:** #algorithm
+
+---
+
+### 8. Reorder List
+
+**Difficulty:** Medium
+**Topics:** linked-list, two-pointer
+**Position:** ICT4
+**Years:** ICT3-ICT4
+
+**Question:** Given list L0 -> L1 -> ... -> Ln-1 -> Ln, reorder it in-place to L0 -> Ln -> L1 -> Ln-1 -> ...
+
+**Approach:** Three steps: (1) find middle with slow/fast pointers, (2) reverse second half, (3) merge two halves alternately. O(n) time, O(1) space. Watch null termination of merged list.
+
+**Python:**
+```python
+def reorder_list(head: ListNode | None) -> None:
+    if not head or not head.next:
+        return
+    slow, fast = head, head
+    while fast and fast.next:
+        slow = slow.next  # type: ignore
+        fast = fast.next.next
+    prev, cur = None, slow.next  # type: ignore
+    slow.next = None  # type: ignore
+    while cur:
+        nxt = cur.next; cur.next = prev; prev = cur; cur = nxt
+    a, b = head, prev
+    while b:
+        an, bn = a.next, b.next  # type: ignore
+        a.next = b; b.next = an  # type: ignore
+        a, b = an, bn
+```
+
+**TypeScript:**
+```typescript
+function reorderList(head: ListNode | null): void {
+  if (!head || !head.next) return;
+  let slow = head, fast: ListNode | null = head;
+  while (fast && fast.next) { slow = slow.next!; fast = fast.next.next; }
+  let prev: ListNode | null = null, cur: ListNode | null = slow.next;
+  slow.next = null;
+  while (cur) { const nx: ListNode | null = cur.next; cur.next = prev; prev = cur; cur = nx; }
+  let a: ListNode | null = head, b = prev;
+  while (b) {
+    const an: ListNode | null = a!.next, bn: ListNode | null = b.next;
+    a!.next = b; b.next = an;
+    a = an; b = bn;
+  }
+}
+```
+
+**Java:**
+```java
+class Solution {
+    public void reorderList(ListNode head) {
+        if (head == null || head.next == null) return;
+        ListNode slow = head, fast = head;
+        while (fast != null && fast.next != null) { slow = slow.next; fast = fast.next.next; }
+        ListNode prev = null, cur = slow.next;
+        slow.next = null;
+        while (cur != null) { ListNode nx = cur.next; cur.next = prev; prev = cur; cur = nx; }
+        ListNode a = head, b = prev;
+        while (b != null) {
+            ListNode an = a.next, bn = b.next;
+            a.next = b; b.next = an;
+            a = an; b = bn;
+        }
+    }
+}
+```
+
+**Key points:**
+- Cut the list at the middle before reversing the right half.
+- The right half is shorter or equal, so the merge naturally terminates.
+- All work is in-place — no extra allocations beyond a few pointers.
+
+**Tags:** #algorithm
+
+---
+
+### 9. Populating Next Right Pointers in Each Node
+
+**Difficulty:** Medium
+**Topics:** tree, bfs, linked-list
+**Position:** ICT4
+**Years:** ICT4
+
+**Question:** Given a perfect binary tree, set each node's `next` to its right sibling at the same level (or null).
+
+**Approach:** Level-by-level traversal using established `next` pointers: at level L use them to walk; set `node.left.next = node.right` and `node.right.next = node.next ? node.next.left : null`. O(n) time, O(1) extra space.
+
+**Python:**
+```python
+class PerfectNode:
+    def __init__(self, val: int = 0, left: "PerfectNode | None" = None,
+                 right: "PerfectNode | None" = None, next: "PerfectNode | None" = None) -> None:
+        self.val = val; self.left = left; self.right = right; self.next = next
+
+def connect(root: PerfectNode | None) -> PerfectNode | None:
+    leftmost = root
+    while leftmost and leftmost.left:
+        node: PerfectNode | None = leftmost
+        while node:
+            node.left.next = node.right  # type: ignore
+            node.right.next = node.next.left if node.next else None  # type: ignore
+            node = node.next
+        leftmost = leftmost.left
+    return root
+```
+
+**TypeScript:**
+```typescript
+class PerfectNode {
+  val: number;
+  left: PerfectNode | null;
+  right: PerfectNode | null;
+  next: PerfectNode | null;
+  constructor(v = 0, l: PerfectNode | null = null, r: PerfectNode | null = null, n: PerfectNode | null = null) {
+    this.val = v; this.left = l; this.right = r; this.next = n;
+  }
+}
+
+function connect(root: PerfectNode | null): PerfectNode | null {
+  let leftmost = root;
+  while (leftmost && leftmost.left) {
+    let node: PerfectNode | null = leftmost;
+    while (node) {
+      node.left!.next = node.right;
+      node.right!.next = node.next ? node.next.left : null;
+      node = node.next;
+    }
+    leftmost = leftmost.left;
+  }
+  return root;
+}
+```
+
+**Java:**
+```java
+class Node {
+    int val; Node left, right, next;
+    Node(int val) { this.val = val; }
+}
+class Solution {
+    public Node connect(Node root) {
+        Node leftmost = root;
+        while (leftmost != null && leftmost.left != null) {
+            for (Node node = leftmost; node != null; node = node.next) {
+                node.left.next = node.right;
+                node.right.next = (node.next != null) ? node.next.left : null;
+            }
+            leftmost = leftmost.left;
+        }
+        return root;
+    }
+}
+```
+
+**Key points:**
+- Reuse already-set `next` pointers as the traversal mechanism — no queue needed.
+- Two wiring rules cover both child links.
+- O(1) extra space; only works because the tree is perfect.
+
+**Tags:** #algorithm
+
+---
+
+## Tree
+
+### 10. Binary Tree Maximum Path Sum
+
+**Difficulty:** Hard
+**Topics:** tree, dp, recursion
+**Position:** SWE
+**Years:** ICT4
+
+**Question:** Given a non-empty binary tree, find the maximum path sum. A path may start and end at any nodes, not necessarily through the root.
+
+**Approach:** DFS returning "max gain from this node going down one side" (max(0, left), max(0, right) — discard negative). At each node, candidate full path through it = `node.val + leftGain + rightGain`; update global max. Return `node.val + max(leftGain, rightGain)` for parent. O(n).
+
+**Python:**
+```python
+class TreeNode:
+    def __init__(self, val: int = 0, left: "TreeNode | None" = None, right: "TreeNode | None" = None) -> None:
+        self.val = val; self.left = left; self.right = right
+
+def max_path_sum(root: TreeNode | None) -> int:
+    best = float("-inf")
+    def gain(node: TreeNode | None) -> int:
+        nonlocal best
+        if node is None:
+            return 0
+        l = max(0, gain(node.left))
+        r = max(0, gain(node.right))
+        best = max(best, node.val + l + r)
+        return node.val + max(l, r)
+    gain(root)
+    return int(best)
+```
+
+**TypeScript:**
+```typescript
+function maxPathSum(root: TreeNode | null): number {
+  let best = -Infinity;
+  const gain = (n: TreeNode | null): number => {
+    if (!n) return 0;
+    const l = Math.max(0, gain(n.left));
+    const r = Math.max(0, gain(n.right));
+    best = Math.max(best, n.val + l + r);
+    return n.val + Math.max(l, r);
+  };
+  gain(root);
+  return best;
+}
+```
+
+**Java:**
+```java
+class TreeNode {
+    int val; TreeNode left, right;
+    TreeNode(int val) { this.val = val; }
+}
+class Solution {
+    private int best = Integer.MIN_VALUE;
+    public int maxPathSum(TreeNode root) { gain(root); return best; }
+    private int gain(TreeNode n) {
+        if (n == null) return 0;
+        int l = Math.max(0, gain(n.left));
+        int r = Math.max(0, gain(n.right));
+        best = Math.max(best, n.val + l + r);
+        return n.val + Math.max(l, r);
+    }
+}
+```
+
+**Key points:**
+- Discard negative subtree contributions by clamping with `max(0, ...)`.
+- The "best" candidate at each node uses both children; the return value uses only one.
+- Initial best is `-Infinity` to handle all-negative trees correctly.
+
+**Follow-ups:**
+- Return the actual path (list of node values), not just the sum.
+- Maximum path sum that *must* go through the root.
+- Generalize to N-ary trees or DAGs.
+- Apple iOS quirk: deeply skewed trees blow the recursion stack — propose an iterative variant.
+
+**Common Pitfalls:**
+- Initializing `best` to 0 — wrong for all-negative trees.
+- Returning `node.val + l + r` to the parent instead of `node.val + max(l, r)` — produces invalid paths.
+
+**Tags:** #algorithm
+
+---
+
+### 11. Binary Tree Level Order Traversal
+
+**Difficulty:** Medium
+**Topics:** tree, bfs, queue
+**Position:** ICT3
+**Years:** ICT3
+
+**Question:** Return the level-order traversal of a binary tree as a list of lists (one per level).
+
+**Approach:** BFS with queue. At each level, record current queue size `k`, pop `k` nodes into a level list, push their children. O(n) time, O(w) space where w is max width.
+
+**Python:**
+```python
+from collections import deque
+
+class TreeNode:
+    def __init__(self, val: int = 0, left: "TreeNode | None" = None, right: "TreeNode | None" = None) -> None:
+        self.val = val; self.left = left; self.right = right
+
+def level_order(root: TreeNode | None) -> list[list[int]]:
+    if not root:
+        return []
+    out: list[list[int]] = []
+    q: deque[TreeNode] = deque([root])
+    while q:
+        level = []
+        for _ in range(len(q)):
+            node = q.popleft()
+            level.append(node.val)
+            if node.left: q.append(node.left)
+            if node.right: q.append(node.right)
+        out.append(level)
+    return out
+```
+
+**TypeScript:**
+```typescript
+function levelOrder(root: TreeNode | null): number[][] {
+  if (!root) return [];
+  const out: number[][] = [];
+  let q: TreeNode[] = [root];
+  while (q.length) {
+    const level: number[] = [];
+    const next: TreeNode[] = [];
+    for (const n of q) {
+      level.push(n.val);
+      if (n.left) next.push(n.left);
+      if (n.right) next.push(n.right);
+    }
+    out.push(level);
+    q = next;
+  }
+  return out;
+}
+```
+
+**Java:**
+```java
+import java.util.*;
+class Solution {
+    public List<List<Integer>> levelOrder(TreeNode root) {
+        List<List<Integer>> out = new ArrayList<>();
+        if (root == null) return out;
+        Deque<TreeNode> q = new ArrayDeque<>();
+        q.offer(root);
+        while (!q.isEmpty()) {
+            int sz = q.size();
+            List<Integer> level = new ArrayList<>(sz);
+            for (int i = 0; i < sz; i++) {
+                TreeNode n = q.poll();
+                level.add(n.val);
+                if (n.left != null) q.offer(n.left);
+                if (n.right != null) q.offer(n.right);
+            }
+            out.add(level);
+        }
+        return out;
+    }
+}
+```
+
+**Key points:**
+- Capture queue size at the start of each level to delimit it.
+- Empty tree returns an empty list.
+- Pattern generalizes to N-ary trees with one tweak.
+
+**Tags:** #algorithm
+
+---
+
+### 12. Binary Tree Zigzag Level Order Traversal
+
+**Difficulty:** Medium
+**Topics:** tree, bfs, deque
+**Position:** ICT4
+**Years:** ICT3-ICT4
+
+**Question:** Return level order but alternate L->R and R->L per level.
+
+**Approach:** Standard BFS but toggle a `reverse` flag per level — either reverse the level list before appending, or use a deque and append to front/back accordingly. O(n) time, O(w) space.
+
+**Python:**
+```python
+from collections import deque
+
+def zigzag_level_order(root: TreeNode | None) -> list[list[int]]:
+    if not root:
+        return []
+    out: list[list[int]] = []
+    q: deque[TreeNode] = deque([root])
+    ltr = True
+    while q:
+        level = deque()
+        for _ in range(len(q)):
+            node = q.popleft()
+            if ltr: level.append(node.val)
+            else: level.appendleft(node.val)
+            if node.left: q.append(node.left)
+            if node.right: q.append(node.right)
+        out.append(list(level))
+        ltr = not ltr
+    return out
+```
+
+**TypeScript:**
+```typescript
+function zigzagLevelOrder(root: TreeNode | null): number[][] {
+  if (!root) return [];
+  const out: number[][] = [];
+  let q: TreeNode[] = [root];
+  let ltr = true;
+  while (q.length) {
+    const level: number[] = [];
+    const next: TreeNode[] = [];
+    for (const n of q) {
+      if (ltr) level.push(n.val); else level.unshift(n.val);
+      if (n.left) next.push(n.left);
+      if (n.right) next.push(n.right);
+    }
+    out.push(level);
+    q = next;
+    ltr = !ltr;
+  }
+  return out;
+}
+```
+
+**Java:**
+```java
+import java.util.*;
+class Solution {
+    public List<List<Integer>> zigzagLevelOrder(TreeNode root) {
+        List<List<Integer>> out = new ArrayList<>();
+        if (root == null) return out;
+        Deque<TreeNode> q = new ArrayDeque<>();
+        q.offer(root);
+        boolean ltr = true;
+        while (!q.isEmpty()) {
+            int sz = q.size();
+            LinkedList<Integer> level = new LinkedList<>();
+            for (int i = 0; i < sz; i++) {
+                TreeNode n = q.poll();
+                if (ltr) level.addLast(n.val); else level.addFirst(n.val);
+                if (n.left != null) q.offer(n.left);
+                if (n.right != null) q.offer(n.right);
+            }
+            out.add(level);
+            ltr = !ltr;
+        }
+        return out;
+    }
+}
+```
+
+**Key points:**
+- Toggling a direction flag is cleaner than reversing after the fact.
+- Use a deque (or `unshift`) for O(1) prepend on right-to-left levels.
+- Children always pushed left-to-right; direction only affects output ordering.
+
+**Tags:** #algorithm
+
+---
+
+### 13. Binary Tree Right Side View
+
+**Difficulty:** Medium
+**Topics:** tree, bfs, dfs
+**Position:** ICT4
+**Years:** ICT3-ICT4
+
+**Question:** Return the values of nodes visible from the right side of a binary tree, top to bottom.
+
+**Approach:** BFS recording the last node of each level. Or DFS in (root, right, left) order, appending node when depth == result.length. O(n) time, O(h) space.
+
+**Python:**
+```python
+def right_side_view(root: TreeNode | None) -> list[int]:
+    out: list[int] = []
+    def dfs(node: TreeNode | None, depth: int) -> None:
+        if node is None:
+            return
+        if depth == len(out):
+            out.append(node.val)
+        dfs(node.right, depth + 1)
+        dfs(node.left, depth + 1)
+    dfs(root, 0)
+    return out
+```
+
+**TypeScript:**
+```typescript
+function rightSideView(root: TreeNode | null): number[] {
+  const out: number[] = [];
+  const dfs = (n: TreeNode | null, depth: number): void => {
+    if (!n) return;
+    if (depth === out.length) out.push(n.val);
+    dfs(n.right, depth + 1);
+    dfs(n.left, depth + 1);
+  };
+  dfs(root, 0);
+  return out;
+}
+```
+
+**Java:**
+```java
+import java.util.*;
+class Solution {
+    private final List<Integer> out = new ArrayList<>();
+    public List<Integer> rightSideView(TreeNode root) { dfs(root, 0); return out; }
+    private void dfs(TreeNode n, int depth) {
+        if (n == null) return;
+        if (depth == out.size()) out.add(n.val);
+        dfs(n.right, depth + 1);
+        dfs(n.left, depth + 1);
+    }
+}
+```
+
+**Key points:**
+- Visiting right child first ensures the first node seen at each depth is the rightmost.
+- Append only when depth equals current result length to avoid duplicates per level.
+- BFS variant works too; pick whichever feels cleaner.
+
+**Tags:** #algorithm
+
+---
+
+### 14. Recover Binary Search Tree
+
+**Difficulty:** Hard
+**Topics:** tree, bst, inorder
+**Position:** ICT5
+**Years:** ICT4-ICT5
+
+**Question:** Two nodes of a BST have been swapped by mistake. Recover the tree without changing its structure.
+
+**Approach:** Inorder traversal yields sorted sequence; find two out-of-order positions: first dip's left and last dip's right. Swap their values. Morris traversal achieves O(1) extra space, otherwise O(h) recursion stack. O(n) time.
+
+**Python:**
+```python
+def recover_tree(root: TreeNode | None) -> None:
+    first: TreeNode | None = None
+    second: TreeNode | None = None
+    prev: TreeNode | None = None
+    def inorder(node: TreeNode | None) -> None:
+        nonlocal first, second, prev
+        if node is None:
+            return
+        inorder(node.left)
+        if prev and prev.val > node.val:
+            if first is None:
+                first = prev
+            second = node
+        prev = node
+        inorder(node.right)
+    inorder(root)
+    if first and second:
+        first.val, second.val = second.val, first.val
+```
+
+**TypeScript:**
+```typescript
+function recoverTree(root: TreeNode | null): void {
+  let first: TreeNode | null = null, second: TreeNode | null = null, prev: TreeNode | null = null;
+  const inorder = (n: TreeNode | null): void => {
+    if (!n) return;
+    inorder(n.left);
+    if (prev && prev.val > n.val) {
+      if (!first) first = prev;
+      second = n;
+    }
+    prev = n;
+    inorder(n.right);
+  };
+  inorder(root);
+  if (first && second) {
+    const t = (first as TreeNode).val;
+    (first as TreeNode).val = (second as TreeNode).val;
+    (second as TreeNode).val = t;
+  }
+}
+```
+
+**Java:**
+```java
+class Solution {
+    private TreeNode first, second, prev;
+    public void recoverTree(TreeNode root) {
+        inorder(root);
+        int t = first.val; first.val = second.val; second.val = t;
+    }
+    private void inorder(TreeNode n) {
+        if (n == null) return;
+        inorder(n.left);
+        if (prev != null && prev.val > n.val) {
+            if (first == null) first = prev;
+            second = n;
+        }
+        prev = n;
+        inorder(n.right);
+    }
+}
+```
+
+**Key points:**
+- Two swapped nodes create either one or two "dips" in the inorder sequence.
+- `first` is set on the earlier dip; `second` keeps updating to capture the latter swap.
+- Morris traversal removes the O(h) recursion stack for true O(1) extra space.
+
+**Tags:** #algorithm
+
+---
+
+### 15. Kth Smallest Element in a BST
+
+**Difficulty:** Medium
+**Topics:** tree, bst, inorder
+**Position:** ICT4
+**Years:** ICT3-ICT4
+
+**Question:** Return the k-th smallest element of a BST.
+
+**Approach:** Iterative inorder using a stack: push left spine, pop, decrement k; if k == 0 return node.val; go right. O(h + k) time, O(h) space. Follow-up: with frequent inserts/deletes, augment nodes with subtree count for O(h) lookup.
+
+**Python:**
+```python
+def kth_smallest(root: TreeNode | None, k: int) -> int:
+    stack: list[TreeNode] = []
+    cur = root
+    while cur or stack:
+        while cur:
+            stack.append(cur)
+            cur = cur.left
+        cur = stack.pop()
+        k -= 1
+        if k == 0:
+            return cur.val
+        cur = cur.right
+    return -1
+```
+
+**TypeScript:**
+```typescript
+function kthSmallest(root: TreeNode | null, k: number): number {
+  const stack: TreeNode[] = [];
+  let cur = root;
+  while (cur || stack.length) {
+    while (cur) { stack.push(cur); cur = cur.left; }
+    cur = stack.pop()!;
+    if (--k === 0) return cur.val;
+    cur = cur.right;
+  }
+  return -1;
+}
+```
+
+**Java:**
+```java
+import java.util.*;
+class Solution {
+    public int kthSmallest(TreeNode root, int k) {
+        Deque<TreeNode> stack = new ArrayDeque<>();
+        TreeNode cur = root;
+        while (cur != null || !stack.isEmpty()) {
+            while (cur != null) { stack.push(cur); cur = cur.left; }
+            cur = stack.pop();
+            if (--k == 0) return cur.val;
+            cur = cur.right;
+        }
+        return -1;
+    }
+}
+```
+
+**Key points:**
+- Inorder traversal on a BST yields keys in sorted order.
+- Iterative form avoids recursion stack overflow on skewed trees.
+- For dynamic trees, augment each node with subtree size for true O(h) lookup.
+
+**Tags:** #algorithm
+
+---
+
+### 16. Inorder Successor in BST
+
+**Difficulty:** Medium
+**Topics:** tree, bst
+**Position:** ICT4
+**Years:** ICT3-ICT4
+
+**Question:** Given a BST node `p`, return its inorder successor (smallest node larger than p).
+
+**Approach:** If `p.right` exists, successor is leftmost of `p.right`. Else, walk from root: track the last node where we went left. O(h) time, O(1) space.
+
+**Python:**
+```python
+def inorder_successor(root: TreeNode | None, p: TreeNode) -> TreeNode | None:
+    if p.right:
+        cur = p.right
+        while cur.left:
+            cur = cur.left
+        return cur
+    succ: TreeNode | None = None
+    cur = root
+    while cur:
+        if p.val < cur.val:
+            succ = cur
+            cur = cur.left
+        else:
+            cur = cur.right
+    return succ
+```
+
+**TypeScript:**
+```typescript
+function inorderSuccessor(root: TreeNode | null, p: TreeNode): TreeNode | null {
+  if (p.right) {
+    let cur = p.right;
+    while (cur.left) cur = cur.left;
+    return cur;
+  }
+  let succ: TreeNode | null = null, cur = root;
+  while (cur) {
+    if (p.val < cur.val) { succ = cur; cur = cur.left; }
+    else cur = cur.right;
+  }
+  return succ;
+}
+```
+
+**Java:**
+```java
+class Solution {
+    public TreeNode inorderSuccessor(TreeNode root, TreeNode p) {
+        if (p.right != null) {
+            TreeNode cur = p.right;
+            while (cur.left != null) cur = cur.left;
+            return cur;
+        }
+        TreeNode succ = null, cur = root;
+        while (cur != null) {
+            if (p.val < cur.val) { succ = cur; cur = cur.left; }
+            else cur = cur.right;
+        }
+        return succ;
+    }
+}
+```
+
+**Key points:**
+- The two cases (has right child vs not) cover all BST shapes.
+- The "last left turn" rule captures the smallest ancestor greater than `p`.
+- O(h) without parent pointers; O(1) with them.
+
+**Tags:** #algorithm
+
+---
+
+### 17. Same Tree
+
+**Difficulty:** Easy
+**Topics:** tree, dfs, recursion
+**Position:** ICT3
+**Years:** ICT3
+
+**Question:** Determine whether two binary trees are structurally identical with equal values.
+
+**Approach:** Recursion: both null -> true; one null -> false; values differ -> false; else recurse on left and right children. O(min(n, m)) time, O(h) stack.
+
+**Python:**
+```python
+def is_same_tree(p: TreeNode | None, q: TreeNode | None) -> bool:
+    if p is None and q is None:
+        return True
+    if p is None or q is None or p.val != q.val:
+        return False
+    return is_same_tree(p.left, q.left) and is_same_tree(p.right, q.right)
+```
+
+**TypeScript:**
+```typescript
+function isSameTree(p: TreeNode | null, q: TreeNode | null): boolean {
+  if (!p && !q) return true;
+  if (!p || !q || p.val !== q.val) return false;
+  return isSameTree(p.left, q.left) && isSameTree(p.right, q.right);
+}
+```
+
+**Java:**
+```java
+class Solution {
+    public boolean isSameTree(TreeNode p, TreeNode q) {
+        if (p == null && q == null) return true;
+        if (p == null || q == null || p.val != q.val) return false;
+        return isSameTree(p.left, q.left) && isSameTree(p.right, q.right);
+    }
+}
+```
+
+**Key points:**
+- Both null is the success base case; one null implies structural mismatch.
+- Value mismatch short-circuits before recursing further.
+- Iterative lockstep BFS is an equivalent alternative without stack growth.
+
+**Tags:** #algorithm
+
+---
+
+### 18. Sum Root to Leaf Numbers
+
+**Difficulty:** Medium
+**Topics:** tree, dfs, recursion
+**Position:** ICT3
+**Years:** ICT3-ICT4
+
+**Question:** Each root-to-leaf path represents a number (digits along path). Return the sum of all root-to-leaf numbers.
+
+**Approach:** DFS carrying current accumulated number `cur = cur*10 + node.val`. At leaf, add `cur` to total. O(n) time, O(h) space.
+
+**Python:**
+```python
+def sum_numbers(root: TreeNode | None) -> int:
+    def dfs(node: TreeNode | None, cur: int) -> int:
+        if node is None:
+            return 0
+        cur = cur * 10 + node.val
+        if not node.left and not node.right:
+            return cur
+        return dfs(node.left, cur) + dfs(node.right, cur)
+    return dfs(root, 0)
+```
+
+**TypeScript:**
+```typescript
+function sumNumbers(root: TreeNode | null): number {
+  const dfs = (n: TreeNode | null, cur: number): number => {
+    if (!n) return 0;
+    cur = cur * 10 + n.val;
+    if (!n.left && !n.right) return cur;
+    return dfs(n.left, cur) + dfs(n.right, cur);
+  };
+  return dfs(root, 0);
+}
+```
+
+**Java:**
+```java
+class Solution {
+    public int sumNumbers(TreeNode root) { return dfs(root, 0); }
+    private int dfs(TreeNode n, int cur) {
+        if (n == null) return 0;
+        cur = cur * 10 + n.val;
+        if (n.left == null && n.right == null) return cur;
+        return dfs(n.left, cur) + dfs(n.right, cur);
+    }
+}
+```
+
+**Key points:**
+- Carry the running number down the call stack rather than mutating shared state.
+- Add to total only at leaves to avoid double-counting partial paths.
+- An empty tree contributes 0 by base case.
+
+**Tags:** #algorithm
+
+---
+
+### 19. Path Sum
+
+**Difficulty:** Easy
+**Topics:** tree, dfs, recursion
+**Position:** ICT3
+**Years:** ICT3
+
+**Question:** Given a binary tree and `targetSum`, determine if there is a root-to-leaf path summing to `targetSum`.
+
+**Approach:** DFS subtracting `node.val` from remaining; at leaf, check if remaining equals 0. Be careful with null vs leaf: null is not a leaf. O(n) time, O(h) space.
+
+**Python:**
+```python
+def has_path_sum(root: TreeNode | None, target_sum: int) -> bool:
+    if root is None:
+        return False
+    if not root.left and not root.right:
+        return target_sum == root.val
+    remaining = target_sum - root.val
+    return has_path_sum(root.left, remaining) or has_path_sum(root.right, remaining)
+```
+
+**TypeScript:**
+```typescript
+function hasPathSum(root: TreeNode | null, targetSum: number): boolean {
+  if (!root) return false;
+  if (!root.left && !root.right) return targetSum === root.val;
+  const remaining = targetSum - root.val;
+  return hasPathSum(root.left, remaining) || hasPathSum(root.right, remaining);
+}
+```
+
+**Java:**
+```java
+class Solution {
+    public boolean hasPathSum(TreeNode root, int targetSum) {
+        if (root == null) return false;
+        if (root.left == null && root.right == null) return targetSum == root.val;
+        int remaining = targetSum - root.val;
+        return hasPathSum(root.left, remaining) || hasPathSum(root.right, remaining);
+    }
+}
+```
+
+**Key points:**
+- The path must end at a leaf — null children alone don't satisfy the constraint.
+- Subtract on the way down, compare at the leaf.
+- Short-circuiting `or` cuts off unnecessary subtree traversals.
+
+**Tags:** #algorithm
+
+---
+
+### 20. Convert Sorted Array to Binary Search Tree
+
+**Difficulty:** Easy
+**Topics:** tree, bst, recursion, divide-and-conquer
+**Position:** ICT3
+**Years:** ICT3
+
+**Question:** Given a sorted ascending array, build a height-balanced BST.
+
+**Approach:** Recursion: pick `mid = (l+r)/2` as root, recurse on left half and right half. O(n) time, O(log n) stack. Choosing left-mid vs right-mid gives different valid trees.
+
+**Python:**
+```python
+def sorted_array_to_bst(nums: list[int]) -> TreeNode | None:
+    def build(l: int, r: int) -> TreeNode | None:
+        if l > r:
+            return None
+        mid = (l + r) // 2
+        node = TreeNode(nums[mid])
+        node.left = build(l, mid - 1)
+        node.right = build(mid + 1, r)
+        return node
+    return build(0, len(nums) - 1)
+```
+
+**TypeScript:**
+```typescript
+function sortedArrayToBST(nums: number[]): TreeNode | null {
+  const build = (l: number, r: number): TreeNode | null => {
+    if (l > r) return null;
+    const mid = (l + r) >> 1;
+    const node = new TreeNode(nums[mid]);
+    node.left = build(l, mid - 1);
+    node.right = build(mid + 1, r);
+    return node;
+  };
+  return build(0, nums.length - 1);
+}
+```
+
+**Java:**
+```java
+class Solution {
+    public TreeNode sortedArrayToBST(int[] nums) { return build(nums, 0, nums.length - 1); }
+    private TreeNode build(int[] nums, int l, int r) {
+        if (l > r) return null;
+        int mid = (l + r) >>> 1;
+        TreeNode node = new TreeNode(nums[mid]);
+        node.left = build(nums, l, mid - 1);
+        node.right = build(nums, mid + 1, r);
+        return node;
+    }
+}
+```
+
+**Key points:**
+- Picking the middle as root keeps subtree sizes balanced within one.
+- Sorted input guarantees BST property automatically.
+- Either floor or ceiling middle yields a valid height-balanced result.
+
+**Tags:** #algorithm
+
+---
+
+## Hash Table
+
+### 21. Word Pattern
+
+**Difficulty:** Easy
+**Topics:** strings, hashmap
+**Position:** ICT3
+**Years:** ICT3
+
+**Question:** Given a `pattern` and a string `s`, determine if `s` follows the pattern (bijection between letters and space-separated words).
+
+**Approach:** Two maps: char->word and word->char. Walk pairs in lockstep; reject on any mapping conflict. Reject if lengths differ. O(n) time, O(k) space.
+
+**Python:**
+```python
+def word_pattern(pattern: str, s: str) -> bool:
+    words = s.split()
+    if len(pattern) != len(words):
+        return False
+    c2w: dict[str, str] = {}
+    w2c: dict[str, str] = {}
+    for c, w in zip(pattern, words):
+        if c in c2w and c2w[c] != w: return False
+        if w in w2c and w2c[w] != c: return False
+        c2w[c] = w
+        w2c[w] = c
+    return True
+```
+
+**TypeScript:**
+```typescript
+function wordPattern(pattern: string, s: string): boolean {
+  const words = s.split(" ");
+  if (pattern.length !== words.length) return false;
+  const c2w = new Map<string, string>();
+  const w2c = new Map<string, string>();
+  for (let i = 0; i < pattern.length; i++) {
+    const c = pattern[i], w = words[i];
+    if (c2w.has(c) && c2w.get(c) !== w) return false;
+    if (w2c.has(w) && w2c.get(w) !== c) return false;
+    c2w.set(c, w);
+    w2c.set(w, c);
+  }
+  return true;
+}
+```
+
+**Java:**
+```java
+import java.util.*;
+class Solution {
+    public boolean wordPattern(String pattern, String s) {
+        String[] words = s.split(" ");
+        if (pattern.length() != words.length) return false;
+        Map<Character, String> c2w = new HashMap<>();
+        Map<String, Character> w2c = new HashMap<>();
+        for (int i = 0; i < pattern.length(); i++) {
+            char c = pattern.charAt(i);
+            String w = words[i];
+            if (c2w.containsKey(c) && !c2w.get(c).equals(w)) return false;
+            if (w2c.containsKey(w) && w2c.get(w) != c) return false;
+            c2w.put(c, w);
+            w2c.put(w, c);
+        }
+        return true;
+    }
+}
+```
+
+**Key points:**
+- Two-direction mapping enforces the bijection requirement.
+- Length mismatch is the cheapest early reject.
+- O(n) time over the longer of the two inputs.
+
+**Tags:** #algorithm
+
+---
+
+### 22. Isomorphic Strings
+
+**Difficulty:** Easy
+**Topics:** strings, hashmap
+**Position:** ICT3
+**Years:** ICT3
+
+**Question:** Given `s` and `t`, determine if characters of `s` can be replaced to get `t` preserving order (bijection).
+
+**Approach:** Two arrays/maps for last-seen index of each char in s and in t. At each i, the indices must match (both -1 or both equal). Update. O(n) time, O(1) space (fixed alphabet).
+
+**Python:**
+```python
+def is_isomorphic(s: str, t: str) -> bool:
+    if len(s) != len(t):
+        return False
+    s2t: dict[str, str] = {}
+    t2s: dict[str, str] = {}
+    for a, b in zip(s, t):
+        if s2t.get(a, b) != b or t2s.get(b, a) != a:
+            return False
+        s2t[a] = b
+        t2s[b] = a
+    return True
+```
+
+**TypeScript:**
+```typescript
+function isIsomorphic(s: string, t: string): boolean {
+  if (s.length !== t.length) return false;
+  const s2t = new Map<string, string>();
+  const t2s = new Map<string, string>();
+  for (let i = 0; i < s.length; i++) {
+    const a = s[i], b = t[i];
+    if ((s2t.has(a) && s2t.get(a) !== b) || (t2s.has(b) && t2s.get(b) !== a)) return false;
+    s2t.set(a, b);
+    t2s.set(b, a);
+  }
+  return true;
+}
+```
+
+**Java:**
+```java
+import java.util.*;
+class Solution {
+    public boolean isIsomorphic(String s, String t) {
+        if (s.length() != t.length()) return false;
+        Map<Character, Character> s2t = new HashMap<>();
+        Map<Character, Character> t2s = new HashMap<>();
+        for (int i = 0; i < s.length(); i++) {
+            char a = s.charAt(i), b = t.charAt(i);
+            if (s2t.containsKey(a) && s2t.get(a) != b) return false;
+            if (t2s.containsKey(b) && t2s.get(b) != a) return false;
+            s2t.put(a, b);
+            t2s.put(b, a);
+        }
+        return true;
+    }
+}
+```
+
+**Key points:**
+- Both directions must hold; otherwise two `s` chars could map to one `t` char.
+- Use `get(...)` with default to combine "missing" and "matching" checks succinctly.
+- Length check first prevents partial-string false positives.
+
+**Tags:** #algorithm
+
+---
+
+### 23. Valid Anagram
+
+**Difficulty:** Easy
+**Topics:** strings, hashmap, sorting
+**Position:** ICT3
+**Years:** ICT3
+
+**Question:** Given `s` and `t`, determine if `t` is an anagram of `s`.
+
+**Approach:** Count frequencies (array of 26 for lowercase ASCII). Increment for s, decrement for t; check all zero. O(n) time, O(1) space. Sort-and-compare is O(n log n). For Unicode, use a hashmap.
+
+**Python:**
+```python
+def is_anagram(s: str, t: str) -> bool:
+    if len(s) != len(t):
+        return False
+    cnt = [0] * 26
+    for a, b in zip(s, t):
+        cnt[ord(a) - 97] += 1
+        cnt[ord(b) - 97] -= 1
+    return all(c == 0 for c in cnt)
+```
+
+**TypeScript:**
+```typescript
+function isAnagram(s: string, t: string): boolean {
+  if (s.length !== t.length) return false;
+  const cnt = new Array(26).fill(0);
+  for (let i = 0; i < s.length; i++) {
+    cnt[s.charCodeAt(i) - 97]++;
+    cnt[t.charCodeAt(i) - 97]--;
+  }
+  return cnt.every(c => c === 0);
+}
+```
+
+**Java:**
+```java
+class Solution {
+    public boolean isAnagram(String s, String t) {
+        if (s.length() != t.length()) return false;
+        int[] cnt = new int[26];
+        for (int i = 0; i < s.length(); i++) {
+            cnt[s.charAt(i) - 'a']++;
+            cnt[t.charAt(i) - 'a']--;
+        }
+        for (int c : cnt) if (c != 0) return false;
+        return true;
+    }
+}
+```
+
+**Key points:**
+- Combined increment/decrement avoids a second pass.
+- Length mismatch is an early O(1) reject.
+- For Unicode, switch to a hashmap keyed by code point.
+
+**Tags:** #algorithm
+
+---
+
+## Dynamic Programming
+
+### 24. Longest Palindromic Substring
+
+**Difficulty:** Medium
+**Topics:** strings, dp, expand-around-center
+**Position:** SWE
+**Years:** ICT3-ICT4
+
+**Question:** Given a string `s`, return the longest palindromic substring.
+
+**Approach:** Expand around center — for each index i, try odd-length (center=i) and even-length (center between i and i+1) expansions, track best. O(n²) time, O(1) space. Manacher's is O(n) but rarely required. Watch off-by-one for length / substring indices.
+
+**Python:**
+```python
+def longest_palindrome(s: str) -> str:
+    def grow(l: int, r: int) -> tuple[int, int]:
+        while l >= 0 and r < len(s) and s[l] == s[r]:
+            l -= 1; r += 1
+        return l + 1, r - 1
+    bl, br = 0, 0
+    for i in range(len(s)):
+        for l, r in (grow(i, i), grow(i, i + 1)):
+            if r - l > br - bl:
+                bl, br = l, r
+    return s[bl:br + 1]
+```
+
+**TypeScript:**
+```typescript
+function longestPalindrome(s: string): string {
+  const grow = (l: number, r: number): [number, number] => {
+    while (l >= 0 && r < s.length && s[l] === s[r]) { l--; r++; }
+    return [l + 1, r - 1];
+  };
+  let bl = 0, br = 0;
+  for (let i = 0; i < s.length; i++) {
+    for (const [l, r] of [grow(i, i), grow(i, i + 1)]) {
+      if (r - l > br - bl) { bl = l; br = r; }
+    }
+  }
+  return s.slice(bl, br + 1);
+}
+```
+
+**Java:**
+```java
+class Solution {
+    private int bl = 0, br = 0;
+    public String longestPalindrome(String s) {
+        for (int i = 0; i < s.length(); i++) { grow(s, i, i); grow(s, i, i + 1); }
+        return s.substring(bl, br + 1);
+    }
+    private void grow(String s, int l, int r) {
+        while (l >= 0 && r < s.length() && s.charAt(l) == s.charAt(r)) { l--; r++; }
+        l++; r--;
+        if (r - l > br - bl) { bl = l; br = r; }
+    }
+}
+```
+
+**Key points:**
+- Two center types cover odd and even palindromes uniformly.
+- Track the best window by length difference, not by recomputing slices.
+- Manacher's algorithm reaches O(n) but the constant factor and code length rarely pay off.
+
+**Follow-ups:**
+- Count *all* palindromic substrings, not just the longest.
+- Palindrome partitioning — split `s` into minimum palindrome pieces.
+- Longest palindromic *subsequence* (different problem, LCS-style DP).
+- Apple-specific: implement Manacher's and explain why O(n) matters.
+
+**Common Pitfalls:**
+- Returning `r - l` length without the `+ 1`.
+- Forgetting the even-center expansion — misses palindromes like "abba".
+
+**Tags:** #algorithm
+
+---
+
+### 25. Coin Change
+
+**Difficulty:** Medium
+**Topics:** dp, greedy
+**Position:** SWE
+**Years:** ICT3-ICT4
+
+**Question:** Given coin denominations and an amount, return the fewest coins needed to make that amount, or -1 if impossible.
+
+**Approach:** Bottom-up DP. `dp[i]` = min coins to make `i`; `dp[0] = 0`, `dp[i] = min(dp[i - c] + 1)` for each coin c <= i. O(amount * coins). Greedy fails for arbitrary denominations (e.g., [1, 3, 4] for 6 → greedy gives 4+1+1=3, optimal is 3+3=2).
+
+**Python:**
+```python
+def coin_change(coins: list[int], amount: int) -> int:
+    INF = amount + 1
+    dp = [0] + [INF] * amount
+    for i in range(1, amount + 1):
+        for c in coins:
+            if c <= i and dp[i - c] + 1 < dp[i]:
+                dp[i] = dp[i - c] + 1
+    return -1 if dp[amount] == INF else dp[amount]
+```
+
+**TypeScript:**
+```typescript
+function coinChange(coins: number[], amount: number): number {
+  const INF = amount + 1;
+  const dp = new Array(amount + 1).fill(INF);
+  dp[0] = 0;
+  for (let i = 1; i <= amount; i++) {
+    for (const c of coins) {
+      if (c <= i && dp[i - c] + 1 < dp[i]) dp[i] = dp[i - c] + 1;
+    }
+  }
+  return dp[amount] === INF ? -1 : dp[amount];
+}
+```
+
+**Java:**
+```java
+import java.util.Arrays;
+class Solution {
+    public int coinChange(int[] coins, int amount) {
+        int inf = amount + 1;
+        int[] dp = new int[amount + 1];
+        Arrays.fill(dp, inf);
+        dp[0] = 0;
+        for (int i = 1; i <= amount; i++) {
+            for (int c : coins) {
+                if (c <= i && dp[i - c] + 1 < dp[i]) dp[i] = dp[i - c] + 1;
+            }
+        }
+        return dp[amount] == inf ? -1 : dp[amount];
+    }
+}
+```
+
+**Key points:**
+- Sentinel `amount + 1` is safe because the answer cannot exceed `amount` (using all 1-coins if available).
+- Order coins inner, amount outer for the unbounded knapsack pattern.
+- Greedy only works when the denomination set is canonical (e.g., USD); always validate.
+
+**Follow-ups:**
+- Count the *number of ways* to make the amount (Coin Change II) — different DP order.
+- Each coin usable at most once — classic 0/1 knapsack.
+- Reconstruct one optimal coin set, not just the count.
+- Huge `amount` with small coin set — BFS-on-graph variant may be faster.
+
+**Common Pitfalls:**
+- Swapping the loop order produces "count of combinations" rather than "min coins".
+- Returning `dp[amount]` when it's still `INF` — must remap to -1.
+
+**Tags:** #algorithm
+
+---
+
+### 26. Counting Bits
+
+**Difficulty:** Easy
+**Topics:** bit-manipulation, dp
+**Position:** ICT3
+**Years:** ICT3-ICT4
+
+**Question:** Given n, return an array `ans[i]` = number of 1-bits in `i` for 0 <= i <= n.
+
+**Approach:** DP using `ans[i] = ans[i >> 1] + (i & 1)`, or `ans[i] = ans[i & (i-1)] + 1`. O(n) time, O(n) space (output).
+
+**Python:**
+```python
+def count_bits(n: int) -> list[int]:
+    ans = [0] * (n + 1)
+    for i in range(1, n + 1):
+        ans[i] = ans[i >> 1] + (i & 1)
+    return ans
+```
+
+**TypeScript:**
+```typescript
+function countBits(n: number): number[] {
+  const ans = new Array(n + 1).fill(0);
+  for (let i = 1; i <= n; i++) {
+    ans[i] = ans[i >> 1] + (i & 1);
+  }
+  return ans;
+}
+```
+
+**Java:**
+```java
+class Solution {
+    public int[] countBits(int n) {
+        int[] ans = new int[n + 1];
+        for (int i = 1; i <= n; i++) ans[i] = ans[i >> 1] + (i & 1);
+        return ans;
+    }
+}
+```
+
+**Key points:**
+- `i >> 1` removes the lowest bit, so `bits(i) = bits(i/2) + low_bit(i)`.
+- Building from `ans[0] = 0` upward yields each entry in O(1).
+- Alternative `ans[i] = ans[i & (i-1)] + 1` uses Kernighan's trick.
+
+**Tags:** #algorithm
+
+---
+
+### 27. Maximum Product Subarray
+
+**Difficulty:** Medium
+**Topics:** arrays, dp
+**Position:** ICT4
+**Years:** ICT3-ICT4
+
+**Question:** Find the contiguous subarray with the largest product.
+
+**Approach:** Track running `maxProd` and `minProd` (negative * negative can become big). At each step, candidates are `nums[i]`, `maxProd * nums[i]`, `minProd * nums[i]`. Update both. Track global max. O(n) time, O(1) space.
+
+**Python:**
+```python
+def max_product(nums: list[int]) -> int:
+    hi = lo = best = nums[0]
+    for x in nums[1:]:
+        if x < 0:
+            hi, lo = lo, hi
+        hi = max(x, hi * x)
+        lo = min(x, lo * x)
+        best = max(best, hi)
+    return best
+```
+
+**TypeScript:**
+```typescript
+function maxProduct(nums: number[]): number {
+  let hi = nums[0], lo = nums[0], best = nums[0];
+  for (let i = 1; i < nums.length; i++) {
+    const x = nums[i];
+    if (x < 0) { [hi, lo] = [lo, hi]; }
+    hi = Math.max(x, hi * x);
+    lo = Math.min(x, lo * x);
+    best = Math.max(best, hi);
+  }
+  return best;
+}
+```
+
+**Java:**
+```java
+class Solution {
+    public int maxProduct(int[] nums) {
+        int hi = nums[0], lo = nums[0], best = nums[0];
+        for (int i = 1; i < nums.length; i++) {
+            int x = nums[i];
+            if (x < 0) { int t = hi; hi = lo; lo = t; }
+            hi = Math.max(x, hi * x);
+            lo = Math.min(x, lo * x);
+            best = Math.max(best, hi);
+        }
+        return best;
+    }
+}
+```
+
+**Key points:**
+- Swap hi/lo on a negative element so multiplication propagates correctly.
+- Tracking only the max would miss negative-negative product opportunities.
+- Encountering a zero resets both hi and lo to the current element.
+
+**Tags:** #algorithm
+
+---
+
+### 28. Unique Paths
+
+**Difficulty:** Medium
+**Topics:** dp, combinatorics
+**Position:** ICT3
+**Years:** ICT3
+
+**Question:** In an m x n grid, a robot moves only right or down from top-left to bottom-right. How many unique paths?
+
+**Approach:** DP `dp[i][j] = dp[i-1][j] + dp[i][j-1]`, base `dp[0][*] = dp[*][0] = 1`. Roll to 1D for O(n) space. Closed form: C(m+n-2, m-1) for math fans. O(mn) time.
+
+**Python:**
+```python
+def unique_paths(m: int, n: int) -> int:
+    row = [1] * n
+    for _ in range(1, m):
+        for j in range(1, n):
+            row[j] += row[j - 1]
+    return row[-1]
+```
+
+**TypeScript:**
+```typescript
+function uniquePaths(m: number, n: number): number {
+  const row = new Array(n).fill(1);
+  for (let i = 1; i < m; i++) {
+    for (let j = 1; j < n; j++) {
+      row[j] += row[j - 1];
+    }
+  }
+  return row[n - 1];
+}
+```
+
+**Java:**
+```java
+class Solution {
+    public int uniquePaths(int m, int n) {
+        int[] row = new int[n];
+        java.util.Arrays.fill(row, 1);
+        for (int i = 1; i < m; i++) {
+            for (int j = 1; j < n; j++) row[j] += row[j - 1];
+        }
+        return row[n - 1];
+    }
+}
+```
+
+**Key points:**
+- Rolling array reduces memory from O(mn) to O(n).
+- Each cell depends only on the row above (now `row[j]`) and the left neighbor (`row[j-1]`).
+- The closed-form C(m+n-2, m-1) is O(min(m, n)) if precision permits.
+
+**Tags:** #algorithm
+
+---
+
+### 29. Minimum Path Sum
+
+**Difficulty:** Medium
+**Topics:** dp, grid
+**Position:** ICT3
+**Years:** ICT3-ICT4
+
+**Question:** Given an m x n grid of non-negative numbers, find a path from top-left to bottom-right minimizing the sum (moves: down or right).
+
+**Approach:** DP `dp[i][j] = grid[i][j] + min(dp[i-1][j], dp[i][j-1])`. In-place modification of `grid` gives O(1) extra. O(mn) time.
+
+**Python:**
+```python
+def min_path_sum(grid: list[list[int]]) -> int:
+    m, n = len(grid), len(grid[0])
+    for i in range(m):
+        for j in range(n):
+            if i == 0 and j == 0: continue
+            up = grid[i - 1][j] if i > 0 else float("inf")
+            left = grid[i][j - 1] if j > 0 else float("inf")
+            grid[i][j] += min(up, left)
+    return grid[m - 1][n - 1]
+```
+
+**TypeScript:**
+```typescript
+function minPathSum(grid: number[][]): number {
+  const m = grid.length, n = grid[0].length;
+  for (let i = 0; i < m; i++) {
+    for (let j = 0; j < n; j++) {
+      if (i === 0 && j === 0) continue;
+      const up = i > 0 ? grid[i - 1][j] : Infinity;
+      const left = j > 0 ? grid[i][j - 1] : Infinity;
+      grid[i][j] += Math.min(up, left);
+    }
+  }
+  return grid[m - 1][n - 1];
+}
+```
+
+**Java:**
+```java
+class Solution {
+    public int minPathSum(int[][] grid) {
+        int m = grid.length, n = grid[0].length;
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                if (i == 0 && j == 0) continue;
+                int up = i > 0 ? grid[i - 1][j] : Integer.MAX_VALUE;
+                int left = j > 0 ? grid[i][j - 1] : Integer.MAX_VALUE;
+                grid[i][j] += Math.min(up, left);
+            }
+        }
+        return grid[m - 1][n - 1];
+    }
+}
+```
+
+**Key points:**
+- Update grid in place to achieve O(1) extra space.
+- Use `Infinity` sentinels for out-of-bounds neighbors so `min` works without branches.
+- O(mn) time is asymptotically optimal — every cell must be visited.
+
+**Tags:** #algorithm
+
+---
+
+### 30. Triangle
+
+**Difficulty:** Medium
+**Topics:** dp, bottom-up
+**Position:** ICT4
+**Years:** ICT3-ICT4
+
+**Question:** Given a triangle of numbers, find the minimum path sum from top to bottom; at each step you may move to adjacent indices on the row below.
+
+**Approach:** Bottom-up DP. Start from the last row; for each level above, `dp[j] = triangle[i][j] + min(dp[j], dp[j+1])`. Result is `dp[0]`. O(n^2) time, O(n) space.
+
+**Python:**
+```python
+def minimum_total(triangle: list[list[int]]) -> int:
+    dp = triangle[-1][:]
+    for i in range(len(triangle) - 2, -1, -1):
+        for j in range(len(triangle[i])):
+            dp[j] = triangle[i][j] + min(dp[j], dp[j + 1])
+    return dp[0]
+```
+
+**TypeScript:**
+```typescript
+function minimumTotal(triangle: number[][]): number {
+  const dp = [...triangle[triangle.length - 1]];
+  for (let i = triangle.length - 2; i >= 0; i--) {
+    for (let j = 0; j < triangle[i].length; j++) {
+      dp[j] = triangle[i][j] + Math.min(dp[j], dp[j + 1]);
+    }
+  }
+  return dp[0];
+}
+```
+
+**Java:**
+```java
+import java.util.*;
+class Solution {
+    public int minimumTotal(List<List<Integer>> triangle) {
+        int n = triangle.size();
+        int[] dp = new int[n + 1];
+        for (int i = n - 1; i >= 0; i--) {
+            List<Integer> row = triangle.get(i);
+            for (int j = 0; j < row.size(); j++) {
+                dp[j] = row.get(j) + Math.min(dp[j], dp[j + 1]);
+            }
+        }
+        return dp[0];
+    }
+}
+```
+
+**Key points:**
+- Going bottom-up avoids needing to handle row-width edge cases on the way down.
+- A 1D dp array suffices because each cell depends on only two below.
+- Final answer accumulates into `dp[0]` after the loop.
+
+**Tags:** #algorithm
+
+---
+
+## Array / String
+
+### 31. Three Sum
 
 **Difficulty:** Medium
 **Topics:** arrays, two-pointer, sorting
@@ -123,7 +2287,7 @@ class Solution {
 
 ---
 
-### 2. Product of Array Except Self
+### 32. Product of Array Except Self
 
 **Difficulty:** Medium
 **Topics:** arrays, prefix-product
@@ -200,177 +2364,7 @@ class Solution {
 
 ---
 
-### 3. Merge Two Sorted Lists
-
-**Difficulty:** Easy
-**Topics:** linked-list, recursion
-**Position:** SWE
-**Years:** ICT3
-
-**Question:** Merge two sorted linked lists into one sorted list.
-
-**Approach:** Dummy head node, two pointers, append smaller, advance, repeat. Append remainder. O(n+m), O(1). Recursive variant: `merge(a, b) = a < b ? a + merge(a.next, b) : b + merge(a, b.next)` — clean but O(n+m) stack.
-
-**Python:**
-```python
-class ListNode:
-    def __init__(self, val: int = 0, next: "ListNode | None" = None) -> None:
-        self.val = val
-        self.next = next
-
-def merge_two_lists(a: ListNode | None, b: ListNode | None) -> ListNode | None:
-    dummy = ListNode()
-    tail = dummy
-    while a and b:
-        if a.val <= b.val:
-            tail.next, a = a, a.next
-        else:
-            tail.next, b = b, b.next
-        tail = tail.next
-    tail.next = a or b
-    return dummy.next
-```
-
-**TypeScript:**
-```typescript
-class ListNode {
-  val: number;
-  next: ListNode | null;
-  constructor(val = 0, next: ListNode | null = null) { this.val = val; this.next = next; }
-}
-
-function mergeTwoLists(a: ListNode | null, b: ListNode | null): ListNode | null {
-  const dummy = new ListNode();
-  let tail = dummy;
-  while (a && b) {
-    if (a.val <= b.val) { tail.next = a; a = a.next; }
-    else { tail.next = b; b = b.next; }
-    tail = tail.next!;
-  }
-  tail.next = a ?? b;
-  return dummy.next;
-}
-```
-
-**Java:**
-```java
-class ListNode {
-    int val; ListNode next;
-    ListNode() {}
-    ListNode(int val, ListNode next) { this.val = val; this.next = next; }
-}
-class Solution {
-    public ListNode mergeTwoLists(ListNode a, ListNode b) {
-        ListNode dummy = new ListNode(), tail = dummy;
-        while (a != null && b != null) {
-            if (a.val <= b.val) { tail.next = a; a = a.next; }
-            else { tail.next = b; b = b.next; }
-            tail = tail.next;
-        }
-        tail.next = (a != null) ? a : b;
-        return dummy.next;
-    }
-}
-```
-
-**Key points:**
-- Dummy head removes special-casing for the first node.
-- Append the non-null tail in O(1) once one list is consumed.
-- Stable ordering between equal values preserves list semantics.
-
-**Follow-ups:**
-- Merge K sorted lists — heap of heads, or pairwise merge in O(N log K).
-- Lists too large for memory — external merge on disk.
-- Lists are doubly linked — fix `prev` pointers without re-traversing.
-- In-place merge without dummy node — careful first-node selection.
-
-**Common Pitfalls:**
-- Forgetting to advance `tail` after attaching — builds a self-loop.
-- Not attaching the leftover tail (`tail.next = a or b`) — truncates the result.
-
-**Tags:** #algorithm
-
----
-
-### 4. Longest Palindromic Substring
-
-**Difficulty:** Medium
-**Topics:** strings, dp, expand-around-center
-**Position:** SWE
-**Years:** ICT3-ICT4
-
-**Question:** Given a string `s`, return the longest palindromic substring.
-
-**Approach:** Expand around center — for each index i, try odd-length (center=i) and even-length (center between i and i+1) expansions, track best. O(n²) time, O(1) space. Manacher's is O(n) but rarely required. Watch off-by-one for length / substring indices.
-
-**Python:**
-```python
-def longest_palindrome(s: str) -> str:
-    def grow(l: int, r: int) -> tuple[int, int]:
-        while l >= 0 and r < len(s) and s[l] == s[r]:
-            l -= 1; r += 1
-        return l + 1, r - 1
-    bl, br = 0, 0
-    for i in range(len(s)):
-        for l, r in (grow(i, i), grow(i, i + 1)):
-            if r - l > br - bl:
-                bl, br = l, r
-    return s[bl:br + 1]
-```
-
-**TypeScript:**
-```typescript
-function longestPalindrome(s: string): string {
-  const grow = (l: number, r: number): [number, number] => {
-    while (l >= 0 && r < s.length && s[l] === s[r]) { l--; r++; }
-    return [l + 1, r - 1];
-  };
-  let bl = 0, br = 0;
-  for (let i = 0; i < s.length; i++) {
-    for (const [l, r] of [grow(i, i), grow(i, i + 1)]) {
-      if (r - l > br - bl) { bl = l; br = r; }
-    }
-  }
-  return s.slice(bl, br + 1);
-}
-```
-
-**Java:**
-```java
-class Solution {
-    private int bl = 0, br = 0;
-    public String longestPalindrome(String s) {
-        for (int i = 0; i < s.length(); i++) { grow(s, i, i); grow(s, i, i + 1); }
-        return s.substring(bl, br + 1);
-    }
-    private void grow(String s, int l, int r) {
-        while (l >= 0 && r < s.length() && s.charAt(l) == s.charAt(r)) { l--; r++; }
-        l++; r--;
-        if (r - l > br - bl) { bl = l; br = r; }
-    }
-}
-```
-
-**Key points:**
-- Two center types cover odd and even palindromes uniformly.
-- Track the best window by length difference, not by recomputing slices.
-- Manacher's algorithm reaches O(n) but the constant factor and code length rarely pay off.
-
-**Follow-ups:**
-- Count *all* palindromic substrings, not just the longest.
-- Palindrome partitioning — split `s` into minimum palindrome pieces.
-- Longest palindromic *subsequence* (different problem, LCS-style DP).
-- Apple-specific: implement Manacher's and explain why O(n) matters.
-
-**Common Pitfalls:**
-- Returning `r - l` length without the `+ 1`.
-- Forgetting the even-center expansion — misses palindromes like "abba".
-
-**Tags:** #algorithm
-
----
-
-### 5. Implement strStr() / Find Substring
+### 33. Implement strStr() / Find Substring
 
 **Difficulty:** Easy
 **Topics:** strings, sliding-window, kmp
@@ -467,464 +2461,7 @@ class Solution {
 
 ---
 
-### 6. LRU Cache
-
-**Difficulty:** Medium
-**Topics:** ood, hashmap, linked-list
-**Position:** SWE
-**Years:** ICT3-ICT4
-
-**Question:** Design an LRU cache with O(1) `get` and `put`.
-
-**Approach:** Hashmap `key -> node` + doubly linked list (head=most recent, tail=oldest). On `get`, move node to head. On `put` overflow, drop tail. Apple may ask follow-up: make it thread-safe (lock per bucket, or compare-and-swap on Node).
-
-**Python:**
-```python
-from collections import OrderedDict
-
-class LRUCache:
-    def __init__(self, capacity: int) -> None:
-        self.cap = capacity
-        self.d: OrderedDict[int, int] = OrderedDict()
-
-    def get(self, key: int) -> int:
-        if key not in self.d:
-            return -1
-        self.d.move_to_end(key)
-        return self.d[key]
-
-    def put(self, key: int, value: int) -> None:
-        if key in self.d:
-            self.d.move_to_end(key)
-        self.d[key] = value
-        if len(self.d) > self.cap:
-            self.d.popitem(last=False)
-```
-
-**TypeScript:**
-```typescript
-class LRUCache {
-  private cap: number;
-  private m: Map<number, number>;
-  constructor(capacity: number) { this.cap = capacity; this.m = new Map(); }
-  get(key: number): number {
-    if (!this.m.has(key)) return -1;
-    const v = this.m.get(key)!;
-    this.m.delete(key); this.m.set(key, v);
-    return v;
-  }
-  put(key: number, value: number): void {
-    if (this.m.has(key)) this.m.delete(key);
-    this.m.set(key, value);
-    if (this.m.size > this.cap) {
-      const oldest = this.m.keys().next().value as number;
-      this.m.delete(oldest);
-    }
-  }
-}
-```
-
-**Java:**
-```java
-import java.util.*;
-class LRUCache extends LinkedHashMap<Integer, Integer> {
-    private final int cap;
-    public LRUCache(int capacity) {
-        super(capacity, 0.75f, true);
-        this.cap = capacity;
-    }
-    public int get(int key) { return getOrDefault(key, -1); }
-    public void put(int key, int value) { super.put(key, value); }
-    @Override
-    protected boolean removeEldestEntry(Map.Entry<Integer, Integer> eldest) {
-        return size() > cap;
-    }
-}
-```
-
-**Key points:**
-- Python `OrderedDict` and JS `Map` preserve insertion order — re-insert on access marks "most recent".
-- Eviction is just popping the first key in O(1).
-- Production code uses a hashmap + custom doubly linked list to keep pointers stable under concurrency.
-
-**Follow-ups:**
-- Make it thread-safe — lock per bucket vs single lock; discuss contention.
-- LFU (Least Frequently Used) variant — different data structures, harder eviction.
-- TTL-expiring entries layered on top of LRU.
-- Distributed LRU across nodes — consistent hashing + per-node local cache.
-
-**Common Pitfalls:**
-- Using a plain dict and scanning for the oldest — O(n) `put`, not O(1).
-- Forgetting to move on `get`, so reads don't count as recency.
-
-**Tags:** #algorithm
-
----
-
-### 7. Binary Tree Maximum Path Sum
-
-**Difficulty:** Hard
-**Topics:** tree, dp, recursion
-**Position:** SWE
-**Years:** ICT4
-
-**Question:** Given a non-empty binary tree, find the maximum path sum. A path may start and end at any nodes, not necessarily through the root.
-
-**Approach:** DFS returning "max gain from this node going down one side" (max(0, left), max(0, right) — discard negative). At each node, candidate full path through it = `node.val + leftGain + rightGain`; update global max. Return `node.val + max(leftGain, rightGain)` for parent. O(n).
-
-**Python:**
-```python
-class TreeNode:
-    def __init__(self, val: int = 0, left: "TreeNode | None" = None, right: "TreeNode | None" = None) -> None:
-        self.val = val; self.left = left; self.right = right
-
-def max_path_sum(root: TreeNode | None) -> int:
-    best = float("-inf")
-    def gain(node: TreeNode | None) -> int:
-        nonlocal best
-        if node is None:
-            return 0
-        l = max(0, gain(node.left))
-        r = max(0, gain(node.right))
-        best = max(best, node.val + l + r)
-        return node.val + max(l, r)
-    gain(root)
-    return int(best)
-```
-
-**TypeScript:**
-```typescript
-function maxPathSum(root: TreeNode | null): number {
-  let best = -Infinity;
-  const gain = (n: TreeNode | null): number => {
-    if (!n) return 0;
-    const l = Math.max(0, gain(n.left));
-    const r = Math.max(0, gain(n.right));
-    best = Math.max(best, n.val + l + r);
-    return n.val + Math.max(l, r);
-  };
-  gain(root);
-  return best;
-}
-```
-
-**Java:**
-```java
-class TreeNode {
-    int val; TreeNode left, right;
-    TreeNode(int val) { this.val = val; }
-}
-class Solution {
-    private int best = Integer.MIN_VALUE;
-    public int maxPathSum(TreeNode root) { gain(root); return best; }
-    private int gain(TreeNode n) {
-        if (n == null) return 0;
-        int l = Math.max(0, gain(n.left));
-        int r = Math.max(0, gain(n.right));
-        best = Math.max(best, n.val + l + r);
-        return n.val + Math.max(l, r);
-    }
-}
-```
-
-**Key points:**
-- Discard negative subtree contributions by clamping with `max(0, ...)`.
-- The "best" candidate at each node uses both children; the return value uses only one.
-- Initial best is `-Infinity` to handle all-negative trees correctly.
-
-**Follow-ups:**
-- Return the actual path (list of node values), not just the sum.
-- Maximum path sum that *must* go through the root.
-- Generalize to N-ary trees or DAGs.
-- Apple iOS quirk: deeply skewed trees blow the recursion stack — propose an iterative variant.
-
-**Common Pitfalls:**
-- Initializing `best` to 0 — wrong for all-negative trees.
-- Returning `node.val + l + r` to the parent instead of `node.val + max(l, r)` — produces invalid paths.
-
-**Tags:** #algorithm
-
----
-
-### 8. Coin Change
-
-**Difficulty:** Medium
-**Topics:** dp, greedy
-**Position:** SWE
-**Years:** ICT3-ICT4
-
-**Question:** Given coin denominations and an amount, return the fewest coins needed to make that amount, or -1 if impossible.
-
-**Approach:** Bottom-up DP. `dp[i]` = min coins to make `i`; `dp[0] = 0`, `dp[i] = min(dp[i - c] + 1)` for each coin c <= i. O(amount * coins). Greedy fails for arbitrary denominations (e.g., [1, 3, 4] for 6 → greedy gives 4+1+1=3, optimal is 3+3=2).
-
-**Python:**
-```python
-def coin_change(coins: list[int], amount: int) -> int:
-    INF = amount + 1
-    dp = [0] + [INF] * amount
-    for i in range(1, amount + 1):
-        for c in coins:
-            if c <= i and dp[i - c] + 1 < dp[i]:
-                dp[i] = dp[i - c] + 1
-    return -1 if dp[amount] == INF else dp[amount]
-```
-
-**TypeScript:**
-```typescript
-function coinChange(coins: number[], amount: number): number {
-  const INF = amount + 1;
-  const dp = new Array(amount + 1).fill(INF);
-  dp[0] = 0;
-  for (let i = 1; i <= amount; i++) {
-    for (const c of coins) {
-      if (c <= i && dp[i - c] + 1 < dp[i]) dp[i] = dp[i - c] + 1;
-    }
-  }
-  return dp[amount] === INF ? -1 : dp[amount];
-}
-```
-
-**Java:**
-```java
-import java.util.Arrays;
-class Solution {
-    public int coinChange(int[] coins, int amount) {
-        int inf = amount + 1;
-        int[] dp = new int[amount + 1];
-        Arrays.fill(dp, inf);
-        dp[0] = 0;
-        for (int i = 1; i <= amount; i++) {
-            for (int c : coins) {
-                if (c <= i && dp[i - c] + 1 < dp[i]) dp[i] = dp[i - c] + 1;
-            }
-        }
-        return dp[amount] == inf ? -1 : dp[amount];
-    }
-}
-```
-
-**Key points:**
-- Sentinel `amount + 1` is safe because the answer cannot exceed `amount` (using all 1-coins if available).
-- Order coins inner, amount outer for the unbounded knapsack pattern.
-- Greedy only works when the denomination set is canonical (e.g., USD); always validate.
-
-**Follow-ups:**
-- Count the *number of ways* to make the amount (Coin Change II) — different DP order.
-- Each coin usable at most once — classic 0/1 knapsack.
-- Reconstruct one optimal coin set, not just the count.
-- Huge `amount` with small coin set — BFS-on-graph variant may be faster.
-
-**Common Pitfalls:**
-- Swapping the loop order produces "count of combinations" rather than "min coins".
-- Returning `dp[amount]` when it's still `INF` — must remap to -1.
-
-**Tags:** #algorithm
-
----
-
-### 9. Design Apple Music (or Spotify-like)
-
-**Difficulty:** Hard
-**Topics:** system-design, cdn, drm, recommendation, offline, cloud
-**Position:** Senior SWE
-**Years:** ICT5
-
-**Question:** Design Apple Music: streaming, library, recommendations, offline mode, lossless audio.
-
-**Approach:** Audio files in blob storage + CDN, multiple bitrates (AAC 256kbps, lossless ALAC). DRM via FairPlay. Metadata sharded by track_id; user library (playlists, likes) sharded by user_id. Recommendations: offline two-tower embedding model + on-device re-ranking (Apple privacy lean). Offline downloads: client manages local cache with DRM license refresh. Discuss: cross-device sync (CloudKit), lossless streaming bandwidth, and how to preserve privacy by doing personalization on-device.
-
-**Follow-ups:**
-- Lossless streaming over a metered cellular plan — adaptive bitrate strategy.
-- Personalization without sending listen history to the server — federated learning?
-- Live radio / Apple Music Live — how does ingest + fanout change?
-- Spatial audio metadata pipeline and decoder negotiation.
-- DRM license server failure mode — how does playback degrade?
-
-**Common Pitfalls:**
-- Treating the recommendation pipeline as a single service — misses the offline/online split.
-- Skipping DRM entirely — unrealistic for a music service.
-
-**Tags:** #system-design
-
----
-
-### 10. Design iMessage
-
-**Difficulty:** Hard
-**Topics:** system-design, e2e-encryption, apns, multi-device
-**Position:** Senior SWE
-**Years:** ICT5
-
-**Question:** Design iMessage: end-to-end encrypted, multi-device delivery, fallback to SMS.
-
-**Approach:** Each device has its own keypair registered with Apple Push Service. Sender encrypts message N times (once per recipient device) and posts via APNS. Server stores ciphertext briefly until delivery, then deletes. Discuss: Identity Service maps phone/email → device list (this is the trust anchor, hence the Contact Key Verification feature), large group keys (sender key model), media (S3-like blob + per-message key), and graceful SMS fallback when recipient not on iMessage.
-
-**Follow-ups:**
-- New device added to a recipient's account — how does key distribution handle it?
-- Large group chats (>100) — sender keys vs pairwise; failure modes when a member rotates keys.
-- Message edit / unsend semantics under E2E — server can't enforce them.
-- Backup and restore — iCloud Backup contains keys, but you can opt out (Advanced Data Protection).
-- Spam / abuse detection without reading plaintext — metadata-only signals.
-
-**Common Pitfalls:**
-- Storing plaintext server-side "for delivery" — breaks E2E.
-- Assuming a single key per user — must handle a fan-out per device list.
-
-**Tags:** #system-design
-
----
-
-### 11. Design iCloud Photo Library
-
-**Difficulty:** Hard
-**Topics:** system-design, sync, dedup, ml-on-device, cloud
-**Position:** Senior SWE
-**Years:** ICT5
-
-**Question:** Design iCloud Photos: sync photos across devices, dedup, search by content, edit-on-one-device-sync-everywhere.
-
-**Approach:** Content-addressed blob storage (SHA-256 of original) for dedup across users (with privacy: hash includes per-user salt, no cross-user dedup if true E2E). Per-user CloudKit zone for metadata. Edits stored as non-destructive adjustments (small JSON) layered over the original. Content search via on-device ML (Apple's Photos uses on-device classification — embeddings stored as encrypted metadata, search runs locally). Multi-device sync via CKShare deltas. Discuss bandwidth (lazy fetch full-res, eager thumbnails) and Optimize Storage feature.
-
-**Tags:** #system-design
-
----
-
-### 12. Design a Notification Service (APNS-like)
-
-**Difficulty:** Hard
-**Topics:** system-design, push, persistent-connections, fanout
-**Position:** Senior SWE
-**Years:** ICT5
-
-**Question:** Design Apple Push Notification Service — a system that maintains a persistent connection to every active iOS device worldwide and delivers push notifications.
-
-**Approach:** Edge layer of stateful connection servers, each holding ~1M+ persistent TLS connections (tuned kernels). Devices keep-alive every ~20 min (battery-friendly). Producer apps POST notifications → gateway → routed (by device_token → connection server via consistent hashing) → delivered. Persistent queue (Kafka) for transient device offline state, with TTL drop. Discuss: TLS handshake amortization, NAT keep-alive, priority tiers, and dedup on multiple sends for the same alert.
-
-**Tags:** #system-design
-
----
-
-### 13. Design Find My (offline finding)
-
-**Difficulty:** Hard
-**Topics:** system-design, e2e-encryption, ble, privacy
-**Position:** Senior SWE
-**Years:** ICT5
-
-**Question:** Design Apple's Find My network — locate a lost device even when it's offline, without Apple knowing its location.
-
-**Approach:** Lost device emits a rotating BLE beacon derived from a public key (private key kept on owner's other Apple devices). Nearby iPhones detect, encrypt their location with the beacon's public key, and upload to Apple. Owner queries with the private key. Apple cannot decrypt — only the owner can. Trade-offs: server stores opaque ciphertext (large data volume), key rotation prevents long-term tracking, finder phones unwittingly relay. Discuss collision resistance, replay attacks, and how owner devices share the private key chain.
-
-**Tags:** #system-design
-
----
-
-### 14. Design a CDN
-
-**Difficulty:** Hard
-**Topics:** system-design, cdn, caching, dns, cloud
-**Position:** Senior SWE
-**Years:** ICT5
-
-**Question:** Design a CDN like Akamai or Apple's edge cache. Cover routing, cache hierarchy, and invalidation.
-
-**Approach:** Edge PoPs in major cities; user routed to nearest via GeoDNS or anycast BGP. Edge → regional cache → origin (tiered to amortize origin load). Cache key = URL + headers (Vary). Invalidation: purge API → propagates via pub/sub to all edges (eventual ~seconds). Origin pull for cache miss; signed URLs for private content. Discuss: cache stampede (request coalescing at edge), TLS termination at edge, and HTTP/3 / QUIC for last-mile.
-
-**Tags:** #system-design
-
----
-
-### 15. Tell me about a time you obsessed over a detail
-
-**Difficulty:** Medium
-**Topics:** behavioral, attention-to-detail, craft
-**Position:** SWE
-**Years:** ICT3-ICT4
-
-**Question:** Tell me about a time you went deep into a small detail others might have overlooked.
-
-**Approach:** Apple values craft — pick a story where the detail mattered to the user (latency shaved, animation jank fixed, accessibility bug nobody filed). STAR with emphasis on: (1) you noticed when others didn't, (2) you measured the impact (not just "it felt better"), (3) you advocated to spend the time. Avoid "I rewrote everything for purity" — that's not craft, that's vanity.
-
-**Tags:** #behavioral
-
----
-
-### 16. Time you had to balance speed and quality
-
-**Difficulty:** Medium
-**Topics:** behavioral, tradeoffs, judgment
-**Position:** Senior SWE
-**Years:** ICT5
-
-**Question:** Tell me about a time you had to make a trade-off between shipping fast and shipping well. How did you decide?
-
-**Approach:** Apple culture: ship when ready, not when scheduled. But they want pragmatism, not perfectionism. Show: (1) you defined the minimum bar explicitly (what's a P0 bug vs P2?), (2) you communicated trade-offs to PM/leadership, (3) you owned the post-ship follow-up to close the gap. Avoid "we slipped 3 months for polish" without strong user-impact justification.
-
-**Tags:** #behavioral
-
----
-
-### 17. Time you collaborated with a difficult cross-functional partner
-
-**Difficulty:** Medium
-**Topics:** behavioral, cross-functional, conflict
-**Position:** Senior SWE
-**Years:** ICT5
-
-**Question:** Tell me about a time you had a difficult working relationship with a designer, PM, or another engineer. How did you make it work?
-
-**Approach:** Apple has strong design and PM functions — engineers must collaborate effectively. Show: (1) you tried to understand their frame (design language, user research data), (2) you found a shared metric/goal, (3) you adjusted *your* communication, not just demanded they change. Bonus: the relationship turned into a productive partnership long-term.
-
-**Tags:** #behavioral
-
----
-
-### 18. Why do you want to work at Apple
-
-**Difficulty:** Easy
-**Topics:** behavioral, motivation, fit
-**Position:** SWE
-**Years:** ICT3-ICT5
-
-**Question:** Why Apple specifically, over <Google/Meta/Microsoft>?
-
-**Approach:** Don't say "stock" or "brand." Pick one of: (1) specific product you use and love (be specific about what), (2) Apple's privacy stance and how it aligns with your work values, (3) the integration of hardware+software you can't do elsewhere, (4) the team's specific mission. Have something concrete you've done that shows interest (e.g., contributed to Swift, built an iOS app, read Apple's ML research papers).
-
-**Tags:** #behavioral
-
----
-
-### 19. Frontend / web perf: optimize Largest Contentful Paint
-
-**Difficulty:** Hard
-**Topics:** web-perf, frontend, lcp
-**Position:** Frontend
-**Years:** ICT5
-
-**Question:** A marketing page on apple.com has an LCP of 4.5s on 3G. How do you get it under 2.5s?
-
-**Approach:** Identify the LCP element first (DevTools → Performance → LCP marker). Typical wins: (1) preload the LCP image with `<link rel=preload as=image>` + `fetchpriority=high`, (2) serve in AVIF/WebP with proper `srcset`, (3) eliminate render-blocking CSS — inline critical CSS, defer rest, (4) eliminate render-blocking JS — defer all non-critical, (5) use HTTP/2 push or 103 Early Hints, (6) server-side render the hero, (7) optimize TTFB (edge caching, fewer redirects). Measure with field RUM data, not just lab. Mention `loading=lazy` should *not* be on the LCP image (anti-pattern).
-
-**Tags:** #domain-knowledge
-
----
-
-### 20. On-device ML vs cloud ML trade-offs
-
-**Difficulty:** Medium
-**Topics:** ml, privacy, mobile, ood, cloud
-**Position:** Senior SWE
-**Years:** ICT5
-
-**Question:** A new feature needs ML inference on user data. Should it run on-device or in the cloud? Walk through the trade-offs.
-
-**Approach:** Apple's strong on-device bias is the cultural lens. Pros of on-device: privacy (data never leaves device), latency (no network round-trip), works offline, no server cost. Cons: model size constrained (must fit in tens of MB), can't share learning across users without federated learning, harder to update (must ship in OS). When cloud wins: model too large (LLMs), needs aggregate data, server-side personalization with explicit consent. Discuss hybrid (on-device candidate generation, cloud re-rank with hashed features) and Differential Privacy when uploading aggregate stats.
-
-**Tags:** #domain-knowledge
-
----
-
-### 21. Search in Rotated Sorted Array
+### 34. Search in Rotated Sorted Array
 
 **Difficulty:** Medium
 **Topics:** arrays, binary-search
@@ -1005,7 +2542,7 @@ class Solution {
 
 ---
 
-### 22. Find Minimum in Rotated Sorted Array
+### 35. Find Minimum in Rotated Sorted Array
 
 **Difficulty:** Medium
 **Topics:** arrays, binary-search
@@ -1066,7 +2603,7 @@ class Solution {
 
 ---
 
-### 23. First Bad Version
+### 36. First Bad Version
 
 **Difficulty:** Easy
 **Topics:** binary-search, api
@@ -1131,7 +2668,7 @@ public class Solution extends VersionControl {
 
 ---
 
-### 24. Sqrt(x)
+### 37. Sqrt(x)
 
 **Difficulty:** Easy
 **Topics:** binary-search, math
@@ -1193,7 +2730,7 @@ class Solution {
 
 ---
 
-### 25. Pow(x, n)
+### 38. Pow(x, n)
 
 **Difficulty:** Medium
 **Topics:** math, recursion, bit-manipulation
@@ -1258,7 +2795,7 @@ class Solution {
 
 ---
 
-### 26. Container With Most Water
+### 39. Container With Most Water
 
 **Difficulty:** Medium
 **Topics:** arrays, two-pointer
@@ -1320,7 +2857,7 @@ class Solution {
 
 ---
 
-### 27. 4Sum
+### 40. 4Sum
 
 **Difficulty:** Medium
 **Topics:** arrays, two-pointer, sorting
@@ -1422,7 +2959,7 @@ class Solution {
 
 ---
 
-### 28. Remove Duplicates from Sorted Array
+### 41. Remove Duplicates from Sorted Array
 
 **Difficulty:** Easy
 **Topics:** arrays, two-pointer
@@ -1484,1382 +3021,7 @@ class Solution {
 
 ---
 
-### 29. Remove Nth Node from End of List
-
-**Difficulty:** Medium
-**Topics:** linked-list, two-pointer
-**Position:** ICT3
-**Years:** ICT3
-
-**Question:** Remove the n-th node from the end of a singly linked list in one pass.
-
-**Approach:** Dummy head. Advance `fast` n+1 steps. Move `fast` and `slow` together until `fast` is null. `slow.next` is the node to remove; `slow.next = slow.next.next`. O(L) time, O(1) space.
-
-**Python:**
-```python
-def remove_nth_from_end(head: ListNode | None, n: int) -> ListNode | None:
-    dummy = ListNode(0, head)
-    fast: ListNode | None = dummy
-    slow: ListNode | None = dummy
-    for _ in range(n + 1):
-        fast = fast.next  # type: ignore
-    while fast:
-        fast = fast.next
-        slow = slow.next  # type: ignore
-    slow.next = slow.next.next  # type: ignore
-    return dummy.next
-```
-
-**TypeScript:**
-```typescript
-function removeNthFromEnd(head: ListNode | null, n: number): ListNode | null {
-  const dummy = new ListNode(0, head);
-  let fast: ListNode | null = dummy, slow: ListNode | null = dummy;
-  for (let i = 0; i < n + 1; i++) fast = fast!.next;
-  while (fast) { fast = fast.next; slow = slow!.next; }
-  slow!.next = slow!.next!.next;
-  return dummy.next;
-}
-```
-
-**Java:**
-```java
-class Solution {
-    public ListNode removeNthFromEnd(ListNode head, int n) {
-        ListNode dummy = new ListNode(0, head);
-        ListNode fast = dummy, slow = dummy;
-        for (int i = 0; i < n + 1; i++) fast = fast.next;
-        while (fast != null) { fast = fast.next; slow = slow.next; }
-        slow.next = slow.next.next;
-        return dummy.next;
-    }
-}
-```
-
-**Key points:**
-- Dummy head simplifies removal when the target is the original head.
-- Gap of `n + 1` lands `slow` on the node before the one to remove.
-- Single pass — no length precomputation needed.
-
-**Tags:** #algorithm
-
----
-
-### 30. Add Two Numbers (Linked List)
-
-**Difficulty:** Medium
-**Topics:** linked-list, math
-**Position:** ICT3
-**Years:** ICT3-ICT4
-
-**Question:** Two numbers stored as linked lists in reverse order (each node holds one digit). Return their sum as a linked list.
-
-**Approach:** Walk both lists with a carry. At each step, `sum = a + b + carry`; new node has `sum % 10`; carry = `sum / 10`. Continue until both lists exhausted and carry is 0. Use dummy head. O(max(n, m)) time.
-
-**Python:**
-```python
-def add_two_numbers(l1: ListNode | None, l2: ListNode | None) -> ListNode | None:
-    dummy = ListNode()
-    tail = dummy
-    carry = 0
-    while l1 or l2 or carry:
-        s = carry + (l1.val if l1 else 0) + (l2.val if l2 else 0)
-        carry, digit = divmod(s, 10)
-        tail.next = ListNode(digit)
-        tail = tail.next
-        if l1: l1 = l1.next
-        if l2: l2 = l2.next
-    return dummy.next
-```
-
-**TypeScript:**
-```typescript
-function addTwoNumbers(l1: ListNode | null, l2: ListNode | null): ListNode | null {
-  const dummy = new ListNode();
-  let tail = dummy, carry = 0;
-  while (l1 || l2 || carry) {
-    const s = carry + (l1?.val ?? 0) + (l2?.val ?? 0);
-    carry = Math.floor(s / 10);
-    tail.next = new ListNode(s % 10);
-    tail = tail.next;
-    l1 = l1?.next ?? null;
-    l2 = l2?.next ?? null;
-  }
-  return dummy.next;
-}
-```
-
-**Java:**
-```java
-class Solution {
-    public ListNode addTwoNumbers(ListNode l1, ListNode l2) {
-        ListNode dummy = new ListNode(), tail = dummy;
-        int carry = 0;
-        while (l1 != null || l2 != null || carry > 0) {
-            int s = carry + (l1 != null ? l1.val : 0) + (l2 != null ? l2.val : 0);
-            carry = s / 10;
-            tail.next = new ListNode(s % 10, null);
-            tail = tail.next;
-            if (l1 != null) l1 = l1.next;
-            if (l2 != null) l2 = l2.next;
-        }
-        return dummy.next;
-    }
-}
-```
-
-**Key points:**
-- Loop condition must include `carry` for the trailing digit (e.g., 5 + 5 = 10).
-- Treat missing nodes as zero so unequal lengths fall out naturally.
-- Output is in the same reverse-digit order as input.
-
-**Tags:** #algorithm
-
----
-
-### 31. Copy List with Random Pointer
-
-**Difficulty:** Medium
-**Topics:** linked-list, hashmap
-**Position:** ICT4
-**Years:** ICT4
-
-**Question:** Deep copy a linked list where each node has `next` and a `random` pointer to any node.
-
-**Approach:** Two passes with hashmap `old -> new`: first pass creates clones, second pass wires `next` and `random`. O(n) time, O(n) space. O(1) extra space variant: interleave clones inline (A->A'->B->B'->...), set randoms, then split.
-
-**Python:**
-```python
-class RandomNode:
-    def __init__(self, val: int, next: "RandomNode | None" = None, random: "RandomNode | None" = None) -> None:
-        self.val = val; self.next = next; self.random = random
-
-def copy_random_list(head: RandomNode | None) -> RandomNode | None:
-    if not head:
-        return None
-    m: dict[RandomNode, RandomNode] = {}
-    cur = head
-    while cur:
-        m[cur] = RandomNode(cur.val)
-        cur = cur.next
-    cur = head
-    while cur:
-        m[cur].next = m.get(cur.next) if cur.next else None
-        m[cur].random = m.get(cur.random) if cur.random else None
-        cur = cur.next
-    return m[head]
-```
-
-**TypeScript:**
-```typescript
-class RandomNode {
-  val: number;
-  next: RandomNode | null;
-  random: RandomNode | null;
-  constructor(v: number, n: RandomNode | null = null, r: RandomNode | null = null) { this.val = v; this.next = n; this.random = r; }
-}
-
-function copyRandomList(head: RandomNode | null): RandomNode | null {
-  if (!head) return null;
-  const m = new Map<RandomNode, RandomNode>();
-  let cur: RandomNode | null = head;
-  while (cur) { m.set(cur, new RandomNode(cur.val)); cur = cur.next; }
-  cur = head;
-  while (cur) {
-    m.get(cur)!.next = cur.next ? m.get(cur.next)! : null;
-    m.get(cur)!.random = cur.random ? m.get(cur.random)! : null;
-    cur = cur.next;
-  }
-  return m.get(head)!;
-}
-```
-
-**Java:**
-```java
-import java.util.*;
-class Node {
-    int val; Node next, random;
-    Node(int val) { this.val = val; }
-}
-class Solution {
-    public Node copyRandomList(Node head) {
-        if (head == null) return null;
-        Map<Node, Node> m = new HashMap<>();
-        for (Node cur = head; cur != null; cur = cur.next) m.put(cur, new Node(cur.val));
-        for (Node cur = head; cur != null; cur = cur.next) {
-            m.get(cur).next = m.get(cur.next);
-            m.get(cur).random = m.get(cur.random);
-        }
-        return m.get(head);
-    }
-}
-```
-
-**Key points:**
-- First pass creates the clones; second pass wires pointers via the map.
-- Handles null `next` and `random` without special cases.
-- An O(1)-space variant interleaves clones into the original list, then splits.
-
-**Tags:** #algorithm
-
----
-
-### 32. Linked List Cycle
-
-**Difficulty:** Easy
-**Topics:** linked-list, two-pointer
-**Position:** ICT3
-**Years:** ICT3
-
-**Question:** Determine whether a linked list has a cycle. Bonus: return the cycle's start node.
-
-**Approach:** Floyd's tortoise and hare. `slow` advances 1, `fast` advances 2. If they meet, cycle exists. To find start, reset one pointer to head and advance both by 1 until they meet. O(n) time, O(1) space.
-
-**Python:**
-```python
-def detect_cycle(head: ListNode | None) -> ListNode | None:
-    slow = fast = head
-    while fast and fast.next:
-        slow = slow.next  # type: ignore
-        fast = fast.next.next
-        if slow is fast:
-            p = head
-            while p is not slow:
-                p = p.next  # type: ignore
-                slow = slow.next  # type: ignore
-            return p
-    return None
-```
-
-**TypeScript:**
-```typescript
-function detectCycle(head: ListNode | null): ListNode | null {
-  let slow = head, fast = head;
-  while (fast && fast.next) {
-    slow = slow!.next;
-    fast = fast.next.next;
-    if (slow === fast) {
-      let p = head;
-      while (p !== slow) { p = p!.next; slow = slow!.next; }
-      return p;
-    }
-  }
-  return null;
-}
-```
-
-**Java:**
-```java
-class Solution {
-    public ListNode detectCycle(ListNode head) {
-        ListNode slow = head, fast = head;
-        while (fast != null && fast.next != null) {
-            slow = slow.next;
-            fast = fast.next.next;
-            if (slow == fast) {
-                ListNode p = head;
-                while (p != slow) { p = p.next; slow = slow.next; }
-                return p;
-            }
-        }
-        return null;
-    }
-}
-```
-
-**Key points:**
-- The fast pointer doubles up the slow pointer until they meet inside the cycle.
-- The distance from head to cycle start equals the distance from meeting point to cycle start (mod cycle length).
-- Using a hash set is O(n) extra space; Floyd's is O(1).
-
-**Tags:** #algorithm
-
----
-
-### 33. Intersection of Two Linked Lists
-
-**Difficulty:** Easy
-**Topics:** linked-list, two-pointer
-**Position:** ICT3
-**Years:** ICT3
-
-**Question:** Given two singly linked lists that may merge at some node, return the intersection node, or null.
-
-**Approach:** Two pointers `a, b` start at heads. When `a` hits end, redirect to `headB`; same for `b`. They traverse `lenA + lenB` and meet at intersection (or null). O(n+m) time, O(1) space.
-
-**Python:**
-```python
-def get_intersection_node(headA: ListNode | None, headB: ListNode | None) -> ListNode | None:
-    if not headA or not headB:
-        return None
-    a, b = headA, headB
-    while a is not b:
-        a = a.next if a else headB
-        b = b.next if b else headA
-    return a
-```
-
-**TypeScript:**
-```typescript
-function getIntersectionNode(headA: ListNode | null, headB: ListNode | null): ListNode | null {
-  if (!headA || !headB) return null;
-  let a: ListNode | null = headA, b: ListNode | null = headB;
-  while (a !== b) {
-    a = a ? a.next : headB;
-    b = b ? b.next : headA;
-  }
-  return a;
-}
-```
-
-**Java:**
-```java
-class Solution {
-    public ListNode getIntersectionNode(ListNode headA, ListNode headB) {
-        if (headA == null || headB == null) return null;
-        ListNode a = headA, b = headB;
-        while (a != b) {
-            a = (a == null) ? headB : a.next;
-            b = (b == null) ? headA : b.next;
-        }
-        return a;
-    }
-}
-```
-
-**Key points:**
-- Swapping heads on null equalizes the total walk to `lenA + lenB`.
-- The pointers meet at the intersection node, or both at `null` if disjoint.
-- Compare node identity, not values — duplicate values are allowed.
-
-**Tags:** #algorithm
-
----
-
-### 34. Reorder List
-
-**Difficulty:** Medium
-**Topics:** linked-list, two-pointer
-**Position:** ICT4
-**Years:** ICT3-ICT4
-
-**Question:** Given list L0 -> L1 -> ... -> Ln-1 -> Ln, reorder it in-place to L0 -> Ln -> L1 -> Ln-1 -> ...
-
-**Approach:** Three steps: (1) find middle with slow/fast pointers, (2) reverse second half, (3) merge two halves alternately. O(n) time, O(1) space. Watch null termination of merged list.
-
-**Python:**
-```python
-def reorder_list(head: ListNode | None) -> None:
-    if not head or not head.next:
-        return
-    slow, fast = head, head
-    while fast and fast.next:
-        slow = slow.next  # type: ignore
-        fast = fast.next.next
-    prev, cur = None, slow.next  # type: ignore
-    slow.next = None  # type: ignore
-    while cur:
-        nxt = cur.next; cur.next = prev; prev = cur; cur = nxt
-    a, b = head, prev
-    while b:
-        an, bn = a.next, b.next  # type: ignore
-        a.next = b; b.next = an  # type: ignore
-        a, b = an, bn
-```
-
-**TypeScript:**
-```typescript
-function reorderList(head: ListNode | null): void {
-  if (!head || !head.next) return;
-  let slow = head, fast: ListNode | null = head;
-  while (fast && fast.next) { slow = slow.next!; fast = fast.next.next; }
-  let prev: ListNode | null = null, cur: ListNode | null = slow.next;
-  slow.next = null;
-  while (cur) { const nx: ListNode | null = cur.next; cur.next = prev; prev = cur; cur = nx; }
-  let a: ListNode | null = head, b = prev;
-  while (b) {
-    const an: ListNode | null = a!.next, bn: ListNode | null = b.next;
-    a!.next = b; b.next = an;
-    a = an; b = bn;
-  }
-}
-```
-
-**Java:**
-```java
-class Solution {
-    public void reorderList(ListNode head) {
-        if (head == null || head.next == null) return;
-        ListNode slow = head, fast = head;
-        while (fast != null && fast.next != null) { slow = slow.next; fast = fast.next.next; }
-        ListNode prev = null, cur = slow.next;
-        slow.next = null;
-        while (cur != null) { ListNode nx = cur.next; cur.next = prev; prev = cur; cur = nx; }
-        ListNode a = head, b = prev;
-        while (b != null) {
-            ListNode an = a.next, bn = b.next;
-            a.next = b; b.next = an;
-            a = an; b = bn;
-        }
-    }
-}
-```
-
-**Key points:**
-- Cut the list at the middle before reversing the right half.
-- The right half is shorter or equal, so the merge naturally terminates.
-- All work is in-place — no extra allocations beyond a few pointers.
-
-**Tags:** #algorithm
-
----
-
-### 35. Binary Tree Level Order Traversal
-
-**Difficulty:** Medium
-**Topics:** tree, bfs, queue
-**Position:** ICT3
-**Years:** ICT3
-
-**Question:** Return the level-order traversal of a binary tree as a list of lists (one per level).
-
-**Approach:** BFS with queue. At each level, record current queue size `k`, pop `k` nodes into a level list, push their children. O(n) time, O(w) space where w is max width.
-
-**Python:**
-```python
-from collections import deque
-
-class TreeNode:
-    def __init__(self, val: int = 0, left: "TreeNode | None" = None, right: "TreeNode | None" = None) -> None:
-        self.val = val; self.left = left; self.right = right
-
-def level_order(root: TreeNode | None) -> list[list[int]]:
-    if not root:
-        return []
-    out: list[list[int]] = []
-    q: deque[TreeNode] = deque([root])
-    while q:
-        level = []
-        for _ in range(len(q)):
-            node = q.popleft()
-            level.append(node.val)
-            if node.left: q.append(node.left)
-            if node.right: q.append(node.right)
-        out.append(level)
-    return out
-```
-
-**TypeScript:**
-```typescript
-function levelOrder(root: TreeNode | null): number[][] {
-  if (!root) return [];
-  const out: number[][] = [];
-  let q: TreeNode[] = [root];
-  while (q.length) {
-    const level: number[] = [];
-    const next: TreeNode[] = [];
-    for (const n of q) {
-      level.push(n.val);
-      if (n.left) next.push(n.left);
-      if (n.right) next.push(n.right);
-    }
-    out.push(level);
-    q = next;
-  }
-  return out;
-}
-```
-
-**Java:**
-```java
-import java.util.*;
-class Solution {
-    public List<List<Integer>> levelOrder(TreeNode root) {
-        List<List<Integer>> out = new ArrayList<>();
-        if (root == null) return out;
-        Deque<TreeNode> q = new ArrayDeque<>();
-        q.offer(root);
-        while (!q.isEmpty()) {
-            int sz = q.size();
-            List<Integer> level = new ArrayList<>(sz);
-            for (int i = 0; i < sz; i++) {
-                TreeNode n = q.poll();
-                level.add(n.val);
-                if (n.left != null) q.offer(n.left);
-                if (n.right != null) q.offer(n.right);
-            }
-            out.add(level);
-        }
-        return out;
-    }
-}
-```
-
-**Key points:**
-- Capture queue size at the start of each level to delimit it.
-- Empty tree returns an empty list.
-- Pattern generalizes to N-ary trees with one tweak.
-
-**Tags:** #algorithm
-
----
-
-### 36. Binary Tree Zigzag Level Order Traversal
-
-**Difficulty:** Medium
-**Topics:** tree, bfs, deque
-**Position:** ICT4
-**Years:** ICT3-ICT4
-
-**Question:** Return level order but alternate L->R and R->L per level.
-
-**Approach:** Standard BFS but toggle a `reverse` flag per level — either reverse the level list before appending, or use a deque and append to front/back accordingly. O(n) time, O(w) space.
-
-**Python:**
-```python
-from collections import deque
-
-def zigzag_level_order(root: TreeNode | None) -> list[list[int]]:
-    if not root:
-        return []
-    out: list[list[int]] = []
-    q: deque[TreeNode] = deque([root])
-    ltr = True
-    while q:
-        level = deque()
-        for _ in range(len(q)):
-            node = q.popleft()
-            if ltr: level.append(node.val)
-            else: level.appendleft(node.val)
-            if node.left: q.append(node.left)
-            if node.right: q.append(node.right)
-        out.append(list(level))
-        ltr = not ltr
-    return out
-```
-
-**TypeScript:**
-```typescript
-function zigzagLevelOrder(root: TreeNode | null): number[][] {
-  if (!root) return [];
-  const out: number[][] = [];
-  let q: TreeNode[] = [root];
-  let ltr = true;
-  while (q.length) {
-    const level: number[] = [];
-    const next: TreeNode[] = [];
-    for (const n of q) {
-      if (ltr) level.push(n.val); else level.unshift(n.val);
-      if (n.left) next.push(n.left);
-      if (n.right) next.push(n.right);
-    }
-    out.push(level);
-    q = next;
-    ltr = !ltr;
-  }
-  return out;
-}
-```
-
-**Java:**
-```java
-import java.util.*;
-class Solution {
-    public List<List<Integer>> zigzagLevelOrder(TreeNode root) {
-        List<List<Integer>> out = new ArrayList<>();
-        if (root == null) return out;
-        Deque<TreeNode> q = new ArrayDeque<>();
-        q.offer(root);
-        boolean ltr = true;
-        while (!q.isEmpty()) {
-            int sz = q.size();
-            LinkedList<Integer> level = new LinkedList<>();
-            for (int i = 0; i < sz; i++) {
-                TreeNode n = q.poll();
-                if (ltr) level.addLast(n.val); else level.addFirst(n.val);
-                if (n.left != null) q.offer(n.left);
-                if (n.right != null) q.offer(n.right);
-            }
-            out.add(level);
-            ltr = !ltr;
-        }
-        return out;
-    }
-}
-```
-
-**Key points:**
-- Toggling a direction flag is cleaner than reversing after the fact.
-- Use a deque (or `unshift`) for O(1) prepend on right-to-left levels.
-- Children always pushed left-to-right; direction only affects output ordering.
-
-**Tags:** #algorithm
-
----
-
-### 37. Binary Tree Right Side View
-
-**Difficulty:** Medium
-**Topics:** tree, bfs, dfs
-**Position:** ICT4
-**Years:** ICT3-ICT4
-
-**Question:** Return the values of nodes visible from the right side of a binary tree, top to bottom.
-
-**Approach:** BFS recording the last node of each level. Or DFS in (root, right, left) order, appending node when depth == result.length. O(n) time, O(h) space.
-
-**Python:**
-```python
-def right_side_view(root: TreeNode | None) -> list[int]:
-    out: list[int] = []
-    def dfs(node: TreeNode | None, depth: int) -> None:
-        if node is None:
-            return
-        if depth == len(out):
-            out.append(node.val)
-        dfs(node.right, depth + 1)
-        dfs(node.left, depth + 1)
-    dfs(root, 0)
-    return out
-```
-
-**TypeScript:**
-```typescript
-function rightSideView(root: TreeNode | null): number[] {
-  const out: number[] = [];
-  const dfs = (n: TreeNode | null, depth: number): void => {
-    if (!n) return;
-    if (depth === out.length) out.push(n.val);
-    dfs(n.right, depth + 1);
-    dfs(n.left, depth + 1);
-  };
-  dfs(root, 0);
-  return out;
-}
-```
-
-**Java:**
-```java
-import java.util.*;
-class Solution {
-    private final List<Integer> out = new ArrayList<>();
-    public List<Integer> rightSideView(TreeNode root) { dfs(root, 0); return out; }
-    private void dfs(TreeNode n, int depth) {
-        if (n == null) return;
-        if (depth == out.size()) out.add(n.val);
-        dfs(n.right, depth + 1);
-        dfs(n.left, depth + 1);
-    }
-}
-```
-
-**Key points:**
-- Visiting right child first ensures the first node seen at each depth is the rightmost.
-- Append only when depth equals current result length to avoid duplicates per level.
-- BFS variant works too; pick whichever feels cleaner.
-
-**Tags:** #algorithm
-
----
-
-### 38. Populating Next Right Pointers in Each Node
-
-**Difficulty:** Medium
-**Topics:** tree, bfs, linked-list
-**Position:** ICT4
-**Years:** ICT4
-
-**Question:** Given a perfect binary tree, set each node's `next` to its right sibling at the same level (or null).
-
-**Approach:** Level-by-level traversal using established `next` pointers: at level L use them to walk; set `node.left.next = node.right` and `node.right.next = node.next ? node.next.left : null`. O(n) time, O(1) extra space.
-
-**Python:**
-```python
-class PerfectNode:
-    def __init__(self, val: int = 0, left: "PerfectNode | None" = None,
-                 right: "PerfectNode | None" = None, next: "PerfectNode | None" = None) -> None:
-        self.val = val; self.left = left; self.right = right; self.next = next
-
-def connect(root: PerfectNode | None) -> PerfectNode | None:
-    leftmost = root
-    while leftmost and leftmost.left:
-        node: PerfectNode | None = leftmost
-        while node:
-            node.left.next = node.right  # type: ignore
-            node.right.next = node.next.left if node.next else None  # type: ignore
-            node = node.next
-        leftmost = leftmost.left
-    return root
-```
-
-**TypeScript:**
-```typescript
-class PerfectNode {
-  val: number;
-  left: PerfectNode | null;
-  right: PerfectNode | null;
-  next: PerfectNode | null;
-  constructor(v = 0, l: PerfectNode | null = null, r: PerfectNode | null = null, n: PerfectNode | null = null) {
-    this.val = v; this.left = l; this.right = r; this.next = n;
-  }
-}
-
-function connect(root: PerfectNode | null): PerfectNode | null {
-  let leftmost = root;
-  while (leftmost && leftmost.left) {
-    let node: PerfectNode | null = leftmost;
-    while (node) {
-      node.left!.next = node.right;
-      node.right!.next = node.next ? node.next.left : null;
-      node = node.next;
-    }
-    leftmost = leftmost.left;
-  }
-  return root;
-}
-```
-
-**Java:**
-```java
-class Node {
-    int val; Node left, right, next;
-    Node(int val) { this.val = val; }
-}
-class Solution {
-    public Node connect(Node root) {
-        Node leftmost = root;
-        while (leftmost != null && leftmost.left != null) {
-            for (Node node = leftmost; node != null; node = node.next) {
-                node.left.next = node.right;
-                node.right.next = (node.next != null) ? node.next.left : null;
-            }
-            leftmost = leftmost.left;
-        }
-        return root;
-    }
-}
-```
-
-**Key points:**
-- Reuse already-set `next` pointers as the traversal mechanism — no queue needed.
-- Two wiring rules cover both child links.
-- O(1) extra space; only works because the tree is perfect.
-
-**Tags:** #algorithm
-
----
-
-### 39. Recover Binary Search Tree
-
-**Difficulty:** Hard
-**Topics:** tree, bst, inorder
-**Position:** ICT5
-**Years:** ICT4-ICT5
-
-**Question:** Two nodes of a BST have been swapped by mistake. Recover the tree without changing its structure.
-
-**Approach:** Inorder traversal yields sorted sequence; find two out-of-order positions: first dip's left and last dip's right. Swap their values. Morris traversal achieves O(1) extra space, otherwise O(h) recursion stack. O(n) time.
-
-**Python:**
-```python
-def recover_tree(root: TreeNode | None) -> None:
-    first: TreeNode | None = None
-    second: TreeNode | None = None
-    prev: TreeNode | None = None
-    def inorder(node: TreeNode | None) -> None:
-        nonlocal first, second, prev
-        if node is None:
-            return
-        inorder(node.left)
-        if prev and prev.val > node.val:
-            if first is None:
-                first = prev
-            second = node
-        prev = node
-        inorder(node.right)
-    inorder(root)
-    if first and second:
-        first.val, second.val = second.val, first.val
-```
-
-**TypeScript:**
-```typescript
-function recoverTree(root: TreeNode | null): void {
-  let first: TreeNode | null = null, second: TreeNode | null = null, prev: TreeNode | null = null;
-  const inorder = (n: TreeNode | null): void => {
-    if (!n) return;
-    inorder(n.left);
-    if (prev && prev.val > n.val) {
-      if (!first) first = prev;
-      second = n;
-    }
-    prev = n;
-    inorder(n.right);
-  };
-  inorder(root);
-  if (first && second) {
-    const t = (first as TreeNode).val;
-    (first as TreeNode).val = (second as TreeNode).val;
-    (second as TreeNode).val = t;
-  }
-}
-```
-
-**Java:**
-```java
-class Solution {
-    private TreeNode first, second, prev;
-    public void recoverTree(TreeNode root) {
-        inorder(root);
-        int t = first.val; first.val = second.val; second.val = t;
-    }
-    private void inorder(TreeNode n) {
-        if (n == null) return;
-        inorder(n.left);
-        if (prev != null && prev.val > n.val) {
-            if (first == null) first = prev;
-            second = n;
-        }
-        prev = n;
-        inorder(n.right);
-    }
-}
-```
-
-**Key points:**
-- Two swapped nodes create either one or two "dips" in the inorder sequence.
-- `first` is set on the earlier dip; `second` keeps updating to capture the latter swap.
-- Morris traversal removes the O(h) recursion stack for true O(1) extra space.
-
-**Tags:** #algorithm
-
----
-
-### 40. Kth Smallest Element in a BST
-
-**Difficulty:** Medium
-**Topics:** tree, bst, inorder
-**Position:** ICT4
-**Years:** ICT3-ICT4
-
-**Question:** Return the k-th smallest element of a BST.
-
-**Approach:** Iterative inorder using a stack: push left spine, pop, decrement k; if k == 0 return node.val; go right. O(h + k) time, O(h) space. Follow-up: with frequent inserts/deletes, augment nodes with subtree count for O(h) lookup.
-
-**Python:**
-```python
-def kth_smallest(root: TreeNode | None, k: int) -> int:
-    stack: list[TreeNode] = []
-    cur = root
-    while cur or stack:
-        while cur:
-            stack.append(cur)
-            cur = cur.left
-        cur = stack.pop()
-        k -= 1
-        if k == 0:
-            return cur.val
-        cur = cur.right
-    return -1
-```
-
-**TypeScript:**
-```typescript
-function kthSmallest(root: TreeNode | null, k: number): number {
-  const stack: TreeNode[] = [];
-  let cur = root;
-  while (cur || stack.length) {
-    while (cur) { stack.push(cur); cur = cur.left; }
-    cur = stack.pop()!;
-    if (--k === 0) return cur.val;
-    cur = cur.right;
-  }
-  return -1;
-}
-```
-
-**Java:**
-```java
-import java.util.*;
-class Solution {
-    public int kthSmallest(TreeNode root, int k) {
-        Deque<TreeNode> stack = new ArrayDeque<>();
-        TreeNode cur = root;
-        while (cur != null || !stack.isEmpty()) {
-            while (cur != null) { stack.push(cur); cur = cur.left; }
-            cur = stack.pop();
-            if (--k == 0) return cur.val;
-            cur = cur.right;
-        }
-        return -1;
-    }
-}
-```
-
-**Key points:**
-- Inorder traversal on a BST yields keys in sorted order.
-- Iterative form avoids recursion stack overflow on skewed trees.
-- For dynamic trees, augment each node with subtree size for true O(h) lookup.
-
-**Tags:** #algorithm
-
----
-
-### 41. Inorder Successor in BST
-
-**Difficulty:** Medium
-**Topics:** tree, bst
-**Position:** ICT4
-**Years:** ICT3-ICT4
-
-**Question:** Given a BST node `p`, return its inorder successor (smallest node larger than p).
-
-**Approach:** If `p.right` exists, successor is leftmost of `p.right`. Else, walk from root: track the last node where we went left. O(h) time, O(1) space.
-
-**Python:**
-```python
-def inorder_successor(root: TreeNode | None, p: TreeNode) -> TreeNode | None:
-    if p.right:
-        cur = p.right
-        while cur.left:
-            cur = cur.left
-        return cur
-    succ: TreeNode | None = None
-    cur = root
-    while cur:
-        if p.val < cur.val:
-            succ = cur
-            cur = cur.left
-        else:
-            cur = cur.right
-    return succ
-```
-
-**TypeScript:**
-```typescript
-function inorderSuccessor(root: TreeNode | null, p: TreeNode): TreeNode | null {
-  if (p.right) {
-    let cur = p.right;
-    while (cur.left) cur = cur.left;
-    return cur;
-  }
-  let succ: TreeNode | null = null, cur = root;
-  while (cur) {
-    if (p.val < cur.val) { succ = cur; cur = cur.left; }
-    else cur = cur.right;
-  }
-  return succ;
-}
-```
-
-**Java:**
-```java
-class Solution {
-    public TreeNode inorderSuccessor(TreeNode root, TreeNode p) {
-        if (p.right != null) {
-            TreeNode cur = p.right;
-            while (cur.left != null) cur = cur.left;
-            return cur;
-        }
-        TreeNode succ = null, cur = root;
-        while (cur != null) {
-            if (p.val < cur.val) { succ = cur; cur = cur.left; }
-            else cur = cur.right;
-        }
-        return succ;
-    }
-}
-```
-
-**Key points:**
-- The two cases (has right child vs not) cover all BST shapes.
-- The "last left turn" rule captures the smallest ancestor greater than `p`.
-- O(h) without parent pointers; O(1) with them.
-
-**Tags:** #algorithm
-
----
-
-### 42. Same Tree
-
-**Difficulty:** Easy
-**Topics:** tree, dfs, recursion
-**Position:** ICT3
-**Years:** ICT3
-
-**Question:** Determine whether two binary trees are structurally identical with equal values.
-
-**Approach:** Recursion: both null -> true; one null -> false; values differ -> false; else recurse on left and right children. O(min(n, m)) time, O(h) stack.
-
-**Python:**
-```python
-def is_same_tree(p: TreeNode | None, q: TreeNode | None) -> bool:
-    if p is None and q is None:
-        return True
-    if p is None or q is None or p.val != q.val:
-        return False
-    return is_same_tree(p.left, q.left) and is_same_tree(p.right, q.right)
-```
-
-**TypeScript:**
-```typescript
-function isSameTree(p: TreeNode | null, q: TreeNode | null): boolean {
-  if (!p && !q) return true;
-  if (!p || !q || p.val !== q.val) return false;
-  return isSameTree(p.left, q.left) && isSameTree(p.right, q.right);
-}
-```
-
-**Java:**
-```java
-class Solution {
-    public boolean isSameTree(TreeNode p, TreeNode q) {
-        if (p == null && q == null) return true;
-        if (p == null || q == null || p.val != q.val) return false;
-        return isSameTree(p.left, q.left) && isSameTree(p.right, q.right);
-    }
-}
-```
-
-**Key points:**
-- Both null is the success base case; one null implies structural mismatch.
-- Value mismatch short-circuits before recursing further.
-- Iterative lockstep BFS is an equivalent alternative without stack growth.
-
-**Tags:** #algorithm
-
----
-
-### 43. Sum Root to Leaf Numbers
-
-**Difficulty:** Medium
-**Topics:** tree, dfs, recursion
-**Position:** ICT3
-**Years:** ICT3-ICT4
-
-**Question:** Each root-to-leaf path represents a number (digits along path). Return the sum of all root-to-leaf numbers.
-
-**Approach:** DFS carrying current accumulated number `cur = cur*10 + node.val`. At leaf, add `cur` to total. O(n) time, O(h) space.
-
-**Python:**
-```python
-def sum_numbers(root: TreeNode | None) -> int:
-    def dfs(node: TreeNode | None, cur: int) -> int:
-        if node is None:
-            return 0
-        cur = cur * 10 + node.val
-        if not node.left and not node.right:
-            return cur
-        return dfs(node.left, cur) + dfs(node.right, cur)
-    return dfs(root, 0)
-```
-
-**TypeScript:**
-```typescript
-function sumNumbers(root: TreeNode | null): number {
-  const dfs = (n: TreeNode | null, cur: number): number => {
-    if (!n) return 0;
-    cur = cur * 10 + n.val;
-    if (!n.left && !n.right) return cur;
-    return dfs(n.left, cur) + dfs(n.right, cur);
-  };
-  return dfs(root, 0);
-}
-```
-
-**Java:**
-```java
-class Solution {
-    public int sumNumbers(TreeNode root) { return dfs(root, 0); }
-    private int dfs(TreeNode n, int cur) {
-        if (n == null) return 0;
-        cur = cur * 10 + n.val;
-        if (n.left == null && n.right == null) return cur;
-        return dfs(n.left, cur) + dfs(n.right, cur);
-    }
-}
-```
-
-**Key points:**
-- Carry the running number down the call stack rather than mutating shared state.
-- Add to total only at leaves to avoid double-counting partial paths.
-- An empty tree contributes 0 by base case.
-
-**Tags:** #algorithm
-
----
-
-### 44. Path Sum
-
-**Difficulty:** Easy
-**Topics:** tree, dfs, recursion
-**Position:** ICT3
-**Years:** ICT3
-
-**Question:** Given a binary tree and `targetSum`, determine if there is a root-to-leaf path summing to `targetSum`.
-
-**Approach:** DFS subtracting `node.val` from remaining; at leaf, check if remaining equals 0. Be careful with null vs leaf: null is not a leaf. O(n) time, O(h) space.
-
-**Python:**
-```python
-def has_path_sum(root: TreeNode | None, target_sum: int) -> bool:
-    if root is None:
-        return False
-    if not root.left and not root.right:
-        return target_sum == root.val
-    remaining = target_sum - root.val
-    return has_path_sum(root.left, remaining) or has_path_sum(root.right, remaining)
-```
-
-**TypeScript:**
-```typescript
-function hasPathSum(root: TreeNode | null, targetSum: number): boolean {
-  if (!root) return false;
-  if (!root.left && !root.right) return targetSum === root.val;
-  const remaining = targetSum - root.val;
-  return hasPathSum(root.left, remaining) || hasPathSum(root.right, remaining);
-}
-```
-
-**Java:**
-```java
-class Solution {
-    public boolean hasPathSum(TreeNode root, int targetSum) {
-        if (root == null) return false;
-        if (root.left == null && root.right == null) return targetSum == root.val;
-        int remaining = targetSum - root.val;
-        return hasPathSum(root.left, remaining) || hasPathSum(root.right, remaining);
-    }
-}
-```
-
-**Key points:**
-- The path must end at a leaf — null children alone don't satisfy the constraint.
-- Subtract on the way down, compare at the leaf.
-- Short-circuiting `or` cuts off unnecessary subtree traversals.
-
-**Tags:** #algorithm
-
----
-
-### 45. Convert Sorted Array to Binary Search Tree
-
-**Difficulty:** Easy
-**Topics:** tree, bst, recursion, divide-and-conquer
-**Position:** ICT3
-**Years:** ICT3
-
-**Question:** Given a sorted ascending array, build a height-balanced BST.
-
-**Approach:** Recursion: pick `mid = (l+r)/2` as root, recurse on left half and right half. O(n) time, O(log n) stack. Choosing left-mid vs right-mid gives different valid trees.
-
-**Python:**
-```python
-def sorted_array_to_bst(nums: list[int]) -> TreeNode | None:
-    def build(l: int, r: int) -> TreeNode | None:
-        if l > r:
-            return None
-        mid = (l + r) // 2
-        node = TreeNode(nums[mid])
-        node.left = build(l, mid - 1)
-        node.right = build(mid + 1, r)
-        return node
-    return build(0, len(nums) - 1)
-```
-
-**TypeScript:**
-```typescript
-function sortedArrayToBST(nums: number[]): TreeNode | null {
-  const build = (l: number, r: number): TreeNode | null => {
-    if (l > r) return null;
-    const mid = (l + r) >> 1;
-    const node = new TreeNode(nums[mid]);
-    node.left = build(l, mid - 1);
-    node.right = build(mid + 1, r);
-    return node;
-  };
-  return build(0, nums.length - 1);
-}
-```
-
-**Java:**
-```java
-class Solution {
-    public TreeNode sortedArrayToBST(int[] nums) { return build(nums, 0, nums.length - 1); }
-    private TreeNode build(int[] nums, int l, int r) {
-        if (l > r) return null;
-        int mid = (l + r) >>> 1;
-        TreeNode node = new TreeNode(nums[mid]);
-        node.left = build(nums, l, mid - 1);
-        node.right = build(nums, mid + 1, r);
-        return node;
-    }
-}
-```
-
-**Key points:**
-- Picking the middle as root keeps subtree sizes balanced within one.
-- Sorted input guarantees BST property automatically.
-- Either floor or ceiling middle yields a valid height-balanced result.
-
-**Tags:** #algorithm
-
----
-
-### 46. Number of 1 Bits
-
-**Difficulty:** Easy
-**Topics:** bit-manipulation
-**Position:** ICT3
-**Years:** ICT3
-
-**Question:** Return the number of set bits in an unsigned 32-bit integer.
-
-**Approach:** Brian Kernighan: `while (n) { n &= n-1; count++; }` — strips lowest set bit each iteration. O(popcount) time, O(1) space. Built-in `popcount` is the production answer.
-
-**Python:**
-```python
-def hamming_weight(n: int) -> int:
-    count = 0
-    while n:
-        n &= n - 1
-        count += 1
-    return count
-```
-
-**TypeScript:**
-```typescript
-function hammingWeight(n: number): number {
-  let count = 0;
-  while (n !== 0) {
-    n &= n - 1;
-    count++;
-  }
-  return count;
-}
-```
-
-**Java:**
-```java
-class Solution {
-    public int hammingWeight(int n) {
-        int count = 0;
-        while (n != 0) { n &= n - 1; count++; }
-        return count;
-    }
-}
-```
-
-**Key points:**
-- `n & (n - 1)` clears the lowest set bit in one operation.
-- Loop runs once per set bit — O(popcount), not O(bit-width).
-- Python has `int.bit_count()`; most compiled languages expose `popcount`/`POPCNT`.
-
-**Tags:** #algorithm
-
----
-
-### 47. Counting Bits
-
-**Difficulty:** Easy
-**Topics:** bit-manipulation, dp
-**Position:** ICT3
-**Years:** ICT3-ICT4
-
-**Question:** Given n, return an array `ans[i]` = number of 1-bits in `i` for 0 <= i <= n.
-
-**Approach:** DP using `ans[i] = ans[i >> 1] + (i & 1)`, or `ans[i] = ans[i & (i-1)] + 1`. O(n) time, O(n) space (output).
-
-**Python:**
-```python
-def count_bits(n: int) -> list[int]:
-    ans = [0] * (n + 1)
-    for i in range(1, n + 1):
-        ans[i] = ans[i >> 1] + (i & 1)
-    return ans
-```
-
-**TypeScript:**
-```typescript
-function countBits(n: number): number[] {
-  const ans = new Array(n + 1).fill(0);
-  for (let i = 1; i <= n; i++) {
-    ans[i] = ans[i >> 1] + (i & 1);
-  }
-  return ans;
-}
-```
-
-**Java:**
-```java
-class Solution {
-    public int[] countBits(int n) {
-        int[] ans = new int[n + 1];
-        for (int i = 1; i <= n; i++) ans[i] = ans[i >> 1] + (i & 1);
-        return ans;
-    }
-}
-```
-
-**Key points:**
-- `i >> 1` removes the lowest bit, so `bits(i) = bits(i/2) + low_bit(i)`.
-- Building from `ans[0] = 0` upward yields each entry in O(1).
-- Alternative `ans[i] = ans[i & (i-1)] + 1` uses Kernighan's trick.
-
-**Tags:** #algorithm
-
----
-
-### 48. Single Number
-
-**Difficulty:** Easy
-**Topics:** bit-manipulation, xor
-**Position:** ICT3
-**Years:** ICT3
-
-**Question:** Every element appears twice except one. Find that single element in O(n) time and O(1) space.
-
-**Approach:** XOR all elements. Pairs cancel (a ^ a = 0); the single survives. O(n) time, O(1) space. Follow-up "every element appears three times except one" → bit counts mod 3, or two-variable XOR state machine.
-
-**Python:**
-```python
-def single_number(nums: list[int]) -> int:
-    result = 0
-    for n in nums:
-        result ^= n
-    return result
-```
-
-**TypeScript:**
-```typescript
-function singleNumber(nums: number[]): number {
-  let result = 0;
-  for (const n of nums) result ^= n;
-  return result;
-}
-```
-
-**Java:**
-```java
-class Solution {
-    public int singleNumber(int[] nums) {
-        int result = 0;
-        for (int n : nums) result ^= n;
-        return result;
-    }
-}
-```
-
-**Key points:**
-- XOR is commutative and associative, so order does not matter.
-- `a ^ a = 0` and `a ^ 0 = a` make pairs cancel cleanly.
-- Constant space; no hash set or sorting required.
-
-**Tags:** #algorithm
-
----
-
-### 49. Missing Number
+### 42. Missing Number
 
 **Difficulty:** Easy
 **Topics:** bit-manipulation, math
@@ -2910,7 +3072,7 @@ class Solution {
 
 ---
 
-### 50. Find All Numbers Disappeared in an Array
+### 43. Find All Numbers Disappeared in an Array
 
 **Difficulty:** Easy
 **Topics:** arrays, in-place
@@ -2973,7 +3135,7 @@ class Solution {
 
 ---
 
-### 51. Majority Element
+### 44. Majority Element
 
 **Difficulty:** Easy
 **Topics:** arrays, voting
@@ -3031,72 +3193,7 @@ class Solution {
 
 ---
 
-### 52. Maximum Product Subarray
-
-**Difficulty:** Medium
-**Topics:** arrays, dp
-**Position:** ICT4
-**Years:** ICT3-ICT4
-
-**Question:** Find the contiguous subarray with the largest product.
-
-**Approach:** Track running `maxProd` and `minProd` (negative * negative can become big). At each step, candidates are `nums[i]`, `maxProd * nums[i]`, `minProd * nums[i]`. Update both. Track global max. O(n) time, O(1) space.
-
-**Python:**
-```python
-def max_product(nums: list[int]) -> int:
-    hi = lo = best = nums[0]
-    for x in nums[1:]:
-        if x < 0:
-            hi, lo = lo, hi
-        hi = max(x, hi * x)
-        lo = min(x, lo * x)
-        best = max(best, hi)
-    return best
-```
-
-**TypeScript:**
-```typescript
-function maxProduct(nums: number[]): number {
-  let hi = nums[0], lo = nums[0], best = nums[0];
-  for (let i = 1; i < nums.length; i++) {
-    const x = nums[i];
-    if (x < 0) { [hi, lo] = [lo, hi]; }
-    hi = Math.max(x, hi * x);
-    lo = Math.min(x, lo * x);
-    best = Math.max(best, hi);
-  }
-  return best;
-}
-```
-
-**Java:**
-```java
-class Solution {
-    public int maxProduct(int[] nums) {
-        int hi = nums[0], lo = nums[0], best = nums[0];
-        for (int i = 1; i < nums.length; i++) {
-            int x = nums[i];
-            if (x < 0) { int t = hi; hi = lo; lo = t; }
-            hi = Math.max(x, hi * x);
-            lo = Math.min(x, lo * x);
-            best = Math.max(best, hi);
-        }
-        return best;
-    }
-}
-```
-
-**Key points:**
-- Swap hi/lo on a negative element so multiplication propagates correctly.
-- Tracking only the max would miss negative-negative product opportunities.
-- Encountering a zero resets both hi and lo to the current element.
-
-**Tags:** #algorithm
-
----
-
-### 53. Jump Game
+### 45. Jump Game
 
 **Difficulty:** Medium
 **Topics:** arrays, greedy
@@ -3153,7 +3250,7 @@ class Solution {
 
 ---
 
-### 54. Jump Game II
+### 46. Jump Game II
 
 **Difficulty:** Medium
 **Topics:** arrays, greedy, bfs
@@ -3217,400 +3314,205 @@ class Solution {
 
 ---
 
-### 55. Unique Paths
+### 47. Cache-Friendly Matrix Transpose
 
 **Difficulty:** Medium
-**Topics:** dp, combinatorics
-**Position:** ICT3
-**Years:** ICT3
-
-**Question:** In an m x n grid, a robot moves only right or down from top-left to bottom-right. How many unique paths?
-
-**Approach:** DP `dp[i][j] = dp[i-1][j] + dp[i][j-1]`, base `dp[0][*] = dp[*][0] = 1`. Roll to 1D for O(n) space. Closed form: C(m+n-2, m-1) for math fans. O(mn) time.
-
-**Python:**
-```python
-def unique_paths(m: int, n: int) -> int:
-    row = [1] * n
-    for _ in range(1, m):
-        for j in range(1, n):
-            row[j] += row[j - 1]
-    return row[-1]
-```
-
-**TypeScript:**
-```typescript
-function uniquePaths(m: number, n: number): number {
-  const row = new Array(n).fill(1);
-  for (let i = 1; i < m; i++) {
-    for (let j = 1; j < n; j++) {
-      row[j] += row[j - 1];
-    }
-  }
-  return row[n - 1];
-}
-```
-
-**Java:**
-```java
-class Solution {
-    public int uniquePaths(int m, int n) {
-        int[] row = new int[n];
-        java.util.Arrays.fill(row, 1);
-        for (int i = 1; i < m; i++) {
-            for (int j = 1; j < n; j++) row[j] += row[j - 1];
-        }
-        return row[n - 1];
-    }
-}
-```
-
-**Key points:**
-- Rolling array reduces memory from O(mn) to O(n).
-- Each cell depends only on the row above (now `row[j]`) and the left neighbor (`row[j-1]`).
-- The closed-form C(m+n-2, m-1) is O(min(m, n)) if precision permits.
-
-**Tags:** #algorithm
-
----
-
-### 56. Minimum Path Sum
-
-**Difficulty:** Medium
-**Topics:** dp, grid
-**Position:** ICT3
-**Years:** ICT3-ICT4
-
-**Question:** Given an m x n grid of non-negative numbers, find a path from top-left to bottom-right minimizing the sum (moves: down or right).
-
-**Approach:** DP `dp[i][j] = grid[i][j] + min(dp[i-1][j], dp[i][j-1])`. In-place modification of `grid` gives O(1) extra. O(mn) time.
-
-**Python:**
-```python
-def min_path_sum(grid: list[list[int]]) -> int:
-    m, n = len(grid), len(grid[0])
-    for i in range(m):
-        for j in range(n):
-            if i == 0 and j == 0: continue
-            up = grid[i - 1][j] if i > 0 else float("inf")
-            left = grid[i][j - 1] if j > 0 else float("inf")
-            grid[i][j] += min(up, left)
-    return grid[m - 1][n - 1]
-```
-
-**TypeScript:**
-```typescript
-function minPathSum(grid: number[][]): number {
-  const m = grid.length, n = grid[0].length;
-  for (let i = 0; i < m; i++) {
-    for (let j = 0; j < n; j++) {
-      if (i === 0 && j === 0) continue;
-      const up = i > 0 ? grid[i - 1][j] : Infinity;
-      const left = j > 0 ? grid[i][j - 1] : Infinity;
-      grid[i][j] += Math.min(up, left);
-    }
-  }
-  return grid[m - 1][n - 1];
-}
-```
-
-**Java:**
-```java
-class Solution {
-    public int minPathSum(int[][] grid) {
-        int m = grid.length, n = grid[0].length;
-        for (int i = 0; i < m; i++) {
-            for (int j = 0; j < n; j++) {
-                if (i == 0 && j == 0) continue;
-                int up = i > 0 ? grid[i - 1][j] : Integer.MAX_VALUE;
-                int left = j > 0 ? grid[i][j - 1] : Integer.MAX_VALUE;
-                grid[i][j] += Math.min(up, left);
-            }
-        }
-        return grid[m - 1][n - 1];
-    }
-}
-```
-
-**Key points:**
-- Update grid in place to achieve O(1) extra space.
-- Use `Infinity` sentinels for out-of-bounds neighbors so `min` works without branches.
-- O(mn) time is asymptotically optimal — every cell must be visited.
-
-**Tags:** #algorithm
-
----
-
-### 57. Triangle
-
-**Difficulty:** Medium
-**Topics:** dp, bottom-up
+**Topics:** arrays, cache, memory-layout
 **Position:** ICT4
-**Years:** ICT3-ICT4
+**Years:** ICT4-ICT5
 
-**Question:** Given a triangle of numbers, find the minimum path sum from top to bottom; at each step you may move to adjacent indices on the row below.
+**Question:** Transpose a large N x N matrix in-place (or out-of-place) minimizing cache misses.
 
-**Approach:** Bottom-up DP. Start from the last row; for each level above, `dp[j] = triangle[i][j] + min(dp[j], dp[j+1])`. Result is `dp[0]`. O(n^2) time, O(n) space.
+**Approach:** Naive double loop suffers because writes (or reads) stride by N, blowing the cache. Use blocking/tiling: transpose B x B blocks at a time (B sized so 2 * B * B * sizeof(elem) fits in L1). For each block, do the inner transpose in registers; for diagonal blocks, swap in place. Trade some arithmetic for locality; gains 3-10x in practice.
 
 **Python:**
 ```python
-def minimum_total(triangle: list[list[int]]) -> int:
-    dp = triangle[-1][:]
-    for i in range(len(triangle) - 2, -1, -1):
-        for j in range(len(triangle[i])):
-            dp[j] = triangle[i][j] + min(dp[j], dp[j + 1])
-    return dp[0]
+def transpose_blocked(a: list[list[float]], block: int = 32) -> None:
+    n = len(a)
+    for ii in range(0, n, block):
+        for jj in range(ii, n, block):
+            i_max = min(ii + block, n)
+            j_max = min(jj + block, n)
+            if ii == jj:
+                for i in range(ii, i_max):
+                    for j in range(i + 1, j_max):
+                        a[i][j], a[j][i] = a[j][i], a[i][j]
+            else:
+                for i in range(ii, i_max):
+                    for j in range(jj, j_max):
+                        a[i][j], a[j][i] = a[j][i], a[i][j]
 ```
 
 **TypeScript:**
 ```typescript
-function minimumTotal(triangle: number[][]): number {
-  const dp = [...triangle[triangle.length - 1]];
-  for (let i = triangle.length - 2; i >= 0; i--) {
-    for (let j = 0; j < triangle[i].length; j++) {
-      dp[j] = triangle[i][j] + Math.min(dp[j], dp[j + 1]);
+function transposeBlocked(a: number[][], block = 32): void {
+  const n = a.length;
+  for (let ii = 0; ii < n; ii += block) {
+    for (let jj = ii; jj < n; jj += block) {
+      const iMax = Math.min(ii + block, n);
+      const jMax = Math.min(jj + block, n);
+      if (ii === jj) {
+        for (let i = ii; i < iMax; i++) {
+          for (let j = i + 1; j < jMax; j++) {
+            [a[i][j], a[j][i]] = [a[j][i], a[i][j]];
+          }
+        }
+      } else {
+        for (let i = ii; i < iMax; i++) {
+          for (let j = jj; j < jMax; j++) {
+            [a[i][j], a[j][i]] = [a[j][i], a[i][j]];
+          }
+        }
+      }
     }
   }
-  return dp[0];
 }
 ```
 
 **Java:**
 ```java
-import java.util.*;
 class Solution {
-    public int minimumTotal(List<List<Integer>> triangle) {
-        int n = triangle.size();
-        int[] dp = new int[n + 1];
-        for (int i = n - 1; i >= 0; i--) {
-            List<Integer> row = triangle.get(i);
-            for (int j = 0; j < row.size(); j++) {
-                dp[j] = row.get(j) + Math.min(dp[j], dp[j + 1]);
+    public void transposeBlocked(double[][] a, int block) {
+        int n = a.length;
+        for (int ii = 0; ii < n; ii += block) {
+            for (int jj = ii; jj < n; jj += block) {
+                int iMax = Math.min(ii + block, n);
+                int jMax = Math.min(jj + block, n);
+                if (ii == jj) {
+                    for (int i = ii; i < iMax; i++) {
+                        for (int j = i + 1; j < jMax; j++) {
+                            double t = a[i][j]; a[i][j] = a[j][i]; a[j][i] = t;
+                        }
+                    }
+                } else {
+                    for (int i = ii; i < iMax; i++) {
+                        for (int j = jj; j < jMax; j++) {
+                            double t = a[i][j]; a[i][j] = a[j][i]; a[j][i] = t;
+                        }
+                    }
+                }
             }
         }
-        return dp[0];
     }
 }
 ```
 
 **Key points:**
-- Going bottom-up avoids needing to handle row-width edge cases on the way down.
-- A 1D dp array suffices because each cell depends on only two below.
-- Final answer accumulates into `dp[0]` after the loop.
+- Process B x B tiles so both rows and columns of each tile fit in L1 cache.
+- Iterate only over `jj >= ii` to avoid double-swapping symmetric off-diagonal tiles.
+- Diagonal tiles need an in-tile swap; off-diagonal tiles swap with their mirror tile.
+
+**Complexity:** O(n²) work — every element is touched once, same as the naive transpose; tiling only improves the constant factor via cache locality. O(1) extra space.
 
 **Tags:** #algorithm
 
 ---
 
-### 58. Word Pattern
+## Other Algorithms
+
+### 48. Number of 1 Bits
 
 **Difficulty:** Easy
-**Topics:** strings, hashmap
+**Topics:** bit-manipulation
 **Position:** ICT3
 **Years:** ICT3
 
-**Question:** Given a `pattern` and a string `s`, determine if `s` follows the pattern (bijection between letters and space-separated words).
+**Question:** Return the number of set bits in an unsigned 32-bit integer.
 
-**Approach:** Two maps: char->word and word->char. Walk pairs in lockstep; reject on any mapping conflict. Reject if lengths differ. O(n) time, O(k) space.
+**Approach:** Brian Kernighan: `while (n) { n &= n-1; count++; }` — strips lowest set bit each iteration. O(popcount) time, O(1) space. Built-in `popcount` is the production answer.
 
 **Python:**
 ```python
-def word_pattern(pattern: str, s: str) -> bool:
-    words = s.split()
-    if len(pattern) != len(words):
-        return False
-    c2w: dict[str, str] = {}
-    w2c: dict[str, str] = {}
-    for c, w in zip(pattern, words):
-        if c in c2w and c2w[c] != w: return False
-        if w in w2c and w2c[w] != c: return False
-        c2w[c] = w
-        w2c[w] = c
-    return True
+def hamming_weight(n: int) -> int:
+    count = 0
+    while n:
+        n &= n - 1
+        count += 1
+    return count
 ```
 
 **TypeScript:**
 ```typescript
-function wordPattern(pattern: string, s: string): boolean {
-  const words = s.split(" ");
-  if (pattern.length !== words.length) return false;
-  const c2w = new Map<string, string>();
-  const w2c = new Map<string, string>();
-  for (let i = 0; i < pattern.length; i++) {
-    const c = pattern[i], w = words[i];
-    if (c2w.has(c) && c2w.get(c) !== w) return false;
-    if (w2c.has(w) && w2c.get(w) !== c) return false;
-    c2w.set(c, w);
-    w2c.set(w, c);
+function hammingWeight(n: number): number {
+  let count = 0;
+  while (n !== 0) {
+    n &= n - 1;
+    count++;
   }
-  return true;
-}
-```
-
-**Java:**
-```java
-import java.util.*;
-class Solution {
-    public boolean wordPattern(String pattern, String s) {
-        String[] words = s.split(" ");
-        if (pattern.length() != words.length) return false;
-        Map<Character, String> c2w = new HashMap<>();
-        Map<String, Character> w2c = new HashMap<>();
-        for (int i = 0; i < pattern.length(); i++) {
-            char c = pattern.charAt(i);
-            String w = words[i];
-            if (c2w.containsKey(c) && !c2w.get(c).equals(w)) return false;
-            if (w2c.containsKey(w) && w2c.get(w) != c) return false;
-            c2w.put(c, w);
-            w2c.put(w, c);
-        }
-        return true;
-    }
-}
-```
-
-**Key points:**
-- Two-direction mapping enforces the bijection requirement.
-- Length mismatch is the cheapest early reject.
-- O(n) time over the longer of the two inputs.
-
-**Tags:** #algorithm
-
----
-
-### 59. Isomorphic Strings
-
-**Difficulty:** Easy
-**Topics:** strings, hashmap
-**Position:** ICT3
-**Years:** ICT3
-
-**Question:** Given `s` and `t`, determine if characters of `s` can be replaced to get `t` preserving order (bijection).
-
-**Approach:** Two arrays/maps for last-seen index of each char in s and in t. At each i, the indices must match (both -1 or both equal). Update. O(n) time, O(1) space (fixed alphabet).
-
-**Python:**
-```python
-def is_isomorphic(s: str, t: str) -> bool:
-    if len(s) != len(t):
-        return False
-    s2t: dict[str, str] = {}
-    t2s: dict[str, str] = {}
-    for a, b in zip(s, t):
-        if s2t.get(a, b) != b or t2s.get(b, a) != a:
-            return False
-        s2t[a] = b
-        t2s[b] = a
-    return True
-```
-
-**TypeScript:**
-```typescript
-function isIsomorphic(s: string, t: string): boolean {
-  if (s.length !== t.length) return false;
-  const s2t = new Map<string, string>();
-  const t2s = new Map<string, string>();
-  for (let i = 0; i < s.length; i++) {
-    const a = s[i], b = t[i];
-    if ((s2t.has(a) && s2t.get(a) !== b) || (t2s.has(b) && t2s.get(b) !== a)) return false;
-    s2t.set(a, b);
-    t2s.set(b, a);
-  }
-  return true;
-}
-```
-
-**Java:**
-```java
-import java.util.*;
-class Solution {
-    public boolean isIsomorphic(String s, String t) {
-        if (s.length() != t.length()) return false;
-        Map<Character, Character> s2t = new HashMap<>();
-        Map<Character, Character> t2s = new HashMap<>();
-        for (int i = 0; i < s.length(); i++) {
-            char a = s.charAt(i), b = t.charAt(i);
-            if (s2t.containsKey(a) && s2t.get(a) != b) return false;
-            if (t2s.containsKey(b) && t2s.get(b) != a) return false;
-            s2t.put(a, b);
-            t2s.put(b, a);
-        }
-        return true;
-    }
-}
-```
-
-**Key points:**
-- Both directions must hold; otherwise two `s` chars could map to one `t` char.
-- Use `get(...)` with default to combine "missing" and "matching" checks succinctly.
-- Length check first prevents partial-string false positives.
-
-**Tags:** #algorithm
-
----
-
-### 60. Valid Anagram
-
-**Difficulty:** Easy
-**Topics:** strings, hashmap, sorting
-**Position:** ICT3
-**Years:** ICT3
-
-**Question:** Given `s` and `t`, determine if `t` is an anagram of `s`.
-
-**Approach:** Count frequencies (array of 26 for lowercase ASCII). Increment for s, decrement for t; check all zero. O(n) time, O(1) space. Sort-and-compare is O(n log n). For Unicode, use a hashmap.
-
-**Python:**
-```python
-def is_anagram(s: str, t: str) -> bool:
-    if len(s) != len(t):
-        return False
-    cnt = [0] * 26
-    for a, b in zip(s, t):
-        cnt[ord(a) - 97] += 1
-        cnt[ord(b) - 97] -= 1
-    return all(c == 0 for c in cnt)
-```
-
-**TypeScript:**
-```typescript
-function isAnagram(s: string, t: string): boolean {
-  if (s.length !== t.length) return false;
-  const cnt = new Array(26).fill(0);
-  for (let i = 0; i < s.length; i++) {
-    cnt[s.charCodeAt(i) - 97]++;
-    cnt[t.charCodeAt(i) - 97]--;
-  }
-  return cnt.every(c => c === 0);
+  return count;
 }
 ```
 
 **Java:**
 ```java
 class Solution {
-    public boolean isAnagram(String s, String t) {
-        if (s.length() != t.length()) return false;
-        int[] cnt = new int[26];
-        for (int i = 0; i < s.length(); i++) {
-            cnt[s.charAt(i) - 'a']++;
-            cnt[t.charAt(i) - 'a']--;
-        }
-        for (int c : cnt) if (c != 0) return false;
-        return true;
+    public int hammingWeight(int n) {
+        int count = 0;
+        while (n != 0) { n &= n - 1; count++; }
+        return count;
     }
 }
 ```
 
 **Key points:**
-- Combined increment/decrement avoids a second pass.
-- Length mismatch is an early O(1) reject.
-- For Unicode, switch to a hashmap keyed by code point.
+- `n & (n - 1)` clears the lowest set bit in one operation.
+- Loop runs once per set bit — O(popcount), not O(bit-width).
+- Python has `int.bit_count()`; most compiled languages expose `popcount`/`POPCNT`.
 
 **Tags:** #algorithm
 
 ---
 
-### 61. Lock-Free Bounded Single-Producer Single-Consumer Queue
+### 49. Single Number
+
+**Difficulty:** Easy
+**Topics:** bit-manipulation, xor
+**Position:** ICT3
+**Years:** ICT3
+
+**Question:** Every element appears twice except one. Find that single element in O(n) time and O(1) space.
+
+**Approach:** XOR all elements. Pairs cancel (a ^ a = 0); the single survives. O(n) time, O(1) space. Follow-up "every element appears three times except one" → bit counts mod 3, or two-variable XOR state machine.
+
+**Python:**
+```python
+def single_number(nums: list[int]) -> int:
+    result = 0
+    for n in nums:
+        result ^= n
+    return result
+```
+
+**TypeScript:**
+```typescript
+function singleNumber(nums: number[]): number {
+  let result = 0;
+  for (const n of nums) result ^= n;
+  return result;
+}
+```
+
+**Java:**
+```java
+class Solution {
+    public int singleNumber(int[] nums) {
+        int result = 0;
+        for (int n : nums) result ^= n;
+        return result;
+    }
+}
+```
+
+**Key points:**
+- XOR is commutative and associative, so order does not matter.
+- `a ^ a = 0` and `a ^ 0 = a` make pairs cancel cleanly.
+- Constant space; no hash set or sorting required.
+
+**Tags:** #algorithm
+
+---
+
+### 50. Lock-Free Bounded Single-Producer Single-Consumer Queue
 
 **Difficulty:** Hard
 **Topics:** concurrency, lock-free, ring-buffer, memory-ordering
@@ -3723,97 +3625,211 @@ class SPSCQueue<T> {
 
 ---
 
-### 62. Cache-Friendly Matrix Transpose
+## System Design
+
+### 51. Design Apple Music (or Spotify-like)
+
+**Difficulty:** Hard
+**Topics:** system-design, cdn, drm, recommendation, offline, cloud
+**Position:** Senior SWE
+**Years:** ICT5
+
+**Question:** Design Apple Music: streaming, library, recommendations, offline mode, lossless audio.
+
+**Approach:** Audio files in blob storage + CDN, multiple bitrates (AAC 256kbps, lossless ALAC). DRM via FairPlay. Metadata sharded by track_id; user library (playlists, likes) sharded by user_id. Recommendations: offline two-tower embedding model + on-device re-ranking (Apple privacy lean). Offline downloads: client manages local cache with DRM license refresh. Discuss: cross-device sync (CloudKit), lossless streaming bandwidth, and how to preserve privacy by doing personalization on-device.
+
+**Follow-ups:**
+- Lossless streaming over a metered cellular plan — adaptive bitrate strategy.
+- Personalization without sending listen history to the server — federated learning?
+- Live radio / Apple Music Live — how does ingest + fanout change?
+- Spatial audio metadata pipeline and decoder negotiation.
+- DRM license server failure mode — how does playback degrade?
+
+**Common Pitfalls:**
+- Treating the recommendation pipeline as a single service — misses the offline/online split.
+- Skipping DRM entirely — unrealistic for a music service.
+
+**Tags:** #system-design
+
+---
+
+### 52. Design iMessage
+
+**Difficulty:** Hard
+**Topics:** system-design, e2e-encryption, apns, multi-device
+**Position:** Senior SWE
+**Years:** ICT5
+
+**Question:** Design iMessage: end-to-end encrypted, multi-device delivery, fallback to SMS.
+
+**Approach:** Each device has its own keypair registered with Apple Push Service. Sender encrypts message N times (once per recipient device) and posts via APNS. Server stores ciphertext briefly until delivery, then deletes. Discuss: Identity Service maps phone/email → device list (this is the trust anchor, hence the Contact Key Verification feature), large group keys (sender key model), media (S3-like blob + per-message key), and graceful SMS fallback when recipient not on iMessage.
+
+**Follow-ups:**
+- New device added to a recipient's account — how does key distribution handle it?
+- Large group chats (>100) — sender keys vs pairwise; failure modes when a member rotates keys.
+- Message edit / unsend semantics under E2E — server can't enforce them.
+- Backup and restore — iCloud Backup contains keys, but you can opt out (Advanced Data Protection).
+- Spam / abuse detection without reading plaintext — metadata-only signals.
+
+**Common Pitfalls:**
+- Storing plaintext server-side "for delivery" — breaks E2E.
+- Assuming a single key per user — must handle a fan-out per device list.
+
+**Tags:** #system-design
+
+---
+
+### 53. Design iCloud Photo Library
+
+**Difficulty:** Hard
+**Topics:** system-design, sync, dedup, ml-on-device, cloud
+**Position:** Senior SWE
+**Years:** ICT5
+
+**Question:** Design iCloud Photos: sync photos across devices, dedup, search by content, edit-on-one-device-sync-everywhere.
+
+**Approach:** Content-addressed blob storage (SHA-256 of original) for dedup across users (with privacy: hash includes per-user salt, no cross-user dedup if true E2E). Per-user CloudKit zone for metadata. Edits stored as non-destructive adjustments (small JSON) layered over the original. Content search via on-device ML (Apple's Photos uses on-device classification — embeddings stored as encrypted metadata, search runs locally). Multi-device sync via CKShare deltas. Discuss bandwidth (lazy fetch full-res, eager thumbnails) and Optimize Storage feature.
+
+**Tags:** #system-design
+
+---
+
+### 54. Design a Notification Service (APNS-like)
+
+**Difficulty:** Hard
+**Topics:** system-design, push, persistent-connections, fanout
+**Position:** Senior SWE
+**Years:** ICT5
+
+**Question:** Design Apple Push Notification Service — a system that maintains a persistent connection to every active iOS device worldwide and delivers push notifications.
+
+**Approach:** Edge layer of stateful connection servers, each holding ~1M+ persistent TLS connections (tuned kernels). Devices keep-alive every ~20 min (battery-friendly). Producer apps POST notifications → gateway → routed (by device_token → connection server via consistent hashing) → delivered. Persistent queue (Kafka) for transient device offline state, with TTL drop. Discuss: TLS handshake amortization, NAT keep-alive, priority tiers, and dedup on multiple sends for the same alert.
+
+**Tags:** #system-design
+
+---
+
+### 55. Design Find My (offline finding)
+
+**Difficulty:** Hard
+**Topics:** system-design, e2e-encryption, ble, privacy
+**Position:** Senior SWE
+**Years:** ICT5
+
+**Question:** Design Apple's Find My network — locate a lost device even when it's offline, without Apple knowing its location.
+
+**Approach:** Lost device emits a rotating BLE beacon derived from a public key (private key kept on owner's other Apple devices). Nearby iPhones detect, encrypt their location with the beacon's public key, and upload to Apple. Owner queries with the private key. Apple cannot decrypt — only the owner can. Trade-offs: server stores opaque ciphertext (large data volume), key rotation prevents long-term tracking, finder phones unwittingly relay. Discuss collision resistance, replay attacks, and how owner devices share the private key chain.
+
+**Tags:** #system-design
+
+---
+
+### 56. Design a CDN
+
+**Difficulty:** Hard
+**Topics:** system-design, cdn, caching, dns, cloud
+**Position:** Senior SWE
+**Years:** ICT5
+
+**Question:** Design a CDN like Akamai or Apple's edge cache. Cover routing, cache hierarchy, and invalidation.
+
+**Approach:** Edge PoPs in major cities; user routed to nearest via GeoDNS or anycast BGP. Edge → regional cache → origin (tiered to amortize origin load). Cache key = URL + headers (Vary). Invalidation: purge API → propagates via pub/sub to all edges (eventual ~seconds). Origin pull for cache miss; signed URLs for private content. Discuss: cache stampede (request coalescing at edge), TLS termination at edge, and HTTP/3 / QUIC for last-mile.
+
+**Tags:** #system-design
+
+---
+
+## Behavioral
+
+### 57. Tell me about a time you obsessed over a detail
 
 **Difficulty:** Medium
-**Topics:** arrays, cache, memory-layout
-**Position:** ICT4
-**Years:** ICT4-ICT5
+**Topics:** behavioral, attention-to-detail, craft
+**Position:** SWE
+**Years:** ICT3-ICT4
 
-**Question:** Transpose a large N x N matrix in-place (or out-of-place) minimizing cache misses.
+**Question:** Tell me about a time you went deep into a small detail others might have overlooked.
 
-**Approach:** Naive double loop suffers because writes (or reads) stride by N, blowing the cache. Use blocking/tiling: transpose B x B blocks at a time (B sized so 2 * B * B * sizeof(elem) fits in L1). For each block, do the inner transpose in registers; for diagonal blocks, swap in place. Trade some arithmetic for locality; gains 3-10x in practice.
+**Approach:** Apple values craft — pick a story where the detail mattered to the user (latency shaved, animation jank fixed, accessibility bug nobody filed). STAR with emphasis on: (1) you noticed when others didn't, (2) you measured the impact (not just "it felt better"), (3) you advocated to spend the time. Avoid "I rewrote everything for purity" — that's not craft, that's vanity.
 
-**Python:**
-```python
-def transpose_blocked(a: list[list[float]], block: int = 32) -> None:
-    n = len(a)
-    for ii in range(0, n, block):
-        for jj in range(ii, n, block):
-            i_max = min(ii + block, n)
-            j_max = min(jj + block, n)
-            if ii == jj:
-                for i in range(ii, i_max):
-                    for j in range(i + 1, j_max):
-                        a[i][j], a[j][i] = a[j][i], a[i][j]
-            else:
-                for i in range(ii, i_max):
-                    for j in range(jj, j_max):
-                        a[i][j], a[j][i] = a[j][i], a[i][j]
-```
+**Tags:** #behavioral
 
-**TypeScript:**
-```typescript
-function transposeBlocked(a: number[][], block = 32): void {
-  const n = a.length;
-  for (let ii = 0; ii < n; ii += block) {
-    for (let jj = ii; jj < n; jj += block) {
-      const iMax = Math.min(ii + block, n);
-      const jMax = Math.min(jj + block, n);
-      if (ii === jj) {
-        for (let i = ii; i < iMax; i++) {
-          for (let j = i + 1; j < jMax; j++) {
-            [a[i][j], a[j][i]] = [a[j][i], a[i][j]];
-          }
-        }
-      } else {
-        for (let i = ii; i < iMax; i++) {
-          for (let j = jj; j < jMax; j++) {
-            [a[i][j], a[j][i]] = [a[j][i], a[i][j]];
-          }
-        }
-      }
-    }
-  }
-}
-```
+---
 
-**Java:**
-```java
-class Solution {
-    public void transposeBlocked(double[][] a, int block) {
-        int n = a.length;
-        for (int ii = 0; ii < n; ii += block) {
-            for (int jj = ii; jj < n; jj += block) {
-                int iMax = Math.min(ii + block, n);
-                int jMax = Math.min(jj + block, n);
-                if (ii == jj) {
-                    for (int i = ii; i < iMax; i++) {
-                        for (int j = i + 1; j < jMax; j++) {
-                            double t = a[i][j]; a[i][j] = a[j][i]; a[j][i] = t;
-                        }
-                    }
-                } else {
-                    for (int i = ii; i < iMax; i++) {
-                        for (int j = jj; j < jMax; j++) {
-                            double t = a[i][j]; a[i][j] = a[j][i]; a[j][i] = t;
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
-```
+### 58. Time you had to balance speed and quality
 
-**Key points:**
-- Process B x B tiles so both rows and columns of each tile fit in L1 cache.
-- Iterate only over `jj >= ii` to avoid double-swapping symmetric off-diagonal tiles.
-- Diagonal tiles need an in-tile swap; off-diagonal tiles swap with their mirror tile.
+**Difficulty:** Medium
+**Topics:** behavioral, tradeoffs, judgment
+**Position:** Senior SWE
+**Years:** ICT5
 
-**Complexity:** O(n²) work — every element is touched once, same as the naive transpose; tiling only improves the constant factor via cache locality. O(1) extra space.
+**Question:** Tell me about a time you had to make a trade-off between shipping fast and shipping well. How did you decide?
 
-**Tags:** #algorithm
+**Approach:** Apple culture: ship when ready, not when scheduled. But they want pragmatism, not perfectionism. Show: (1) you defined the minimum bar explicitly (what's a P0 bug vs P2?), (2) you communicated trade-offs to PM/leadership, (3) you owned the post-ship follow-up to close the gap. Avoid "we slipped 3 months for polish" without strong user-impact justification.
+
+**Tags:** #behavioral
+
+---
+
+### 59. Time you collaborated with a difficult cross-functional partner
+
+**Difficulty:** Medium
+**Topics:** behavioral, cross-functional, conflict
+**Position:** Senior SWE
+**Years:** ICT5
+
+**Question:** Tell me about a time you had a difficult working relationship with a designer, PM, or another engineer. How did you make it work?
+
+**Approach:** Apple has strong design and PM functions — engineers must collaborate effectively. Show: (1) you tried to understand their frame (design language, user research data), (2) you found a shared metric/goal, (3) you adjusted *your* communication, not just demanded they change. Bonus: the relationship turned into a productive partnership long-term.
+
+**Tags:** #behavioral
+
+---
+
+### 60. Why do you want to work at Apple
+
+**Difficulty:** Easy
+**Topics:** behavioral, motivation, fit
+**Position:** SWE
+**Years:** ICT3-ICT5
+
+**Question:** Why Apple specifically, over <Google/Meta/Microsoft>?
+
+**Approach:** Don't say "stock" or "brand." Pick one of: (1) specific product you use and love (be specific about what), (2) Apple's privacy stance and how it aligns with your work values, (3) the integration of hardware+software you can't do elsewhere, (4) the team's specific mission. Have something concrete you've done that shows interest (e.g., contributed to Swift, built an iOS app, read Apple's ML research papers).
+
+**Tags:** #behavioral
+
+---
+
+## Domain Knowledge
+
+### 61. Frontend / web perf: optimize Largest Contentful Paint
+
+**Difficulty:** Hard
+**Topics:** web-perf, frontend, lcp
+**Position:** Frontend
+**Years:** ICT5
+
+**Question:** A marketing page on apple.com has an LCP of 4.5s on 3G. How do you get it under 2.5s?
+
+**Approach:** Identify the LCP element first (DevTools → Performance → LCP marker). Typical wins: (1) preload the LCP image with `<link rel=preload as=image>` + `fetchpriority=high`, (2) serve in AVIF/WebP with proper `srcset`, (3) eliminate render-blocking CSS — inline critical CSS, defer rest, (4) eliminate render-blocking JS — defer all non-critical, (5) use HTTP/2 push or 103 Early Hints, (6) server-side render the hero, (7) optimize TTFB (edge caching, fewer redirects). Measure with field RUM data, not just lab. Mention `loading=lazy` should *not* be on the LCP image (anti-pattern).
+
+**Tags:** #domain-knowledge
+
+---
+
+### 62. On-device ML vs cloud ML trade-offs
+
+**Difficulty:** Medium
+**Topics:** ml, privacy, mobile, ood, cloud
+**Position:** Senior SWE
+**Years:** ICT5
+
+**Question:** A new feature needs ML inference on user data. Should it run on-device or in the cloud? Walk through the trade-offs.
+
+**Approach:** Apple's strong on-device bias is the cultural lens. Pros of on-device: privacy (data never leaves device), latency (no network round-trip), works offline, no server cost. Cons: model size constrained (must fit in tens of MB), can't share learning across users without federated learning, harder to update (must ship in OS). When cloud wins: model too large (LLMs), needs aggregate data, server-side personalization with explicit consent. Discuss hybrid (on-device candidate generation, cloud re-rank with hashed features) and Differential Privacy when uploading aggregate stats.
+
+**Tags:** #domain-knowledge
 
 ---
 

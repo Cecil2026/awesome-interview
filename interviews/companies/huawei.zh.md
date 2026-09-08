@@ -20,142 +20,9 @@ sources: LeetCode Discuss（huawei 标签）、牛客网、一亩三分地、Gla
 
 华为面试最显著的特点是分量很重、必须通过的机试（在线编程测评）——通常 150 分钟内 3 道算法题，这一关分数不佳往往会在任何真人面试之前就终止流程。C/C++ 是主导语言，尤其在运营商网络和嵌入式团队，因此除了标准数据结构题外，还要准备手动内存管理、指针运算以及 segfault/内存泄漏调试。面试官对操作系统和 TCP/IP 网络基础的深挖远超美国公司。系统设计扎根于华为的业务领域：电信计费、5G 基站、HarmonyOS 分布式软总线、运营商级高可用。行为面会探查"奋斗者"文化以及高压下工作的意愿。
 
-## 题目
+## 链表
 
-### 1. 两数之和（Two Sum）
-
-**难度：** 简单
-**主题：** array, hash-table
-**岗位：** OD / SWE
-**级别：** 13-14（初级）
-
-**问题：** 给定整数数组 `nums` 和目标值，返回相加等于目标值的两个数的下标。恰好存在一个解；同一元素不可使用两次。
-
-**思路：** 一次遍历，维护"值 → 下标"哈希表。对每个元素检查 `target - x` 是否已出现；若出现则返回两个下标。时间 O(n)，空间 O(n)——典型的机试热身题。
-
-**Python：**
-```python
-def two_sum(nums: list[int], target: int) -> list[int]:
-    seen: dict[int, int] = {}
-    for i, x in enumerate(nums):
-        if target - x in seen:
-            return [seen[target - x], i]
-        seen[x] = i
-    return []
-```
-
-**TypeScript：**
-```typescript
-function twoSum(nums: number[], target: number): number[] {
-  const seen = new Map<number, number>();
-  for (let i = 0; i < nums.length; i++) {
-    const need = target - nums[i];
-    if (seen.has(need)) return [seen.get(need)!, i];
-    seen.set(nums[i], i);
-  }
-  return [];
-}
-```
-
-**Java：**
-```java
-int[] twoSum(int[] nums, int target) {
-  Map<Integer, Integer> seen = new HashMap<>();
-  for (int i = 0; i < nums.length; i++) {
-    int need = target - nums[i];
-    if (seen.containsKey(need)) return new int[] { seen.get(need), i };
-    seen.put(nums[i], i);
-  }
-  return new int[0];
-}
-```
-
-**要点：**
-- 单次遍历加哈希表，时间 O(n)、空间 O(n)，优于 O(n^2) 暴力。
-- 检查之后再存入当前值，避免把元素与自身配对。
-
-**追问：**
-- 返回所有相加等于目标值的不重复数对（排序 + 双指针）。
-- 输入已排序——用双指针 O(1) 额外空间求解。
-- 3Sum / 4Sum 的推广。
-- 数字流——设计在线的 `add`/`find` 结构。
-
-**标签：** #algorithm
-
----
-
-### 2. 有效的括号（Valid Parentheses）
-
-**难度：** 简单
-**主题：** string, stack
-**岗位：** OD / SWE
-**级别：** 13-14（初级）
-
-**问题：** 给定只含 `()[]{}` 的字符串，判断括号是否有效匹配且正确嵌套。
-
-**思路：** 左括号入栈；遇到右括号则弹出比较。只有当每个右括号都匹配栈顶、且最终栈为空时才有效。时间 O(n)，空间 O(n)。
-
-**Python：**
-```python
-def is_valid(s: str) -> bool:
-    pairs = {")": "(", "]": "[", "}": "{"}
-    stack: list[str] = []
-    for c in s:
-        if c in pairs:
-            if not stack or stack.pop() != pairs[c]:
-                return False
-        else:
-            stack.append(c)
-    return not stack
-```
-
-**TypeScript：**
-```typescript
-function isValid(s: string): boolean {
-  const pairs: Record<string, string> = { ")": "(", "]": "[", "}": "{" };
-  const stack: string[] = [];
-  for (const c of s) {
-    if (c in pairs) {
-      if (stack.pop() !== pairs[c]) return false;
-    } else {
-      stack.push(c);
-    }
-  }
-  return stack.length === 0;
-}
-```
-
-**Java：**
-```java
-boolean isValid(String s) {
-  Map<Character, Character> pairs = Map.of(')', '(', ']', '[', '}', '{');
-  Deque<Character> stack = new ArrayDeque<>();
-  for (char c : s.toCharArray()) {
-    if (pairs.containsKey(c)) {
-      if (stack.isEmpty() || stack.pop() != pairs.get(c)) return false;
-    } else {
-      stack.push(c);
-    }
-  }
-  return stack.isEmpty();
-}
-```
-
-**要点：**
-- 栈刻画嵌套关系，时间和空间均为 O(n)。
-- 最后必须检查栈为空，而不仅是逐字符匹配。
-
-**追问：**
-- 返回使字符串有效所需的最少插入数。
-- 最长有效括号子串（DP / 下标栈）。
-- 支持运行时定义的任意括号类型。
-- 流式输入、内存受限下做校验。
-
-**标签：** #algorithm
-
----
-
-### 3. 反转链表（Reverse Linked List）
+### 1. 反转链表（Reverse Linked List）
 
 **难度：** 简单
 **主题：** linked-list, two-pointer
@@ -234,7 +101,7 @@ ListNode reverseList(ListNode head) {
 
 ---
 
-### 4. 合并两个有序链表（Merge Two Sorted Lists）
+### 2. 合并两个有序链表（Merge Two Sorted Lists）
 
 **难度：** 简单
 **主题：** linked-list, two-pointer
@@ -317,870 +184,7 @@ ListNode mergeTwoLists(ListNode a, ListNode b) {
 
 ---
 
-### 5. 买卖股票的最佳时机（Best Time to Buy and Sell Stock）
-
-**难度：** 简单
-**主题：** array, dynamic-programming
-**岗位：** OD / SWE
-**级别：** 13-14（初级）
-
-**问题：** 给定每日价格，求一次买入、之后卖出的最大利润；无利润则返回 0。
-
-**思路：** 维护至今的最低价；每天用当前价减去最低价求利润并取最优。时间 O(n)，空间 O(1)。
-
-**Python：**
-```python
-def max_profit(prices: list[int]) -> int:
-    best, lo = 0, float("inf")
-    for p in prices:
-        lo = min(lo, p)
-        best = max(best, p - lo)
-    return best
-```
-
-**TypeScript：**
-```typescript
-function maxProfit(prices: number[]): number {
-  let best = 0, lo = Infinity;
-  for (const p of prices) {
-    lo = Math.min(lo, p);
-    best = Math.max(best, p - lo);
-  }
-  return best;
-}
-```
-
-**Java：**
-```java
-int maxProfit(int[] prices) {
-  int best = 0, lo = Integer.MAX_VALUE;
-  for (int p : prices) {
-    lo = Math.min(lo, p);
-    best = Math.max(best, p - lo);
-  }
-  return best;
-}
-```
-
-**要点：**
-- 单次遍历追踪运行最小值，时间 O(n)、空间 O(1)。
-- 买必须在卖之前，而"运行最小值"不变式恰好保证了这一点。
-
-**追问：**
-- 无限次交易（累加所有正的差值）。
-- 至多 k 次交易（DP，O(nk)）。
-- 加入手续费或冷冻期。
-- 返回实际的买入/卖出日下标。
-
-**标签：** #algorithm
-
----
-
-### 6. 二分查找（Binary Search）
-
-**难度：** 简单
-**主题：** binary-search, array
-**岗位：** OD / SWE
-**级别：** 13-14（初级）
-
-**问题：** 给定有序数组和目标值，返回其下标，不存在则返回 -1。
-
-**思路：** 维护 `[lo, hi]` 边界，探测中点，每步将范围减半。用 `lo + (hi - lo) // 2` 避免溢出（C/C++ 中尤为重要）。时间 O(log n)，空间 O(1)。
-
-**Python：**
-```python
-def binary_search(nums: list[int], target: int) -> int:
-    lo, hi = 0, len(nums) - 1
-    while lo <= hi:
-        mid = lo + (hi - lo) // 2
-        if nums[mid] == target:
-            return mid
-        if nums[mid] < target:
-            lo = mid + 1
-        else:
-            hi = mid - 1
-    return -1
-```
-
-**TypeScript：**
-```typescript
-function binarySearch(nums: number[], target: number): number {
-  let lo = 0, hi = nums.length - 1;
-  while (lo <= hi) {
-    const mid = lo + ((hi - lo) >> 1);
-    if (nums[mid] === target) return mid;
-    if (nums[mid] < target) lo = mid + 1;
-    else hi = mid - 1;
-  }
-  return -1;
-}
-```
-
-**Java：**
-```java
-int binarySearch(int[] nums, int target) {
-  int lo = 0, hi = nums.length - 1;
-  while (lo <= hi) {
-    int mid = lo + (hi - lo) / 2;
-    if (nums[mid] == target) return mid;
-    if (nums[mid] < target) lo = mid + 1;
-    else hi = mid - 1;
-  }
-  return -1;
-}
-```
-
-**要点：**
-- 每步减半范围，时间 O(log n)、空间 O(1)。
-- `lo + (hi - lo) / 2` 可避免 `(lo + hi) / 2` 在 C/C++/Java 中的整数溢出。
-
-**追问：**
-- 返回最左/最右插入位置（下界/上界）。
-- 在旋转有序数组中查找。
-- 在无限/无界有序流中查找某值。
-- 用递归实现并讨论栈使用。
-
-**标签：** #algorithm
-
----
-
-### 7. 最大子数组和（Kadane）
-
-**难度：** 中等
-**主题：** array, dynamic-programming
-**岗位：** OD / SWE
-**级别：** 13-14（初级）
-
-**问题：** 找出和最大的连续子数组并返回该和。
-
-**思路：** Kadane 算法——维护运行和；当延续会使其变小时就重置为当前元素。同时记录全局最优。时间 O(n)，空间 O(1)。
-
-**Python：**
-```python
-def max_sub_array(nums: list[int]) -> int:
-    cur = best = nums[0]
-    for x in nums[1:]:
-        cur = max(x, cur + x)
-        best = max(best, cur)
-    return best
-```
-
-**TypeScript：**
-```typescript
-function maxSubArray(nums: number[]): number {
-  let cur = nums[0], best = nums[0];
-  for (let i = 1; i < nums.length; i++) {
-    cur = Math.max(nums[i], cur + nums[i]);
-    best = Math.max(best, cur);
-  }
-  return best;
-}
-```
-
-**Java：**
-```java
-int maxSubArray(int[] nums) {
-  int cur = nums[0], best = nums[0];
-  for (int i = 1; i < nums.length; i++) {
-    cur = Math.max(nums[i], cur + nums[i]);
-    best = Math.max(best, cur);
-  }
-  return best;
-}
-```
-
-**要点：**
-- Kadane 时间 O(n)、空间 O(1)。
-- 用首元素初始化，使全负数组也能返回最大的单个值。
-
-**追问：**
-- 返回子数组边界，而不仅是和。
-- 最大乘积子数组（同时追踪最小、最大）。
-- 最大环形子数组和。
-- 分治 O(n log n) 解法以及为何 Kadane 更优。
-
-**标签：** #algorithm
-
----
-
-### 8. 爬楼梯（Climbing Stairs）
-
-**难度：** 简单
-**主题：** dynamic-programming
-**岗位：** OD / SWE
-**级别：** 13-14（初级）
-
-**问题：** 每次可爬 1 或 2 级台阶。爬 `n` 级有多少种不同方法？
-
-**思路：** 斐波那契递推 `f(n) = f(n-1) + f(n-2)`。滚动两个变量避免数组。时间 O(n)，空间 O(1)。
-
-**Python：**
-```python
-def climb_stairs(n: int) -> int:
-    a, b = 1, 1
-    for _ in range(n):
-        a, b = b, a + b
-    return a
-```
-
-**TypeScript：**
-```typescript
-function climbStairs(n: number): number {
-  let a = 1, b = 1;
-  for (let i = 0; i < n; i++) { [a, b] = [b, a + b]; }
-  return a;
-}
-```
-
-**Java：**
-```java
-int climbStairs(int n) {
-  int a = 1, b = 1;
-  for (int i = 0; i < n; i++) {
-    int t = a + b; a = b; b = t;
-  }
-  return a;
-}
-```
-
-**要点：**
-- 滚动两个变量，时间 O(n)、空间 O(1)。
-- 本质是斐波那契；识别出递推即是全部要点。
-
-**追问：**
-- 每步可走 1、2 或 3 级。
-- 每级有代价——最小化总代价（最小花费爬楼梯）。
-- 对大 n 取模 1e9+7 计数。
-- 用矩阵快速幂做到 O(log n)。
-
-**标签：** #algorithm
-
----
-
-### 9. 有效的字母异位词（Valid Anagram）
-
-**难度：** 简单
-**主题：** string, hash-table, counting
-**岗位：** OD / SWE
-**级别：** 13-14（初级）
-
-**问题：** 给定两个字符串，判断其中一个是否是另一个的字母异位词。
-
-**思路：** 统计第一个串的字符频次，用第二个串递减，验证所有计数归零。时间 O(n)，固定字母表下空间 O(1)。
-
-**Python：**
-```python
-from collections import Counter
-
-def is_anagram(s: str, t: str) -> bool:
-    if len(s) != len(t):
-        return False
-    return Counter(s) == Counter(t)
-```
-
-**TypeScript：**
-```typescript
-function isAnagram(s: string, t: string): boolean {
-  if (s.length !== t.length) return false;
-  const count = new Map<string, number>();
-  for (const c of s) count.set(c, (count.get(c) ?? 0) + 1);
-  for (const c of t) {
-    const n = (count.get(c) ?? 0) - 1;
-    if (n < 0) return false;
-    count.set(c, n);
-  }
-  return true;
-}
-```
-
-**Java：**
-```java
-boolean isAnagram(String s, String t) {
-  if (s.length() != t.length()) return false;
-  int[] count = new int[26];
-  for (int i = 0; i < s.length(); i++) {
-    count[s.charAt(i) - 'a']++;
-    count[t.charAt(i) - 'a']--;
-  }
-  for (int c : count) if (c != 0) return false;
-  return true;
-}
-```
-
-**要点：**
-- 频次统计时间 O(n)；26 槽数组空间 O(1)。
-- 长度不等可立即否定。
-
-**追问：**
-- 支持完整 Unicode，而非仅小写 a–z。
-- 把所有异位词分组（见下一题）。
-- 在 `s` 中找出 `p` 的所有异位词起始下标（滑动窗口）。
-- 忽略大小写与空白做比较。
-
-**标签：** #algorithm
-
----
-
-### 10. 字母异位词分组（Group Anagrams）
-
-**难度：** 中等
-**主题：** string, hash-table, sorting
-**岗位：** OD / SWE
-**级别：** 15-16（高级）
-
-**问题：** 将单词列表分组，使互为异位词的单词落入同一组。
-
-**思路：** 为每个单词生成规范化键——排序后的字母，或 26 位计数签名——按该键在哈希表中分桶。用排序键时时间 O(n·k log k)（k 为词长），空间 O(n·k)。
-
-**Python：**
-```python
-from collections import defaultdict
-
-def group_anagrams(words: list[str]) -> list[list[str]]:
-    groups: dict[str, list[str]] = defaultdict(list)
-    for w in words:
-        groups["".join(sorted(w))].append(w)
-    return list(groups.values())
-```
-
-**TypeScript：**
-```typescript
-function groupAnagrams(words: string[]): string[][] {
-  const groups = new Map<string, string[]>();
-  for (const w of words) {
-    const key = [...w].sort().join("");
-    (groups.get(key) ?? groups.set(key, []).get(key)!).push(w);
-  }
-  return [...groups.values()];
-}
-```
-
-**Java：**
-```java
-List<List<String>> groupAnagrams(String[] words) {
-  Map<String, List<String>> groups = new HashMap<>();
-  for (String w : words) {
-    char[] c = w.toCharArray();
-    Arrays.sort(c);
-    groups.computeIfAbsent(new String(c), k -> new ArrayList<>()).add(w);
-  }
-  return new ArrayList<>(groups.values());
-}
-```
-
-**要点：**
-- 排序键每词 O(k log k)，总体 O(n·k log k)。
-- 用计数签名键可把每词成本降到 O(k)，总体 O(n·k)。
-
-**追问：**
-- 改用计数签名键去掉 log 因子。
-- 流式处理单词并增量输出分组。
-- 忽略大小写与空格按异位词类分组。
-- 按组大小排序返回。
-
-**标签：** #algorithm
-
----
-
-### 11. 盛最多水的容器（Container With Most Water）
-
-**难度：** 中等
-**主题：** array, two-pointer, greedy
-**岗位：** OD / SWE
-**级别：** 15-16（高级）
-
-**问题：** 给定高度数组，选两条线与 x 轴构成容器使盛水最多，返回最大面积。
-
-**思路：** 双指针位于两端；面积为 `min(h[l], h[r]) * (r - l)`。每次移动较矮的一侧，因为它限制了面积。时间 O(n)，空间 O(1)。
-
-**Python：**
-```python
-def max_area(height: list[int]) -> int:
-    l, r, best = 0, len(height) - 1, 0
-    while l < r:
-        best = max(best, min(height[l], height[r]) * (r - l))
-        if height[l] < height[r]:
-            l += 1
-        else:
-            r -= 1
-    return best
-```
-
-**TypeScript：**
-```typescript
-function maxArea(height: number[]): number {
-  let l = 0, r = height.length - 1, best = 0;
-  while (l < r) {
-    best = Math.max(best, Math.min(height[l], height[r]) * (r - l));
-    if (height[l] < height[r]) l++; else r--;
-  }
-  return best;
-}
-```
-
-**Java：**
-```java
-int maxArea(int[] height) {
-  int l = 0, r = height.length - 1, best = 0;
-  while (l < r) {
-    best = Math.max(best, Math.min(height[l], height[r]) * (r - l));
-    if (height[l] < height[r]) l++; else r--;
-  }
-  return best;
-}
-```
-
-**要点：**
-- 双指针扫描时间 O(n)、空间 O(1)，优于 O(n^2) 暴力。
-- 移动较高一侧绝不会增大面积，因此总是移动较矮一侧。
-
-**标签：** #algorithm
-
----
-
-### 12. 三数之和（3Sum）
-
-**难度：** 中等
-**主题：** array, two-pointer, sorting
-**岗位：** OD / SWE
-**级别：** 15-16（高级）
-
-**问题：** 找出数组中所有和为零的不重复三元组。
-
-**思路：** 排序后固定一个下标，对其余部分做双指针扫描，并在每层跳过重复。时间 O(n^2)，除输出外空间 O(1)。
-
-**Python：**
-```python
-def three_sum(nums: list[int]) -> list[list[int]]:
-    nums.sort()
-    res: list[list[int]] = []
-    for i in range(len(nums) - 2):
-        if i > 0 and nums[i] == nums[i - 1]:
-            continue
-        l, r = i + 1, len(nums) - 1
-        while l < r:
-            s = nums[i] + nums[l] + nums[r]
-            if s < 0:
-                l += 1
-            elif s > 0:
-                r -= 1
-            else:
-                res.append([nums[i], nums[l], nums[r]])
-                l += 1
-                r -= 1
-                while l < r and nums[l] == nums[l - 1]:
-                    l += 1
-                while l < r and nums[r] == nums[r + 1]:
-                    r -= 1
-    return res
-```
-
-**TypeScript：**
-```typescript
-function threeSum(nums: number[]): number[][] {
-  nums.sort((a, b) => a - b);
-  const res: number[][] = [];
-  for (let i = 0; i < nums.length - 2; i++) {
-    if (i > 0 && nums[i] === nums[i - 1]) continue;
-    let l = i + 1, r = nums.length - 1;
-    while (l < r) {
-      const s = nums[i] + nums[l] + nums[r];
-      if (s < 0) l++;
-      else if (s > 0) r--;
-      else {
-        res.push([nums[i], nums[l], nums[r]]);
-        l++; r--;
-        while (l < r && nums[l] === nums[l - 1]) l++;
-        while (l < r && nums[r] === nums[r + 1]) r--;
-      }
-    }
-  }
-  return res;
-}
-```
-
-**Java：**
-```java
-List<List<Integer>> threeSum(int[] nums) {
-  Arrays.sort(nums);
-  List<List<Integer>> res = new ArrayList<>();
-  for (int i = 0; i < nums.length - 2; i++) {
-    if (i > 0 && nums[i] == nums[i - 1]) continue;
-    int l = i + 1, r = nums.length - 1;
-    while (l < r) {
-      int s = nums[i] + nums[l] + nums[r];
-      if (s < 0) l++;
-      else if (s > 0) r--;
-      else {
-        res.add(Arrays.asList(nums[i], nums[l], nums[r]));
-        l++; r--;
-        while (l < r && nums[l] == nums[l - 1]) l++;
-        while (l < r && nums[r] == nums[r + 1]) r--;
-      }
-    }
-  }
-  return res;
-}
-```
-
-**要点：**
-- 排序加双指针扫描时间 O(n^2)、额外空间 O(1)。
-- 在每层跳过重复值是保证三元组不重复的关键。
-
-**标签：** #algorithm
-
----
-
-### 13. 无重复字符的最长子串（Longest Substring Without Repeating Characters）
-
-**难度：** 中等
-**主题：** string, sliding-window, hash-table
-**岗位：** OD / SWE
-**级别：** 15-16（高级）
-
-**问题：** 求无重复字符的最长子串长度。
-
-**思路：** 滑动窗口加"字符 → 最后下标"映射。当重复落在窗口内时，把左边界跳到其之后。时间 O(n)，空间 O(min(n, 字母表))。
-
-**Python：**
-```python
-def length_of_longest_substring(s: str) -> int:
-    last: dict[str, int] = {}
-    start = best = 0
-    for i, c in enumerate(s):
-        if c in last and last[c] >= start:
-            start = last[c] + 1
-        last[c] = i
-        best = max(best, i - start + 1)
-    return best
-```
-
-**TypeScript：**
-```typescript
-function lengthOfLongestSubstring(s: string): number {
-  const last = new Map<string, number>();
-  let start = 0, best = 0;
-  for (let i = 0; i < s.length; i++) {
-    const c = s[i];
-    if (last.has(c) && last.get(c)! >= start) start = last.get(c)! + 1;
-    last.set(c, i);
-    best = Math.max(best, i - start + 1);
-  }
-  return best;
-}
-```
-
-**Java：**
-```java
-int lengthOfLongestSubstring(String s) {
-  Map<Character, Integer> last = new HashMap<>();
-  int start = 0, best = 0;
-  for (int i = 0; i < s.length(); i++) {
-    char c = s.charAt(i);
-    if (last.containsKey(c) && last.get(c) >= start) start = last.get(c) + 1;
-    last.put(c, i);
-    best = Math.max(best, i - start + 1);
-  }
-  return best;
-}
-```
-
-**要点：**
-- 每个下标进出窗口各一次，时间 O(n)。
-- 将 `start` 跳过上次出现位置，避免重新扫描窗口。
-
-**标签：** #algorithm
-
----
-
-### 14. 最小覆盖子串（Minimum Window Substring）
-
-**难度：** 困难
-**主题：** string, sliding-window, hash-table
-**岗位：** Senior SWE
-**级别：** 17-18（专家）
-
-**问题：** 给定字符串 `s` 和 `t`，返回 `s` 中包含 `t` 全部字符（含重数）的最小子串，不存在则返回 ""。
-
-**思路：** 扩张窗口直到满足全部所需计数，再从左收缩同时保持有效，并记录最小有效窗口。时间 O(n + m)，空间 O(字母表)。
-
-**Python：**
-```python
-from collections import Counter
-
-def min_window(s: str, t: str) -> str:
-    if not t or not s:
-        return ""
-    need = Counter(t)
-    missing = len(t)
-    start = end = 0
-    left = 0
-    for right, c in enumerate(s, 1):
-        if need[c] > 0:
-            missing -= 1
-        need[c] -= 1
-        while missing == 0:
-            if end == 0 or right - left < end - start:
-                start, end = left, right
-            need[s[left]] += 1
-            if need[s[left]] > 0:
-                missing += 1
-            left += 1
-    return s[start:end]
-```
-
-**TypeScript：**
-```typescript
-function minWindow(s: string, t: string): string {
-  if (!s || !t) return "";
-  const need = new Map<string, number>();
-  for (const c of t) need.set(c, (need.get(c) ?? 0) + 1);
-  let missing = t.length, left = 0, start = 0, end = 0;
-  for (let right = 1; right <= s.length; right++) {
-    const c = s[right - 1];
-    if ((need.get(c) ?? 0) > 0) missing--;
-    need.set(c, (need.get(c) ?? 0) - 1);
-    while (missing === 0) {
-      if (end === 0 || right - left < end - start) { start = left; end = right; }
-      const lc = s[left];
-      need.set(lc, (need.get(lc) ?? 0) + 1);
-      if ((need.get(lc) ?? 0) > 0) missing++;
-      left++;
-    }
-  }
-  return s.slice(start, end);
-}
-```
-
-**Java：**
-```java
-String minWindow(String s, String t) {
-  if (s.isEmpty() || t.isEmpty()) return "";
-  int[] need = new int[128];
-  for (char c : t.toCharArray()) need[c]++;
-  int missing = t.length(), left = 0, start = 0, end = 0;
-  for (int right = 1; right <= s.length(); right++) {
-    char c = s.charAt(right - 1);
-    if (need[c]-- > 0) missing--;
-    while (missing == 0) {
-      if (end == 0 || right - left < end - start) { start = left; end = right; }
-      char lc = s.charAt(left);
-      if (++need[lc] > 0) missing++;
-      left++;
-    }
-  }
-  return s.substring(start, end);
-}
-```
-
-**要点：**
-- 两个指针各至多前进 n 次，时间 O(n + m)。
-- `missing` 让窗口有效性判断为 O(1)，无需逐一比较映射。
-
-**标签：** #algorithm
-
----
-
-### 15. 除自身以外数组的乘积（Product of Array Except Self）
-
-**难度：** 中等
-**主题：** array, prefix-product
-**岗位：** OD / SWE
-**级别：** 15-16（高级）
-
-**问题：** 返回一个数组，其中每个元素是其余所有元素之积，不用除法且 O(n)。
-
-**思路：** 两次遍历——先从左到右存前缀积，再从右到左用一个运行变量乘上后缀积。时间 O(n)，额外空间 O(1)（不计输出）。
-
-**Python：**
-```python
-def product_except_self(nums: list[int]) -> list[int]:
-    n = len(nums)
-    out = [1] * n
-    for i in range(1, n):
-        out[i] = out[i - 1] * nums[i - 1]
-    suffix = 1
-    for i in range(n - 1, -1, -1):
-        out[i] *= suffix
-        suffix *= nums[i]
-    return out
-```
-
-**TypeScript：**
-```typescript
-function productExceptSelf(nums: number[]): number[] {
-  const n = nums.length, out = new Array(n).fill(1);
-  for (let i = 1; i < n; i++) out[i] = out[i - 1] * nums[i - 1];
-  let suffix = 1;
-  for (let i = n - 1; i >= 0; i--) { out[i] *= suffix; suffix *= nums[i]; }
-  return out;
-}
-```
-
-**Java：**
-```java
-int[] productExceptSelf(int[] nums) {
-  int n = nums.length;
-  int[] out = new int[n];
-  out[0] = 1;
-  for (int i = 1; i < n; i++) out[i] = out[i - 1] * nums[i - 1];
-  int suffix = 1;
-  for (int i = n - 1; i >= 0; i--) { out[i] *= suffix; suffix *= nums[i]; }
-  return out;
-}
-```
-
-**要点：**
-- 两次线性遍历，时间 O(n)、额外空间 O(1)。
-- 不用除法，使其对输入中的零也稳健。
-
-**标签：** #algorithm
-
----
-
-### 16. 搜索旋转排序数组（Search in Rotated Sorted Array）
-
-**难度：** 中等
-**主题：** binary-search, array
-**岗位：** OD / SWE
-**级别：** 15-16（高级）
-
-**问题：** 一个有序数组在未知支点处被旋转。找目标值下标，不存在则返回 -1。
-
-**思路：** 改进的二分查找——每个中点处必有一半是有序的；判断目标是否落在那半有序区间内来选择方向。时间 O(log n)，空间 O(1)。
-
-**Python：**
-```python
-def search(nums: list[int], target: int) -> int:
-    lo, hi = 0, len(nums) - 1
-    while lo <= hi:
-        mid = lo + (hi - lo) // 2
-        if nums[mid] == target:
-            return mid
-        if nums[lo] <= nums[mid]:
-            if nums[lo] <= target < nums[mid]:
-                hi = mid - 1
-            else:
-                lo = mid + 1
-        else:
-            if nums[mid] < target <= nums[hi]:
-                lo = mid + 1
-            else:
-                hi = mid - 1
-    return -1
-```
-
-**TypeScript：**
-```typescript
-function search(nums: number[], target: number): number {
-  let lo = 0, hi = nums.length - 1;
-  while (lo <= hi) {
-    const mid = lo + ((hi - lo) >> 1);
-    if (nums[mid] === target) return mid;
-    if (nums[lo] <= nums[mid]) {
-      if (nums[lo] <= target && target < nums[mid]) hi = mid - 1; else lo = mid + 1;
-    } else {
-      if (nums[mid] < target && target <= nums[hi]) lo = mid + 1; else hi = mid - 1;
-    }
-  }
-  return -1;
-}
-```
-
-**Java：**
-```java
-int search(int[] nums, int target) {
-  int lo = 0, hi = nums.length - 1;
-  while (lo <= hi) {
-    int mid = lo + (hi - lo) / 2;
-    if (nums[mid] == target) return mid;
-    if (nums[lo] <= nums[mid]) {
-      if (nums[lo] <= target && target < nums[mid]) hi = mid - 1; else lo = mid + 1;
-    } else {
-      if (nums[mid] < target && target <= nums[hi]) lo = mid + 1; else hi = mid - 1;
-    }
-  }
-  return -1;
-}
-```
-
-**要点：**
-- 尽管发生旋转，仍是 O(log n) 时间、O(1) 空间。
-- 先判断哪半有序，再用该半的边界检验目标。
-
-**标签：** #algorithm
-
----
-
-### 17. 在排序数组中查找元素的首末位置（Find First and Last Position of Element）
-
-**难度：** 中等
-**主题：** binary-search, array
-**岗位：** OD / SWE
-**级别：** 15-16（高级）
-
-**问题：** 在有序数组中找目标的首、末下标，不存在则返回 `[-1, -1]`。
-
-**思路：** 两次二分查找分别求目标的下界与上界。时间 O(log n)，空间 O(1)。
-
-**Python：**
-```python
-import bisect
-
-def search_range(nums: list[int], target: int) -> list[int]:
-    lo = bisect.bisect_left(nums, target)
-    if lo == len(nums) or nums[lo] != target:
-        return [-1, -1]
-    hi = bisect.bisect_right(nums, target) - 1
-    return [lo, hi]
-```
-
-**TypeScript：**
-```typescript
-function searchRange(nums: number[], target: number): number[] {
-  const bound = (left: boolean): number => {
-    let lo = 0, hi = nums.length, res = -1;
-    while (lo < hi) {
-      const mid = lo + ((hi - lo) >> 1);
-      if (nums[mid] < target || (!left && nums[mid] === target)) lo = mid + 1;
-      else hi = mid;
-      if (nums[mid] === target) res = mid;
-    }
-    return res;
-  };
-  return [bound(true), bound(false)];
-}
-```
-
-**Java：**
-```java
-int[] searchRange(int[] nums, int target) {
-  int first = bound(nums, target, true);
-  if (first == -1) return new int[] { -1, -1 };
-  return new int[] { first, bound(nums, target, false) };
-}
-
-int bound(int[] nums, int target, boolean left) {
-  int lo = 0, hi = nums.length - 1, res = -1;
-  while (lo <= hi) {
-    int mid = lo + (hi - lo) / 2;
-    if (nums[mid] == target) { res = mid; if (left) hi = mid - 1; else lo = mid + 1; }
-    else if (nums[mid] < target) lo = mid + 1;
-    else hi = mid - 1;
-  }
-  return res;
-}
-```
-
-**要点：**
-- 两次有界二分，时间 O(log n)、空间 O(1)。
-- 下界与上界仅在相等时指针移动方向不同。
-
-**标签：** #algorithm
-
----
-
-### 18. 环形链表（Linked List Cycle）
+### 3. 环形链表（Linked List Cycle）
 
 **难度：** 简单
 **主题：** linked-list, two-pointer, floyd
@@ -1251,7 +255,7 @@ boolean hasCycle(ListNode head) {
 
 ---
 
-### 19. 删除链表的倒数第 N 个节点（Remove Nth Node From End of List）
+### 4. 删除链表的倒数第 N 个节点（Remove Nth Node From End of List）
 
 **难度：** 中等
 **主题：** linked-list, two-pointer
@@ -1322,7 +326,7 @@ ListNode removeNthFromEnd(ListNode head, int n) {
 
 ---
 
-### 20. 合并 K 个有序链表（Merge k Sorted Lists）
+### 5. 合并 K 个有序链表（Merge k Sorted Lists）
 
 **难度：** 困难
 **主题：** linked-list, heap, divide-and-conquer
@@ -1405,7 +409,9 @@ ListNode mergeKLists(ListNode[] lists) {
 
 ---
 
-### 21. 翻转二叉树（Invert Binary Tree）
+## 树
+
+### 6. 翻转二叉树（Invert Binary Tree）
 
 **难度：** 简单
 **主题：** tree, recursion, dfs
@@ -1472,7 +478,7 @@ TreeNode invertTree(TreeNode root) {
 
 ---
 
-### 22. 二叉树的最大深度（Maximum Depth of Binary Tree）
+### 7. 二叉树的最大深度（Maximum Depth of Binary Tree）
 
 **难度：** 简单
 **主题：** tree, dfs, recursion
@@ -1531,7 +537,7 @@ int maxDepth(TreeNode root) {
 
 ---
 
-### 23. 验证二叉搜索树（Validate Binary Search Tree）
+### 8. 验证二叉搜索树（Validate Binary Search Tree）
 
 **难度：** 中等
 **主题：** tree, dfs, bst
@@ -1603,7 +609,7 @@ boolean check(TreeNode n, long lo, long hi) {
 
 ---
 
-### 24. 二叉树的层序遍历（Binary Tree Level Order Traversal）
+### 9. 二叉树的层序遍历（Binary Tree Level Order Traversal）
 
 **难度：** 中等
 **主题：** tree, bfs, queue
@@ -1701,7 +707,7 @@ List<List<Integer>> levelOrder(TreeNode root) {
 
 ---
 
-### 25. 二叉树的最近公共祖先（Lowest Common Ancestor of a Binary Tree）
+### 10. 二叉树的最近公共祖先（Lowest Common Ancestor of a Binary Tree）
 
 **难度：** 中等
 **主题：** tree, dfs, recursion
@@ -1770,972 +776,7 @@ TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
 
 ---
 
-### 26. 岛屿数量（Number of Islands）
-
-**难度：** 中等
-**主题：** graph, dfs, bfs, grid, union-find
-**岗位：** OD / SWE
-**级别：** 15-16（高级）
-
-**问题：** 统计由 `'1'`（陆地）组成的连通块数量，网格由 `'1'`/`'0'` 构成。
-
-**思路：** 扫描网格；遇到未访问的陆地格就用洪水填充（DFS/BFS）整座岛并计数，把访问过的陆地沉为 `'0'`。时间 O(行·列)，最坏空间 O(行·列)。
-
-**Python：**
-```python
-def num_islands(grid: list[list[str]]) -> int:
-    if not grid:
-        return 0
-    rows, cols = len(grid), len(grid[0])
-
-    def sink(r, c):
-        if 0 <= r < rows and 0 <= c < cols and grid[r][c] == "1":
-            grid[r][c] = "0"
-            sink(r + 1, c); sink(r - 1, c); sink(r, c + 1); sink(r, c - 1)
-
-    count = 0
-    for r in range(rows):
-        for c in range(cols):
-            if grid[r][c] == "1":
-                count += 1
-                sink(r, c)
-    return count
-```
-
-**TypeScript：**
-```typescript
-function numIslands(grid: string[][]): number {
-  const rows = grid.length, cols = grid[0]?.length ?? 0;
-  const sink = (r: number, c: number): void => {
-    if (r < 0 || c < 0 || r >= rows || c >= cols || grid[r][c] !== "1") return;
-    grid[r][c] = "0";
-    sink(r + 1, c); sink(r - 1, c); sink(r, c + 1); sink(r, c - 1);
-  };
-  let count = 0;
-  for (let r = 0; r < rows; r++)
-    for (let c = 0; c < cols; c++)
-      if (grid[r][c] === "1") { count++; sink(r, c); }
-  return count;
-}
-```
-
-**Java：**
-```java
-int numIslands(char[][] grid) {
-  int rows = grid.length, cols = grid[0].length, count = 0;
-  for (int r = 0; r < rows; r++)
-    for (int c = 0; c < cols; c++)
-      if (grid[r][c] == '1') { count++; sink(grid, r, c); }
-  return count;
-}
-
-void sink(char[][] g, int r, int c) {
-  if (r < 0 || c < 0 || r >= g.length || c >= g[0].length || g[r][c] != '1') return;
-  g[r][c] = '0';
-  sink(g, r + 1, c); sink(g, r - 1, c); sink(g, r, c + 1); sink(g, r, c - 1);
-}
-```
-
-**要点：**
-- 每个格子被访问常数次：时间 O(行·列)。
-- 单个超大岛时递归深度（或队列）可达 O(行·列)。
-
-**标签：** #algorithm
-
----
-
-### 27. 腐烂的橘子（Rotting Oranges）
-
-**难度：** 中等
-**主题：** graph, bfs, grid
-**岗位：** OD / SWE
-**级别：** 15-16（高级）
-
-**问题：** 网格含空/新鲜/腐烂橘子，每分钟腐烂橘子使其上下左右 4 个邻居腐烂。返回直到无新鲜橘子的分钟数，不可能则返回 -1。
-
-**思路：** 从所有腐烂橘子同时出发做多源 BFS；统计层数（分钟）。若 BFS 后仍有新鲜橘子则返回 -1。时间 O(行·列)，空间 O(行·列)。
-
-**Python：**
-```python
-from collections import deque
-
-def oranges_rotting(grid: list[list[int]]) -> int:
-    rows, cols = len(grid), len(grid[0])
-    q = deque()
-    fresh = 0
-    for r in range(rows):
-        for c in range(cols):
-            if grid[r][c] == 2:
-                q.append((r, c))
-            elif grid[r][c] == 1:
-                fresh += 1
-    minutes = 0
-    while q and fresh:
-        minutes += 1
-        for _ in range(len(q)):
-            r, c = q.popleft()
-            for dr, dc in ((1, 0), (-1, 0), (0, 1), (0, -1)):
-                nr, nc = r + dr, c + dc
-                if 0 <= nr < rows and 0 <= nc < cols and grid[nr][nc] == 1:
-                    grid[nr][nc] = 2
-                    fresh -= 1
-                    q.append((nr, nc))
-    return minutes if fresh == 0 else -1
-```
-
-**TypeScript：**
-```typescript
-function orangesRotting(grid: number[][]): number {
-  const rows = grid.length, cols = grid[0].length;
-  let q: [number, number][] = [], fresh = 0;
-  for (let r = 0; r < rows; r++)
-    for (let c = 0; c < cols; c++) {
-      if (grid[r][c] === 2) q.push([r, c]);
-      else if (grid[r][c] === 1) fresh++;
-    }
-  const dirs = [[1, 0], [-1, 0], [0, 1], [0, -1]];
-  let minutes = 0;
-  while (q.length && fresh) {
-    minutes++;
-    const next: [number, number][] = [];
-    for (const [r, c] of q)
-      for (const [dr, dc] of dirs) {
-        const nr = r + dr, nc = c + dc;
-        if (nr >= 0 && nc >= 0 && nr < rows && nc < cols && grid[nr][nc] === 1) {
-          grid[nr][nc] = 2; fresh--; next.push([nr, nc]);
-        }
-      }
-    q = next;
-  }
-  return fresh === 0 ? minutes : -1;
-}
-```
-
-**Java：**
-```java
-int orangesRotting(int[][] grid) {
-  int rows = grid.length, cols = grid[0].length, fresh = 0;
-  Queue<int[]> q = new LinkedList<>();
-  for (int r = 0; r < rows; r++)
-    for (int c = 0; c < cols; c++) {
-      if (grid[r][c] == 2) q.add(new int[] { r, c });
-      else if (grid[r][c] == 1) fresh++;
-    }
-  int[][] dirs = { { 1, 0 }, { -1, 0 }, { 0, 1 }, { 0, -1 } };
-  int minutes = 0;
-  while (!q.isEmpty() && fresh > 0) {
-    minutes++;
-    for (int i = q.size(); i > 0; i--) {
-      int[] cell = q.poll();
-      for (int[] d : dirs) {
-        int nr = cell[0] + d[0], nc = cell[1] + d[1];
-        if (nr >= 0 && nc >= 0 && nr < rows && nc < cols && grid[nr][nc] == 1) {
-          grid[nr][nc] = 2; fresh--; q.add(new int[] { nr, nc });
-        }
-      }
-    }
-  }
-  return fresh == 0 ? minutes : -1;
-}
-```
-
-**要点：**
-- 多源 BFS 每个格子处理一次：时间和空间均为 O(行·列)。
-- 统计新鲜橘子数可 O(1) 检测不可达情形。
-
-**标签：** #algorithm
-
----
-
-### 28. 课程表（Course Schedule）
-
-**难度：** 中等
-**主题：** graph, topological-sort, bfs
-**岗位：** Senior SWE
-**级别：** 17-18（专家）
-
-**问题：** 给定 `numCourses` 及先修课对，判断能否修完所有课程（即依赖图无环）。
-
-**思路：** Kahn 算法——计算入度，反复移除入度为 0 的节点；若全部移除则无环。时间 O(V + E)，空间 O(V + E)。
-
-**Python：**
-```python
-from collections import deque
-
-def can_finish(num_courses: int, prerequisites: list[list[int]]) -> bool:
-    graph = [[] for _ in range(num_courses)]
-    indeg = [0] * num_courses
-    for course, pre in prerequisites:
-        graph[pre].append(course)
-        indeg[course] += 1
-    q = deque(i for i in range(num_courses) if indeg[i] == 0)
-    seen = 0
-    while q:
-        node = q.popleft()
-        seen += 1
-        for nxt in graph[node]:
-            indeg[nxt] -= 1
-            if indeg[nxt] == 0:
-                q.append(nxt)
-    return seen == num_courses
-```
-
-**TypeScript：**
-```typescript
-function canFinish(numCourses: number, prerequisites: number[][]): boolean {
-  const graph: number[][] = Array.from({ length: numCourses }, () => []);
-  const indeg = new Array(numCourses).fill(0);
-  for (const [course, pre] of prerequisites) { graph[pre].push(course); indeg[course]++; }
-  const q: number[] = [];
-  for (let i = 0; i < numCourses; i++) if (indeg[i] === 0) q.push(i);
-  let seen = 0;
-  while (q.length) {
-    const node = q.shift()!;
-    seen++;
-    for (const nxt of graph[node]) if (--indeg[nxt] === 0) q.push(nxt);
-  }
-  return seen === numCourses;
-}
-```
-
-**Java：**
-```java
-boolean canFinish(int numCourses, int[][] prerequisites) {
-  List<List<Integer>> graph = new ArrayList<>();
-  for (int i = 0; i < numCourses; i++) graph.add(new ArrayList<>());
-  int[] indeg = new int[numCourses];
-  for (int[] p : prerequisites) { graph.get(p[1]).add(p[0]); indeg[p[0]]++; }
-  Queue<Integer> q = new LinkedList<>();
-  for (int i = 0; i < numCourses; i++) if (indeg[i] == 0) q.add(i);
-  int seen = 0;
-  while (!q.isEmpty()) {
-    int node = q.poll();
-    seen++;
-    for (int nxt : graph.get(node)) if (--indeg[nxt] == 0) q.add(nxt);
-  }
-  return seen == numCourses;
-}
-```
-
-**要点：**
-- Kahn 拓扑排序时间 O(V + E)、空间 O(V + E)。
-- 若处理的节点少于 `numCourses`，说明存在环。
-
-**标签：** #algorithm
-
----
-
-### 29. 单词搜索（Word Search）
-
-**难度：** 中等
-**主题：** backtracking, dfs, grid
-**岗位：** Senior SWE
-**级别：** 17-18（专家）
-
-**问题：** 给定字母网格和一个单词，判断能否由相邻格子（不重复使用同一格）拼出该单词。
-
-**思路：** 从每个格子做 DFS 回溯，递归期间标记格子已访问，返回时还原。最坏时间 O(行·列·4^L)，空间 O(L)。
-
-**Python：**
-```python
-def exist(board: list[list[str]], word: str) -> bool:
-    rows, cols = len(board), len(board[0])
-
-    def dfs(r, c, i):
-        if i == len(word):
-            return True
-        if r < 0 or c < 0 or r >= rows or c >= cols or board[r][c] != word[i]:
-            return False
-        tmp, board[r][c] = board[r][c], "#"
-        found = (dfs(r + 1, c, i + 1) or dfs(r - 1, c, i + 1) or
-                 dfs(r, c + 1, i + 1) or dfs(r, c - 1, i + 1))
-        board[r][c] = tmp
-        return found
-
-    return any(dfs(r, c, 0) for r in range(rows) for c in range(cols))
-```
-
-**TypeScript：**
-```typescript
-function exist(board: string[][], word: string): boolean {
-  const rows = board.length, cols = board[0].length;
-  const dfs = (r: number, c: number, i: number): boolean => {
-    if (i === word.length) return true;
-    if (r < 0 || c < 0 || r >= rows || c >= cols || board[r][c] !== word[i]) return false;
-    const tmp = board[r][c];
-    board[r][c] = "#";
-    const found = dfs(r + 1, c, i + 1) || dfs(r - 1, c, i + 1) ||
-                  dfs(r, c + 1, i + 1) || dfs(r, c - 1, i + 1);
-    board[r][c] = tmp;
-    return found;
-  };
-  for (let r = 0; r < rows; r++)
-    for (let c = 0; c < cols; c++)
-      if (dfs(r, c, 0)) return true;
-  return false;
-}
-```
-
-**Java：**
-```java
-boolean exist(char[][] board, String word) {
-  int rows = board.length, cols = board[0].length;
-  for (int r = 0; r < rows; r++)
-    for (int c = 0; c < cols; c++)
-      if (dfs(board, word, r, c, 0)) return true;
-  return false;
-}
-
-boolean dfs(char[][] b, String w, int r, int c, int i) {
-  if (i == w.length()) return true;
-  if (r < 0 || c < 0 || r >= b.length || c >= b[0].length || b[r][c] != w.charAt(i)) return false;
-  char tmp = b[r][c];
-  b[r][c] = '#';
-  boolean found = dfs(b, w, r + 1, c, i + 1) || dfs(b, w, r - 1, c, i + 1) ||
-                  dfs(b, w, r, c + 1, i + 1) || dfs(b, w, r, c - 1, i + 1);
-  b[r][c] = tmp;
-  return found;
-}
-```
-
-**要点：**
-- 回溯最多探索 O(行·列·4^L) 条路径；递归深度 O(L)。
-- 标记并还原格子，无需额外内存即可保证不重复使用。
-
-**标签：** #algorithm
-
----
-
-### 30. 组合总和（Combination Sum）
-
-**难度：** 中等
-**主题：** backtracking, recursion
-**岗位：** OD / SWE
-**级别：** 15-16（高级）
-
-**问题：** 给定互异正整数候选和目标值，返回所有和为目标值的不重复组合；每个候选可重复使用。
-
-**思路：** DFS 回溯；每步可重复使用当前候选，或前移起始下标以避免排列重复。最坏时间 O(2^t)，递归深度空间 O(t)。
-
-**Python：**
-```python
-def combination_sum(candidates: list[int], target: int) -> list[list[int]]:
-    res: list[list[int]] = []
-
-    def dfs(start, remain, path):
-        if remain == 0:
-            res.append(path[:])
-            return
-        for i in range(start, len(candidates)):
-            if candidates[i] <= remain:
-                path.append(candidates[i])
-                dfs(i, remain - candidates[i], path)
-                path.pop()
-
-    dfs(0, target, [])
-    return res
-```
-
-**TypeScript：**
-```typescript
-function combinationSum(candidates: number[], target: number): number[][] {
-  const res: number[][] = [];
-  const dfs = (start: number, remain: number, path: number[]): void => {
-    if (remain === 0) { res.push([...path]); return; }
-    for (let i = start; i < candidates.length; i++) {
-      if (candidates[i] <= remain) {
-        path.push(candidates[i]);
-        dfs(i, remain - candidates[i], path);
-        path.pop();
-      }
-    }
-  };
-  dfs(0, target, []);
-  return res;
-}
-```
-
-**Java：**
-```java
-List<List<Integer>> combinationSum(int[] candidates, int target) {
-  List<List<Integer>> res = new ArrayList<>();
-  dfs(candidates, 0, target, new ArrayList<>(), res);
-  return res;
-}
-
-void dfs(int[] cand, int start, int remain, List<Integer> path, List<List<Integer>> res) {
-  if (remain == 0) { res.add(new ArrayList<>(path)); return; }
-  for (int i = start; i < cand.length; i++) {
-    if (cand[i] <= remain) {
-      path.add(cand[i]);
-      dfs(cand, i, remain - cand[i], path, res);
-      path.remove(path.size() - 1);
-    }
-  }
-}
-```
-
-**要点：**
-- 回溯最多探索 O(2^t) 个状态；路径深度 O(t)。
-- 传入 `i`（而非 `i+1`）允许重复使用；前移起始下标避免重复集合。
-
-**标签：** #algorithm
-
----
-
-### 31. 全排列（Permutations）
-
-**难度：** 中等
-**主题：** backtracking, recursion
-**岗位：** OD / SWE
-**级别：** 15-16（高级）
-
-**问题：** 返回一组互异整数的所有排列。
-
-**思路：** 用 used 标记（或原地交换）回溯；每层固定一个元素。时间 O(n·n!)，空间 O(n)。
-
-**Python：**
-```python
-def permute(nums: list[int]) -> list[list[int]]:
-    res: list[list[int]] = []
-
-    def dfs(path, used):
-        if len(path) == len(nums):
-            res.append(path[:])
-            return
-        for i, x in enumerate(nums):
-            if not used[i]:
-                used[i] = True
-                path.append(x)
-                dfs(path, used)
-                path.pop()
-                used[i] = False
-
-    dfs([], [False] * len(nums))
-    return res
-```
-
-**TypeScript：**
-```typescript
-function permute(nums: number[]): number[][] {
-  const res: number[][] = [];
-  const used = new Array(nums.length).fill(false);
-  const dfs = (path: number[]): void => {
-    if (path.length === nums.length) { res.push([...path]); return; }
-    for (let i = 0; i < nums.length; i++) {
-      if (!used[i]) {
-        used[i] = true; path.push(nums[i]);
-        dfs(path);
-        path.pop(); used[i] = false;
-      }
-    }
-  };
-  dfs([]);
-  return res;
-}
-```
-
-**Java：**
-```java
-List<List<Integer>> permute(int[] nums) {
-  List<List<Integer>> res = new ArrayList<>();
-  dfs(nums, new boolean[nums.length], new ArrayList<>(), res);
-  return res;
-}
-
-void dfs(int[] nums, boolean[] used, List<Integer> path, List<List<Integer>> res) {
-  if (path.size() == nums.length) { res.add(new ArrayList<>(path)); return; }
-  for (int i = 0; i < nums.length; i++) {
-    if (!used[i]) {
-      used[i] = true; path.add(nums[i]);
-      dfs(nums, used, path, res);
-      path.remove(path.size() - 1); used[i] = false;
-    }
-  }
-}
-```
-
-**要点：**
-- 共有 n! 个排列，每个复制 O(n)，故时间 O(n·n!)、额外空间 O(n)。
-- `used` 数组防止在一个排列内重复使用某元素。
-
-**标签：** #algorithm
-
----
-
-### 32. 子集（Subsets）
-
-**难度：** 中等
-**主题：** backtracking, bit-manipulation
-**岗位：** OD / SWE
-**级别：** 15-16（高级）
-
-**问题：** 返回一组互异整数的所有子集（幂集）。
-
-**思路：** 回溯在每个节点记录当前路径，并通过递增起始下标在"选/不选"间分支。时间 O(n·2^n)，空间 O(n)。
-
-**Python：**
-```python
-def subsets(nums: list[int]) -> list[list[int]]:
-    res: list[list[int]] = []
-
-    def dfs(start, path):
-        res.append(path[:])
-        for i in range(start, len(nums)):
-            path.append(nums[i])
-            dfs(i + 1, path)
-            path.pop()
-
-    dfs(0, [])
-    return res
-```
-
-**TypeScript：**
-```typescript
-function subsets(nums: number[]): number[][] {
-  const res: number[][] = [];
-  const dfs = (start: number, path: number[]): void => {
-    res.push([...path]);
-    for (let i = start; i < nums.length; i++) {
-      path.push(nums[i]);
-      dfs(i + 1, path);
-      path.pop();
-    }
-  };
-  dfs(0, []);
-  return res;
-}
-```
-
-**Java：**
-```java
-List<List<Integer>> subsets(int[] nums) {
-  List<List<Integer>> res = new ArrayList<>();
-  dfs(nums, 0, new ArrayList<>(), res);
-  return res;
-}
-
-void dfs(int[] nums, int start, List<Integer> path, List<List<Integer>> res) {
-  res.add(new ArrayList<>(path));
-  for (int i = start; i < nums.length; i++) {
-    path.add(nums[i]);
-    dfs(nums, i + 1, path, res);
-    path.remove(path.size() - 1);
-  }
-}
-```
-
-**要点：**
-- 共有 2^n 个子集，每个复制至多 O(n)：时间 O(n·2^n)。
-- 等价做法是把每个子集映射为一个 n 位掩码。
-
-**标签：** #algorithm
-
----
-
-### 33. 零钱兑换（Coin Change）
-
-**难度：** 中等
-**主题：** dynamic-programming
-**岗位：** OD / SWE
-**级别：** 15-16（高级）
-
-**问题：** 给定硬币面额和金额，返回凑出该金额的最少硬币数，不可能则返回 -1。
-
-**思路：** 自底向上 DP，`dp[a]` 为金额 `a` 的最少硬币数；对每个硬币做松弛。时间 O(金额·硬币数)，空间 O(金额)。
-
-**Python：**
-```python
-def coin_change(coins: list[int], amount: int) -> int:
-    dp = [amount + 1] * (amount + 1)
-    dp[0] = 0
-    for a in range(1, amount + 1):
-        for c in coins:
-            if c <= a:
-                dp[a] = min(dp[a], dp[a - c] + 1)
-    return dp[amount] if dp[amount] <= amount else -1
-```
-
-**TypeScript：**
-```typescript
-function coinChange(coins: number[], amount: number): number {
-  const dp = new Array(amount + 1).fill(amount + 1);
-  dp[0] = 0;
-  for (let a = 1; a <= amount; a++)
-    for (const c of coins)
-      if (c <= a) dp[a] = Math.min(dp[a], dp[a - c] + 1);
-  return dp[amount] <= amount ? dp[amount] : -1;
-}
-```
-
-**Java：**
-```java
-int coinChange(int[] coins, int amount) {
-  int[] dp = new int[amount + 1];
-  Arrays.fill(dp, amount + 1);
-  dp[0] = 0;
-  for (int a = 1; a <= amount; a++)
-    for (int c : coins)
-      if (c <= a) dp[a] = Math.min(dp[a], dp[a - c] + 1);
-  return dp[amount] <= amount ? dp[amount] : -1;
-}
-```
-
-**要点：**
-- DP 表时间 O(金额·硬币数)、空间 O(金额)。
-- 用 `amount + 1` 初始化充当无穷大，使不可达金额保持 -1。
-
-**标签：** #algorithm
-
----
-
-### 34. 最长递增子序列（Longest Increasing Subsequence）
-
-**难度：** 中等
-**主题：** dynamic-programming, binary-search
-**岗位：** Senior SWE
-**级别：** 17-18（专家）
-
-**问题：** 求最长严格递增子序列的长度。
-
-**思路：** 耐心排序——维护 `tails`，`tails[i]` 为长度 `i+1` 的递增子序列可能的最小尾值；对每个元素二分查找插入位置。时间 O(n log n)，空间 O(n)。
-
-**Python：**
-```python
-import bisect
-
-def length_of_lis(nums: list[int]) -> int:
-    tails: list[int] = []
-    for x in nums:
-        i = bisect.bisect_left(tails, x)
-        if i == len(tails):
-            tails.append(x)
-        else:
-            tails[i] = x
-    return len(tails)
-```
-
-**TypeScript：**
-```typescript
-function lengthOfLIS(nums: number[]): number {
-  const tails: number[] = [];
-  for (const x of nums) {
-    let lo = 0, hi = tails.length;
-    while (lo < hi) {
-      const mid = (lo + hi) >> 1;
-      if (tails[mid] < x) lo = mid + 1; else hi = mid;
-    }
-    tails[lo] = x;
-  }
-  return tails.length;
-}
-```
-
-**Java：**
-```java
-int lengthOfLIS(int[] nums) {
-  List<Integer> tails = new ArrayList<>();
-  for (int x : nums) {
-    int lo = 0, hi = tails.size();
-    while (lo < hi) {
-      int mid = (lo + hi) >>> 1;
-      if (tails.get(mid) < x) lo = mid + 1; else hi = mid;
-    }
-    if (lo == tails.size()) tails.add(x); else tails.set(lo, x);
-  }
-  return tails.size();
-}
-```
-
-**要点：**
-- 每个元素二分查找，时间 O(n log n)、空间 O(n)，优于 O(n^2) DP。
-- `tails` 并非真正的子序列，但其长度等于答案。
-
-**标签：** #algorithm
-
----
-
-### 35. 打家劫舍（House Robber）
-
-**难度：** 中等
-**主题：** dynamic-programming
-**岗位：** OD / SWE
-**级别：** 15-16（高级）
-
-**问题：** 给定一排房屋的金额，在不偷相邻两户的前提下最大化收益。
-
-**思路：** DP 递推 `rob(i) = max(rob(i-1), rob(i-2) + nums[i])`，滚动为两个变量。时间 O(n)，空间 O(1)。
-
-**Python：**
-```python
-def rob(nums: list[int]) -> int:
-    prev, cur = 0, 0
-    for x in nums:
-        prev, cur = cur, max(cur, prev + x)
-    return cur
-```
-
-**TypeScript：**
-```typescript
-function rob(nums: number[]): number {
-  let prev = 0, cur = 0;
-  for (const x of nums) { const t = Math.max(cur, prev + x); prev = cur; cur = t; }
-  return cur;
-}
-```
-
-**Java：**
-```java
-int rob(int[] nums) {
-  int prev = 0, cur = 0;
-  for (int x : nums) { int t = Math.max(cur, prev + x); prev = cur; cur = t; }
-  return cur;
-}
-```
-
-**要点：**
-- 滚动两个状态变量，时间 O(n)、空间 O(1)。
-- 每户的选择是"偷并跳过邻居"还是"跳过"。
-
-**标签：** #algorithm
-
----
-
-### 36. 单词拆分（Word Break）
-
-**难度：** 中等
-**主题：** dynamic-programming, string
-**岗位：** Senior SWE
-**级别：** 17-18（专家）
-
-**问题：** 给定字符串和字典，判断字符串能否切分为字典中单词的序列。
-
-**思路：** DP，`dp[i]` 表示长度为 `i` 的前缀可切分；对每个 `i` 尝试每个切点 `j`，要求 `dp[j]` 为真且 `s[j:i]` 在集合中。时间 O(n^2)（外加子串成本），空间 O(n)。
-
-**Python：**
-```python
-def word_break(s: str, word_dict: list[str]) -> bool:
-    words = set(word_dict)
-    dp = [False] * (len(s) + 1)
-    dp[0] = True
-    for i in range(1, len(s) + 1):
-        for j in range(i):
-            if dp[j] and s[j:i] in words:
-                dp[i] = True
-                break
-    return dp[len(s)]
-```
-
-**TypeScript：**
-```typescript
-function wordBreak(s: string, wordDict: string[]): boolean {
-  const words = new Set(wordDict);
-  const dp = new Array(s.length + 1).fill(false);
-  dp[0] = true;
-  for (let i = 1; i <= s.length; i++)
-    for (let j = 0; j < i; j++)
-      if (dp[j] && words.has(s.slice(j, i))) { dp[i] = true; break; }
-  return dp[s.length];
-}
-```
-
-**Java：**
-```java
-boolean wordBreak(String s, List<String> wordDict) {
-  Set<String> words = new HashSet<>(wordDict);
-  boolean[] dp = new boolean[s.length() + 1];
-  dp[0] = true;
-  for (int i = 1; i <= s.length(); i++)
-    for (int j = 0; j < i; j++)
-      if (dp[j] && words.contains(s.substring(j, i))) { dp[i] = true; break; }
-  return dp[s.length()];
-}
-```
-
-**要点：**
-- 嵌套循环给出 O(n^2) 个切分、O(n) 空间。
-- 用字典树或以最长单词长度限制内层，可削减冗余检查。
-
-**标签：** #algorithm
-
----
-
-### 37. 合并区间（Merge Intervals）
-
-**难度：** 中等
-**主题：** intervals, sorting
-**岗位：** OD / SWE
-**级别：** 15-16（高级）
-
-**问题：** 给定若干区间，合并所有重叠的区间。
-
-**思路：** 按起点排序；扫描时若下一区间与上一已合并区间重叠则扩展其终点，否则新增。时间 O(n log n)，空间 O(n)。
-
-**Python：**
-```python
-def merge(intervals: list[list[int]]) -> list[list[int]]:
-    intervals.sort()
-    out: list[list[int]] = []
-    for s, e in intervals:
-        if out and s <= out[-1][1]:
-            out[-1][1] = max(out[-1][1], e)
-        else:
-            out.append([s, e])
-    return out
-```
-
-**TypeScript：**
-```typescript
-function merge(intervals: number[][]): number[][] {
-  intervals.sort((a, b) => a[0] - b[0]);
-  const out: number[][] = [];
-  for (const [s, e] of intervals) {
-    const last = out[out.length - 1];
-    if (last && s <= last[1]) last[1] = Math.max(last[1], e);
-    else out.push([s, e]);
-  }
-  return out;
-}
-```
-
-**Java：**
-```java
-int[][] merge(int[][] intervals) {
-  Arrays.sort(intervals, (a, b) -> a[0] - b[0]);
-  List<int[]> out = new ArrayList<>();
-  for (int[] iv : intervals) {
-    if (!out.isEmpty() && iv[0] <= out.get(out.size() - 1)[1])
-      out.get(out.size() - 1)[1] = Math.max(out.get(out.size() - 1)[1], iv[1]);
-    else out.add(iv);
-  }
-  return out.toArray(new int[0][]);
-}
-```
-
-**要点：**
-- 排序占主导，时间 O(n log n)；输出 O(n) 空间。
-- 排序后，重叠就是简单的 `start <= last_end` 判断。
-
-**标签：** #algorithm
-
----
-
-### 38. 前 K 个高频元素（Top K Frequent Elements）
-
-**难度：** 中等
-**主题：** heap, hash-table, bucket-sort
-**岗位：** OD / SWE
-**级别：** 15-16（高级）
-
-**问题：** 返回数组中出现频率最高的 k 个元素。
-
-**思路：** 统计频次，再按频率桶排序（下标 = 计数），从高到低读取桶。时间 O(n)，空间 O(n)。堆解法为 O(n log k)。
-
-**Python：**
-```python
-from collections import Counter
-
-def top_k_frequent(nums: list[int], k: int) -> list[int]:
-    counts = Counter(nums)
-    buckets: list[list[int]] = [[] for _ in range(len(nums) + 1)]
-    for val, freq in counts.items():
-        buckets[freq].append(val)
-    res: list[int] = []
-    for freq in range(len(buckets) - 1, 0, -1):
-        for val in buckets[freq]:
-            res.append(val)
-            if len(res) == k:
-                return res
-    return res
-```
-
-**TypeScript：**
-```typescript
-function topKFrequent(nums: number[], k: number): number[] {
-  const counts = new Map<number, number>();
-  for (const x of nums) counts.set(x, (counts.get(x) ?? 0) + 1);
-  const buckets: number[][] = Array.from({ length: nums.length + 1 }, () => []);
-  for (const [val, freq] of counts) buckets[freq].push(val);
-  const res: number[] = [];
-  for (let f = buckets.length - 1; f > 0 && res.length < k; f--)
-    for (const val of buckets[f]) { res.push(val); if (res.length === k) return res; }
-  return res;
-}
-```
-
-**Java：**
-```java
-int[] topKFrequent(int[] nums, int k) {
-  Map<Integer, Integer> counts = new HashMap<>();
-  for (int x : nums) counts.merge(x, 1, Integer::sum);
-  List<Integer>[] buckets = new List[nums.length + 1];
-  for (var e : counts.entrySet()) {
-    int f = e.getValue();
-    if (buckets[f] == null) buckets[f] = new ArrayList<>();
-    buckets[f].add(e.getKey());
-  }
-  int[] res = new int[k];
-  int idx = 0;
-  for (int f = buckets.length - 1; f > 0 && idx < k; f--)
-    if (buckets[f] != null)
-      for (int val : buckets[f]) { if (idx == k) break; res[idx++] = val; }
-  return res;
-}
-```
-
-**要点：**
-- 按频率桶排序，时间 O(n)、空间 O(n)。
-- 替代方案是大小为 k 的最小堆，时间 O(n log k)。
-
-**标签：** #algorithm
-
----
-
-### 39. 只出现一次的数字（Single Number）
-
-**难度：** 简单
-**主题：** bit-manipulation, array
-**岗位：** OD / SWE
-**级别：** 13-14（初级）
-
-**问题：** 除一个元素外其余都出现两次。在 O(n) 时间、O(1) 空间内找出那个唯一的数。
-
-**思路：** 对所有元素求 XOR；成对的相消为 0，留下唯一值。时间 O(n)，空间 O(1)。
-
-**Python：**
-```python
-from functools import reduce
-from operator import xor
-
-def single_number(nums: list[int]) -> int:
-    return reduce(xor, nums, 0)
-```
-
-**TypeScript：**
-```typescript
-function singleNumber(nums: number[]): number {
-  return nums.reduce((acc, x) => acc ^ x, 0);
-}
-```
-
-**Java：**
-```java
-int singleNumber(int[] nums) {
-  int acc = 0;
-  for (int x : nums) acc ^= x;
-  return acc;
-}
-```
-
-**要点：**
-- XOR 满足结合律且自反，时间 O(n)、空间 O(1)。
-- 无需哈希集合或排序——纯位运算。
-
-**标签：** #algorithm
-
----
-
-### 40. 实现 Trie（前缀树）（Implement Trie）
+### 11. 实现 Trie（前缀树）（Implement Trie）
 
 **难度：** 中等
 **主题：** trie, design, string
@@ -2852,7 +893,264 @@ class Trie {
 
 ---
 
-### 41. 省份数量（并查集）（Number of Provinces）
+## 图
+
+### 12. 岛屿数量（Number of Islands）
+
+**难度：** 中等
+**主题：** graph, dfs, bfs, grid, union-find
+**岗位：** OD / SWE
+**级别：** 15-16（高级）
+
+**问题：** 统计由 `'1'`（陆地）组成的连通块数量，网格由 `'1'`/`'0'` 构成。
+
+**思路：** 扫描网格；遇到未访问的陆地格就用洪水填充（DFS/BFS）整座岛并计数，把访问过的陆地沉为 `'0'`。时间 O(行·列)，最坏空间 O(行·列)。
+
+**Python：**
+```python
+def num_islands(grid: list[list[str]]) -> int:
+    if not grid:
+        return 0
+    rows, cols = len(grid), len(grid[0])
+
+    def sink(r, c):
+        if 0 <= r < rows and 0 <= c < cols and grid[r][c] == "1":
+            grid[r][c] = "0"
+            sink(r + 1, c); sink(r - 1, c); sink(r, c + 1); sink(r, c - 1)
+
+    count = 0
+    for r in range(rows):
+        for c in range(cols):
+            if grid[r][c] == "1":
+                count += 1
+                sink(r, c)
+    return count
+```
+
+**TypeScript：**
+```typescript
+function numIslands(grid: string[][]): number {
+  const rows = grid.length, cols = grid[0]?.length ?? 0;
+  const sink = (r: number, c: number): void => {
+    if (r < 0 || c < 0 || r >= rows || c >= cols || grid[r][c] !== "1") return;
+    grid[r][c] = "0";
+    sink(r + 1, c); sink(r - 1, c); sink(r, c + 1); sink(r, c - 1);
+  };
+  let count = 0;
+  for (let r = 0; r < rows; r++)
+    for (let c = 0; c < cols; c++)
+      if (grid[r][c] === "1") { count++; sink(r, c); }
+  return count;
+}
+```
+
+**Java：**
+```java
+int numIslands(char[][] grid) {
+  int rows = grid.length, cols = grid[0].length, count = 0;
+  for (int r = 0; r < rows; r++)
+    for (int c = 0; c < cols; c++)
+      if (grid[r][c] == '1') { count++; sink(grid, r, c); }
+  return count;
+}
+
+void sink(char[][] g, int r, int c) {
+  if (r < 0 || c < 0 || r >= g.length || c >= g[0].length || g[r][c] != '1') return;
+  g[r][c] = '0';
+  sink(g, r + 1, c); sink(g, r - 1, c); sink(g, r, c + 1); sink(g, r, c - 1);
+}
+```
+
+**要点：**
+- 每个格子被访问常数次：时间 O(行·列)。
+- 单个超大岛时递归深度（或队列）可达 O(行·列)。
+
+**标签：** #algorithm
+
+---
+
+### 13. 腐烂的橘子（Rotting Oranges）
+
+**难度：** 中等
+**主题：** graph, bfs, grid
+**岗位：** OD / SWE
+**级别：** 15-16（高级）
+
+**问题：** 网格含空/新鲜/腐烂橘子，每分钟腐烂橘子使其上下左右 4 个邻居腐烂。返回直到无新鲜橘子的分钟数，不可能则返回 -1。
+
+**思路：** 从所有腐烂橘子同时出发做多源 BFS；统计层数（分钟）。若 BFS 后仍有新鲜橘子则返回 -1。时间 O(行·列)，空间 O(行·列)。
+
+**Python：**
+```python
+from collections import deque
+
+def oranges_rotting(grid: list[list[int]]) -> int:
+    rows, cols = len(grid), len(grid[0])
+    q = deque()
+    fresh = 0
+    for r in range(rows):
+        for c in range(cols):
+            if grid[r][c] == 2:
+                q.append((r, c))
+            elif grid[r][c] == 1:
+                fresh += 1
+    minutes = 0
+    while q and fresh:
+        minutes += 1
+        for _ in range(len(q)):
+            r, c = q.popleft()
+            for dr, dc in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+                nr, nc = r + dr, c + dc
+                if 0 <= nr < rows and 0 <= nc < cols and grid[nr][nc] == 1:
+                    grid[nr][nc] = 2
+                    fresh -= 1
+                    q.append((nr, nc))
+    return minutes if fresh == 0 else -1
+```
+
+**TypeScript：**
+```typescript
+function orangesRotting(grid: number[][]): number {
+  const rows = grid.length, cols = grid[0].length;
+  let q: [number, number][] = [], fresh = 0;
+  for (let r = 0; r < rows; r++)
+    for (let c = 0; c < cols; c++) {
+      if (grid[r][c] === 2) q.push([r, c]);
+      else if (grid[r][c] === 1) fresh++;
+    }
+  const dirs = [[1, 0], [-1, 0], [0, 1], [0, -1]];
+  let minutes = 0;
+  while (q.length && fresh) {
+    minutes++;
+    const next: [number, number][] = [];
+    for (const [r, c] of q)
+      for (const [dr, dc] of dirs) {
+        const nr = r + dr, nc = c + dc;
+        if (nr >= 0 && nc >= 0 && nr < rows && nc < cols && grid[nr][nc] === 1) {
+          grid[nr][nc] = 2; fresh--; next.push([nr, nc]);
+        }
+      }
+    q = next;
+  }
+  return fresh === 0 ? minutes : -1;
+}
+```
+
+**Java：**
+```java
+int orangesRotting(int[][] grid) {
+  int rows = grid.length, cols = grid[0].length, fresh = 0;
+  Queue<int[]> q = new LinkedList<>();
+  for (int r = 0; r < rows; r++)
+    for (int c = 0; c < cols; c++) {
+      if (grid[r][c] == 2) q.add(new int[] { r, c });
+      else if (grid[r][c] == 1) fresh++;
+    }
+  int[][] dirs = { { 1, 0 }, { -1, 0 }, { 0, 1 }, { 0, -1 } };
+  int minutes = 0;
+  while (!q.isEmpty() && fresh > 0) {
+    minutes++;
+    for (int i = q.size(); i > 0; i--) {
+      int[] cell = q.poll();
+      for (int[] d : dirs) {
+        int nr = cell[0] + d[0], nc = cell[1] + d[1];
+        if (nr >= 0 && nc >= 0 && nr < rows && nc < cols && grid[nr][nc] == 1) {
+          grid[nr][nc] = 2; fresh--; q.add(new int[] { nr, nc });
+        }
+      }
+    }
+  }
+  return fresh == 0 ? minutes : -1;
+}
+```
+
+**要点：**
+- 多源 BFS 每个格子处理一次：时间和空间均为 O(行·列)。
+- 统计新鲜橘子数可 O(1) 检测不可达情形。
+
+**标签：** #algorithm
+
+---
+
+### 14. 课程表（Course Schedule）
+
+**难度：** 中等
+**主题：** graph, topological-sort, bfs
+**岗位：** Senior SWE
+**级别：** 17-18（专家）
+
+**问题：** 给定 `numCourses` 及先修课对，判断能否修完所有课程（即依赖图无环）。
+
+**思路：** Kahn 算法——计算入度，反复移除入度为 0 的节点；若全部移除则无环。时间 O(V + E)，空间 O(V + E)。
+
+**Python：**
+```python
+from collections import deque
+
+def can_finish(num_courses: int, prerequisites: list[list[int]]) -> bool:
+    graph = [[] for _ in range(num_courses)]
+    indeg = [0] * num_courses
+    for course, pre in prerequisites:
+        graph[pre].append(course)
+        indeg[course] += 1
+    q = deque(i for i in range(num_courses) if indeg[i] == 0)
+    seen = 0
+    while q:
+        node = q.popleft()
+        seen += 1
+        for nxt in graph[node]:
+            indeg[nxt] -= 1
+            if indeg[nxt] == 0:
+                q.append(nxt)
+    return seen == num_courses
+```
+
+**TypeScript：**
+```typescript
+function canFinish(numCourses: number, prerequisites: number[][]): boolean {
+  const graph: number[][] = Array.from({ length: numCourses }, () => []);
+  const indeg = new Array(numCourses).fill(0);
+  for (const [course, pre] of prerequisites) { graph[pre].push(course); indeg[course]++; }
+  const q: number[] = [];
+  for (let i = 0; i < numCourses; i++) if (indeg[i] === 0) q.push(i);
+  let seen = 0;
+  while (q.length) {
+    const node = q.shift()!;
+    seen++;
+    for (const nxt of graph[node]) if (--indeg[nxt] === 0) q.push(nxt);
+  }
+  return seen === numCourses;
+}
+```
+
+**Java：**
+```java
+boolean canFinish(int numCourses, int[][] prerequisites) {
+  List<List<Integer>> graph = new ArrayList<>();
+  for (int i = 0; i < numCourses; i++) graph.add(new ArrayList<>());
+  int[] indeg = new int[numCourses];
+  for (int[] p : prerequisites) { graph.get(p[1]).add(p[0]); indeg[p[0]]++; }
+  Queue<Integer> q = new LinkedList<>();
+  for (int i = 0; i < numCourses; i++) if (indeg[i] == 0) q.add(i);
+  int seen = 0;
+  while (!q.isEmpty()) {
+    int node = q.poll();
+    seen++;
+    for (int nxt : graph.get(node)) if (--indeg[nxt] == 0) q.add(nxt);
+  }
+  return seen == numCourses;
+}
+```
+
+**要点：**
+- Kahn 拓扑排序时间 O(V + E)、空间 O(V + E)。
+- 若处理的节点少于 `numCourses`，说明存在环。
+
+**标签：** #algorithm
+
+---
+
+### 15. 省份数量（并查集）（Number of Provinces）
 
 **难度：** 中等
 **主题：** union-find, graph, dsu
@@ -2932,125 +1230,7 @@ int find(int[] parent, int x) {
 
 ---
 
-### 42. 数组中的第 K 个最大元素（Kth Largest Element in an Array）
-
-**难度：** 中等
-**主题：** heap, quickselect, sorting
-**岗位：** OD / SWE
-**级别：** 15-16（高级）
-
-**问题：** 返回未排序数组中第 k 大的元素。
-
-**思路：** 维护大小为 k 的最小堆；处理完所有元素后堆顶即为答案。时间 O(n log k)，空间 O(k)。快速选择平均 O(n)。
-
-**Python：**
-```python
-import heapq
-
-def find_kth_largest(nums: list[int], k: int) -> int:
-    heap = nums[:k]
-    heapq.heapify(heap)
-    for x in nums[k:]:
-        if x > heap[0]:
-            heapq.heapreplace(heap, x)
-    return heap[0]
-```
-
-**TypeScript：**
-```typescript
-function findKthLargest(nums: number[], k: number): number {
-  // O(n log n) sort fallback when no heap library is available.
-  return nums.slice().sort((a, b) => b - a)[k - 1];
-}
-```
-
-**Java：**
-```java
-int findKthLargest(int[] nums, int k) {
-  PriorityQueue<Integer> heap = new PriorityQueue<>();
-  for (int x : nums) {
-    heap.add(x);
-    if (heap.size() > k) heap.poll();
-  }
-  return heap.peek();
-}
-```
-
-**要点：**
-- 大小为 k 的最小堆，时间 O(n log k)、空间 O(k)。
-- 快速选择平均 O(n)，但坏支点会退化到 O(n^2)。
-
-**标签：** #algorithm
-
----
-
-### 43. 基站覆盖合并（电信）（Base-Station Coverage Merge）
-
-**难度：** 中等
-**主题：** intervals, sorting, greedy
-**岗位：** Senior SWE
-**级别：** 17-18（专家）
-
-**问题：** 每个基站覆盖一条公路的一维区段 `[start, end]`。给定所有覆盖区段，将其合并为最少的连续覆盖范围集合，并报告总覆盖长度（用于检测覆盖空隙）。
-
-**思路：** 这是合并区间的电信包装。按起点排序区段，扫描合并重叠，并累加合并后的长度。时间 O(n log n)，空间 O(n)。
-
-**Python：**
-```python
-def covered_ranges(segments: list[list[int]]) -> tuple[list[list[int]], int]:
-    segments.sort()
-    merged: list[list[int]] = []
-    for s, e in segments:
-        if merged and s <= merged[-1][1]:
-            merged[-1][1] = max(merged[-1][1], e)
-        else:
-            merged.append([s, e])
-    total = sum(e - s for s, e in merged)
-    return merged, total
-```
-
-**TypeScript：**
-```typescript
-function coveredRanges(segments: number[][]): { merged: number[][]; total: number } {
-  segments.sort((a, b) => a[0] - b[0]);
-  const merged: number[][] = [];
-  for (const [s, e] of segments) {
-    const last = merged[merged.length - 1];
-    if (last && s <= last[1]) last[1] = Math.max(last[1], e);
-    else merged.push([s, e]);
-  }
-  const total = merged.reduce((sum, [s, e]) => sum + (e - s), 0);
-  return { merged, total };
-}
-```
-
-**Java：**
-```java
-int coveredLength(int[][] segments) {
-  Arrays.sort(segments, (a, b) -> a[0] - b[0]);
-  int total = 0, curStart = 0, curEnd = -1;
-  for (int[] seg : segments) {
-    if (seg[0] > curEnd) {
-      if (curEnd >= curStart) total += curEnd - curStart;
-      curStart = seg[0]; curEnd = seg[1];
-    } else {
-      curEnd = Math.max(curEnd, seg[1]);
-    }
-  }
-  if (curEnd >= curStart) total += curEnd - curStart;
-  return total;
-}
-```
-
-**要点：**
-- 排序加一次线性扫描，时间 O(n log n)、空间 O(n)。
-- 空隙表现为合并范围之间的断裂——正是覆盖缺失之处。
-
-**标签：** #algorithm
-
----
-
-### 44. 数据包路由最短路径（Dijkstra）（Packet Routing Shortest Path）
+### 16. 数据包路由最短路径（Dijkstra）（Packet Routing Shortest Path）
 
 **难度：** 中等
 **主题：** graph, dijkstra, heap, shortest-path
@@ -3134,7 +1314,132 @@ int[] shortestLatencies(int n, int[][] links, int src) {
 
 ---
 
-### 45. 电信信号任务调度（贪心 + 堆）（Telecom Signal Task Scheduling）
+## 堆 / 优先队列
+
+### 17. 前 K 个高频元素（Top K Frequent Elements）
+
+**难度：** 中等
+**主题：** heap, hash-table, bucket-sort
+**岗位：** OD / SWE
+**级别：** 15-16（高级）
+
+**问题：** 返回数组中出现频率最高的 k 个元素。
+
+**思路：** 统计频次，再按频率桶排序（下标 = 计数），从高到低读取桶。时间 O(n)，空间 O(n)。堆解法为 O(n log k)。
+
+**Python：**
+```python
+from collections import Counter
+
+def top_k_frequent(nums: list[int], k: int) -> list[int]:
+    counts = Counter(nums)
+    buckets: list[list[int]] = [[] for _ in range(len(nums) + 1)]
+    for val, freq in counts.items():
+        buckets[freq].append(val)
+    res: list[int] = []
+    for freq in range(len(buckets) - 1, 0, -1):
+        for val in buckets[freq]:
+            res.append(val)
+            if len(res) == k:
+                return res
+    return res
+```
+
+**TypeScript：**
+```typescript
+function topKFrequent(nums: number[], k: number): number[] {
+  const counts = new Map<number, number>();
+  for (const x of nums) counts.set(x, (counts.get(x) ?? 0) + 1);
+  const buckets: number[][] = Array.from({ length: nums.length + 1 }, () => []);
+  for (const [val, freq] of counts) buckets[freq].push(val);
+  const res: number[] = [];
+  for (let f = buckets.length - 1; f > 0 && res.length < k; f--)
+    for (const val of buckets[f]) { res.push(val); if (res.length === k) return res; }
+  return res;
+}
+```
+
+**Java：**
+```java
+int[] topKFrequent(int[] nums, int k) {
+  Map<Integer, Integer> counts = new HashMap<>();
+  for (int x : nums) counts.merge(x, 1, Integer::sum);
+  List<Integer>[] buckets = new List[nums.length + 1];
+  for (var e : counts.entrySet()) {
+    int f = e.getValue();
+    if (buckets[f] == null) buckets[f] = new ArrayList<>();
+    buckets[f].add(e.getKey());
+  }
+  int[] res = new int[k];
+  int idx = 0;
+  for (int f = buckets.length - 1; f > 0 && idx < k; f--)
+    if (buckets[f] != null)
+      for (int val : buckets[f]) { if (idx == k) break; res[idx++] = val; }
+  return res;
+}
+```
+
+**要点：**
+- 按频率桶排序，时间 O(n)、空间 O(n)。
+- 替代方案是大小为 k 的最小堆，时间 O(n log k)。
+
+**标签：** #algorithm
+
+---
+
+### 18. 数组中的第 K 个最大元素（Kth Largest Element in an Array）
+
+**难度：** 中等
+**主题：** heap, quickselect, sorting
+**岗位：** OD / SWE
+**级别：** 15-16（高级）
+
+**问题：** 返回未排序数组中第 k 大的元素。
+
+**思路：** 维护大小为 k 的最小堆；处理完所有元素后堆顶即为答案。时间 O(n log k)，空间 O(k)。快速选择平均 O(n)。
+
+**Python：**
+```python
+import heapq
+
+def find_kth_largest(nums: list[int], k: int) -> int:
+    heap = nums[:k]
+    heapq.heapify(heap)
+    for x in nums[k:]:
+        if x > heap[0]:
+            heapq.heapreplace(heap, x)
+    return heap[0]
+```
+
+**TypeScript：**
+```typescript
+function findKthLargest(nums: number[], k: number): number {
+  // O(n log n) sort fallback when no heap library is available.
+  return nums.slice().sort((a, b) => b - a)[k - 1];
+}
+```
+
+**Java：**
+```java
+int findKthLargest(int[] nums, int k) {
+  PriorityQueue<Integer> heap = new PriorityQueue<>();
+  for (int x : nums) {
+    heap.add(x);
+    if (heap.size() > k) heap.poll();
+  }
+  return heap.peek();
+}
+```
+
+**要点：**
+- 大小为 k 的最小堆，时间 O(n log k)、空间 O(k)。
+- 快速选择平均 O(n)，但坏支点会退化到 O(n^2)。
+
+**标签：** #algorithm
+
+---
+
+### 19. 电信信号任务调度（贪心 + 堆）（Telecom Signal Task Scheduling）
 
 **难度：** 中等
 **主题：** heap, greedy, intervals
@@ -3195,6 +1500,1717 @@ int minUnits(int[][] tasks) {
 
 ---
 
+## 栈 / 队列
+
+### 20. 有效的括号（Valid Parentheses）
+
+**难度：** 简单
+**主题：** string, stack
+**岗位：** OD / SWE
+**级别：** 13-14（初级）
+
+**问题：** 给定只含 `()[]{}` 的字符串，判断括号是否有效匹配且正确嵌套。
+
+**思路：** 左括号入栈；遇到右括号则弹出比较。只有当每个右括号都匹配栈顶、且最终栈为空时才有效。时间 O(n)，空间 O(n)。
+
+**Python：**
+```python
+def is_valid(s: str) -> bool:
+    pairs = {")": "(", "]": "[", "}": "{"}
+    stack: list[str] = []
+    for c in s:
+        if c in pairs:
+            if not stack or stack.pop() != pairs[c]:
+                return False
+        else:
+            stack.append(c)
+    return not stack
+```
+
+**TypeScript：**
+```typescript
+function isValid(s: string): boolean {
+  const pairs: Record<string, string> = { ")": "(", "]": "[", "}": "{" };
+  const stack: string[] = [];
+  for (const c of s) {
+    if (c in pairs) {
+      if (stack.pop() !== pairs[c]) return false;
+    } else {
+      stack.push(c);
+    }
+  }
+  return stack.length === 0;
+}
+```
+
+**Java：**
+```java
+boolean isValid(String s) {
+  Map<Character, Character> pairs = Map.of(')', '(', ']', '[', '}', '{');
+  Deque<Character> stack = new ArrayDeque<>();
+  for (char c : s.toCharArray()) {
+    if (pairs.containsKey(c)) {
+      if (stack.isEmpty() || stack.pop() != pairs.get(c)) return false;
+    } else {
+      stack.push(c);
+    }
+  }
+  return stack.isEmpty();
+}
+```
+
+**要点：**
+- 栈刻画嵌套关系，时间和空间均为 O(n)。
+- 最后必须检查栈为空，而不仅是逐字符匹配。
+
+**追问：**
+- 返回使字符串有效所需的最少插入数。
+- 最长有效括号子串（DP / 下标栈）。
+- 支持运行时定义的任意括号类型。
+- 流式输入、内存受限下做校验。
+
+**标签：** #algorithm
+
+---
+
+## 哈希表
+
+### 21. 两数之和（Two Sum）
+
+**难度：** 简单
+**主题：** array, hash-table
+**岗位：** OD / SWE
+**级别：** 13-14（初级）
+
+**问题：** 给定整数数组 `nums` 和目标值，返回相加等于目标值的两个数的下标。恰好存在一个解；同一元素不可使用两次。
+
+**思路：** 一次遍历，维护"值 → 下标"哈希表。对每个元素检查 `target - x` 是否已出现；若出现则返回两个下标。时间 O(n)，空间 O(n)——典型的机试热身题。
+
+**Python：**
+```python
+def two_sum(nums: list[int], target: int) -> list[int]:
+    seen: dict[int, int] = {}
+    for i, x in enumerate(nums):
+        if target - x in seen:
+            return [seen[target - x], i]
+        seen[x] = i
+    return []
+```
+
+**TypeScript：**
+```typescript
+function twoSum(nums: number[], target: number): number[] {
+  const seen = new Map<number, number>();
+  for (let i = 0; i < nums.length; i++) {
+    const need = target - nums[i];
+    if (seen.has(need)) return [seen.get(need)!, i];
+    seen.set(nums[i], i);
+  }
+  return [];
+}
+```
+
+**Java：**
+```java
+int[] twoSum(int[] nums, int target) {
+  Map<Integer, Integer> seen = new HashMap<>();
+  for (int i = 0; i < nums.length; i++) {
+    int need = target - nums[i];
+    if (seen.containsKey(need)) return new int[] { seen.get(need), i };
+    seen.put(nums[i], i);
+  }
+  return new int[0];
+}
+```
+
+**要点：**
+- 单次遍历加哈希表，时间 O(n)、空间 O(n)，优于 O(n^2) 暴力。
+- 检查之后再存入当前值，避免把元素与自身配对。
+
+**追问：**
+- 返回所有相加等于目标值的不重复数对（排序 + 双指针）。
+- 输入已排序——用双指针 O(1) 额外空间求解。
+- 3Sum / 4Sum 的推广。
+- 数字流——设计在线的 `add`/`find` 结构。
+
+**标签：** #algorithm
+
+---
+
+### 22. 有效的字母异位词（Valid Anagram）
+
+**难度：** 简单
+**主题：** string, hash-table, counting
+**岗位：** OD / SWE
+**级别：** 13-14（初级）
+
+**问题：** 给定两个字符串，判断其中一个是否是另一个的字母异位词。
+
+**思路：** 统计第一个串的字符频次，用第二个串递减，验证所有计数归零。时间 O(n)，固定字母表下空间 O(1)。
+
+**Python：**
+```python
+from collections import Counter
+
+def is_anagram(s: str, t: str) -> bool:
+    if len(s) != len(t):
+        return False
+    return Counter(s) == Counter(t)
+```
+
+**TypeScript：**
+```typescript
+function isAnagram(s: string, t: string): boolean {
+  if (s.length !== t.length) return false;
+  const count = new Map<string, number>();
+  for (const c of s) count.set(c, (count.get(c) ?? 0) + 1);
+  for (const c of t) {
+    const n = (count.get(c) ?? 0) - 1;
+    if (n < 0) return false;
+    count.set(c, n);
+  }
+  return true;
+}
+```
+
+**Java：**
+```java
+boolean isAnagram(String s, String t) {
+  if (s.length() != t.length()) return false;
+  int[] count = new int[26];
+  for (int i = 0; i < s.length(); i++) {
+    count[s.charAt(i) - 'a']++;
+    count[t.charAt(i) - 'a']--;
+  }
+  for (int c : count) if (c != 0) return false;
+  return true;
+}
+```
+
+**要点：**
+- 频次统计时间 O(n)；26 槽数组空间 O(1)。
+- 长度不等可立即否定。
+
+**追问：**
+- 支持完整 Unicode，而非仅小写 a–z。
+- 把所有异位词分组（见下一题）。
+- 在 `s` 中找出 `p` 的所有异位词起始下标（滑动窗口）。
+- 忽略大小写与空白做比较。
+
+**标签：** #algorithm
+
+---
+
+### 23. 字母异位词分组（Group Anagrams）
+
+**难度：** 中等
+**主题：** string, hash-table, sorting
+**岗位：** OD / SWE
+**级别：** 15-16（高级）
+
+**问题：** 将单词列表分组，使互为异位词的单词落入同一组。
+
+**思路：** 为每个单词生成规范化键——排序后的字母，或 26 位计数签名——按该键在哈希表中分桶。用排序键时时间 O(n·k log k)（k 为词长），空间 O(n·k)。
+
+**Python：**
+```python
+from collections import defaultdict
+
+def group_anagrams(words: list[str]) -> list[list[str]]:
+    groups: dict[str, list[str]] = defaultdict(list)
+    for w in words:
+        groups["".join(sorted(w))].append(w)
+    return list(groups.values())
+```
+
+**TypeScript：**
+```typescript
+function groupAnagrams(words: string[]): string[][] {
+  const groups = new Map<string, string[]>();
+  for (const w of words) {
+    const key = [...w].sort().join("");
+    (groups.get(key) ?? groups.set(key, []).get(key)!).push(w);
+  }
+  return [...groups.values()];
+}
+```
+
+**Java：**
+```java
+List<List<String>> groupAnagrams(String[] words) {
+  Map<String, List<String>> groups = new HashMap<>();
+  for (String w : words) {
+    char[] c = w.toCharArray();
+    Arrays.sort(c);
+    groups.computeIfAbsent(new String(c), k -> new ArrayList<>()).add(w);
+  }
+  return new ArrayList<>(groups.values());
+}
+```
+
+**要点：**
+- 排序键每词 O(k log k)，总体 O(n·k log k)。
+- 用计数签名键可把每词成本降到 O(k)，总体 O(n·k)。
+
+**追问：**
+- 改用计数签名键去掉 log 因子。
+- 流式处理单词并增量输出分组。
+- 忽略大小写与空格按异位词类分组。
+- 按组大小排序返回。
+
+**标签：** #algorithm
+
+---
+
+### 24. 无重复字符的最长子串（Longest Substring Without Repeating Characters）
+
+**难度：** 中等
+**主题：** string, sliding-window, hash-table
+**岗位：** OD / SWE
+**级别：** 15-16（高级）
+
+**问题：** 求无重复字符的最长子串长度。
+
+**思路：** 滑动窗口加"字符 → 最后下标"映射。当重复落在窗口内时，把左边界跳到其之后。时间 O(n)，空间 O(min(n, 字母表))。
+
+**Python：**
+```python
+def length_of_longest_substring(s: str) -> int:
+    last: dict[str, int] = {}
+    start = best = 0
+    for i, c in enumerate(s):
+        if c in last and last[c] >= start:
+            start = last[c] + 1
+        last[c] = i
+        best = max(best, i - start + 1)
+    return best
+```
+
+**TypeScript：**
+```typescript
+function lengthOfLongestSubstring(s: string): number {
+  const last = new Map<string, number>();
+  let start = 0, best = 0;
+  for (let i = 0; i < s.length; i++) {
+    const c = s[i];
+    if (last.has(c) && last.get(c)! >= start) start = last.get(c)! + 1;
+    last.set(c, i);
+    best = Math.max(best, i - start + 1);
+  }
+  return best;
+}
+```
+
+**Java：**
+```java
+int lengthOfLongestSubstring(String s) {
+  Map<Character, Integer> last = new HashMap<>();
+  int start = 0, best = 0;
+  for (int i = 0; i < s.length(); i++) {
+    char c = s.charAt(i);
+    if (last.containsKey(c) && last.get(c) >= start) start = last.get(c) + 1;
+    last.put(c, i);
+    best = Math.max(best, i - start + 1);
+  }
+  return best;
+}
+```
+
+**要点：**
+- 每个下标进出窗口各一次，时间 O(n)。
+- 将 `start` 跳过上次出现位置，避免重新扫描窗口。
+
+**标签：** #algorithm
+
+---
+
+### 25. 最小覆盖子串（Minimum Window Substring）
+
+**难度：** 困难
+**主题：** string, sliding-window, hash-table
+**岗位：** Senior SWE
+**级别：** 17-18（专家）
+
+**问题：** 给定字符串 `s` 和 `t`，返回 `s` 中包含 `t` 全部字符（含重数）的最小子串，不存在则返回 ""。
+
+**思路：** 扩张窗口直到满足全部所需计数，再从左收缩同时保持有效，并记录最小有效窗口。时间 O(n + m)，空间 O(字母表)。
+
+**Python：**
+```python
+from collections import Counter
+
+def min_window(s: str, t: str) -> str:
+    if not t or not s:
+        return ""
+    need = Counter(t)
+    missing = len(t)
+    start = end = 0
+    left = 0
+    for right, c in enumerate(s, 1):
+        if need[c] > 0:
+            missing -= 1
+        need[c] -= 1
+        while missing == 0:
+            if end == 0 or right - left < end - start:
+                start, end = left, right
+            need[s[left]] += 1
+            if need[s[left]] > 0:
+                missing += 1
+            left += 1
+    return s[start:end]
+```
+
+**TypeScript：**
+```typescript
+function minWindow(s: string, t: string): string {
+  if (!s || !t) return "";
+  const need = new Map<string, number>();
+  for (const c of t) need.set(c, (need.get(c) ?? 0) + 1);
+  let missing = t.length, left = 0, start = 0, end = 0;
+  for (let right = 1; right <= s.length; right++) {
+    const c = s[right - 1];
+    if ((need.get(c) ?? 0) > 0) missing--;
+    need.set(c, (need.get(c) ?? 0) - 1);
+    while (missing === 0) {
+      if (end === 0 || right - left < end - start) { start = left; end = right; }
+      const lc = s[left];
+      need.set(lc, (need.get(lc) ?? 0) + 1);
+      if ((need.get(lc) ?? 0) > 0) missing++;
+      left++;
+    }
+  }
+  return s.slice(start, end);
+}
+```
+
+**Java：**
+```java
+String minWindow(String s, String t) {
+  if (s.isEmpty() || t.isEmpty()) return "";
+  int[] need = new int[128];
+  for (char c : t.toCharArray()) need[c]++;
+  int missing = t.length(), left = 0, start = 0, end = 0;
+  for (int right = 1; right <= s.length(); right++) {
+    char c = s.charAt(right - 1);
+    if (need[c]-- > 0) missing--;
+    while (missing == 0) {
+      if (end == 0 || right - left < end - start) { start = left; end = right; }
+      char lc = s.charAt(left);
+      if (++need[lc] > 0) missing++;
+      left++;
+    }
+  }
+  return s.substring(start, end);
+}
+```
+
+**要点：**
+- 两个指针各至多前进 n 次，时间 O(n + m)。
+- `missing` 让窗口有效性判断为 O(1)，无需逐一比较映射。
+
+**标签：** #algorithm
+
+---
+
+## 动态规划
+
+### 26. 买卖股票的最佳时机（Best Time to Buy and Sell Stock）
+
+**难度：** 简单
+**主题：** array, dynamic-programming
+**岗位：** OD / SWE
+**级别：** 13-14（初级）
+
+**问题：** 给定每日价格，求一次买入、之后卖出的最大利润；无利润则返回 0。
+
+**思路：** 维护至今的最低价；每天用当前价减去最低价求利润并取最优。时间 O(n)，空间 O(1)。
+
+**Python：**
+```python
+def max_profit(prices: list[int]) -> int:
+    best, lo = 0, float("inf")
+    for p in prices:
+        lo = min(lo, p)
+        best = max(best, p - lo)
+    return best
+```
+
+**TypeScript：**
+```typescript
+function maxProfit(prices: number[]): number {
+  let best = 0, lo = Infinity;
+  for (const p of prices) {
+    lo = Math.min(lo, p);
+    best = Math.max(best, p - lo);
+  }
+  return best;
+}
+```
+
+**Java：**
+```java
+int maxProfit(int[] prices) {
+  int best = 0, lo = Integer.MAX_VALUE;
+  for (int p : prices) {
+    lo = Math.min(lo, p);
+    best = Math.max(best, p - lo);
+  }
+  return best;
+}
+```
+
+**要点：**
+- 单次遍历追踪运行最小值，时间 O(n)、空间 O(1)。
+- 买必须在卖之前，而"运行最小值"不变式恰好保证了这一点。
+
+**追问：**
+- 无限次交易（累加所有正的差值）。
+- 至多 k 次交易（DP，O(nk)）。
+- 加入手续费或冷冻期。
+- 返回实际的买入/卖出日下标。
+
+**标签：** #algorithm
+
+---
+
+### 27. 最大子数组和（Kadane）
+
+**难度：** 中等
+**主题：** array, dynamic-programming
+**岗位：** OD / SWE
+**级别：** 13-14（初级）
+
+**问题：** 找出和最大的连续子数组并返回该和。
+
+**思路：** Kadane 算法——维护运行和；当延续会使其变小时就重置为当前元素。同时记录全局最优。时间 O(n)，空间 O(1)。
+
+**Python：**
+```python
+def max_sub_array(nums: list[int]) -> int:
+    cur = best = nums[0]
+    for x in nums[1:]:
+        cur = max(x, cur + x)
+        best = max(best, cur)
+    return best
+```
+
+**TypeScript：**
+```typescript
+function maxSubArray(nums: number[]): number {
+  let cur = nums[0], best = nums[0];
+  for (let i = 1; i < nums.length; i++) {
+    cur = Math.max(nums[i], cur + nums[i]);
+    best = Math.max(best, cur);
+  }
+  return best;
+}
+```
+
+**Java：**
+```java
+int maxSubArray(int[] nums) {
+  int cur = nums[0], best = nums[0];
+  for (int i = 1; i < nums.length; i++) {
+    cur = Math.max(nums[i], cur + nums[i]);
+    best = Math.max(best, cur);
+  }
+  return best;
+}
+```
+
+**要点：**
+- Kadane 时间 O(n)、空间 O(1)。
+- 用首元素初始化，使全负数组也能返回最大的单个值。
+
+**追问：**
+- 返回子数组边界，而不仅是和。
+- 最大乘积子数组（同时追踪最小、最大）。
+- 最大环形子数组和。
+- 分治 O(n log n) 解法以及为何 Kadane 更优。
+
+**标签：** #algorithm
+
+---
+
+### 28. 爬楼梯（Climbing Stairs）
+
+**难度：** 简单
+**主题：** dynamic-programming
+**岗位：** OD / SWE
+**级别：** 13-14（初级）
+
+**问题：** 每次可爬 1 或 2 级台阶。爬 `n` 级有多少种不同方法？
+
+**思路：** 斐波那契递推 `f(n) = f(n-1) + f(n-2)`。滚动两个变量避免数组。时间 O(n)，空间 O(1)。
+
+**Python：**
+```python
+def climb_stairs(n: int) -> int:
+    a, b = 1, 1
+    for _ in range(n):
+        a, b = b, a + b
+    return a
+```
+
+**TypeScript：**
+```typescript
+function climbStairs(n: number): number {
+  let a = 1, b = 1;
+  for (let i = 0; i < n; i++) { [a, b] = [b, a + b]; }
+  return a;
+}
+```
+
+**Java：**
+```java
+int climbStairs(int n) {
+  int a = 1, b = 1;
+  for (int i = 0; i < n; i++) {
+    int t = a + b; a = b; b = t;
+  }
+  return a;
+}
+```
+
+**要点：**
+- 滚动两个变量，时间 O(n)、空间 O(1)。
+- 本质是斐波那契；识别出递推即是全部要点。
+
+**追问：**
+- 每步可走 1、2 或 3 级。
+- 每级有代价——最小化总代价（最小花费爬楼梯）。
+- 对大 n 取模 1e9+7 计数。
+- 用矩阵快速幂做到 O(log n)。
+
+**标签：** #algorithm
+
+---
+
+### 29. 零钱兑换（Coin Change）
+
+**难度：** 中等
+**主题：** dynamic-programming
+**岗位：** OD / SWE
+**级别：** 15-16（高级）
+
+**问题：** 给定硬币面额和金额，返回凑出该金额的最少硬币数，不可能则返回 -1。
+
+**思路：** 自底向上 DP，`dp[a]` 为金额 `a` 的最少硬币数；对每个硬币做松弛。时间 O(金额·硬币数)，空间 O(金额)。
+
+**Python：**
+```python
+def coin_change(coins: list[int], amount: int) -> int:
+    dp = [amount + 1] * (amount + 1)
+    dp[0] = 0
+    for a in range(1, amount + 1):
+        for c in coins:
+            if c <= a:
+                dp[a] = min(dp[a], dp[a - c] + 1)
+    return dp[amount] if dp[amount] <= amount else -1
+```
+
+**TypeScript：**
+```typescript
+function coinChange(coins: number[], amount: number): number {
+  const dp = new Array(amount + 1).fill(amount + 1);
+  dp[0] = 0;
+  for (let a = 1; a <= amount; a++)
+    for (const c of coins)
+      if (c <= a) dp[a] = Math.min(dp[a], dp[a - c] + 1);
+  return dp[amount] <= amount ? dp[amount] : -1;
+}
+```
+
+**Java：**
+```java
+int coinChange(int[] coins, int amount) {
+  int[] dp = new int[amount + 1];
+  Arrays.fill(dp, amount + 1);
+  dp[0] = 0;
+  for (int a = 1; a <= amount; a++)
+    for (int c : coins)
+      if (c <= a) dp[a] = Math.min(dp[a], dp[a - c] + 1);
+  return dp[amount] <= amount ? dp[amount] : -1;
+}
+```
+
+**要点：**
+- DP 表时间 O(金额·硬币数)、空间 O(金额)。
+- 用 `amount + 1` 初始化充当无穷大，使不可达金额保持 -1。
+
+**标签：** #algorithm
+
+---
+
+### 30. 最长递增子序列（Longest Increasing Subsequence）
+
+**难度：** 中等
+**主题：** dynamic-programming, binary-search
+**岗位：** Senior SWE
+**级别：** 17-18（专家）
+
+**问题：** 求最长严格递增子序列的长度。
+
+**思路：** 耐心排序——维护 `tails`，`tails[i]` 为长度 `i+1` 的递增子序列可能的最小尾值；对每个元素二分查找插入位置。时间 O(n log n)，空间 O(n)。
+
+**Python：**
+```python
+import bisect
+
+def length_of_lis(nums: list[int]) -> int:
+    tails: list[int] = []
+    for x in nums:
+        i = bisect.bisect_left(tails, x)
+        if i == len(tails):
+            tails.append(x)
+        else:
+            tails[i] = x
+    return len(tails)
+```
+
+**TypeScript：**
+```typescript
+function lengthOfLIS(nums: number[]): number {
+  const tails: number[] = [];
+  for (const x of nums) {
+    let lo = 0, hi = tails.length;
+    while (lo < hi) {
+      const mid = (lo + hi) >> 1;
+      if (tails[mid] < x) lo = mid + 1; else hi = mid;
+    }
+    tails[lo] = x;
+  }
+  return tails.length;
+}
+```
+
+**Java：**
+```java
+int lengthOfLIS(int[] nums) {
+  List<Integer> tails = new ArrayList<>();
+  for (int x : nums) {
+    int lo = 0, hi = tails.size();
+    while (lo < hi) {
+      int mid = (lo + hi) >>> 1;
+      if (tails.get(mid) < x) lo = mid + 1; else hi = mid;
+    }
+    if (lo == tails.size()) tails.add(x); else tails.set(lo, x);
+  }
+  return tails.size();
+}
+```
+
+**要点：**
+- 每个元素二分查找，时间 O(n log n)、空间 O(n)，优于 O(n^2) DP。
+- `tails` 并非真正的子序列，但其长度等于答案。
+
+**标签：** #algorithm
+
+---
+
+### 31. 打家劫舍（House Robber）
+
+**难度：** 中等
+**主题：** dynamic-programming
+**岗位：** OD / SWE
+**级别：** 15-16（高级）
+
+**问题：** 给定一排房屋的金额，在不偷相邻两户的前提下最大化收益。
+
+**思路：** DP 递推 `rob(i) = max(rob(i-1), rob(i-2) + nums[i])`，滚动为两个变量。时间 O(n)，空间 O(1)。
+
+**Python：**
+```python
+def rob(nums: list[int]) -> int:
+    prev, cur = 0, 0
+    for x in nums:
+        prev, cur = cur, max(cur, prev + x)
+    return cur
+```
+
+**TypeScript：**
+```typescript
+function rob(nums: number[]): number {
+  let prev = 0, cur = 0;
+  for (const x of nums) { const t = Math.max(cur, prev + x); prev = cur; cur = t; }
+  return cur;
+}
+```
+
+**Java：**
+```java
+int rob(int[] nums) {
+  int prev = 0, cur = 0;
+  for (int x : nums) { int t = Math.max(cur, prev + x); prev = cur; cur = t; }
+  return cur;
+}
+```
+
+**要点：**
+- 滚动两个状态变量，时间 O(n)、空间 O(1)。
+- 每户的选择是"偷并跳过邻居"还是"跳过"。
+
+**标签：** #algorithm
+
+---
+
+### 32. 单词拆分（Word Break）
+
+**难度：** 中等
+**主题：** dynamic-programming, string
+**岗位：** Senior SWE
+**级别：** 17-18（专家）
+
+**问题：** 给定字符串和字典，判断字符串能否切分为字典中单词的序列。
+
+**思路：** DP，`dp[i]` 表示长度为 `i` 的前缀可切分；对每个 `i` 尝试每个切点 `j`，要求 `dp[j]` 为真且 `s[j:i]` 在集合中。时间 O(n^2)（外加子串成本），空间 O(n)。
+
+**Python：**
+```python
+def word_break(s: str, word_dict: list[str]) -> bool:
+    words = set(word_dict)
+    dp = [False] * (len(s) + 1)
+    dp[0] = True
+    for i in range(1, len(s) + 1):
+        for j in range(i):
+            if dp[j] and s[j:i] in words:
+                dp[i] = True
+                break
+    return dp[len(s)]
+```
+
+**TypeScript：**
+```typescript
+function wordBreak(s: string, wordDict: string[]): boolean {
+  const words = new Set(wordDict);
+  const dp = new Array(s.length + 1).fill(false);
+  dp[0] = true;
+  for (let i = 1; i <= s.length; i++)
+    for (let j = 0; j < i; j++)
+      if (dp[j] && words.has(s.slice(j, i))) { dp[i] = true; break; }
+  return dp[s.length];
+}
+```
+
+**Java：**
+```java
+boolean wordBreak(String s, List<String> wordDict) {
+  Set<String> words = new HashSet<>(wordDict);
+  boolean[] dp = new boolean[s.length() + 1];
+  dp[0] = true;
+  for (int i = 1; i <= s.length(); i++)
+    for (int j = 0; j < i; j++)
+      if (dp[j] && words.contains(s.substring(j, i))) { dp[i] = true; break; }
+  return dp[s.length()];
+}
+```
+
+**要点：**
+- 嵌套循环给出 O(n^2) 个切分、O(n) 空间。
+- 用字典树或以最长单词长度限制内层，可削减冗余检查。
+
+**标签：** #algorithm
+
+---
+
+## 回溯
+
+### 33. 单词搜索（Word Search）
+
+**难度：** 中等
+**主题：** backtracking, dfs, grid
+**岗位：** Senior SWE
+**级别：** 17-18（专家）
+
+**问题：** 给定字母网格和一个单词，判断能否由相邻格子（不重复使用同一格）拼出该单词。
+
+**思路：** 从每个格子做 DFS 回溯，递归期间标记格子已访问，返回时还原。最坏时间 O(行·列·4^L)，空间 O(L)。
+
+**Python：**
+```python
+def exist(board: list[list[str]], word: str) -> bool:
+    rows, cols = len(board), len(board[0])
+
+    def dfs(r, c, i):
+        if i == len(word):
+            return True
+        if r < 0 or c < 0 or r >= rows or c >= cols or board[r][c] != word[i]:
+            return False
+        tmp, board[r][c] = board[r][c], "#"
+        found = (dfs(r + 1, c, i + 1) or dfs(r - 1, c, i + 1) or
+                 dfs(r, c + 1, i + 1) or dfs(r, c - 1, i + 1))
+        board[r][c] = tmp
+        return found
+
+    return any(dfs(r, c, 0) for r in range(rows) for c in range(cols))
+```
+
+**TypeScript：**
+```typescript
+function exist(board: string[][], word: string): boolean {
+  const rows = board.length, cols = board[0].length;
+  const dfs = (r: number, c: number, i: number): boolean => {
+    if (i === word.length) return true;
+    if (r < 0 || c < 0 || r >= rows || c >= cols || board[r][c] !== word[i]) return false;
+    const tmp = board[r][c];
+    board[r][c] = "#";
+    const found = dfs(r + 1, c, i + 1) || dfs(r - 1, c, i + 1) ||
+                  dfs(r, c + 1, i + 1) || dfs(r, c - 1, i + 1);
+    board[r][c] = tmp;
+    return found;
+  };
+  for (let r = 0; r < rows; r++)
+    for (let c = 0; c < cols; c++)
+      if (dfs(r, c, 0)) return true;
+  return false;
+}
+```
+
+**Java：**
+```java
+boolean exist(char[][] board, String word) {
+  int rows = board.length, cols = board[0].length;
+  for (int r = 0; r < rows; r++)
+    for (int c = 0; c < cols; c++)
+      if (dfs(board, word, r, c, 0)) return true;
+  return false;
+}
+
+boolean dfs(char[][] b, String w, int r, int c, int i) {
+  if (i == w.length()) return true;
+  if (r < 0 || c < 0 || r >= b.length || c >= b[0].length || b[r][c] != w.charAt(i)) return false;
+  char tmp = b[r][c];
+  b[r][c] = '#';
+  boolean found = dfs(b, w, r + 1, c, i + 1) || dfs(b, w, r - 1, c, i + 1) ||
+                  dfs(b, w, r, c + 1, i + 1) || dfs(b, w, r, c - 1, i + 1);
+  b[r][c] = tmp;
+  return found;
+}
+```
+
+**要点：**
+- 回溯最多探索 O(行·列·4^L) 条路径；递归深度 O(L)。
+- 标记并还原格子，无需额外内存即可保证不重复使用。
+
+**标签：** #algorithm
+
+---
+
+### 34. 组合总和（Combination Sum）
+
+**难度：** 中等
+**主题：** backtracking, recursion
+**岗位：** OD / SWE
+**级别：** 15-16（高级）
+
+**问题：** 给定互异正整数候选和目标值，返回所有和为目标值的不重复组合；每个候选可重复使用。
+
+**思路：** DFS 回溯；每步可重复使用当前候选，或前移起始下标以避免排列重复。最坏时间 O(2^t)，递归深度空间 O(t)。
+
+**Python：**
+```python
+def combination_sum(candidates: list[int], target: int) -> list[list[int]]:
+    res: list[list[int]] = []
+
+    def dfs(start, remain, path):
+        if remain == 0:
+            res.append(path[:])
+            return
+        for i in range(start, len(candidates)):
+            if candidates[i] <= remain:
+                path.append(candidates[i])
+                dfs(i, remain - candidates[i], path)
+                path.pop()
+
+    dfs(0, target, [])
+    return res
+```
+
+**TypeScript：**
+```typescript
+function combinationSum(candidates: number[], target: number): number[][] {
+  const res: number[][] = [];
+  const dfs = (start: number, remain: number, path: number[]): void => {
+    if (remain === 0) { res.push([...path]); return; }
+    for (let i = start; i < candidates.length; i++) {
+      if (candidates[i] <= remain) {
+        path.push(candidates[i]);
+        dfs(i, remain - candidates[i], path);
+        path.pop();
+      }
+    }
+  };
+  dfs(0, target, []);
+  return res;
+}
+```
+
+**Java：**
+```java
+List<List<Integer>> combinationSum(int[] candidates, int target) {
+  List<List<Integer>> res = new ArrayList<>();
+  dfs(candidates, 0, target, new ArrayList<>(), res);
+  return res;
+}
+
+void dfs(int[] cand, int start, int remain, List<Integer> path, List<List<Integer>> res) {
+  if (remain == 0) { res.add(new ArrayList<>(path)); return; }
+  for (int i = start; i < cand.length; i++) {
+    if (cand[i] <= remain) {
+      path.add(cand[i]);
+      dfs(cand, i, remain - cand[i], path, res);
+      path.remove(path.size() - 1);
+    }
+  }
+}
+```
+
+**要点：**
+- 回溯最多探索 O(2^t) 个状态；路径深度 O(t)。
+- 传入 `i`（而非 `i+1`）允许重复使用；前移起始下标避免重复集合。
+
+**标签：** #algorithm
+
+---
+
+### 35. 全排列（Permutations）
+
+**难度：** 中等
+**主题：** backtracking, recursion
+**岗位：** OD / SWE
+**级别：** 15-16（高级）
+
+**问题：** 返回一组互异整数的所有排列。
+
+**思路：** 用 used 标记（或原地交换）回溯；每层固定一个元素。时间 O(n·n!)，空间 O(n)。
+
+**Python：**
+```python
+def permute(nums: list[int]) -> list[list[int]]:
+    res: list[list[int]] = []
+
+    def dfs(path, used):
+        if len(path) == len(nums):
+            res.append(path[:])
+            return
+        for i, x in enumerate(nums):
+            if not used[i]:
+                used[i] = True
+                path.append(x)
+                dfs(path, used)
+                path.pop()
+                used[i] = False
+
+    dfs([], [False] * len(nums))
+    return res
+```
+
+**TypeScript：**
+```typescript
+function permute(nums: number[]): number[][] {
+  const res: number[][] = [];
+  const used = new Array(nums.length).fill(false);
+  const dfs = (path: number[]): void => {
+    if (path.length === nums.length) { res.push([...path]); return; }
+    for (let i = 0; i < nums.length; i++) {
+      if (!used[i]) {
+        used[i] = true; path.push(nums[i]);
+        dfs(path);
+        path.pop(); used[i] = false;
+      }
+    }
+  };
+  dfs([]);
+  return res;
+}
+```
+
+**Java：**
+```java
+List<List<Integer>> permute(int[] nums) {
+  List<List<Integer>> res = new ArrayList<>();
+  dfs(nums, new boolean[nums.length], new ArrayList<>(), res);
+  return res;
+}
+
+void dfs(int[] nums, boolean[] used, List<Integer> path, List<List<Integer>> res) {
+  if (path.size() == nums.length) { res.add(new ArrayList<>(path)); return; }
+  for (int i = 0; i < nums.length; i++) {
+    if (!used[i]) {
+      used[i] = true; path.add(nums[i]);
+      dfs(nums, used, path, res);
+      path.remove(path.size() - 1); used[i] = false;
+    }
+  }
+}
+```
+
+**要点：**
+- 共有 n! 个排列，每个复制 O(n)，故时间 O(n·n!)、额外空间 O(n)。
+- `used` 数组防止在一个排列内重复使用某元素。
+
+**标签：** #algorithm
+
+---
+
+### 36. 子集（Subsets）
+
+**难度：** 中等
+**主题：** backtracking, bit-manipulation
+**岗位：** OD / SWE
+**级别：** 15-16（高级）
+
+**问题：** 返回一组互异整数的所有子集（幂集）。
+
+**思路：** 回溯在每个节点记录当前路径，并通过递增起始下标在"选/不选"间分支。时间 O(n·2^n)，空间 O(n)。
+
+**Python：**
+```python
+def subsets(nums: list[int]) -> list[list[int]]:
+    res: list[list[int]] = []
+
+    def dfs(start, path):
+        res.append(path[:])
+        for i in range(start, len(nums)):
+            path.append(nums[i])
+            dfs(i + 1, path)
+            path.pop()
+
+    dfs(0, [])
+    return res
+```
+
+**TypeScript：**
+```typescript
+function subsets(nums: number[]): number[][] {
+  const res: number[][] = [];
+  const dfs = (start: number, path: number[]): void => {
+    res.push([...path]);
+    for (let i = start; i < nums.length; i++) {
+      path.push(nums[i]);
+      dfs(i + 1, path);
+      path.pop();
+    }
+  };
+  dfs(0, []);
+  return res;
+}
+```
+
+**Java：**
+```java
+List<List<Integer>> subsets(int[] nums) {
+  List<List<Integer>> res = new ArrayList<>();
+  dfs(nums, 0, new ArrayList<>(), res);
+  return res;
+}
+
+void dfs(int[] nums, int start, List<Integer> path, List<List<Integer>> res) {
+  res.add(new ArrayList<>(path));
+  for (int i = start; i < nums.length; i++) {
+    path.add(nums[i]);
+    dfs(nums, i + 1, path, res);
+    path.remove(path.size() - 1);
+  }
+}
+```
+
+**要点：**
+- 共有 2^n 个子集，每个复制至多 O(n)：时间 O(n·2^n)。
+- 等价做法是把每个子集映射为一个 n 位掩码。
+
+**标签：** #algorithm
+
+---
+
+## 数组 / 字符串
+
+### 37. 二分查找（Binary Search）
+
+**难度：** 简单
+**主题：** binary-search, array
+**岗位：** OD / SWE
+**级别：** 13-14（初级）
+
+**问题：** 给定有序数组和目标值，返回其下标，不存在则返回 -1。
+
+**思路：** 维护 `[lo, hi]` 边界，探测中点，每步将范围减半。用 `lo + (hi - lo) // 2` 避免溢出（C/C++ 中尤为重要）。时间 O(log n)，空间 O(1)。
+
+**Python：**
+```python
+def binary_search(nums: list[int], target: int) -> int:
+    lo, hi = 0, len(nums) - 1
+    while lo <= hi:
+        mid = lo + (hi - lo) // 2
+        if nums[mid] == target:
+            return mid
+        if nums[mid] < target:
+            lo = mid + 1
+        else:
+            hi = mid - 1
+    return -1
+```
+
+**TypeScript：**
+```typescript
+function binarySearch(nums: number[], target: number): number {
+  let lo = 0, hi = nums.length - 1;
+  while (lo <= hi) {
+    const mid = lo + ((hi - lo) >> 1);
+    if (nums[mid] === target) return mid;
+    if (nums[mid] < target) lo = mid + 1;
+    else hi = mid - 1;
+  }
+  return -1;
+}
+```
+
+**Java：**
+```java
+int binarySearch(int[] nums, int target) {
+  int lo = 0, hi = nums.length - 1;
+  while (lo <= hi) {
+    int mid = lo + (hi - lo) / 2;
+    if (nums[mid] == target) return mid;
+    if (nums[mid] < target) lo = mid + 1;
+    else hi = mid - 1;
+  }
+  return -1;
+}
+```
+
+**要点：**
+- 每步减半范围，时间 O(log n)、空间 O(1)。
+- `lo + (hi - lo) / 2` 可避免 `(lo + hi) / 2` 在 C/C++/Java 中的整数溢出。
+
+**追问：**
+- 返回最左/最右插入位置（下界/上界）。
+- 在旋转有序数组中查找。
+- 在无限/无界有序流中查找某值。
+- 用递归实现并讨论栈使用。
+
+**标签：** #algorithm
+
+---
+
+### 38. 盛最多水的容器（Container With Most Water）
+
+**难度：** 中等
+**主题：** array, two-pointer, greedy
+**岗位：** OD / SWE
+**级别：** 15-16（高级）
+
+**问题：** 给定高度数组，选两条线与 x 轴构成容器使盛水最多，返回最大面积。
+
+**思路：** 双指针位于两端；面积为 `min(h[l], h[r]) * (r - l)`。每次移动较矮的一侧，因为它限制了面积。时间 O(n)，空间 O(1)。
+
+**Python：**
+```python
+def max_area(height: list[int]) -> int:
+    l, r, best = 0, len(height) - 1, 0
+    while l < r:
+        best = max(best, min(height[l], height[r]) * (r - l))
+        if height[l] < height[r]:
+            l += 1
+        else:
+            r -= 1
+    return best
+```
+
+**TypeScript：**
+```typescript
+function maxArea(height: number[]): number {
+  let l = 0, r = height.length - 1, best = 0;
+  while (l < r) {
+    best = Math.max(best, Math.min(height[l], height[r]) * (r - l));
+    if (height[l] < height[r]) l++; else r--;
+  }
+  return best;
+}
+```
+
+**Java：**
+```java
+int maxArea(int[] height) {
+  int l = 0, r = height.length - 1, best = 0;
+  while (l < r) {
+    best = Math.max(best, Math.min(height[l], height[r]) * (r - l));
+    if (height[l] < height[r]) l++; else r--;
+  }
+  return best;
+}
+```
+
+**要点：**
+- 双指针扫描时间 O(n)、空间 O(1)，优于 O(n^2) 暴力。
+- 移动较高一侧绝不会增大面积，因此总是移动较矮一侧。
+
+**标签：** #algorithm
+
+---
+
+### 39. 三数之和（3Sum）
+
+**难度：** 中等
+**主题：** array, two-pointer, sorting
+**岗位：** OD / SWE
+**级别：** 15-16（高级）
+
+**问题：** 找出数组中所有和为零的不重复三元组。
+
+**思路：** 排序后固定一个下标，对其余部分做双指针扫描，并在每层跳过重复。时间 O(n^2)，除输出外空间 O(1)。
+
+**Python：**
+```python
+def three_sum(nums: list[int]) -> list[list[int]]:
+    nums.sort()
+    res: list[list[int]] = []
+    for i in range(len(nums) - 2):
+        if i > 0 and nums[i] == nums[i - 1]:
+            continue
+        l, r = i + 1, len(nums) - 1
+        while l < r:
+            s = nums[i] + nums[l] + nums[r]
+            if s < 0:
+                l += 1
+            elif s > 0:
+                r -= 1
+            else:
+                res.append([nums[i], nums[l], nums[r]])
+                l += 1
+                r -= 1
+                while l < r and nums[l] == nums[l - 1]:
+                    l += 1
+                while l < r and nums[r] == nums[r + 1]:
+                    r -= 1
+    return res
+```
+
+**TypeScript：**
+```typescript
+function threeSum(nums: number[]): number[][] {
+  nums.sort((a, b) => a - b);
+  const res: number[][] = [];
+  for (let i = 0; i < nums.length - 2; i++) {
+    if (i > 0 && nums[i] === nums[i - 1]) continue;
+    let l = i + 1, r = nums.length - 1;
+    while (l < r) {
+      const s = nums[i] + nums[l] + nums[r];
+      if (s < 0) l++;
+      else if (s > 0) r--;
+      else {
+        res.push([nums[i], nums[l], nums[r]]);
+        l++; r--;
+        while (l < r && nums[l] === nums[l - 1]) l++;
+        while (l < r && nums[r] === nums[r + 1]) r--;
+      }
+    }
+  }
+  return res;
+}
+```
+
+**Java：**
+```java
+List<List<Integer>> threeSum(int[] nums) {
+  Arrays.sort(nums);
+  List<List<Integer>> res = new ArrayList<>();
+  for (int i = 0; i < nums.length - 2; i++) {
+    if (i > 0 && nums[i] == nums[i - 1]) continue;
+    int l = i + 1, r = nums.length - 1;
+    while (l < r) {
+      int s = nums[i] + nums[l] + nums[r];
+      if (s < 0) l++;
+      else if (s > 0) r--;
+      else {
+        res.add(Arrays.asList(nums[i], nums[l], nums[r]));
+        l++; r--;
+        while (l < r && nums[l] == nums[l - 1]) l++;
+        while (l < r && nums[r] == nums[r + 1]) r--;
+      }
+    }
+  }
+  return res;
+}
+```
+
+**要点：**
+- 排序加双指针扫描时间 O(n^2)、额外空间 O(1)。
+- 在每层跳过重复值是保证三元组不重复的关键。
+
+**标签：** #algorithm
+
+---
+
+### 40. 除自身以外数组的乘积（Product of Array Except Self）
+
+**难度：** 中等
+**主题：** array, prefix-product
+**岗位：** OD / SWE
+**级别：** 15-16（高级）
+
+**问题：** 返回一个数组，其中每个元素是其余所有元素之积，不用除法且 O(n)。
+
+**思路：** 两次遍历——先从左到右存前缀积，再从右到左用一个运行变量乘上后缀积。时间 O(n)，额外空间 O(1)（不计输出）。
+
+**Python：**
+```python
+def product_except_self(nums: list[int]) -> list[int]:
+    n = len(nums)
+    out = [1] * n
+    for i in range(1, n):
+        out[i] = out[i - 1] * nums[i - 1]
+    suffix = 1
+    for i in range(n - 1, -1, -1):
+        out[i] *= suffix
+        suffix *= nums[i]
+    return out
+```
+
+**TypeScript：**
+```typescript
+function productExceptSelf(nums: number[]): number[] {
+  const n = nums.length, out = new Array(n).fill(1);
+  for (let i = 1; i < n; i++) out[i] = out[i - 1] * nums[i - 1];
+  let suffix = 1;
+  for (let i = n - 1; i >= 0; i--) { out[i] *= suffix; suffix *= nums[i]; }
+  return out;
+}
+```
+
+**Java：**
+```java
+int[] productExceptSelf(int[] nums) {
+  int n = nums.length;
+  int[] out = new int[n];
+  out[0] = 1;
+  for (int i = 1; i < n; i++) out[i] = out[i - 1] * nums[i - 1];
+  int suffix = 1;
+  for (int i = n - 1; i >= 0; i--) { out[i] *= suffix; suffix *= nums[i]; }
+  return out;
+}
+```
+
+**要点：**
+- 两次线性遍历，时间 O(n)、额外空间 O(1)。
+- 不用除法，使其对输入中的零也稳健。
+
+**标签：** #algorithm
+
+---
+
+### 41. 搜索旋转排序数组（Search in Rotated Sorted Array）
+
+**难度：** 中等
+**主题：** binary-search, array
+**岗位：** OD / SWE
+**级别：** 15-16（高级）
+
+**问题：** 一个有序数组在未知支点处被旋转。找目标值下标，不存在则返回 -1。
+
+**思路：** 改进的二分查找——每个中点处必有一半是有序的；判断目标是否落在那半有序区间内来选择方向。时间 O(log n)，空间 O(1)。
+
+**Python：**
+```python
+def search(nums: list[int], target: int) -> int:
+    lo, hi = 0, len(nums) - 1
+    while lo <= hi:
+        mid = lo + (hi - lo) // 2
+        if nums[mid] == target:
+            return mid
+        if nums[lo] <= nums[mid]:
+            if nums[lo] <= target < nums[mid]:
+                hi = mid - 1
+            else:
+                lo = mid + 1
+        else:
+            if nums[mid] < target <= nums[hi]:
+                lo = mid + 1
+            else:
+                hi = mid - 1
+    return -1
+```
+
+**TypeScript：**
+```typescript
+function search(nums: number[], target: number): number {
+  let lo = 0, hi = nums.length - 1;
+  while (lo <= hi) {
+    const mid = lo + ((hi - lo) >> 1);
+    if (nums[mid] === target) return mid;
+    if (nums[lo] <= nums[mid]) {
+      if (nums[lo] <= target && target < nums[mid]) hi = mid - 1; else lo = mid + 1;
+    } else {
+      if (nums[mid] < target && target <= nums[hi]) lo = mid + 1; else hi = mid - 1;
+    }
+  }
+  return -1;
+}
+```
+
+**Java：**
+```java
+int search(int[] nums, int target) {
+  int lo = 0, hi = nums.length - 1;
+  while (lo <= hi) {
+    int mid = lo + (hi - lo) / 2;
+    if (nums[mid] == target) return mid;
+    if (nums[lo] <= nums[mid]) {
+      if (nums[lo] <= target && target < nums[mid]) hi = mid - 1; else lo = mid + 1;
+    } else {
+      if (nums[mid] < target && target <= nums[hi]) lo = mid + 1; else hi = mid - 1;
+    }
+  }
+  return -1;
+}
+```
+
+**要点：**
+- 尽管发生旋转，仍是 O(log n) 时间、O(1) 空间。
+- 先判断哪半有序，再用该半的边界检验目标。
+
+**标签：** #algorithm
+
+---
+
+### 42. 在排序数组中查找元素的首末位置（Find First and Last Position of Element）
+
+**难度：** 中等
+**主题：** binary-search, array
+**岗位：** OD / SWE
+**级别：** 15-16（高级）
+
+**问题：** 在有序数组中找目标的首、末下标，不存在则返回 `[-1, -1]`。
+
+**思路：** 两次二分查找分别求目标的下界与上界。时间 O(log n)，空间 O(1)。
+
+**Python：**
+```python
+import bisect
+
+def search_range(nums: list[int], target: int) -> list[int]:
+    lo = bisect.bisect_left(nums, target)
+    if lo == len(nums) or nums[lo] != target:
+        return [-1, -1]
+    hi = bisect.bisect_right(nums, target) - 1
+    return [lo, hi]
+```
+
+**TypeScript：**
+```typescript
+function searchRange(nums: number[], target: number): number[] {
+  const bound = (left: boolean): number => {
+    let lo = 0, hi = nums.length, res = -1;
+    while (lo < hi) {
+      const mid = lo + ((hi - lo) >> 1);
+      if (nums[mid] < target || (!left && nums[mid] === target)) lo = mid + 1;
+      else hi = mid;
+      if (nums[mid] === target) res = mid;
+    }
+    return res;
+  };
+  return [bound(true), bound(false)];
+}
+```
+
+**Java：**
+```java
+int[] searchRange(int[] nums, int target) {
+  int first = bound(nums, target, true);
+  if (first == -1) return new int[] { -1, -1 };
+  return new int[] { first, bound(nums, target, false) };
+}
+
+int bound(int[] nums, int target, boolean left) {
+  int lo = 0, hi = nums.length - 1, res = -1;
+  while (lo <= hi) {
+    int mid = lo + (hi - lo) / 2;
+    if (nums[mid] == target) { res = mid; if (left) hi = mid - 1; else lo = mid + 1; }
+    else if (nums[mid] < target) lo = mid + 1;
+    else hi = mid - 1;
+  }
+  return res;
+}
+```
+
+**要点：**
+- 两次有界二分，时间 O(log n)、空间 O(1)。
+- 下界与上界仅在相等时指针移动方向不同。
+
+**标签：** #algorithm
+
+---
+
+### 43. 合并区间（Merge Intervals）
+
+**难度：** 中等
+**主题：** intervals, sorting
+**岗位：** OD / SWE
+**级别：** 15-16（高级）
+
+**问题：** 给定若干区间，合并所有重叠的区间。
+
+**思路：** 按起点排序；扫描时若下一区间与上一已合并区间重叠则扩展其终点，否则新增。时间 O(n log n)，空间 O(n)。
+
+**Python：**
+```python
+def merge(intervals: list[list[int]]) -> list[list[int]]:
+    intervals.sort()
+    out: list[list[int]] = []
+    for s, e in intervals:
+        if out and s <= out[-1][1]:
+            out[-1][1] = max(out[-1][1], e)
+        else:
+            out.append([s, e])
+    return out
+```
+
+**TypeScript：**
+```typescript
+function merge(intervals: number[][]): number[][] {
+  intervals.sort((a, b) => a[0] - b[0]);
+  const out: number[][] = [];
+  for (const [s, e] of intervals) {
+    const last = out[out.length - 1];
+    if (last && s <= last[1]) last[1] = Math.max(last[1], e);
+    else out.push([s, e]);
+  }
+  return out;
+}
+```
+
+**Java：**
+```java
+int[][] merge(int[][] intervals) {
+  Arrays.sort(intervals, (a, b) -> a[0] - b[0]);
+  List<int[]> out = new ArrayList<>();
+  for (int[] iv : intervals) {
+    if (!out.isEmpty() && iv[0] <= out.get(out.size() - 1)[1])
+      out.get(out.size() - 1)[1] = Math.max(out.get(out.size() - 1)[1], iv[1]);
+    else out.add(iv);
+  }
+  return out.toArray(new int[0][]);
+}
+```
+
+**要点：**
+- 排序占主导，时间 O(n log n)；输出 O(n) 空间。
+- 排序后，重叠就是简单的 `start <= last_end` 判断。
+
+**标签：** #algorithm
+
+---
+
+### 44. 只出现一次的数字（Single Number）
+
+**难度：** 简单
+**主题：** bit-manipulation, array
+**岗位：** OD / SWE
+**级别：** 13-14（初级）
+
+**问题：** 除一个元素外其余都出现两次。在 O(n) 时间、O(1) 空间内找出那个唯一的数。
+
+**思路：** 对所有元素求 XOR；成对的相消为 0，留下唯一值。时间 O(n)，空间 O(1)。
+
+**Python：**
+```python
+from functools import reduce
+from operator import xor
+
+def single_number(nums: list[int]) -> int:
+    return reduce(xor, nums, 0)
+```
+
+**TypeScript：**
+```typescript
+function singleNumber(nums: number[]): number {
+  return nums.reduce((acc, x) => acc ^ x, 0);
+}
+```
+
+**Java：**
+```java
+int singleNumber(int[] nums) {
+  int acc = 0;
+  for (int x : nums) acc ^= x;
+  return acc;
+}
+```
+
+**要点：**
+- XOR 满足结合律且自反，时间 O(n)、空间 O(1)。
+- 无需哈希集合或排序——纯位运算。
+
+**标签：** #algorithm
+
+---
+
+### 45. 基站覆盖合并（电信）（Base-Station Coverage Merge）
+
+**难度：** 中等
+**主题：** intervals, sorting, greedy
+**岗位：** Senior SWE
+**级别：** 17-18（专家）
+
+**问题：** 每个基站覆盖一条公路的一维区段 `[start, end]`。给定所有覆盖区段，将其合并为最少的连续覆盖范围集合，并报告总覆盖长度（用于检测覆盖空隙）。
+
+**思路：** 这是合并区间的电信包装。按起点排序区段，扫描合并重叠，并累加合并后的长度。时间 O(n log n)，空间 O(n)。
+
+**Python：**
+```python
+def covered_ranges(segments: list[list[int]]) -> tuple[list[list[int]], int]:
+    segments.sort()
+    merged: list[list[int]] = []
+    for s, e in segments:
+        if merged and s <= merged[-1][1]:
+            merged[-1][1] = max(merged[-1][1], e)
+        else:
+            merged.append([s, e])
+    total = sum(e - s for s, e in merged)
+    return merged, total
+```
+
+**TypeScript：**
+```typescript
+function coveredRanges(segments: number[][]): { merged: number[][]; total: number } {
+  segments.sort((a, b) => a[0] - b[0]);
+  const merged: number[][] = [];
+  for (const [s, e] of segments) {
+    const last = merged[merged.length - 1];
+    if (last && s <= last[1]) last[1] = Math.max(last[1], e);
+    else merged.push([s, e]);
+  }
+  const total = merged.reduce((sum, [s, e]) => sum + (e - s), 0);
+  return { merged, total };
+}
+```
+
+**Java：**
+```java
+int coveredLength(int[][] segments) {
+  Arrays.sort(segments, (a, b) -> a[0] - b[0]);
+  int total = 0, curStart = 0, curEnd = -1;
+  for (int[] seg : segments) {
+    if (seg[0] > curEnd) {
+      if (curEnd >= curStart) total += curEnd - curStart;
+      curStart = seg[0]; curEnd = seg[1];
+    } else {
+      curEnd = Math.max(curEnd, seg[1]);
+    }
+  }
+  if (curEnd >= curStart) total += curEnd - curStart;
+  return total;
+}
+```
+
+**要点：**
+- 排序加一次线性扫描，时间 O(n log n)、空间 O(n)。
+- 空隙表现为合并范围之间的断裂——正是覆盖缺失之处。
+
+**标签：** #algorithm
+
+---
+
 ### 46. 5G 资源块分配（区间调度）（5G Resource-Block Allocation）
 
 **难度：** 中等
@@ -3249,6 +3265,8 @@ int maxTransmissions(int[][] requests) {
 **标签：** #algorithm
 
 ---
+
+## 系统设计
 
 ### 47. 设计电信计费系统
 
@@ -3370,6 +3388,8 @@ int maxTransmissions(int[][] requests) {
 
 ---
 
+## 行为面试
+
 ### 55. 谈谈拥抱"奋斗者"文化
 
 **难度：** 中等
@@ -3430,6 +3450,8 @@ int maxTransmissions(int[][] requests) {
 
 ---
 
+## 领域知识
+
 ### 59. C/C++ 内存管理与指针
 
 **难度：** 困难
@@ -3487,3 +3509,4 @@ int maxTransmissions(int[][] requests) {
 **思路：** 虚拟内存给每个进程一个私有线性地址空间，经页表映射到物理帧；MMU 完成地址转换，TLB 缓存近期转换。缺页触发从磁盘加载（按需分页）；内存满时 OS 用替换策略（如时钟算法等 LRU 近似）淘汰页。好处：隔离、看似多于物理的内存、易于共享（共享库）。当工作集超过 RAM 时发生抖动。调度：调度器在就绪线程间复用 CPU——策略包括轮转、优先级，以及 Linux 的 CFS（完全公平调度器），它用按虚拟运行时间为键的红黑树近似公平共享。讨论抢占式 vs 协作式、上下文切换成本、实时调度类（SCHED_FIFO/RR 用于确定性延迟——与电信/嵌入式相关），以及吞吐与延迟/公平性的权衡。回到嵌入式/运营商系统为何常需实时保证。
 
 **标签：** #domain-knowledge
+

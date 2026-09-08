@@ -20,142 +20,9 @@ sources: LeetCode Discuss (huawei tag), 牛客网 (NowCoder), 一亩三分地 (1
 
 Huawei's loop is distinctive for its heavy, must-pass 机试 (online coding assessment) — usually three algorithm problems in roughly 150 minutes, and a weak score here often ends the process before any human interview. C/C++ is the dominant language, especially for carrier-network and embedded teams, so expect manual memory management, pointer arithmetic, and segfault/leak debugging alongside standard data-structure problems. Interviewers probe operating-system and TCP/IP networking fundamentals far more than US companies do. System design is grounded in Huawei's domains: telecom billing, 5G base stations, HarmonyOS distributed soft-bus, and carrier-grade high availability. Behavioral rounds explore the 奋斗者 ("dedicator/striver") culture and willingness to work under high pressure.
 
-## Questions
+## Linked List
 
-### 1. Two Sum
-
-**Difficulty:** Easy
-**Topics:** array, hash-table
-**Position:** OD / SWE
-**Years:** 13-14 (Junior)
-
-**Question:** Given an integer array `nums` and a target, return the indices of the two numbers that add up to the target. Exactly one solution exists; you may not use the same element twice.
-
-**Approach:** One-pass hash map from value → index. For each element check whether `target - x` was already seen; if so return both indices. Time O(n), space O(n) — a typical 机试 warm-up.
-
-**Python:**
-```python
-def two_sum(nums: list[int], target: int) -> list[int]:
-    seen: dict[int, int] = {}
-    for i, x in enumerate(nums):
-        if target - x in seen:
-            return [seen[target - x], i]
-        seen[x] = i
-    return []
-```
-
-**TypeScript:**
-```typescript
-function twoSum(nums: number[], target: number): number[] {
-  const seen = new Map<number, number>();
-  for (let i = 0; i < nums.length; i++) {
-    const need = target - nums[i];
-    if (seen.has(need)) return [seen.get(need)!, i];
-    seen.set(nums[i], i);
-  }
-  return [];
-}
-```
-
-**Java:**
-```java
-int[] twoSum(int[] nums, int target) {
-  Map<Integer, Integer> seen = new HashMap<>();
-  for (int i = 0; i < nums.length; i++) {
-    int need = target - nums[i];
-    if (seen.containsKey(need)) return new int[] { seen.get(need), i };
-    seen.put(nums[i], i);
-  }
-  return new int[0];
-}
-```
-
-**Key points:**
-- Single pass with a hash map gives O(n) time and O(n) space versus the O(n^2) brute force.
-- Store each value only after checking, so you never pair an element with itself.
-
-**Follow-ups:**
-- Return all unique pairs that sum to target (sort + two pointers).
-- Input is sorted — solve in O(1) extra space with two pointers.
-- 3Sum / 4Sum generalization.
-- Stream of numbers — design an `add`/`find` online structure.
-
-**Tags:** #algorithm
-
----
-
-### 2. Valid Parentheses
-
-**Difficulty:** Easy
-**Topics:** string, stack
-**Position:** OD / SWE
-**Years:** 13-14 (Junior)
-
-**Question:** Given a string of `()[]{}`, determine if the brackets are validly matched and nested.
-
-**Approach:** Push opening brackets onto a stack; on a closing bracket, pop and compare. Valid only if every close matches the top and the stack is empty at the end. Time O(n), space O(n).
-
-**Python:**
-```python
-def is_valid(s: str) -> bool:
-    pairs = {")": "(", "]": "[", "}": "{"}
-    stack: list[str] = []
-    for c in s:
-        if c in pairs:
-            if not stack or stack.pop() != pairs[c]:
-                return False
-        else:
-            stack.append(c)
-    return not stack
-```
-
-**TypeScript:**
-```typescript
-function isValid(s: string): boolean {
-  const pairs: Record<string, string> = { ")": "(", "]": "[", "}": "{" };
-  const stack: string[] = [];
-  for (const c of s) {
-    if (c in pairs) {
-      if (stack.pop() !== pairs[c]) return false;
-    } else {
-      stack.push(c);
-    }
-  }
-  return stack.length === 0;
-}
-```
-
-**Java:**
-```java
-boolean isValid(String s) {
-  Map<Character, Character> pairs = Map.of(')', '(', ']', '[', '}', '{');
-  Deque<Character> stack = new ArrayDeque<>();
-  for (char c : s.toCharArray()) {
-    if (pairs.containsKey(c)) {
-      if (stack.isEmpty() || stack.pop() != pairs.get(c)) return false;
-    } else {
-      stack.push(c);
-    }
-  }
-  return stack.isEmpty();
-}
-```
-
-**Key points:**
-- Stack models nesting; time and space are both O(n).
-- Must check the stack is empty at the end, not just per-character.
-
-**Follow-ups:**
-- Return the minimum insertions to make the string valid.
-- Longest valid parentheses substring (DP / stack of indices).
-- Support arbitrary bracket types defined at runtime.
-- Validate with a streaming input and bounded memory.
-
-**Tags:** #algorithm
-
----
-
-### 3. Reverse Linked List
+### 1. Reverse Linked List
 
 **Difficulty:** Easy
 **Topics:** linked-list, two-pointer
@@ -234,7 +101,7 @@ ListNode reverseList(ListNode head) {
 
 ---
 
-### 4. Merge Two Sorted Lists
+### 2. Merge Two Sorted Lists
 
 **Difficulty:** Easy
 **Topics:** linked-list, two-pointer
@@ -317,870 +184,7 @@ ListNode mergeTwoLists(ListNode a, ListNode b) {
 
 ---
 
-### 5. Best Time to Buy and Sell Stock
-
-**Difficulty:** Easy
-**Topics:** array, dynamic-programming
-**Position:** OD / SWE
-**Years:** 13-14 (Junior)
-
-**Question:** Given daily prices, find the maximum profit from one buy and one later sell. Return 0 if no profit is possible.
-
-**Approach:** Track the minimum price so far; at each day compute profit against that minimum and keep the best. Time O(n), space O(1).
-
-**Python:**
-```python
-def max_profit(prices: list[int]) -> int:
-    best, lo = 0, float("inf")
-    for p in prices:
-        lo = min(lo, p)
-        best = max(best, p - lo)
-    return best
-```
-
-**TypeScript:**
-```typescript
-function maxProfit(prices: number[]): number {
-  let best = 0, lo = Infinity;
-  for (const p of prices) {
-    lo = Math.min(lo, p);
-    best = Math.max(best, p - lo);
-  }
-  return best;
-}
-```
-
-**Java:**
-```java
-int maxProfit(int[] prices) {
-  int best = 0, lo = Integer.MAX_VALUE;
-  for (int p : prices) {
-    lo = Math.min(lo, p);
-    best = Math.max(best, p - lo);
-  }
-  return best;
-}
-```
-
-**Key points:**
-- Single pass tracking the running minimum is O(n) time, O(1) space.
-- Buy must precede sell, which the running-minimum invariant guarantees.
-
-**Follow-ups:**
-- Unlimited transactions (sum every positive delta).
-- At most k transactions (DP, O(nk)).
-- Add a transaction fee or a cooldown day.
-- Return the actual buy/sell day indices.
-
-**Tags:** #algorithm
-
----
-
-### 6. Binary Search
-
-**Difficulty:** Easy
-**Topics:** binary-search, array
-**Position:** OD / SWE
-**Years:** 13-14 (Junior)
-
-**Question:** Given a sorted array and a target, return its index or -1 if absent.
-
-**Approach:** Maintain `[lo, hi]` bounds, probe the midpoint, halve the range each step. Use `lo + (hi - lo) // 2` to avoid overflow (relevant in C/C++). Time O(log n), space O(1).
-
-**Python:**
-```python
-def binary_search(nums: list[int], target: int) -> int:
-    lo, hi = 0, len(nums) - 1
-    while lo <= hi:
-        mid = lo + (hi - lo) // 2
-        if nums[mid] == target:
-            return mid
-        if nums[mid] < target:
-            lo = mid + 1
-        else:
-            hi = mid - 1
-    return -1
-```
-
-**TypeScript:**
-```typescript
-function binarySearch(nums: number[], target: number): number {
-  let lo = 0, hi = nums.length - 1;
-  while (lo <= hi) {
-    const mid = lo + ((hi - lo) >> 1);
-    if (nums[mid] === target) return mid;
-    if (nums[mid] < target) lo = mid + 1;
-    else hi = mid - 1;
-  }
-  return -1;
-}
-```
-
-**Java:**
-```java
-int binarySearch(int[] nums, int target) {
-  int lo = 0, hi = nums.length - 1;
-  while (lo <= hi) {
-    int mid = lo + (hi - lo) / 2;
-    if (nums[mid] == target) return mid;
-    if (nums[mid] < target) lo = mid + 1;
-    else hi = mid - 1;
-  }
-  return -1;
-}
-```
-
-**Key points:**
-- Halving the range yields O(log n) time, O(1) space.
-- `lo + (hi - lo) / 2` prevents integer overflow that `(lo + hi) / 2` risks in C/C++/Java.
-
-**Follow-ups:**
-- Return the leftmost / rightmost insertion point (lower/upper bound).
-- Search in a rotated sorted array.
-- Search a value in an infinite/unbounded sorted stream.
-- Implement it recursively and discuss stack usage.
-
-**Tags:** #algorithm
-
----
-
-### 7. Maximum Subarray (Kadane)
-
-**Difficulty:** Medium
-**Topics:** array, dynamic-programming
-**Position:** OD / SWE
-**Years:** 13-14 (Junior)
-
-**Question:** Find the contiguous subarray with the largest sum and return that sum.
-
-**Approach:** Kadane's algorithm — keep a running sum; reset it to the current element whenever extending would lower it. Track the global best. Time O(n), space O(1).
-
-**Python:**
-```python
-def max_sub_array(nums: list[int]) -> int:
-    cur = best = nums[0]
-    for x in nums[1:]:
-        cur = max(x, cur + x)
-        best = max(best, cur)
-    return best
-```
-
-**TypeScript:**
-```typescript
-function maxSubArray(nums: number[]): number {
-  let cur = nums[0], best = nums[0];
-  for (let i = 1; i < nums.length; i++) {
-    cur = Math.max(nums[i], cur + nums[i]);
-    best = Math.max(best, cur);
-  }
-  return best;
-}
-```
-
-**Java:**
-```java
-int maxSubArray(int[] nums) {
-  int cur = nums[0], best = nums[0];
-  for (int i = 1; i < nums.length; i++) {
-    cur = Math.max(nums[i], cur + nums[i]);
-    best = Math.max(best, cur);
-  }
-  return best;
-}
-```
-
-**Key points:**
-- Kadane runs in O(n) time, O(1) space.
-- Initialize with the first element so all-negative arrays return the largest single value.
-
-**Follow-ups:**
-- Return the subarray bounds, not just the sum.
-- Maximum product subarray (track min and max).
-- Maximum circular subarray sum.
-- Divide-and-conquer O(n log n) variant and why Kadane wins.
-
-**Tags:** #algorithm
-
----
-
-### 8. Climbing Stairs
-
-**Difficulty:** Easy
-**Topics:** dynamic-programming
-**Position:** OD / SWE
-**Years:** 13-14 (Junior)
-
-**Question:** You can climb 1 or 2 steps at a time. How many distinct ways to reach the top of `n` stairs?
-
-**Approach:** Fibonacci recurrence `f(n) = f(n-1) + f(n-2)`. Roll two variables to avoid an array. Time O(n), space O(1).
-
-**Python:**
-```python
-def climb_stairs(n: int) -> int:
-    a, b = 1, 1
-    for _ in range(n):
-        a, b = b, a + b
-    return a
-```
-
-**TypeScript:**
-```typescript
-function climbStairs(n: number): number {
-  let a = 1, b = 1;
-  for (let i = 0; i < n; i++) { [a, b] = [b, a + b]; }
-  return a;
-}
-```
-
-**Java:**
-```java
-int climbStairs(int n) {
-  int a = 1, b = 1;
-  for (int i = 0; i < n; i++) {
-    int t = a + b; a = b; b = t;
-  }
-  return a;
-}
-```
-
-**Key points:**
-- Rolling two variables gives O(n) time, O(1) space.
-- It is Fibonacci; recognizing the recurrence is the whole insight.
-
-**Follow-ups:**
-- Steps of size 1, 2, or 3.
-- Each step has a cost — minimize total cost (Min Cost Climbing Stairs).
-- Count ways modulo 1e9+7 for large n.
-- O(log n) via fast matrix exponentiation.
-
-**Tags:** #algorithm
-
----
-
-### 9. Valid Anagram
-
-**Difficulty:** Easy
-**Topics:** string, hash-table, counting
-**Position:** OD / SWE
-**Years:** 13-14 (Junior)
-
-**Question:** Given two strings, return whether one is an anagram of the other.
-
-**Approach:** Count character frequencies in the first string, decrement with the second, and verify all counts return to zero. Time O(n), space O(1) for a fixed alphabet.
-
-**Python:**
-```python
-from collections import Counter
-
-def is_anagram(s: str, t: str) -> bool:
-    if len(s) != len(t):
-        return False
-    return Counter(s) == Counter(t)
-```
-
-**TypeScript:**
-```typescript
-function isAnagram(s: string, t: string): boolean {
-  if (s.length !== t.length) return false;
-  const count = new Map<string, number>();
-  for (const c of s) count.set(c, (count.get(c) ?? 0) + 1);
-  for (const c of t) {
-    const n = (count.get(c) ?? 0) - 1;
-    if (n < 0) return false;
-    count.set(c, n);
-  }
-  return true;
-}
-```
-
-**Java:**
-```java
-boolean isAnagram(String s, String t) {
-  if (s.length() != t.length()) return false;
-  int[] count = new int[26];
-  for (int i = 0; i < s.length(); i++) {
-    count[s.charAt(i) - 'a']++;
-    count[t.charAt(i) - 'a']--;
-  }
-  for (int c : count) if (c != 0) return false;
-  return true;
-}
-```
-
-**Key points:**
-- Frequency counting is O(n) time; a 26-slot array is O(1) space.
-- Length mismatch is an instant reject.
-
-**Follow-ups:**
-- Support full Unicode instead of lowercase a–z.
-- Group all anagrams together (see next question).
-- Find all anagram start indices of `p` inside `s` (sliding window).
-- Compare ignoring case and whitespace.
-
-**Tags:** #algorithm
-
----
-
-### 10. Group Anagrams
-
-**Difficulty:** Medium
-**Topics:** string, hash-table, sorting
-**Position:** OD / SWE
-**Years:** 15-16 (Senior)
-
-**Question:** Group a list of words so that anagrams of each other land in the same group.
-
-**Approach:** Use a canonical key per word — sorted letters, or a 26-count signature — and bucket words in a hash map by that key. Time O(n·k log k) with the sorted key (k = word length), space O(n·k).
-
-**Python:**
-```python
-from collections import defaultdict
-
-def group_anagrams(words: list[str]) -> list[list[str]]:
-    groups: dict[str, list[str]] = defaultdict(list)
-    for w in words:
-        groups["".join(sorted(w))].append(w)
-    return list(groups.values())
-```
-
-**TypeScript:**
-```typescript
-function groupAnagrams(words: string[]): string[][] {
-  const groups = new Map<string, string[]>();
-  for (const w of words) {
-    const key = [...w].sort().join("");
-    (groups.get(key) ?? groups.set(key, []).get(key)!).push(w);
-  }
-  return [...groups.values()];
-}
-```
-
-**Java:**
-```java
-List<List<String>> groupAnagrams(String[] words) {
-  Map<String, List<String>> groups = new HashMap<>();
-  for (String w : words) {
-    char[] c = w.toCharArray();
-    Arrays.sort(c);
-    groups.computeIfAbsent(new String(c), k -> new ArrayList<>()).add(w);
-  }
-  return new ArrayList<>(groups.values());
-}
-```
-
-**Key points:**
-- Sorted-letter key costs O(k log k) per word, O(n·k log k) overall.
-- A 26-count signature key lowers per-word cost to O(k), giving O(n·k).
-
-**Follow-ups:**
-- Use the count-signature key to drop the log factor.
-- Stream words and emit groups incrementally.
-- Group by anagram class ignoring case and spaces.
-- Return groups sorted by size.
-
-**Tags:** #algorithm
-
----
-
-### 11. Container With Most Water
-
-**Difficulty:** Medium
-**Topics:** array, two-pointer, greedy
-**Position:** OD / SWE
-**Years:** 15-16 (Senior)
-
-**Question:** Given heights, pick two lines that with the x-axis form a container holding the most water. Return that maximum area.
-
-**Approach:** Two pointers at both ends; area is `min(h[l], h[r]) * (r - l)`. Move the shorter side inward since it limits the area. Time O(n), space O(1).
-
-**Python:**
-```python
-def max_area(height: list[int]) -> int:
-    l, r, best = 0, len(height) - 1, 0
-    while l < r:
-        best = max(best, min(height[l], height[r]) * (r - l))
-        if height[l] < height[r]:
-            l += 1
-        else:
-            r -= 1
-    return best
-```
-
-**TypeScript:**
-```typescript
-function maxArea(height: number[]): number {
-  let l = 0, r = height.length - 1, best = 0;
-  while (l < r) {
-    best = Math.max(best, Math.min(height[l], height[r]) * (r - l));
-    if (height[l] < height[r]) l++; else r--;
-  }
-  return best;
-}
-```
-
-**Java:**
-```java
-int maxArea(int[] height) {
-  int l = 0, r = height.length - 1, best = 0;
-  while (l < r) {
-    best = Math.max(best, Math.min(height[l], height[r]) * (r - l));
-    if (height[l] < height[r]) l++; else r--;
-  }
-  return best;
-}
-```
-
-**Key points:**
-- Two-pointer sweep is O(n) time, O(1) space versus O(n^2) brute force.
-- Moving the taller side can never increase area, so always move the shorter one.
-
-**Tags:** #algorithm
-
----
-
-### 12. 3Sum
-
-**Difficulty:** Medium
-**Topics:** array, two-pointer, sorting
-**Position:** OD / SWE
-**Years:** 15-16 (Senior)
-
-**Question:** Find all unique triplets in an array that sum to zero.
-
-**Approach:** Sort, then fix one index and run a two-pointer scan on the remainder, skipping duplicates at every level. Time O(n^2), space O(1) excluding output.
-
-**Python:**
-```python
-def three_sum(nums: list[int]) -> list[list[int]]:
-    nums.sort()
-    res: list[list[int]] = []
-    for i in range(len(nums) - 2):
-        if i > 0 and nums[i] == nums[i - 1]:
-            continue
-        l, r = i + 1, len(nums) - 1
-        while l < r:
-            s = nums[i] + nums[l] + nums[r]
-            if s < 0:
-                l += 1
-            elif s > 0:
-                r -= 1
-            else:
-                res.append([nums[i], nums[l], nums[r]])
-                l += 1
-                r -= 1
-                while l < r and nums[l] == nums[l - 1]:
-                    l += 1
-                while l < r and nums[r] == nums[r + 1]:
-                    r -= 1
-    return res
-```
-
-**TypeScript:**
-```typescript
-function threeSum(nums: number[]): number[][] {
-  nums.sort((a, b) => a - b);
-  const res: number[][] = [];
-  for (let i = 0; i < nums.length - 2; i++) {
-    if (i > 0 && nums[i] === nums[i - 1]) continue;
-    let l = i + 1, r = nums.length - 1;
-    while (l < r) {
-      const s = nums[i] + nums[l] + nums[r];
-      if (s < 0) l++;
-      else if (s > 0) r--;
-      else {
-        res.push([nums[i], nums[l], nums[r]]);
-        l++; r--;
-        while (l < r && nums[l] === nums[l - 1]) l++;
-        while (l < r && nums[r] === nums[r + 1]) r--;
-      }
-    }
-  }
-  return res;
-}
-```
-
-**Java:**
-```java
-List<List<Integer>> threeSum(int[] nums) {
-  Arrays.sort(nums);
-  List<List<Integer>> res = new ArrayList<>();
-  for (int i = 0; i < nums.length - 2; i++) {
-    if (i > 0 && nums[i] == nums[i - 1]) continue;
-    int l = i + 1, r = nums.length - 1;
-    while (l < r) {
-      int s = nums[i] + nums[l] + nums[r];
-      if (s < 0) l++;
-      else if (s > 0) r--;
-      else {
-        res.add(Arrays.asList(nums[i], nums[l], nums[r]));
-        l++; r--;
-        while (l < r && nums[l] == nums[l - 1]) l++;
-        while (l < r && nums[r] == nums[r + 1]) r--;
-      }
-    }
-  }
-  return res;
-}
-```
-
-**Key points:**
-- Sorting plus two-pointer scans gives O(n^2) time, O(1) extra space.
-- Skipping duplicate values at each level is what keeps triplets unique.
-
-**Tags:** #algorithm
-
----
-
-### 13. Longest Substring Without Repeating Characters
-
-**Difficulty:** Medium
-**Topics:** string, sliding-window, hash-table
-**Position:** OD / SWE
-**Years:** 15-16 (Senior)
-
-**Question:** Find the length of the longest substring without repeating characters.
-
-**Approach:** Sliding window with a map from char → last index. When a repeat falls inside the window, jump the left bound past it. Time O(n), space O(min(n, alphabet)).
-
-**Python:**
-```python
-def length_of_longest_substring(s: str) -> int:
-    last: dict[str, int] = {}
-    start = best = 0
-    for i, c in enumerate(s):
-        if c in last and last[c] >= start:
-            start = last[c] + 1
-        last[c] = i
-        best = max(best, i - start + 1)
-    return best
-```
-
-**TypeScript:**
-```typescript
-function lengthOfLongestSubstring(s: string): number {
-  const last = new Map<string, number>();
-  let start = 0, best = 0;
-  for (let i = 0; i < s.length; i++) {
-    const c = s[i];
-    if (last.has(c) && last.get(c)! >= start) start = last.get(c)! + 1;
-    last.set(c, i);
-    best = Math.max(best, i - start + 1);
-  }
-  return best;
-}
-```
-
-**Java:**
-```java
-int lengthOfLongestSubstring(String s) {
-  Map<Character, Integer> last = new HashMap<>();
-  int start = 0, best = 0;
-  for (int i = 0; i < s.length(); i++) {
-    char c = s.charAt(i);
-    if (last.containsKey(c) && last.get(c) >= start) start = last.get(c) + 1;
-    last.put(c, i);
-    best = Math.max(best, i - start + 1);
-  }
-  return best;
-}
-```
-
-**Key points:**
-- Each index enters and leaves the window once, so it is O(n) time.
-- Jumping `start` past the last occurrence avoids re-scanning the window.
-
-**Tags:** #algorithm
-
----
-
-### 14. Minimum Window Substring
-
-**Difficulty:** Hard
-**Topics:** string, sliding-window, hash-table
-**Position:** Senior SWE
-**Years:** 17-18 (Expert)
-
-**Question:** Given strings `s` and `t`, return the smallest substring of `s` containing every character of `t` (with multiplicity), or "" if none exists.
-
-**Approach:** Expand a window to satisfy all required counts, then contract from the left while still valid, tracking the smallest valid window. Time O(n + m), space O(alphabet).
-
-**Python:**
-```python
-from collections import Counter
-
-def min_window(s: str, t: str) -> str:
-    if not t or not s:
-        return ""
-    need = Counter(t)
-    missing = len(t)
-    start = end = 0
-    left = 0
-    for right, c in enumerate(s, 1):
-        if need[c] > 0:
-            missing -= 1
-        need[c] -= 1
-        while missing == 0:
-            if end == 0 or right - left < end - start:
-                start, end = left, right
-            need[s[left]] += 1
-            if need[s[left]] > 0:
-                missing += 1
-            left += 1
-    return s[start:end]
-```
-
-**TypeScript:**
-```typescript
-function minWindow(s: string, t: string): string {
-  if (!s || !t) return "";
-  const need = new Map<string, number>();
-  for (const c of t) need.set(c, (need.get(c) ?? 0) + 1);
-  let missing = t.length, left = 0, start = 0, end = 0;
-  for (let right = 1; right <= s.length; right++) {
-    const c = s[right - 1];
-    if ((need.get(c) ?? 0) > 0) missing--;
-    need.set(c, (need.get(c) ?? 0) - 1);
-    while (missing === 0) {
-      if (end === 0 || right - left < end - start) { start = left; end = right; }
-      const lc = s[left];
-      need.set(lc, (need.get(lc) ?? 0) + 1);
-      if ((need.get(lc) ?? 0) > 0) missing++;
-      left++;
-    }
-  }
-  return s.slice(start, end);
-}
-```
-
-**Java:**
-```java
-String minWindow(String s, String t) {
-  if (s.isEmpty() || t.isEmpty()) return "";
-  int[] need = new int[128];
-  for (char c : t.toCharArray()) need[c]++;
-  int missing = t.length(), left = 0, start = 0, end = 0;
-  for (int right = 1; right <= s.length(); right++) {
-    char c = s.charAt(right - 1);
-    if (need[c]-- > 0) missing--;
-    while (missing == 0) {
-      if (end == 0 || right - left < end - start) { start = left; end = right; }
-      char lc = s.charAt(left);
-      if (++need[lc] > 0) missing++;
-      left++;
-    }
-  }
-  return s.substring(start, end);
-}
-```
-
-**Key points:**
-- Each pointer advances at most n times, giving O(n + m) time.
-- `missing` lets you test window validity in O(1) instead of comparing maps.
-
-**Tags:** #algorithm
-
----
-
-### 15. Product of Array Except Self
-
-**Difficulty:** Medium
-**Topics:** array, prefix-product
-**Position:** OD / SWE
-**Years:** 15-16 (Senior)
-
-**Question:** Return an array where each element is the product of all others, without division and in O(n).
-
-**Approach:** Two sweeps — store prefix products left-to-right, then multiply by suffix products right-to-left using a running variable. Time O(n), space O(1) extra (output excluded).
-
-**Python:**
-```python
-def product_except_self(nums: list[int]) -> list[int]:
-    n = len(nums)
-    out = [1] * n
-    for i in range(1, n):
-        out[i] = out[i - 1] * nums[i - 1]
-    suffix = 1
-    for i in range(n - 1, -1, -1):
-        out[i] *= suffix
-        suffix *= nums[i]
-    return out
-```
-
-**TypeScript:**
-```typescript
-function productExceptSelf(nums: number[]): number[] {
-  const n = nums.length, out = new Array(n).fill(1);
-  for (let i = 1; i < n; i++) out[i] = out[i - 1] * nums[i - 1];
-  let suffix = 1;
-  for (let i = n - 1; i >= 0; i--) { out[i] *= suffix; suffix *= nums[i]; }
-  return out;
-}
-```
-
-**Java:**
-```java
-int[] productExceptSelf(int[] nums) {
-  int n = nums.length;
-  int[] out = new int[n];
-  out[0] = 1;
-  for (int i = 1; i < n; i++) out[i] = out[i - 1] * nums[i - 1];
-  int suffix = 1;
-  for (int i = n - 1; i >= 0; i--) { out[i] *= suffix; suffix *= nums[i]; }
-  return out;
-}
-```
-
-**Key points:**
-- Two linear sweeps give O(n) time and O(1) extra space.
-- Avoiding division is what makes it robust to zeros in the input.
-
-**Tags:** #algorithm
-
----
-
-### 16. Search in Rotated Sorted Array
-
-**Difficulty:** Medium
-**Topics:** binary-search, array
-**Position:** OD / SWE
-**Years:** 15-16 (Senior)
-
-**Question:** A sorted array was rotated at an unknown pivot. Find a target's index, or -1.
-
-**Approach:** Modified binary search — at each midpoint one half is sorted; check whether the target lies within that sorted half to pick a side. Time O(log n), space O(1).
-
-**Python:**
-```python
-def search(nums: list[int], target: int) -> int:
-    lo, hi = 0, len(nums) - 1
-    while lo <= hi:
-        mid = lo + (hi - lo) // 2
-        if nums[mid] == target:
-            return mid
-        if nums[lo] <= nums[mid]:
-            if nums[lo] <= target < nums[mid]:
-                hi = mid - 1
-            else:
-                lo = mid + 1
-        else:
-            if nums[mid] < target <= nums[hi]:
-                lo = mid + 1
-            else:
-                hi = mid - 1
-    return -1
-```
-
-**TypeScript:**
-```typescript
-function search(nums: number[], target: number): number {
-  let lo = 0, hi = nums.length - 1;
-  while (lo <= hi) {
-    const mid = lo + ((hi - lo) >> 1);
-    if (nums[mid] === target) return mid;
-    if (nums[lo] <= nums[mid]) {
-      if (nums[lo] <= target && target < nums[mid]) hi = mid - 1; else lo = mid + 1;
-    } else {
-      if (nums[mid] < target && target <= nums[hi]) lo = mid + 1; else hi = mid - 1;
-    }
-  }
-  return -1;
-}
-```
-
-**Java:**
-```java
-int search(int[] nums, int target) {
-  int lo = 0, hi = nums.length - 1;
-  while (lo <= hi) {
-    int mid = lo + (hi - lo) / 2;
-    if (nums[mid] == target) return mid;
-    if (nums[lo] <= nums[mid]) {
-      if (nums[lo] <= target && target < nums[mid]) hi = mid - 1; else lo = mid + 1;
-    } else {
-      if (nums[mid] < target && target <= nums[hi]) lo = mid + 1; else hi = mid - 1;
-    }
-  }
-  return -1;
-}
-```
-
-**Key points:**
-- Still O(log n) time, O(1) space despite the rotation.
-- Decide which half is sorted first, then test the target against that half's bounds.
-
-**Tags:** #algorithm
-
----
-
-### 17. Find First and Last Position of Element
-
-**Difficulty:** Medium
-**Topics:** binary-search, array
-**Position:** OD / SWE
-**Years:** 15-16 (Senior)
-
-**Question:** In a sorted array find the first and last index of a target, or `[-1, -1]`.
-
-**Approach:** Two binary searches for the lower and upper bound of the target. Time O(log n), space O(1).
-
-**Python:**
-```python
-import bisect
-
-def search_range(nums: list[int], target: int) -> list[int]:
-    lo = bisect.bisect_left(nums, target)
-    if lo == len(nums) or nums[lo] != target:
-        return [-1, -1]
-    hi = bisect.bisect_right(nums, target) - 1
-    return [lo, hi]
-```
-
-**TypeScript:**
-```typescript
-function searchRange(nums: number[], target: number): number[] {
-  const bound = (left: boolean): number => {
-    let lo = 0, hi = nums.length, res = -1;
-    while (lo < hi) {
-      const mid = lo + ((hi - lo) >> 1);
-      if (nums[mid] < target || (!left && nums[mid] === target)) lo = mid + 1;
-      else hi = mid;
-      if (nums[mid] === target) res = mid;
-    }
-    return res;
-  };
-  return [bound(true), bound(false)];
-}
-```
-
-**Java:**
-```java
-int[] searchRange(int[] nums, int target) {
-  int first = bound(nums, target, true);
-  if (first == -1) return new int[] { -1, -1 };
-  return new int[] { first, bound(nums, target, false) };
-}
-
-int bound(int[] nums, int target, boolean left) {
-  int lo = 0, hi = nums.length - 1, res = -1;
-  while (lo <= hi) {
-    int mid = lo + (hi - lo) / 2;
-    if (nums[mid] == target) { res = mid; if (left) hi = mid - 1; else lo = mid + 1; }
-    else if (nums[mid] < target) lo = mid + 1;
-    else hi = mid - 1;
-  }
-  return res;
-}
-```
-
-**Key points:**
-- Two bounded binary searches keep it at O(log n) time, O(1) space.
-- Lower and upper bound differ only in how ties move the pointer.
-
-**Tags:** #algorithm
-
----
-
-### 18. Linked List Cycle
+### 3. Linked List Cycle
 
 **Difficulty:** Easy
 **Topics:** linked-list, two-pointer, floyd
@@ -1251,7 +255,7 @@ boolean hasCycle(ListNode head) {
 
 ---
 
-### 19. Remove Nth Node From End of List
+### 4. Remove Nth Node From End of List
 
 **Difficulty:** Medium
 **Topics:** linked-list, two-pointer
@@ -1322,7 +326,7 @@ ListNode removeNthFromEnd(ListNode head, int n) {
 
 ---
 
-### 20. Merge k Sorted Lists
+### 5. Merge k Sorted Lists
 
 **Difficulty:** Hard
 **Topics:** linked-list, heap, divide-and-conquer
@@ -1405,7 +409,9 @@ ListNode mergeKLists(ListNode[] lists) {
 
 ---
 
-### 21. Invert Binary Tree
+## Tree
+
+### 6. Invert Binary Tree
 
 **Difficulty:** Easy
 **Topics:** tree, recursion, dfs
@@ -1472,7 +478,7 @@ TreeNode invertTree(TreeNode root) {
 
 ---
 
-### 22. Maximum Depth of Binary Tree
+### 7. Maximum Depth of Binary Tree
 
 **Difficulty:** Easy
 **Topics:** tree, dfs, recursion
@@ -1531,7 +537,7 @@ int maxDepth(TreeNode root) {
 
 ---
 
-### 23. Validate Binary Search Tree
+### 8. Validate Binary Search Tree
 
 **Difficulty:** Medium
 **Topics:** tree, dfs, bst
@@ -1603,7 +609,7 @@ boolean check(TreeNode n, long lo, long hi) {
 
 ---
 
-### 24. Binary Tree Level Order Traversal
+### 9. Binary Tree Level Order Traversal
 
 **Difficulty:** Medium
 **Topics:** tree, bfs, queue
@@ -1701,7 +707,7 @@ List<List<Integer>> levelOrder(TreeNode root) {
 
 ---
 
-### 25. Lowest Common Ancestor of a Binary Tree
+### 10. Lowest Common Ancestor of a Binary Tree
 
 **Difficulty:** Medium
 **Topics:** tree, dfs, recursion
@@ -1770,972 +776,7 @@ TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
 
 ---
 
-### 26. Number of Islands
-
-**Difficulty:** Medium
-**Topics:** graph, dfs, bfs, grid, union-find
-**Position:** OD / SWE
-**Years:** 15-16 (Senior)
-
-**Question:** Count connected groups of `'1'` (land) in a 2D grid of `'1'`/`'0'`.
-
-**Approach:** Scan the grid; on each unvisited land cell, flood-fill (DFS/BFS) its whole island and increment the count, sinking visited land to `'0'`. Time O(rows·cols), space O(rows·cols) worst case.
-
-**Python:**
-```python
-def num_islands(grid: list[list[str]]) -> int:
-    if not grid:
-        return 0
-    rows, cols = len(grid), len(grid[0])
-
-    def sink(r, c):
-        if 0 <= r < rows and 0 <= c < cols and grid[r][c] == "1":
-            grid[r][c] = "0"
-            sink(r + 1, c); sink(r - 1, c); sink(r, c + 1); sink(r, c - 1)
-
-    count = 0
-    for r in range(rows):
-        for c in range(cols):
-            if grid[r][c] == "1":
-                count += 1
-                sink(r, c)
-    return count
-```
-
-**TypeScript:**
-```typescript
-function numIslands(grid: string[][]): number {
-  const rows = grid.length, cols = grid[0]?.length ?? 0;
-  const sink = (r: number, c: number): void => {
-    if (r < 0 || c < 0 || r >= rows || c >= cols || grid[r][c] !== "1") return;
-    grid[r][c] = "0";
-    sink(r + 1, c); sink(r - 1, c); sink(r, c + 1); sink(r, c - 1);
-  };
-  let count = 0;
-  for (let r = 0; r < rows; r++)
-    for (let c = 0; c < cols; c++)
-      if (grid[r][c] === "1") { count++; sink(r, c); }
-  return count;
-}
-```
-
-**Java:**
-```java
-int numIslands(char[][] grid) {
-  int rows = grid.length, cols = grid[0].length, count = 0;
-  for (int r = 0; r < rows; r++)
-    for (int c = 0; c < cols; c++)
-      if (grid[r][c] == '1') { count++; sink(grid, r, c); }
-  return count;
-}
-
-void sink(char[][] g, int r, int c) {
-  if (r < 0 || c < 0 || r >= g.length || c >= g[0].length || g[r][c] != '1') return;
-  g[r][c] = '0';
-  sink(g, r + 1, c); sink(g, r - 1, c); sink(g, r, c + 1); sink(g, r, c - 1);
-}
-```
-
-**Key points:**
-- Each cell is visited a constant number of times: O(rows·cols) time.
-- Recursion depth (or queue) can reach O(rows·cols) for one giant island.
-
-**Tags:** #algorithm
-
----
-
-### 27. Rotting Oranges
-
-**Difficulty:** Medium
-**Topics:** graph, bfs, grid
-**Position:** OD / SWE
-**Years:** 15-16 (Senior)
-
-**Question:** In a grid of empty/fresh/rotten oranges, each minute rotten oranges rot their 4-neighbors. Return minutes until none are fresh, or -1 if impossible.
-
-**Approach:** Multi-source BFS starting from all rotten oranges simultaneously; count levels (minutes). If fresh oranges remain after BFS, return -1. Time O(rows·cols), space O(rows·cols).
-
-**Python:**
-```python
-from collections import deque
-
-def oranges_rotting(grid: list[list[int]]) -> int:
-    rows, cols = len(grid), len(grid[0])
-    q = deque()
-    fresh = 0
-    for r in range(rows):
-        for c in range(cols):
-            if grid[r][c] == 2:
-                q.append((r, c))
-            elif grid[r][c] == 1:
-                fresh += 1
-    minutes = 0
-    while q and fresh:
-        minutes += 1
-        for _ in range(len(q)):
-            r, c = q.popleft()
-            for dr, dc in ((1, 0), (-1, 0), (0, 1), (0, -1)):
-                nr, nc = r + dr, c + dc
-                if 0 <= nr < rows and 0 <= nc < cols and grid[nr][nc] == 1:
-                    grid[nr][nc] = 2
-                    fresh -= 1
-                    q.append((nr, nc))
-    return minutes if fresh == 0 else -1
-```
-
-**TypeScript:**
-```typescript
-function orangesRotting(grid: number[][]): number {
-  const rows = grid.length, cols = grid[0].length;
-  let q: [number, number][] = [], fresh = 0;
-  for (let r = 0; r < rows; r++)
-    for (let c = 0; c < cols; c++) {
-      if (grid[r][c] === 2) q.push([r, c]);
-      else if (grid[r][c] === 1) fresh++;
-    }
-  const dirs = [[1, 0], [-1, 0], [0, 1], [0, -1]];
-  let minutes = 0;
-  while (q.length && fresh) {
-    minutes++;
-    const next: [number, number][] = [];
-    for (const [r, c] of q)
-      for (const [dr, dc] of dirs) {
-        const nr = r + dr, nc = c + dc;
-        if (nr >= 0 && nc >= 0 && nr < rows && nc < cols && grid[nr][nc] === 1) {
-          grid[nr][nc] = 2; fresh--; next.push([nr, nc]);
-        }
-      }
-    q = next;
-  }
-  return fresh === 0 ? minutes : -1;
-}
-```
-
-**Java:**
-```java
-int orangesRotting(int[][] grid) {
-  int rows = grid.length, cols = grid[0].length, fresh = 0;
-  Queue<int[]> q = new LinkedList<>();
-  for (int r = 0; r < rows; r++)
-    for (int c = 0; c < cols; c++) {
-      if (grid[r][c] == 2) q.add(new int[] { r, c });
-      else if (grid[r][c] == 1) fresh++;
-    }
-  int[][] dirs = { { 1, 0 }, { -1, 0 }, { 0, 1 }, { 0, -1 } };
-  int minutes = 0;
-  while (!q.isEmpty() && fresh > 0) {
-    minutes++;
-    for (int i = q.size(); i > 0; i--) {
-      int[] cell = q.poll();
-      for (int[] d : dirs) {
-        int nr = cell[0] + d[0], nc = cell[1] + d[1];
-        if (nr >= 0 && nc >= 0 && nr < rows && nc < cols && grid[nr][nc] == 1) {
-          grid[nr][nc] = 2; fresh--; q.add(new int[] { nr, nc });
-        }
-      }
-    }
-  }
-  return fresh == 0 ? minutes : -1;
-}
-```
-
-**Key points:**
-- Multi-source BFS processes each cell once: O(rows·cols) time and space.
-- Counting fresh oranges lets you detect the unreachable case in O(1).
-
-**Tags:** #algorithm
-
----
-
-### 28. Course Schedule
-
-**Difficulty:** Medium
-**Topics:** graph, topological-sort, bfs
-**Position:** Senior SWE
-**Years:** 17-18 (Expert)
-
-**Question:** Given `numCourses` and prerequisite pairs, decide whether all courses can be finished (i.e. the dependency graph is acyclic).
-
-**Approach:** Kahn's algorithm — compute in-degrees, repeatedly remove zero in-degree nodes; if all nodes are removed there is no cycle. Time O(V + E), space O(V + E).
-
-**Python:**
-```python
-from collections import deque
-
-def can_finish(num_courses: int, prerequisites: list[list[int]]) -> bool:
-    graph = [[] for _ in range(num_courses)]
-    indeg = [0] * num_courses
-    for course, pre in prerequisites:
-        graph[pre].append(course)
-        indeg[course] += 1
-    q = deque(i for i in range(num_courses) if indeg[i] == 0)
-    seen = 0
-    while q:
-        node = q.popleft()
-        seen += 1
-        for nxt in graph[node]:
-            indeg[nxt] -= 1
-            if indeg[nxt] == 0:
-                q.append(nxt)
-    return seen == num_courses
-```
-
-**TypeScript:**
-```typescript
-function canFinish(numCourses: number, prerequisites: number[][]): boolean {
-  const graph: number[][] = Array.from({ length: numCourses }, () => []);
-  const indeg = new Array(numCourses).fill(0);
-  for (const [course, pre] of prerequisites) { graph[pre].push(course); indeg[course]++; }
-  const q: number[] = [];
-  for (let i = 0; i < numCourses; i++) if (indeg[i] === 0) q.push(i);
-  let seen = 0;
-  while (q.length) {
-    const node = q.shift()!;
-    seen++;
-    for (const nxt of graph[node]) if (--indeg[nxt] === 0) q.push(nxt);
-  }
-  return seen === numCourses;
-}
-```
-
-**Java:**
-```java
-boolean canFinish(int numCourses, int[][] prerequisites) {
-  List<List<Integer>> graph = new ArrayList<>();
-  for (int i = 0; i < numCourses; i++) graph.add(new ArrayList<>());
-  int[] indeg = new int[numCourses];
-  for (int[] p : prerequisites) { graph.get(p[1]).add(p[0]); indeg[p[0]]++; }
-  Queue<Integer> q = new LinkedList<>();
-  for (int i = 0; i < numCourses; i++) if (indeg[i] == 0) q.add(i);
-  int seen = 0;
-  while (!q.isEmpty()) {
-    int node = q.poll();
-    seen++;
-    for (int nxt : graph.get(node)) if (--indeg[nxt] == 0) q.add(nxt);
-  }
-  return seen == numCourses;
-}
-```
-
-**Key points:**
-- Kahn's topological sort runs in O(V + E) time and space.
-- If fewer than `numCourses` nodes are processed, a cycle exists.
-
-**Tags:** #algorithm
-
----
-
-### 29. Word Search
-
-**Difficulty:** Medium
-**Topics:** backtracking, dfs, grid
-**Position:** Senior SWE
-**Years:** 17-18 (Expert)
-
-**Question:** Given a grid of letters and a word, return whether the word can be formed by adjacent cells (no cell reused).
-
-**Approach:** DFS backtracking from each cell, marking the cell visited during recursion and restoring it on return. Time O(rows·cols·4^L) worst case, space O(L).
-
-**Python:**
-```python
-def exist(board: list[list[str]], word: str) -> bool:
-    rows, cols = len(board), len(board[0])
-
-    def dfs(r, c, i):
-        if i == len(word):
-            return True
-        if r < 0 or c < 0 or r >= rows or c >= cols or board[r][c] != word[i]:
-            return False
-        tmp, board[r][c] = board[r][c], "#"
-        found = (dfs(r + 1, c, i + 1) or dfs(r - 1, c, i + 1) or
-                 dfs(r, c + 1, i + 1) or dfs(r, c - 1, i + 1))
-        board[r][c] = tmp
-        return found
-
-    return any(dfs(r, c, 0) for r in range(rows) for c in range(cols))
-```
-
-**TypeScript:**
-```typescript
-function exist(board: string[][], word: string): boolean {
-  const rows = board.length, cols = board[0].length;
-  const dfs = (r: number, c: number, i: number): boolean => {
-    if (i === word.length) return true;
-    if (r < 0 || c < 0 || r >= rows || c >= cols || board[r][c] !== word[i]) return false;
-    const tmp = board[r][c];
-    board[r][c] = "#";
-    const found = dfs(r + 1, c, i + 1) || dfs(r - 1, c, i + 1) ||
-                  dfs(r, c + 1, i + 1) || dfs(r, c - 1, i + 1);
-    board[r][c] = tmp;
-    return found;
-  };
-  for (let r = 0; r < rows; r++)
-    for (let c = 0; c < cols; c++)
-      if (dfs(r, c, 0)) return true;
-  return false;
-}
-```
-
-**Java:**
-```java
-boolean exist(char[][] board, String word) {
-  int rows = board.length, cols = board[0].length;
-  for (int r = 0; r < rows; r++)
-    for (int c = 0; c < cols; c++)
-      if (dfs(board, word, r, c, 0)) return true;
-  return false;
-}
-
-boolean dfs(char[][] b, String w, int r, int c, int i) {
-  if (i == w.length()) return true;
-  if (r < 0 || c < 0 || r >= b.length || c >= b[0].length || b[r][c] != w.charAt(i)) return false;
-  char tmp = b[r][c];
-  b[r][c] = '#';
-  boolean found = dfs(b, w, r + 1, c, i + 1) || dfs(b, w, r - 1, c, i + 1) ||
-                  dfs(b, w, r, c + 1, i + 1) || dfs(b, w, r, c - 1, i + 1);
-  b[r][c] = tmp;
-  return found;
-}
-```
-
-**Key points:**
-- Backtracking explores up to O(rows·cols·4^L) paths; recursion depth is O(L).
-- Marking and restoring the cell enforces the no-reuse rule without extra memory.
-
-**Tags:** #algorithm
-
----
-
-### 30. Combination Sum
-
-**Difficulty:** Medium
-**Topics:** backtracking, recursion
-**Position:** OD / SWE
-**Years:** 15-16 (Senior)
-
-**Question:** Given distinct positive candidates and a target, return all unique combinations summing to the target; each candidate may be reused.
-
-**Approach:** DFS backtracking; at each step either reuse the current candidate or advance the start index to avoid permutation duplicates. Time O(2^t) worst case, space O(t) recursion depth.
-
-**Python:**
-```python
-def combination_sum(candidates: list[int], target: int) -> list[list[int]]:
-    res: list[list[int]] = []
-
-    def dfs(start, remain, path):
-        if remain == 0:
-            res.append(path[:])
-            return
-        for i in range(start, len(candidates)):
-            if candidates[i] <= remain:
-                path.append(candidates[i])
-                dfs(i, remain - candidates[i], path)
-                path.pop()
-
-    dfs(0, target, [])
-    return res
-```
-
-**TypeScript:**
-```typescript
-function combinationSum(candidates: number[], target: number): number[][] {
-  const res: number[][] = [];
-  const dfs = (start: number, remain: number, path: number[]): void => {
-    if (remain === 0) { res.push([...path]); return; }
-    for (let i = start; i < candidates.length; i++) {
-      if (candidates[i] <= remain) {
-        path.push(candidates[i]);
-        dfs(i, remain - candidates[i], path);
-        path.pop();
-      }
-    }
-  };
-  dfs(0, target, []);
-  return res;
-}
-```
-
-**Java:**
-```java
-List<List<Integer>> combinationSum(int[] candidates, int target) {
-  List<List<Integer>> res = new ArrayList<>();
-  dfs(candidates, 0, target, new ArrayList<>(), res);
-  return res;
-}
-
-void dfs(int[] cand, int start, int remain, List<Integer> path, List<List<Integer>> res) {
-  if (remain == 0) { res.add(new ArrayList<>(path)); return; }
-  for (int i = start; i < cand.length; i++) {
-    if (cand[i] <= remain) {
-      path.add(cand[i]);
-      dfs(cand, i, remain - cand[i], path, res);
-      path.remove(path.size() - 1);
-    }
-  }
-}
-```
-
-**Key points:**
-- Backtracking explores up to O(2^t) states; depth is O(t) for the path.
-- Passing `i` (not `i+1`) allows reuse; advancing the start prevents duplicate sets.
-
-**Tags:** #algorithm
-
----
-
-### 31. Permutations
-
-**Difficulty:** Medium
-**Topics:** backtracking, recursion
-**Position:** OD / SWE
-**Years:** 15-16 (Senior)
-
-**Question:** Return all permutations of a list of distinct integers.
-
-**Approach:** Backtracking with a used-set (or in-place swaps); fix one element per level. Time O(n·n!), space O(n).
-
-**Python:**
-```python
-def permute(nums: list[int]) -> list[list[int]]:
-    res: list[list[int]] = []
-
-    def dfs(path, used):
-        if len(path) == len(nums):
-            res.append(path[:])
-            return
-        for i, x in enumerate(nums):
-            if not used[i]:
-                used[i] = True
-                path.append(x)
-                dfs(path, used)
-                path.pop()
-                used[i] = False
-
-    dfs([], [False] * len(nums))
-    return res
-```
-
-**TypeScript:**
-```typescript
-function permute(nums: number[]): number[][] {
-  const res: number[][] = [];
-  const used = new Array(nums.length).fill(false);
-  const dfs = (path: number[]): void => {
-    if (path.length === nums.length) { res.push([...path]); return; }
-    for (let i = 0; i < nums.length; i++) {
-      if (!used[i]) {
-        used[i] = true; path.push(nums[i]);
-        dfs(path);
-        path.pop(); used[i] = false;
-      }
-    }
-  };
-  dfs([]);
-  return res;
-}
-```
-
-**Java:**
-```java
-List<List<Integer>> permute(int[] nums) {
-  List<List<Integer>> res = new ArrayList<>();
-  dfs(nums, new boolean[nums.length], new ArrayList<>(), res);
-  return res;
-}
-
-void dfs(int[] nums, boolean[] used, List<Integer> path, List<List<Integer>> res) {
-  if (path.size() == nums.length) { res.add(new ArrayList<>(path)); return; }
-  for (int i = 0; i < nums.length; i++) {
-    if (!used[i]) {
-      used[i] = true; path.add(nums[i]);
-      dfs(nums, used, path, res);
-      path.remove(path.size() - 1); used[i] = false;
-    }
-  }
-}
-```
-
-**Key points:**
-- There are n! permutations, each O(n) to copy, so O(n·n!) time, O(n) extra space.
-- The `used` array prevents reusing an element within one permutation.
-
-**Tags:** #algorithm
-
----
-
-### 32. Subsets
-
-**Difficulty:** Medium
-**Topics:** backtracking, bit-manipulation
-**Position:** OD / SWE
-**Years:** 15-16 (Senior)
-
-**Question:** Return all subsets (the power set) of a list of distinct integers.
-
-**Approach:** Backtracking that records the path at every node and branches by include/exclude through increasing start indices. Time O(n·2^n), space O(n).
-
-**Python:**
-```python
-def subsets(nums: list[int]) -> list[list[int]]:
-    res: list[list[int]] = []
-
-    def dfs(start, path):
-        res.append(path[:])
-        for i in range(start, len(nums)):
-            path.append(nums[i])
-            dfs(i + 1, path)
-            path.pop()
-
-    dfs(0, [])
-    return res
-```
-
-**TypeScript:**
-```typescript
-function subsets(nums: number[]): number[][] {
-  const res: number[][] = [];
-  const dfs = (start: number, path: number[]): void => {
-    res.push([...path]);
-    for (let i = start; i < nums.length; i++) {
-      path.push(nums[i]);
-      dfs(i + 1, path);
-      path.pop();
-    }
-  };
-  dfs(0, []);
-  return res;
-}
-```
-
-**Java:**
-```java
-List<List<Integer>> subsets(int[] nums) {
-  List<List<Integer>> res = new ArrayList<>();
-  dfs(nums, 0, new ArrayList<>(), res);
-  return res;
-}
-
-void dfs(int[] nums, int start, List<Integer> path, List<List<Integer>> res) {
-  res.add(new ArrayList<>(path));
-  for (int i = start; i < nums.length; i++) {
-    path.add(nums[i]);
-    dfs(nums, i + 1, path, res);
-    path.remove(path.size() - 1);
-  }
-}
-```
-
-**Key points:**
-- There are 2^n subsets, each up to O(n) to copy: O(n·2^n) time.
-- An equivalent solution maps each subset to an n-bit mask.
-
-**Tags:** #algorithm
-
----
-
-### 33. Coin Change
-
-**Difficulty:** Medium
-**Topics:** dynamic-programming
-**Position:** OD / SWE
-**Years:** 15-16 (Senior)
-
-**Question:** Given coin denominations and an amount, return the fewest coins to make the amount, or -1 if impossible.
-
-**Approach:** Bottom-up DP where `dp[a]` is the min coins for amount `a`; relax over each coin. Time O(amount·coins), space O(amount).
-
-**Python:**
-```python
-def coin_change(coins: list[int], amount: int) -> int:
-    dp = [amount + 1] * (amount + 1)
-    dp[0] = 0
-    for a in range(1, amount + 1):
-        for c in coins:
-            if c <= a:
-                dp[a] = min(dp[a], dp[a - c] + 1)
-    return dp[amount] if dp[amount] <= amount else -1
-```
-
-**TypeScript:**
-```typescript
-function coinChange(coins: number[], amount: number): number {
-  const dp = new Array(amount + 1).fill(amount + 1);
-  dp[0] = 0;
-  for (let a = 1; a <= amount; a++)
-    for (const c of coins)
-      if (c <= a) dp[a] = Math.min(dp[a], dp[a - c] + 1);
-  return dp[amount] <= amount ? dp[amount] : -1;
-}
-```
-
-**Java:**
-```java
-int coinChange(int[] coins, int amount) {
-  int[] dp = new int[amount + 1];
-  Arrays.fill(dp, amount + 1);
-  dp[0] = 0;
-  for (int a = 1; a <= amount; a++)
-    for (int c : coins)
-      if (c <= a) dp[a] = Math.min(dp[a], dp[a - c] + 1);
-  return dp[amount] <= amount ? dp[amount] : -1;
-}
-```
-
-**Key points:**
-- The DP table costs O(amount·coins) time, O(amount) space.
-- Initializing with `amount + 1` acts as infinity so unreachable amounts stay -1.
-
-**Tags:** #algorithm
-
----
-
-### 34. Longest Increasing Subsequence
-
-**Difficulty:** Medium
-**Topics:** dynamic-programming, binary-search
-**Position:** Senior SWE
-**Years:** 17-18 (Expert)
-
-**Question:** Find the length of the longest strictly increasing subsequence.
-
-**Approach:** Patience sorting — maintain `tails`, where `tails[i]` is the smallest possible tail of an increasing subsequence of length `i+1`; binary-search the insertion point per element. Time O(n log n), space O(n).
-
-**Python:**
-```python
-import bisect
-
-def length_of_lis(nums: list[int]) -> int:
-    tails: list[int] = []
-    for x in nums:
-        i = bisect.bisect_left(tails, x)
-        if i == len(tails):
-            tails.append(x)
-        else:
-            tails[i] = x
-    return len(tails)
-```
-
-**TypeScript:**
-```typescript
-function lengthOfLIS(nums: number[]): number {
-  const tails: number[] = [];
-  for (const x of nums) {
-    let lo = 0, hi = tails.length;
-    while (lo < hi) {
-      const mid = (lo + hi) >> 1;
-      if (tails[mid] < x) lo = mid + 1; else hi = mid;
-    }
-    tails[lo] = x;
-  }
-  return tails.length;
-}
-```
-
-**Java:**
-```java
-int lengthOfLIS(int[] nums) {
-  List<Integer> tails = new ArrayList<>();
-  for (int x : nums) {
-    int lo = 0, hi = tails.size();
-    while (lo < hi) {
-      int mid = (lo + hi) >>> 1;
-      if (tails.get(mid) < x) lo = mid + 1; else hi = mid;
-    }
-    if (lo == tails.size()) tails.add(x); else tails.set(lo, x);
-  }
-  return tails.size();
-}
-```
-
-**Key points:**
-- Binary search per element gives O(n log n) time, O(n) space versus O(n^2) DP.
-- `tails` is not the actual subsequence but its length equals the answer.
-
-**Tags:** #algorithm
-
----
-
-### 35. House Robber
-
-**Difficulty:** Medium
-**Topics:** dynamic-programming
-**Position:** OD / SWE
-**Years:** 15-16 (Senior)
-
-**Question:** Given house values in a row, maximize the loot without robbing two adjacent houses.
-
-**Approach:** DP recurrence `rob(i) = max(rob(i-1), rob(i-2) + nums[i])`, rolled into two variables. Time O(n), space O(1).
-
-**Python:**
-```python
-def rob(nums: list[int]) -> int:
-    prev, cur = 0, 0
-    for x in nums:
-        prev, cur = cur, max(cur, prev + x)
-    return cur
-```
-
-**TypeScript:**
-```typescript
-function rob(nums: number[]): number {
-  let prev = 0, cur = 0;
-  for (const x of nums) { const t = Math.max(cur, prev + x); prev = cur; cur = t; }
-  return cur;
-}
-```
-
-**Java:**
-```java
-int rob(int[] nums) {
-  int prev = 0, cur = 0;
-  for (int x : nums) { int t = Math.max(cur, prev + x); prev = cur; cur = t; }
-  return cur;
-}
-```
-
-**Key points:**
-- Rolling two state variables gives O(n) time, O(1) space.
-- The choice at each house is rob-and-skip-neighbor vs skip.
-
-**Tags:** #algorithm
-
----
-
-### 36. Word Break
-
-**Difficulty:** Medium
-**Topics:** dynamic-programming, string
-**Position:** Senior SWE
-**Years:** 17-18 (Expert)
-
-**Question:** Given a string and a dictionary, decide whether the string can be segmented into a sequence of dictionary words.
-
-**Approach:** DP where `dp[i]` means the prefix of length `i` is segmentable; for each `i` try every split `j` with `dp[j]` true and `s[j:i]` in the set. Time O(n^2) (plus substring cost), space O(n).
-
-**Python:**
-```python
-def word_break(s: str, word_dict: list[str]) -> bool:
-    words = set(word_dict)
-    dp = [False] * (len(s) + 1)
-    dp[0] = True
-    for i in range(1, len(s) + 1):
-        for j in range(i):
-            if dp[j] and s[j:i] in words:
-                dp[i] = True
-                break
-    return dp[len(s)]
-```
-
-**TypeScript:**
-```typescript
-function wordBreak(s: string, wordDict: string[]): boolean {
-  const words = new Set(wordDict);
-  const dp = new Array(s.length + 1).fill(false);
-  dp[0] = true;
-  for (let i = 1; i <= s.length; i++)
-    for (let j = 0; j < i; j++)
-      if (dp[j] && words.has(s.slice(j, i))) { dp[i] = true; break; }
-  return dp[s.length];
-}
-```
-
-**Java:**
-```java
-boolean wordBreak(String s, List<String> wordDict) {
-  Set<String> words = new HashSet<>(wordDict);
-  boolean[] dp = new boolean[s.length() + 1];
-  dp[0] = true;
-  for (int i = 1; i <= s.length(); i++)
-    for (int j = 0; j < i; j++)
-      if (dp[j] && words.contains(s.substring(j, i))) { dp[i] = true; break; }
-  return dp[s.length()];
-}
-```
-
-**Key points:**
-- The nested loops give O(n^2) splits, O(n) space.
-- A trie or capping inner length by the longest word trims redundant checks.
-
-**Tags:** #algorithm
-
----
-
-### 37. Merge Intervals
-
-**Difficulty:** Medium
-**Topics:** intervals, sorting
-**Position:** OD / SWE
-**Years:** 15-16 (Senior)
-
-**Question:** Given intervals, merge all overlapping ones.
-
-**Approach:** Sort by start; sweep, extending the last merged interval's end when the next overlaps, else append a new one. Time O(n log n), space O(n).
-
-**Python:**
-```python
-def merge(intervals: list[list[int]]) -> list[list[int]]:
-    intervals.sort()
-    out: list[list[int]] = []
-    for s, e in intervals:
-        if out and s <= out[-1][1]:
-            out[-1][1] = max(out[-1][1], e)
-        else:
-            out.append([s, e])
-    return out
-```
-
-**TypeScript:**
-```typescript
-function merge(intervals: number[][]): number[][] {
-  intervals.sort((a, b) => a[0] - b[0]);
-  const out: number[][] = [];
-  for (const [s, e] of intervals) {
-    const last = out[out.length - 1];
-    if (last && s <= last[1]) last[1] = Math.max(last[1], e);
-    else out.push([s, e]);
-  }
-  return out;
-}
-```
-
-**Java:**
-```java
-int[][] merge(int[][] intervals) {
-  Arrays.sort(intervals, (a, b) -> a[0] - b[0]);
-  List<int[]> out = new ArrayList<>();
-  for (int[] iv : intervals) {
-    if (!out.isEmpty() && iv[0] <= out.get(out.size() - 1)[1])
-      out.get(out.size() - 1)[1] = Math.max(out.get(out.size() - 1)[1], iv[1]);
-    else out.add(iv);
-  }
-  return out.toArray(new int[0][]);
-}
-```
-
-**Key points:**
-- Sorting dominates at O(n log n) time; output is O(n) space.
-- After sorting, overlap is a simple `start <= last_end` test.
-
-**Tags:** #algorithm
-
----
-
-### 38. Top K Frequent Elements
-
-**Difficulty:** Medium
-**Topics:** heap, hash-table, bucket-sort
-**Position:** OD / SWE
-**Years:** 15-16 (Senior)
-
-**Question:** Return the k most frequent elements in an array.
-
-**Approach:** Count frequencies, then bucket-sort by frequency (index = count) and read buckets from the top. Time O(n), space O(n). A heap variant gives O(n log k).
-
-**Python:**
-```python
-from collections import Counter
-
-def top_k_frequent(nums: list[int], k: int) -> list[int]:
-    counts = Counter(nums)
-    buckets: list[list[int]] = [[] for _ in range(len(nums) + 1)]
-    for val, freq in counts.items():
-        buckets[freq].append(val)
-    res: list[int] = []
-    for freq in range(len(buckets) - 1, 0, -1):
-        for val in buckets[freq]:
-            res.append(val)
-            if len(res) == k:
-                return res
-    return res
-```
-
-**TypeScript:**
-```typescript
-function topKFrequent(nums: number[], k: number): number[] {
-  const counts = new Map<number, number>();
-  for (const x of nums) counts.set(x, (counts.get(x) ?? 0) + 1);
-  const buckets: number[][] = Array.from({ length: nums.length + 1 }, () => []);
-  for (const [val, freq] of counts) buckets[freq].push(val);
-  const res: number[] = [];
-  for (let f = buckets.length - 1; f > 0 && res.length < k; f--)
-    for (const val of buckets[f]) { res.push(val); if (res.length === k) return res; }
-  return res;
-}
-```
-
-**Java:**
-```java
-int[] topKFrequent(int[] nums, int k) {
-  Map<Integer, Integer> counts = new HashMap<>();
-  for (int x : nums) counts.merge(x, 1, Integer::sum);
-  List<Integer>[] buckets = new List[nums.length + 1];
-  for (var e : counts.entrySet()) {
-    int f = e.getValue();
-    if (buckets[f] == null) buckets[f] = new ArrayList<>();
-    buckets[f].add(e.getKey());
-  }
-  int[] res = new int[k];
-  int idx = 0;
-  for (int f = buckets.length - 1; f > 0 && idx < k; f--)
-    if (buckets[f] != null)
-      for (int val : buckets[f]) { if (idx == k) break; res[idx++] = val; }
-  return res;
-}
-```
-
-**Key points:**
-- Bucket sort by frequency achieves O(n) time, O(n) space.
-- A size-k min-heap is the alternative at O(n log k) time.
-
-**Tags:** #algorithm
-
----
-
-### 39. Single Number
-
-**Difficulty:** Easy
-**Topics:** bit-manipulation, array
-**Position:** OD / SWE
-**Years:** 13-14 (Junior)
-
-**Question:** Every element appears twice except one. Find the single one in O(n) time and O(1) space.
-
-**Approach:** XOR all elements; pairs cancel to 0, leaving the unique value. Time O(n), space O(1).
-
-**Python:**
-```python
-from functools import reduce
-from operator import xor
-
-def single_number(nums: list[int]) -> int:
-    return reduce(xor, nums, 0)
-```
-
-**TypeScript:**
-```typescript
-function singleNumber(nums: number[]): number {
-  return nums.reduce((acc, x) => acc ^ x, 0);
-}
-```
-
-**Java:**
-```java
-int singleNumber(int[] nums) {
-  int acc = 0;
-  for (int x : nums) acc ^= x;
-  return acc;
-}
-```
-
-**Key points:**
-- XOR is associative and self-inverse, giving O(n) time, O(1) space.
-- No hash set or sorting required — pure bit manipulation.
-
-**Tags:** #algorithm
-
----
-
-### 40. Implement Trie (Prefix Tree)
+### 11. Implement Trie (Prefix Tree)
 
 **Difficulty:** Medium
 **Topics:** trie, design, string
@@ -2852,7 +893,264 @@ class Trie {
 
 ---
 
-### 41. Number of Provinces (Union-Find)
+## Graph
+
+### 12. Number of Islands
+
+**Difficulty:** Medium
+**Topics:** graph, dfs, bfs, grid, union-find
+**Position:** OD / SWE
+**Years:** 15-16 (Senior)
+
+**Question:** Count connected groups of `'1'` (land) in a 2D grid of `'1'`/`'0'`.
+
+**Approach:** Scan the grid; on each unvisited land cell, flood-fill (DFS/BFS) its whole island and increment the count, sinking visited land to `'0'`. Time O(rows·cols), space O(rows·cols) worst case.
+
+**Python:**
+```python
+def num_islands(grid: list[list[str]]) -> int:
+    if not grid:
+        return 0
+    rows, cols = len(grid), len(grid[0])
+
+    def sink(r, c):
+        if 0 <= r < rows and 0 <= c < cols and grid[r][c] == "1":
+            grid[r][c] = "0"
+            sink(r + 1, c); sink(r - 1, c); sink(r, c + 1); sink(r, c - 1)
+
+    count = 0
+    for r in range(rows):
+        for c in range(cols):
+            if grid[r][c] == "1":
+                count += 1
+                sink(r, c)
+    return count
+```
+
+**TypeScript:**
+```typescript
+function numIslands(grid: string[][]): number {
+  const rows = grid.length, cols = grid[0]?.length ?? 0;
+  const sink = (r: number, c: number): void => {
+    if (r < 0 || c < 0 || r >= rows || c >= cols || grid[r][c] !== "1") return;
+    grid[r][c] = "0";
+    sink(r + 1, c); sink(r - 1, c); sink(r, c + 1); sink(r, c - 1);
+  };
+  let count = 0;
+  for (let r = 0; r < rows; r++)
+    for (let c = 0; c < cols; c++)
+      if (grid[r][c] === "1") { count++; sink(r, c); }
+  return count;
+}
+```
+
+**Java:**
+```java
+int numIslands(char[][] grid) {
+  int rows = grid.length, cols = grid[0].length, count = 0;
+  for (int r = 0; r < rows; r++)
+    for (int c = 0; c < cols; c++)
+      if (grid[r][c] == '1') { count++; sink(grid, r, c); }
+  return count;
+}
+
+void sink(char[][] g, int r, int c) {
+  if (r < 0 || c < 0 || r >= g.length || c >= g[0].length || g[r][c] != '1') return;
+  g[r][c] = '0';
+  sink(g, r + 1, c); sink(g, r - 1, c); sink(g, r, c + 1); sink(g, r, c - 1);
+}
+```
+
+**Key points:**
+- Each cell is visited a constant number of times: O(rows·cols) time.
+- Recursion depth (or queue) can reach O(rows·cols) for one giant island.
+
+**Tags:** #algorithm
+
+---
+
+### 13. Rotting Oranges
+
+**Difficulty:** Medium
+**Topics:** graph, bfs, grid
+**Position:** OD / SWE
+**Years:** 15-16 (Senior)
+
+**Question:** In a grid of empty/fresh/rotten oranges, each minute rotten oranges rot their 4-neighbors. Return minutes until none are fresh, or -1 if impossible.
+
+**Approach:** Multi-source BFS starting from all rotten oranges simultaneously; count levels (minutes). If fresh oranges remain after BFS, return -1. Time O(rows·cols), space O(rows·cols).
+
+**Python:**
+```python
+from collections import deque
+
+def oranges_rotting(grid: list[list[int]]) -> int:
+    rows, cols = len(grid), len(grid[0])
+    q = deque()
+    fresh = 0
+    for r in range(rows):
+        for c in range(cols):
+            if grid[r][c] == 2:
+                q.append((r, c))
+            elif grid[r][c] == 1:
+                fresh += 1
+    minutes = 0
+    while q and fresh:
+        minutes += 1
+        for _ in range(len(q)):
+            r, c = q.popleft()
+            for dr, dc in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+                nr, nc = r + dr, c + dc
+                if 0 <= nr < rows and 0 <= nc < cols and grid[nr][nc] == 1:
+                    grid[nr][nc] = 2
+                    fresh -= 1
+                    q.append((nr, nc))
+    return minutes if fresh == 0 else -1
+```
+
+**TypeScript:**
+```typescript
+function orangesRotting(grid: number[][]): number {
+  const rows = grid.length, cols = grid[0].length;
+  let q: [number, number][] = [], fresh = 0;
+  for (let r = 0; r < rows; r++)
+    for (let c = 0; c < cols; c++) {
+      if (grid[r][c] === 2) q.push([r, c]);
+      else if (grid[r][c] === 1) fresh++;
+    }
+  const dirs = [[1, 0], [-1, 0], [0, 1], [0, -1]];
+  let minutes = 0;
+  while (q.length && fresh) {
+    minutes++;
+    const next: [number, number][] = [];
+    for (const [r, c] of q)
+      for (const [dr, dc] of dirs) {
+        const nr = r + dr, nc = c + dc;
+        if (nr >= 0 && nc >= 0 && nr < rows && nc < cols && grid[nr][nc] === 1) {
+          grid[nr][nc] = 2; fresh--; next.push([nr, nc]);
+        }
+      }
+    q = next;
+  }
+  return fresh === 0 ? minutes : -1;
+}
+```
+
+**Java:**
+```java
+int orangesRotting(int[][] grid) {
+  int rows = grid.length, cols = grid[0].length, fresh = 0;
+  Queue<int[]> q = new LinkedList<>();
+  for (int r = 0; r < rows; r++)
+    for (int c = 0; c < cols; c++) {
+      if (grid[r][c] == 2) q.add(new int[] { r, c });
+      else if (grid[r][c] == 1) fresh++;
+    }
+  int[][] dirs = { { 1, 0 }, { -1, 0 }, { 0, 1 }, { 0, -1 } };
+  int minutes = 0;
+  while (!q.isEmpty() && fresh > 0) {
+    minutes++;
+    for (int i = q.size(); i > 0; i--) {
+      int[] cell = q.poll();
+      for (int[] d : dirs) {
+        int nr = cell[0] + d[0], nc = cell[1] + d[1];
+        if (nr >= 0 && nc >= 0 && nr < rows && nc < cols && grid[nr][nc] == 1) {
+          grid[nr][nc] = 2; fresh--; q.add(new int[] { nr, nc });
+        }
+      }
+    }
+  }
+  return fresh == 0 ? minutes : -1;
+}
+```
+
+**Key points:**
+- Multi-source BFS processes each cell once: O(rows·cols) time and space.
+- Counting fresh oranges lets you detect the unreachable case in O(1).
+
+**Tags:** #algorithm
+
+---
+
+### 14. Course Schedule
+
+**Difficulty:** Medium
+**Topics:** graph, topological-sort, bfs
+**Position:** Senior SWE
+**Years:** 17-18 (Expert)
+
+**Question:** Given `numCourses` and prerequisite pairs, decide whether all courses can be finished (i.e. the dependency graph is acyclic).
+
+**Approach:** Kahn's algorithm — compute in-degrees, repeatedly remove zero in-degree nodes; if all nodes are removed there is no cycle. Time O(V + E), space O(V + E).
+
+**Python:**
+```python
+from collections import deque
+
+def can_finish(num_courses: int, prerequisites: list[list[int]]) -> bool:
+    graph = [[] for _ in range(num_courses)]
+    indeg = [0] * num_courses
+    for course, pre in prerequisites:
+        graph[pre].append(course)
+        indeg[course] += 1
+    q = deque(i for i in range(num_courses) if indeg[i] == 0)
+    seen = 0
+    while q:
+        node = q.popleft()
+        seen += 1
+        for nxt in graph[node]:
+            indeg[nxt] -= 1
+            if indeg[nxt] == 0:
+                q.append(nxt)
+    return seen == num_courses
+```
+
+**TypeScript:**
+```typescript
+function canFinish(numCourses: number, prerequisites: number[][]): boolean {
+  const graph: number[][] = Array.from({ length: numCourses }, () => []);
+  const indeg = new Array(numCourses).fill(0);
+  for (const [course, pre] of prerequisites) { graph[pre].push(course); indeg[course]++; }
+  const q: number[] = [];
+  for (let i = 0; i < numCourses; i++) if (indeg[i] === 0) q.push(i);
+  let seen = 0;
+  while (q.length) {
+    const node = q.shift()!;
+    seen++;
+    for (const nxt of graph[node]) if (--indeg[nxt] === 0) q.push(nxt);
+  }
+  return seen === numCourses;
+}
+```
+
+**Java:**
+```java
+boolean canFinish(int numCourses, int[][] prerequisites) {
+  List<List<Integer>> graph = new ArrayList<>();
+  for (int i = 0; i < numCourses; i++) graph.add(new ArrayList<>());
+  int[] indeg = new int[numCourses];
+  for (int[] p : prerequisites) { graph.get(p[1]).add(p[0]); indeg[p[0]]++; }
+  Queue<Integer> q = new LinkedList<>();
+  for (int i = 0; i < numCourses; i++) if (indeg[i] == 0) q.add(i);
+  int seen = 0;
+  while (!q.isEmpty()) {
+    int node = q.poll();
+    seen++;
+    for (int nxt : graph.get(node)) if (--indeg[nxt] == 0) q.add(nxt);
+  }
+  return seen == numCourses;
+}
+```
+
+**Key points:**
+- Kahn's topological sort runs in O(V + E) time and space.
+- If fewer than `numCourses` nodes are processed, a cycle exists.
+
+**Tags:** #algorithm
+
+---
+
+### 15. Number of Provinces (Union-Find)
 
 **Difficulty:** Medium
 **Topics:** union-find, graph, dsu
@@ -2932,125 +1230,7 @@ int find(int[] parent, int x) {
 
 ---
 
-### 42. Kth Largest Element in an Array
-
-**Difficulty:** Medium
-**Topics:** heap, quickselect, sorting
-**Position:** OD / SWE
-**Years:** 15-16 (Senior)
-
-**Question:** Return the kth largest element in an unsorted array.
-
-**Approach:** Maintain a size-k min-heap; the root is the answer after processing all elements. Time O(n log k), space O(k). Quickselect gives O(n) average.
-
-**Python:**
-```python
-import heapq
-
-def find_kth_largest(nums: list[int], k: int) -> int:
-    heap = nums[:k]
-    heapq.heapify(heap)
-    for x in nums[k:]:
-        if x > heap[0]:
-            heapq.heapreplace(heap, x)
-    return heap[0]
-```
-
-**TypeScript:**
-```typescript
-function findKthLargest(nums: number[], k: number): number {
-  // O(n log n) sort fallback when no heap library is available.
-  return nums.slice().sort((a, b) => b - a)[k - 1];
-}
-```
-
-**Java:**
-```java
-int findKthLargest(int[] nums, int k) {
-  PriorityQueue<Integer> heap = new PriorityQueue<>();
-  for (int x : nums) {
-    heap.add(x);
-    if (heap.size() > k) heap.poll();
-  }
-  return heap.peek();
-}
-```
-
-**Key points:**
-- A size-k min-heap is O(n log k) time, O(k) space.
-- Quickselect averages O(n) but degrades to O(n^2) on bad pivots.
-
-**Tags:** #algorithm
-
----
-
-### 43. Base-Station Coverage Merge (Telecom)
-
-**Difficulty:** Medium
-**Topics:** intervals, sorting, greedy
-**Position:** Senior SWE
-**Years:** 17-18 (Expert)
-
-**Question:** Each base station covers a 1D segment `[start, end]` of a highway. Given all coverage segments, merge them into the minimal set of continuous covered ranges, then report total covered length (used to detect coverage gaps).
-
-**Approach:** This is Merge Intervals in a telecom wrapper. Sort segments by start, sweep merging overlaps, and accumulate the merged lengths. Time O(n log n), space O(n).
-
-**Python:**
-```python
-def covered_ranges(segments: list[list[int]]) -> tuple[list[list[int]], int]:
-    segments.sort()
-    merged: list[list[int]] = []
-    for s, e in segments:
-        if merged and s <= merged[-1][1]:
-            merged[-1][1] = max(merged[-1][1], e)
-        else:
-            merged.append([s, e])
-    total = sum(e - s for s, e in merged)
-    return merged, total
-```
-
-**TypeScript:**
-```typescript
-function coveredRanges(segments: number[][]): { merged: number[][]; total: number } {
-  segments.sort((a, b) => a[0] - b[0]);
-  const merged: number[][] = [];
-  for (const [s, e] of segments) {
-    const last = merged[merged.length - 1];
-    if (last && s <= last[1]) last[1] = Math.max(last[1], e);
-    else merged.push([s, e]);
-  }
-  const total = merged.reduce((sum, [s, e]) => sum + (e - s), 0);
-  return { merged, total };
-}
-```
-
-**Java:**
-```java
-int coveredLength(int[][] segments) {
-  Arrays.sort(segments, (a, b) -> a[0] - b[0]);
-  int total = 0, curStart = 0, curEnd = -1;
-  for (int[] seg : segments) {
-    if (seg[0] > curEnd) {
-      if (curEnd >= curStart) total += curEnd - curStart;
-      curStart = seg[0]; curEnd = seg[1];
-    } else {
-      curEnd = Math.max(curEnd, seg[1]);
-    }
-  }
-  if (curEnd >= curStart) total += curEnd - curStart;
-  return total;
-}
-```
-
-**Key points:**
-- Sorting plus a linear sweep is O(n log n) time, O(n) space.
-- Gaps appear as breaks between merged ranges — exactly where coverage is missing.
-
-**Tags:** #algorithm
-
----
-
-### 44. Packet Routing Shortest Path (Dijkstra)
+### 16. Packet Routing Shortest Path (Dijkstra)
 
 **Difficulty:** Medium
 **Topics:** graph, dijkstra, heap, shortest-path
@@ -3134,7 +1314,132 @@ int[] shortestLatencies(int n, int[][] links, int src) {
 
 ---
 
-### 45. Telecom Signal Task Scheduling (Greedy + Heap)
+## Heap / Priority Queue
+
+### 17. Top K Frequent Elements
+
+**Difficulty:** Medium
+**Topics:** heap, hash-table, bucket-sort
+**Position:** OD / SWE
+**Years:** 15-16 (Senior)
+
+**Question:** Return the k most frequent elements in an array.
+
+**Approach:** Count frequencies, then bucket-sort by frequency (index = count) and read buckets from the top. Time O(n), space O(n). A heap variant gives O(n log k).
+
+**Python:**
+```python
+from collections import Counter
+
+def top_k_frequent(nums: list[int], k: int) -> list[int]:
+    counts = Counter(nums)
+    buckets: list[list[int]] = [[] for _ in range(len(nums) + 1)]
+    for val, freq in counts.items():
+        buckets[freq].append(val)
+    res: list[int] = []
+    for freq in range(len(buckets) - 1, 0, -1):
+        for val in buckets[freq]:
+            res.append(val)
+            if len(res) == k:
+                return res
+    return res
+```
+
+**TypeScript:**
+```typescript
+function topKFrequent(nums: number[], k: number): number[] {
+  const counts = new Map<number, number>();
+  for (const x of nums) counts.set(x, (counts.get(x) ?? 0) + 1);
+  const buckets: number[][] = Array.from({ length: nums.length + 1 }, () => []);
+  for (const [val, freq] of counts) buckets[freq].push(val);
+  const res: number[] = [];
+  for (let f = buckets.length - 1; f > 0 && res.length < k; f--)
+    for (const val of buckets[f]) { res.push(val); if (res.length === k) return res; }
+  return res;
+}
+```
+
+**Java:**
+```java
+int[] topKFrequent(int[] nums, int k) {
+  Map<Integer, Integer> counts = new HashMap<>();
+  for (int x : nums) counts.merge(x, 1, Integer::sum);
+  List<Integer>[] buckets = new List[nums.length + 1];
+  for (var e : counts.entrySet()) {
+    int f = e.getValue();
+    if (buckets[f] == null) buckets[f] = new ArrayList<>();
+    buckets[f].add(e.getKey());
+  }
+  int[] res = new int[k];
+  int idx = 0;
+  for (int f = buckets.length - 1; f > 0 && idx < k; f--)
+    if (buckets[f] != null)
+      for (int val : buckets[f]) { if (idx == k) break; res[idx++] = val; }
+  return res;
+}
+```
+
+**Key points:**
+- Bucket sort by frequency achieves O(n) time, O(n) space.
+- A size-k min-heap is the alternative at O(n log k) time.
+
+**Tags:** #algorithm
+
+---
+
+### 18. Kth Largest Element in an Array
+
+**Difficulty:** Medium
+**Topics:** heap, quickselect, sorting
+**Position:** OD / SWE
+**Years:** 15-16 (Senior)
+
+**Question:** Return the kth largest element in an unsorted array.
+
+**Approach:** Maintain a size-k min-heap; the root is the answer after processing all elements. Time O(n log k), space O(k). Quickselect gives O(n) average.
+
+**Python:**
+```python
+import heapq
+
+def find_kth_largest(nums: list[int], k: int) -> int:
+    heap = nums[:k]
+    heapq.heapify(heap)
+    for x in nums[k:]:
+        if x > heap[0]:
+            heapq.heapreplace(heap, x)
+    return heap[0]
+```
+
+**TypeScript:**
+```typescript
+function findKthLargest(nums: number[], k: number): number {
+  // O(n log n) sort fallback when no heap library is available.
+  return nums.slice().sort((a, b) => b - a)[k - 1];
+}
+```
+
+**Java:**
+```java
+int findKthLargest(int[] nums, int k) {
+  PriorityQueue<Integer> heap = new PriorityQueue<>();
+  for (int x : nums) {
+    heap.add(x);
+    if (heap.size() > k) heap.poll();
+  }
+  return heap.peek();
+}
+```
+
+**Key points:**
+- A size-k min-heap is O(n log k) time, O(k) space.
+- Quickselect averages O(n) but degrades to O(n^2) on bad pivots.
+
+**Tags:** #algorithm
+
+---
+
+### 19. Telecom Signal Task Scheduling (Greedy + Heap)
 
 **Difficulty:** Medium
 **Topics:** heap, greedy, intervals
@@ -3195,6 +1500,1717 @@ int minUnits(int[][] tasks) {
 
 ---
 
+## Stack / Queue
+
+### 20. Valid Parentheses
+
+**Difficulty:** Easy
+**Topics:** string, stack
+**Position:** OD / SWE
+**Years:** 13-14 (Junior)
+
+**Question:** Given a string of `()[]{}`, determine if the brackets are validly matched and nested.
+
+**Approach:** Push opening brackets onto a stack; on a closing bracket, pop and compare. Valid only if every close matches the top and the stack is empty at the end. Time O(n), space O(n).
+
+**Python:**
+```python
+def is_valid(s: str) -> bool:
+    pairs = {")": "(", "]": "[", "}": "{"}
+    stack: list[str] = []
+    for c in s:
+        if c in pairs:
+            if not stack or stack.pop() != pairs[c]:
+                return False
+        else:
+            stack.append(c)
+    return not stack
+```
+
+**TypeScript:**
+```typescript
+function isValid(s: string): boolean {
+  const pairs: Record<string, string> = { ")": "(", "]": "[", "}": "{" };
+  const stack: string[] = [];
+  for (const c of s) {
+    if (c in pairs) {
+      if (stack.pop() !== pairs[c]) return false;
+    } else {
+      stack.push(c);
+    }
+  }
+  return stack.length === 0;
+}
+```
+
+**Java:**
+```java
+boolean isValid(String s) {
+  Map<Character, Character> pairs = Map.of(')', '(', ']', '[', '}', '{');
+  Deque<Character> stack = new ArrayDeque<>();
+  for (char c : s.toCharArray()) {
+    if (pairs.containsKey(c)) {
+      if (stack.isEmpty() || stack.pop() != pairs.get(c)) return false;
+    } else {
+      stack.push(c);
+    }
+  }
+  return stack.isEmpty();
+}
+```
+
+**Key points:**
+- Stack models nesting; time and space are both O(n).
+- Must check the stack is empty at the end, not just per-character.
+
+**Follow-ups:**
+- Return the minimum insertions to make the string valid.
+- Longest valid parentheses substring (DP / stack of indices).
+- Support arbitrary bracket types defined at runtime.
+- Validate with a streaming input and bounded memory.
+
+**Tags:** #algorithm
+
+---
+
+## Hash Table
+
+### 21. Two Sum
+
+**Difficulty:** Easy
+**Topics:** array, hash-table
+**Position:** OD / SWE
+**Years:** 13-14 (Junior)
+
+**Question:** Given an integer array `nums` and a target, return the indices of the two numbers that add up to the target. Exactly one solution exists; you may not use the same element twice.
+
+**Approach:** One-pass hash map from value → index. For each element check whether `target - x` was already seen; if so return both indices. Time O(n), space O(n) — a typical 机试 warm-up.
+
+**Python:**
+```python
+def two_sum(nums: list[int], target: int) -> list[int]:
+    seen: dict[int, int] = {}
+    for i, x in enumerate(nums):
+        if target - x in seen:
+            return [seen[target - x], i]
+        seen[x] = i
+    return []
+```
+
+**TypeScript:**
+```typescript
+function twoSum(nums: number[], target: number): number[] {
+  const seen = new Map<number, number>();
+  for (let i = 0; i < nums.length; i++) {
+    const need = target - nums[i];
+    if (seen.has(need)) return [seen.get(need)!, i];
+    seen.set(nums[i], i);
+  }
+  return [];
+}
+```
+
+**Java:**
+```java
+int[] twoSum(int[] nums, int target) {
+  Map<Integer, Integer> seen = new HashMap<>();
+  for (int i = 0; i < nums.length; i++) {
+    int need = target - nums[i];
+    if (seen.containsKey(need)) return new int[] { seen.get(need), i };
+    seen.put(nums[i], i);
+  }
+  return new int[0];
+}
+```
+
+**Key points:**
+- Single pass with a hash map gives O(n) time and O(n) space versus the O(n^2) brute force.
+- Store each value only after checking, so you never pair an element with itself.
+
+**Follow-ups:**
+- Return all unique pairs that sum to target (sort + two pointers).
+- Input is sorted — solve in O(1) extra space with two pointers.
+- 3Sum / 4Sum generalization.
+- Stream of numbers — design an `add`/`find` online structure.
+
+**Tags:** #algorithm
+
+---
+
+### 22. Valid Anagram
+
+**Difficulty:** Easy
+**Topics:** string, hash-table, counting
+**Position:** OD / SWE
+**Years:** 13-14 (Junior)
+
+**Question:** Given two strings, return whether one is an anagram of the other.
+
+**Approach:** Count character frequencies in the first string, decrement with the second, and verify all counts return to zero. Time O(n), space O(1) for a fixed alphabet.
+
+**Python:**
+```python
+from collections import Counter
+
+def is_anagram(s: str, t: str) -> bool:
+    if len(s) != len(t):
+        return False
+    return Counter(s) == Counter(t)
+```
+
+**TypeScript:**
+```typescript
+function isAnagram(s: string, t: string): boolean {
+  if (s.length !== t.length) return false;
+  const count = new Map<string, number>();
+  for (const c of s) count.set(c, (count.get(c) ?? 0) + 1);
+  for (const c of t) {
+    const n = (count.get(c) ?? 0) - 1;
+    if (n < 0) return false;
+    count.set(c, n);
+  }
+  return true;
+}
+```
+
+**Java:**
+```java
+boolean isAnagram(String s, String t) {
+  if (s.length() != t.length()) return false;
+  int[] count = new int[26];
+  for (int i = 0; i < s.length(); i++) {
+    count[s.charAt(i) - 'a']++;
+    count[t.charAt(i) - 'a']--;
+  }
+  for (int c : count) if (c != 0) return false;
+  return true;
+}
+```
+
+**Key points:**
+- Frequency counting is O(n) time; a 26-slot array is O(1) space.
+- Length mismatch is an instant reject.
+
+**Follow-ups:**
+- Support full Unicode instead of lowercase a–z.
+- Group all anagrams together (see next question).
+- Find all anagram start indices of `p` inside `s` (sliding window).
+- Compare ignoring case and whitespace.
+
+**Tags:** #algorithm
+
+---
+
+### 23. Group Anagrams
+
+**Difficulty:** Medium
+**Topics:** string, hash-table, sorting
+**Position:** OD / SWE
+**Years:** 15-16 (Senior)
+
+**Question:** Group a list of words so that anagrams of each other land in the same group.
+
+**Approach:** Use a canonical key per word — sorted letters, or a 26-count signature — and bucket words in a hash map by that key. Time O(n·k log k) with the sorted key (k = word length), space O(n·k).
+
+**Python:**
+```python
+from collections import defaultdict
+
+def group_anagrams(words: list[str]) -> list[list[str]]:
+    groups: dict[str, list[str]] = defaultdict(list)
+    for w in words:
+        groups["".join(sorted(w))].append(w)
+    return list(groups.values())
+```
+
+**TypeScript:**
+```typescript
+function groupAnagrams(words: string[]): string[][] {
+  const groups = new Map<string, string[]>();
+  for (const w of words) {
+    const key = [...w].sort().join("");
+    (groups.get(key) ?? groups.set(key, []).get(key)!).push(w);
+  }
+  return [...groups.values()];
+}
+```
+
+**Java:**
+```java
+List<List<String>> groupAnagrams(String[] words) {
+  Map<String, List<String>> groups = new HashMap<>();
+  for (String w : words) {
+    char[] c = w.toCharArray();
+    Arrays.sort(c);
+    groups.computeIfAbsent(new String(c), k -> new ArrayList<>()).add(w);
+  }
+  return new ArrayList<>(groups.values());
+}
+```
+
+**Key points:**
+- Sorted-letter key costs O(k log k) per word, O(n·k log k) overall.
+- A 26-count signature key lowers per-word cost to O(k), giving O(n·k).
+
+**Follow-ups:**
+- Use the count-signature key to drop the log factor.
+- Stream words and emit groups incrementally.
+- Group by anagram class ignoring case and spaces.
+- Return groups sorted by size.
+
+**Tags:** #algorithm
+
+---
+
+### 24. Longest Substring Without Repeating Characters
+
+**Difficulty:** Medium
+**Topics:** string, sliding-window, hash-table
+**Position:** OD / SWE
+**Years:** 15-16 (Senior)
+
+**Question:** Find the length of the longest substring without repeating characters.
+
+**Approach:** Sliding window with a map from char → last index. When a repeat falls inside the window, jump the left bound past it. Time O(n), space O(min(n, alphabet)).
+
+**Python:**
+```python
+def length_of_longest_substring(s: str) -> int:
+    last: dict[str, int] = {}
+    start = best = 0
+    for i, c in enumerate(s):
+        if c in last and last[c] >= start:
+            start = last[c] + 1
+        last[c] = i
+        best = max(best, i - start + 1)
+    return best
+```
+
+**TypeScript:**
+```typescript
+function lengthOfLongestSubstring(s: string): number {
+  const last = new Map<string, number>();
+  let start = 0, best = 0;
+  for (let i = 0; i < s.length; i++) {
+    const c = s[i];
+    if (last.has(c) && last.get(c)! >= start) start = last.get(c)! + 1;
+    last.set(c, i);
+    best = Math.max(best, i - start + 1);
+  }
+  return best;
+}
+```
+
+**Java:**
+```java
+int lengthOfLongestSubstring(String s) {
+  Map<Character, Integer> last = new HashMap<>();
+  int start = 0, best = 0;
+  for (int i = 0; i < s.length(); i++) {
+    char c = s.charAt(i);
+    if (last.containsKey(c) && last.get(c) >= start) start = last.get(c) + 1;
+    last.put(c, i);
+    best = Math.max(best, i - start + 1);
+  }
+  return best;
+}
+```
+
+**Key points:**
+- Each index enters and leaves the window once, so it is O(n) time.
+- Jumping `start` past the last occurrence avoids re-scanning the window.
+
+**Tags:** #algorithm
+
+---
+
+### 25. Minimum Window Substring
+
+**Difficulty:** Hard
+**Topics:** string, sliding-window, hash-table
+**Position:** Senior SWE
+**Years:** 17-18 (Expert)
+
+**Question:** Given strings `s` and `t`, return the smallest substring of `s` containing every character of `t` (with multiplicity), or "" if none exists.
+
+**Approach:** Expand a window to satisfy all required counts, then contract from the left while still valid, tracking the smallest valid window. Time O(n + m), space O(alphabet).
+
+**Python:**
+```python
+from collections import Counter
+
+def min_window(s: str, t: str) -> str:
+    if not t or not s:
+        return ""
+    need = Counter(t)
+    missing = len(t)
+    start = end = 0
+    left = 0
+    for right, c in enumerate(s, 1):
+        if need[c] > 0:
+            missing -= 1
+        need[c] -= 1
+        while missing == 0:
+            if end == 0 or right - left < end - start:
+                start, end = left, right
+            need[s[left]] += 1
+            if need[s[left]] > 0:
+                missing += 1
+            left += 1
+    return s[start:end]
+```
+
+**TypeScript:**
+```typescript
+function minWindow(s: string, t: string): string {
+  if (!s || !t) return "";
+  const need = new Map<string, number>();
+  for (const c of t) need.set(c, (need.get(c) ?? 0) + 1);
+  let missing = t.length, left = 0, start = 0, end = 0;
+  for (let right = 1; right <= s.length; right++) {
+    const c = s[right - 1];
+    if ((need.get(c) ?? 0) > 0) missing--;
+    need.set(c, (need.get(c) ?? 0) - 1);
+    while (missing === 0) {
+      if (end === 0 || right - left < end - start) { start = left; end = right; }
+      const lc = s[left];
+      need.set(lc, (need.get(lc) ?? 0) + 1);
+      if ((need.get(lc) ?? 0) > 0) missing++;
+      left++;
+    }
+  }
+  return s.slice(start, end);
+}
+```
+
+**Java:**
+```java
+String minWindow(String s, String t) {
+  if (s.isEmpty() || t.isEmpty()) return "";
+  int[] need = new int[128];
+  for (char c : t.toCharArray()) need[c]++;
+  int missing = t.length(), left = 0, start = 0, end = 0;
+  for (int right = 1; right <= s.length(); right++) {
+    char c = s.charAt(right - 1);
+    if (need[c]-- > 0) missing--;
+    while (missing == 0) {
+      if (end == 0 || right - left < end - start) { start = left; end = right; }
+      char lc = s.charAt(left);
+      if (++need[lc] > 0) missing++;
+      left++;
+    }
+  }
+  return s.substring(start, end);
+}
+```
+
+**Key points:**
+- Each pointer advances at most n times, giving O(n + m) time.
+- `missing` lets you test window validity in O(1) instead of comparing maps.
+
+**Tags:** #algorithm
+
+---
+
+## Dynamic Programming
+
+### 26. Best Time to Buy and Sell Stock
+
+**Difficulty:** Easy
+**Topics:** array, dynamic-programming
+**Position:** OD / SWE
+**Years:** 13-14 (Junior)
+
+**Question:** Given daily prices, find the maximum profit from one buy and one later sell. Return 0 if no profit is possible.
+
+**Approach:** Track the minimum price so far; at each day compute profit against that minimum and keep the best. Time O(n), space O(1).
+
+**Python:**
+```python
+def max_profit(prices: list[int]) -> int:
+    best, lo = 0, float("inf")
+    for p in prices:
+        lo = min(lo, p)
+        best = max(best, p - lo)
+    return best
+```
+
+**TypeScript:**
+```typescript
+function maxProfit(prices: number[]): number {
+  let best = 0, lo = Infinity;
+  for (const p of prices) {
+    lo = Math.min(lo, p);
+    best = Math.max(best, p - lo);
+  }
+  return best;
+}
+```
+
+**Java:**
+```java
+int maxProfit(int[] prices) {
+  int best = 0, lo = Integer.MAX_VALUE;
+  for (int p : prices) {
+    lo = Math.min(lo, p);
+    best = Math.max(best, p - lo);
+  }
+  return best;
+}
+```
+
+**Key points:**
+- Single pass tracking the running minimum is O(n) time, O(1) space.
+- Buy must precede sell, which the running-minimum invariant guarantees.
+
+**Follow-ups:**
+- Unlimited transactions (sum every positive delta).
+- At most k transactions (DP, O(nk)).
+- Add a transaction fee or a cooldown day.
+- Return the actual buy/sell day indices.
+
+**Tags:** #algorithm
+
+---
+
+### 27. Maximum Subarray (Kadane)
+
+**Difficulty:** Medium
+**Topics:** array, dynamic-programming
+**Position:** OD / SWE
+**Years:** 13-14 (Junior)
+
+**Question:** Find the contiguous subarray with the largest sum and return that sum.
+
+**Approach:** Kadane's algorithm — keep a running sum; reset it to the current element whenever extending would lower it. Track the global best. Time O(n), space O(1).
+
+**Python:**
+```python
+def max_sub_array(nums: list[int]) -> int:
+    cur = best = nums[0]
+    for x in nums[1:]:
+        cur = max(x, cur + x)
+        best = max(best, cur)
+    return best
+```
+
+**TypeScript:**
+```typescript
+function maxSubArray(nums: number[]): number {
+  let cur = nums[0], best = nums[0];
+  for (let i = 1; i < nums.length; i++) {
+    cur = Math.max(nums[i], cur + nums[i]);
+    best = Math.max(best, cur);
+  }
+  return best;
+}
+```
+
+**Java:**
+```java
+int maxSubArray(int[] nums) {
+  int cur = nums[0], best = nums[0];
+  for (int i = 1; i < nums.length; i++) {
+    cur = Math.max(nums[i], cur + nums[i]);
+    best = Math.max(best, cur);
+  }
+  return best;
+}
+```
+
+**Key points:**
+- Kadane runs in O(n) time, O(1) space.
+- Initialize with the first element so all-negative arrays return the largest single value.
+
+**Follow-ups:**
+- Return the subarray bounds, not just the sum.
+- Maximum product subarray (track min and max).
+- Maximum circular subarray sum.
+- Divide-and-conquer O(n log n) variant and why Kadane wins.
+
+**Tags:** #algorithm
+
+---
+
+### 28. Climbing Stairs
+
+**Difficulty:** Easy
+**Topics:** dynamic-programming
+**Position:** OD / SWE
+**Years:** 13-14 (Junior)
+
+**Question:** You can climb 1 or 2 steps at a time. How many distinct ways to reach the top of `n` stairs?
+
+**Approach:** Fibonacci recurrence `f(n) = f(n-1) + f(n-2)`. Roll two variables to avoid an array. Time O(n), space O(1).
+
+**Python:**
+```python
+def climb_stairs(n: int) -> int:
+    a, b = 1, 1
+    for _ in range(n):
+        a, b = b, a + b
+    return a
+```
+
+**TypeScript:**
+```typescript
+function climbStairs(n: number): number {
+  let a = 1, b = 1;
+  for (let i = 0; i < n; i++) { [a, b] = [b, a + b]; }
+  return a;
+}
+```
+
+**Java:**
+```java
+int climbStairs(int n) {
+  int a = 1, b = 1;
+  for (int i = 0; i < n; i++) {
+    int t = a + b; a = b; b = t;
+  }
+  return a;
+}
+```
+
+**Key points:**
+- Rolling two variables gives O(n) time, O(1) space.
+- It is Fibonacci; recognizing the recurrence is the whole insight.
+
+**Follow-ups:**
+- Steps of size 1, 2, or 3.
+- Each step has a cost — minimize total cost (Min Cost Climbing Stairs).
+- Count ways modulo 1e9+7 for large n.
+- O(log n) via fast matrix exponentiation.
+
+**Tags:** #algorithm
+
+---
+
+### 29. Coin Change
+
+**Difficulty:** Medium
+**Topics:** dynamic-programming
+**Position:** OD / SWE
+**Years:** 15-16 (Senior)
+
+**Question:** Given coin denominations and an amount, return the fewest coins to make the amount, or -1 if impossible.
+
+**Approach:** Bottom-up DP where `dp[a]` is the min coins for amount `a`; relax over each coin. Time O(amount·coins), space O(amount).
+
+**Python:**
+```python
+def coin_change(coins: list[int], amount: int) -> int:
+    dp = [amount + 1] * (amount + 1)
+    dp[0] = 0
+    for a in range(1, amount + 1):
+        for c in coins:
+            if c <= a:
+                dp[a] = min(dp[a], dp[a - c] + 1)
+    return dp[amount] if dp[amount] <= amount else -1
+```
+
+**TypeScript:**
+```typescript
+function coinChange(coins: number[], amount: number): number {
+  const dp = new Array(amount + 1).fill(amount + 1);
+  dp[0] = 0;
+  for (let a = 1; a <= amount; a++)
+    for (const c of coins)
+      if (c <= a) dp[a] = Math.min(dp[a], dp[a - c] + 1);
+  return dp[amount] <= amount ? dp[amount] : -1;
+}
+```
+
+**Java:**
+```java
+int coinChange(int[] coins, int amount) {
+  int[] dp = new int[amount + 1];
+  Arrays.fill(dp, amount + 1);
+  dp[0] = 0;
+  for (int a = 1; a <= amount; a++)
+    for (int c : coins)
+      if (c <= a) dp[a] = Math.min(dp[a], dp[a - c] + 1);
+  return dp[amount] <= amount ? dp[amount] : -1;
+}
+```
+
+**Key points:**
+- The DP table costs O(amount·coins) time, O(amount) space.
+- Initializing with `amount + 1` acts as infinity so unreachable amounts stay -1.
+
+**Tags:** #algorithm
+
+---
+
+### 30. Longest Increasing Subsequence
+
+**Difficulty:** Medium
+**Topics:** dynamic-programming, binary-search
+**Position:** Senior SWE
+**Years:** 17-18 (Expert)
+
+**Question:** Find the length of the longest strictly increasing subsequence.
+
+**Approach:** Patience sorting — maintain `tails`, where `tails[i]` is the smallest possible tail of an increasing subsequence of length `i+1`; binary-search the insertion point per element. Time O(n log n), space O(n).
+
+**Python:**
+```python
+import bisect
+
+def length_of_lis(nums: list[int]) -> int:
+    tails: list[int] = []
+    for x in nums:
+        i = bisect.bisect_left(tails, x)
+        if i == len(tails):
+            tails.append(x)
+        else:
+            tails[i] = x
+    return len(tails)
+```
+
+**TypeScript:**
+```typescript
+function lengthOfLIS(nums: number[]): number {
+  const tails: number[] = [];
+  for (const x of nums) {
+    let lo = 0, hi = tails.length;
+    while (lo < hi) {
+      const mid = (lo + hi) >> 1;
+      if (tails[mid] < x) lo = mid + 1; else hi = mid;
+    }
+    tails[lo] = x;
+  }
+  return tails.length;
+}
+```
+
+**Java:**
+```java
+int lengthOfLIS(int[] nums) {
+  List<Integer> tails = new ArrayList<>();
+  for (int x : nums) {
+    int lo = 0, hi = tails.size();
+    while (lo < hi) {
+      int mid = (lo + hi) >>> 1;
+      if (tails.get(mid) < x) lo = mid + 1; else hi = mid;
+    }
+    if (lo == tails.size()) tails.add(x); else tails.set(lo, x);
+  }
+  return tails.size();
+}
+```
+
+**Key points:**
+- Binary search per element gives O(n log n) time, O(n) space versus O(n^2) DP.
+- `tails` is not the actual subsequence but its length equals the answer.
+
+**Tags:** #algorithm
+
+---
+
+### 31. House Robber
+
+**Difficulty:** Medium
+**Topics:** dynamic-programming
+**Position:** OD / SWE
+**Years:** 15-16 (Senior)
+
+**Question:** Given house values in a row, maximize the loot without robbing two adjacent houses.
+
+**Approach:** DP recurrence `rob(i) = max(rob(i-1), rob(i-2) + nums[i])`, rolled into two variables. Time O(n), space O(1).
+
+**Python:**
+```python
+def rob(nums: list[int]) -> int:
+    prev, cur = 0, 0
+    for x in nums:
+        prev, cur = cur, max(cur, prev + x)
+    return cur
+```
+
+**TypeScript:**
+```typescript
+function rob(nums: number[]): number {
+  let prev = 0, cur = 0;
+  for (const x of nums) { const t = Math.max(cur, prev + x); prev = cur; cur = t; }
+  return cur;
+}
+```
+
+**Java:**
+```java
+int rob(int[] nums) {
+  int prev = 0, cur = 0;
+  for (int x : nums) { int t = Math.max(cur, prev + x); prev = cur; cur = t; }
+  return cur;
+}
+```
+
+**Key points:**
+- Rolling two state variables gives O(n) time, O(1) space.
+- The choice at each house is rob-and-skip-neighbor vs skip.
+
+**Tags:** #algorithm
+
+---
+
+### 32. Word Break
+
+**Difficulty:** Medium
+**Topics:** dynamic-programming, string
+**Position:** Senior SWE
+**Years:** 17-18 (Expert)
+
+**Question:** Given a string and a dictionary, decide whether the string can be segmented into a sequence of dictionary words.
+
+**Approach:** DP where `dp[i]` means the prefix of length `i` is segmentable; for each `i` try every split `j` with `dp[j]` true and `s[j:i]` in the set. Time O(n^2) (plus substring cost), space O(n).
+
+**Python:**
+```python
+def word_break(s: str, word_dict: list[str]) -> bool:
+    words = set(word_dict)
+    dp = [False] * (len(s) + 1)
+    dp[0] = True
+    for i in range(1, len(s) + 1):
+        for j in range(i):
+            if dp[j] and s[j:i] in words:
+                dp[i] = True
+                break
+    return dp[len(s)]
+```
+
+**TypeScript:**
+```typescript
+function wordBreak(s: string, wordDict: string[]): boolean {
+  const words = new Set(wordDict);
+  const dp = new Array(s.length + 1).fill(false);
+  dp[0] = true;
+  for (let i = 1; i <= s.length; i++)
+    for (let j = 0; j < i; j++)
+      if (dp[j] && words.has(s.slice(j, i))) { dp[i] = true; break; }
+  return dp[s.length];
+}
+```
+
+**Java:**
+```java
+boolean wordBreak(String s, List<String> wordDict) {
+  Set<String> words = new HashSet<>(wordDict);
+  boolean[] dp = new boolean[s.length() + 1];
+  dp[0] = true;
+  for (int i = 1; i <= s.length(); i++)
+    for (int j = 0; j < i; j++)
+      if (dp[j] && words.contains(s.substring(j, i))) { dp[i] = true; break; }
+  return dp[s.length()];
+}
+```
+
+**Key points:**
+- The nested loops give O(n^2) splits, O(n) space.
+- A trie or capping inner length by the longest word trims redundant checks.
+
+**Tags:** #algorithm
+
+---
+
+## Backtracking
+
+### 33. Word Search
+
+**Difficulty:** Medium
+**Topics:** backtracking, dfs, grid
+**Position:** Senior SWE
+**Years:** 17-18 (Expert)
+
+**Question:** Given a grid of letters and a word, return whether the word can be formed by adjacent cells (no cell reused).
+
+**Approach:** DFS backtracking from each cell, marking the cell visited during recursion and restoring it on return. Time O(rows·cols·4^L) worst case, space O(L).
+
+**Python:**
+```python
+def exist(board: list[list[str]], word: str) -> bool:
+    rows, cols = len(board), len(board[0])
+
+    def dfs(r, c, i):
+        if i == len(word):
+            return True
+        if r < 0 or c < 0 or r >= rows or c >= cols or board[r][c] != word[i]:
+            return False
+        tmp, board[r][c] = board[r][c], "#"
+        found = (dfs(r + 1, c, i + 1) or dfs(r - 1, c, i + 1) or
+                 dfs(r, c + 1, i + 1) or dfs(r, c - 1, i + 1))
+        board[r][c] = tmp
+        return found
+
+    return any(dfs(r, c, 0) for r in range(rows) for c in range(cols))
+```
+
+**TypeScript:**
+```typescript
+function exist(board: string[][], word: string): boolean {
+  const rows = board.length, cols = board[0].length;
+  const dfs = (r: number, c: number, i: number): boolean => {
+    if (i === word.length) return true;
+    if (r < 0 || c < 0 || r >= rows || c >= cols || board[r][c] !== word[i]) return false;
+    const tmp = board[r][c];
+    board[r][c] = "#";
+    const found = dfs(r + 1, c, i + 1) || dfs(r - 1, c, i + 1) ||
+                  dfs(r, c + 1, i + 1) || dfs(r, c - 1, i + 1);
+    board[r][c] = tmp;
+    return found;
+  };
+  for (let r = 0; r < rows; r++)
+    for (let c = 0; c < cols; c++)
+      if (dfs(r, c, 0)) return true;
+  return false;
+}
+```
+
+**Java:**
+```java
+boolean exist(char[][] board, String word) {
+  int rows = board.length, cols = board[0].length;
+  for (int r = 0; r < rows; r++)
+    for (int c = 0; c < cols; c++)
+      if (dfs(board, word, r, c, 0)) return true;
+  return false;
+}
+
+boolean dfs(char[][] b, String w, int r, int c, int i) {
+  if (i == w.length()) return true;
+  if (r < 0 || c < 0 || r >= b.length || c >= b[0].length || b[r][c] != w.charAt(i)) return false;
+  char tmp = b[r][c];
+  b[r][c] = '#';
+  boolean found = dfs(b, w, r + 1, c, i + 1) || dfs(b, w, r - 1, c, i + 1) ||
+                  dfs(b, w, r, c + 1, i + 1) || dfs(b, w, r, c - 1, i + 1);
+  b[r][c] = tmp;
+  return found;
+}
+```
+
+**Key points:**
+- Backtracking explores up to O(rows·cols·4^L) paths; recursion depth is O(L).
+- Marking and restoring the cell enforces the no-reuse rule without extra memory.
+
+**Tags:** #algorithm
+
+---
+
+### 34. Combination Sum
+
+**Difficulty:** Medium
+**Topics:** backtracking, recursion
+**Position:** OD / SWE
+**Years:** 15-16 (Senior)
+
+**Question:** Given distinct positive candidates and a target, return all unique combinations summing to the target; each candidate may be reused.
+
+**Approach:** DFS backtracking; at each step either reuse the current candidate or advance the start index to avoid permutation duplicates. Time O(2^t) worst case, space O(t) recursion depth.
+
+**Python:**
+```python
+def combination_sum(candidates: list[int], target: int) -> list[list[int]]:
+    res: list[list[int]] = []
+
+    def dfs(start, remain, path):
+        if remain == 0:
+            res.append(path[:])
+            return
+        for i in range(start, len(candidates)):
+            if candidates[i] <= remain:
+                path.append(candidates[i])
+                dfs(i, remain - candidates[i], path)
+                path.pop()
+
+    dfs(0, target, [])
+    return res
+```
+
+**TypeScript:**
+```typescript
+function combinationSum(candidates: number[], target: number): number[][] {
+  const res: number[][] = [];
+  const dfs = (start: number, remain: number, path: number[]): void => {
+    if (remain === 0) { res.push([...path]); return; }
+    for (let i = start; i < candidates.length; i++) {
+      if (candidates[i] <= remain) {
+        path.push(candidates[i]);
+        dfs(i, remain - candidates[i], path);
+        path.pop();
+      }
+    }
+  };
+  dfs(0, target, []);
+  return res;
+}
+```
+
+**Java:**
+```java
+List<List<Integer>> combinationSum(int[] candidates, int target) {
+  List<List<Integer>> res = new ArrayList<>();
+  dfs(candidates, 0, target, new ArrayList<>(), res);
+  return res;
+}
+
+void dfs(int[] cand, int start, int remain, List<Integer> path, List<List<Integer>> res) {
+  if (remain == 0) { res.add(new ArrayList<>(path)); return; }
+  for (int i = start; i < cand.length; i++) {
+    if (cand[i] <= remain) {
+      path.add(cand[i]);
+      dfs(cand, i, remain - cand[i], path, res);
+      path.remove(path.size() - 1);
+    }
+  }
+}
+```
+
+**Key points:**
+- Backtracking explores up to O(2^t) states; depth is O(t) for the path.
+- Passing `i` (not `i+1`) allows reuse; advancing the start prevents duplicate sets.
+
+**Tags:** #algorithm
+
+---
+
+### 35. Permutations
+
+**Difficulty:** Medium
+**Topics:** backtracking, recursion
+**Position:** OD / SWE
+**Years:** 15-16 (Senior)
+
+**Question:** Return all permutations of a list of distinct integers.
+
+**Approach:** Backtracking with a used-set (or in-place swaps); fix one element per level. Time O(n·n!), space O(n).
+
+**Python:**
+```python
+def permute(nums: list[int]) -> list[list[int]]:
+    res: list[list[int]] = []
+
+    def dfs(path, used):
+        if len(path) == len(nums):
+            res.append(path[:])
+            return
+        for i, x in enumerate(nums):
+            if not used[i]:
+                used[i] = True
+                path.append(x)
+                dfs(path, used)
+                path.pop()
+                used[i] = False
+
+    dfs([], [False] * len(nums))
+    return res
+```
+
+**TypeScript:**
+```typescript
+function permute(nums: number[]): number[][] {
+  const res: number[][] = [];
+  const used = new Array(nums.length).fill(false);
+  const dfs = (path: number[]): void => {
+    if (path.length === nums.length) { res.push([...path]); return; }
+    for (let i = 0; i < nums.length; i++) {
+      if (!used[i]) {
+        used[i] = true; path.push(nums[i]);
+        dfs(path);
+        path.pop(); used[i] = false;
+      }
+    }
+  };
+  dfs([]);
+  return res;
+}
+```
+
+**Java:**
+```java
+List<List<Integer>> permute(int[] nums) {
+  List<List<Integer>> res = new ArrayList<>();
+  dfs(nums, new boolean[nums.length], new ArrayList<>(), res);
+  return res;
+}
+
+void dfs(int[] nums, boolean[] used, List<Integer> path, List<List<Integer>> res) {
+  if (path.size() == nums.length) { res.add(new ArrayList<>(path)); return; }
+  for (int i = 0; i < nums.length; i++) {
+    if (!used[i]) {
+      used[i] = true; path.add(nums[i]);
+      dfs(nums, used, path, res);
+      path.remove(path.size() - 1); used[i] = false;
+    }
+  }
+}
+```
+
+**Key points:**
+- There are n! permutations, each O(n) to copy, so O(n·n!) time, O(n) extra space.
+- The `used` array prevents reusing an element within one permutation.
+
+**Tags:** #algorithm
+
+---
+
+### 36. Subsets
+
+**Difficulty:** Medium
+**Topics:** backtracking, bit-manipulation
+**Position:** OD / SWE
+**Years:** 15-16 (Senior)
+
+**Question:** Return all subsets (the power set) of a list of distinct integers.
+
+**Approach:** Backtracking that records the path at every node and branches by include/exclude through increasing start indices. Time O(n·2^n), space O(n).
+
+**Python:**
+```python
+def subsets(nums: list[int]) -> list[list[int]]:
+    res: list[list[int]] = []
+
+    def dfs(start, path):
+        res.append(path[:])
+        for i in range(start, len(nums)):
+            path.append(nums[i])
+            dfs(i + 1, path)
+            path.pop()
+
+    dfs(0, [])
+    return res
+```
+
+**TypeScript:**
+```typescript
+function subsets(nums: number[]): number[][] {
+  const res: number[][] = [];
+  const dfs = (start: number, path: number[]): void => {
+    res.push([...path]);
+    for (let i = start; i < nums.length; i++) {
+      path.push(nums[i]);
+      dfs(i + 1, path);
+      path.pop();
+    }
+  };
+  dfs(0, []);
+  return res;
+}
+```
+
+**Java:**
+```java
+List<List<Integer>> subsets(int[] nums) {
+  List<List<Integer>> res = new ArrayList<>();
+  dfs(nums, 0, new ArrayList<>(), res);
+  return res;
+}
+
+void dfs(int[] nums, int start, List<Integer> path, List<List<Integer>> res) {
+  res.add(new ArrayList<>(path));
+  for (int i = start; i < nums.length; i++) {
+    path.add(nums[i]);
+    dfs(nums, i + 1, path, res);
+    path.remove(path.size() - 1);
+  }
+}
+```
+
+**Key points:**
+- There are 2^n subsets, each up to O(n) to copy: O(n·2^n) time.
+- An equivalent solution maps each subset to an n-bit mask.
+
+**Tags:** #algorithm
+
+---
+
+## Array / String
+
+### 37. Binary Search
+
+**Difficulty:** Easy
+**Topics:** binary-search, array
+**Position:** OD / SWE
+**Years:** 13-14 (Junior)
+
+**Question:** Given a sorted array and a target, return its index or -1 if absent.
+
+**Approach:** Maintain `[lo, hi]` bounds, probe the midpoint, halve the range each step. Use `lo + (hi - lo) // 2` to avoid overflow (relevant in C/C++). Time O(log n), space O(1).
+
+**Python:**
+```python
+def binary_search(nums: list[int], target: int) -> int:
+    lo, hi = 0, len(nums) - 1
+    while lo <= hi:
+        mid = lo + (hi - lo) // 2
+        if nums[mid] == target:
+            return mid
+        if nums[mid] < target:
+            lo = mid + 1
+        else:
+            hi = mid - 1
+    return -1
+```
+
+**TypeScript:**
+```typescript
+function binarySearch(nums: number[], target: number): number {
+  let lo = 0, hi = nums.length - 1;
+  while (lo <= hi) {
+    const mid = lo + ((hi - lo) >> 1);
+    if (nums[mid] === target) return mid;
+    if (nums[mid] < target) lo = mid + 1;
+    else hi = mid - 1;
+  }
+  return -1;
+}
+```
+
+**Java:**
+```java
+int binarySearch(int[] nums, int target) {
+  int lo = 0, hi = nums.length - 1;
+  while (lo <= hi) {
+    int mid = lo + (hi - lo) / 2;
+    if (nums[mid] == target) return mid;
+    if (nums[mid] < target) lo = mid + 1;
+    else hi = mid - 1;
+  }
+  return -1;
+}
+```
+
+**Key points:**
+- Halving the range yields O(log n) time, O(1) space.
+- `lo + (hi - lo) / 2` prevents integer overflow that `(lo + hi) / 2` risks in C/C++/Java.
+
+**Follow-ups:**
+- Return the leftmost / rightmost insertion point (lower/upper bound).
+- Search in a rotated sorted array.
+- Search a value in an infinite/unbounded sorted stream.
+- Implement it recursively and discuss stack usage.
+
+**Tags:** #algorithm
+
+---
+
+### 38. Container With Most Water
+
+**Difficulty:** Medium
+**Topics:** array, two-pointer, greedy
+**Position:** OD / SWE
+**Years:** 15-16 (Senior)
+
+**Question:** Given heights, pick two lines that with the x-axis form a container holding the most water. Return that maximum area.
+
+**Approach:** Two pointers at both ends; area is `min(h[l], h[r]) * (r - l)`. Move the shorter side inward since it limits the area. Time O(n), space O(1).
+
+**Python:**
+```python
+def max_area(height: list[int]) -> int:
+    l, r, best = 0, len(height) - 1, 0
+    while l < r:
+        best = max(best, min(height[l], height[r]) * (r - l))
+        if height[l] < height[r]:
+            l += 1
+        else:
+            r -= 1
+    return best
+```
+
+**TypeScript:**
+```typescript
+function maxArea(height: number[]): number {
+  let l = 0, r = height.length - 1, best = 0;
+  while (l < r) {
+    best = Math.max(best, Math.min(height[l], height[r]) * (r - l));
+    if (height[l] < height[r]) l++; else r--;
+  }
+  return best;
+}
+```
+
+**Java:**
+```java
+int maxArea(int[] height) {
+  int l = 0, r = height.length - 1, best = 0;
+  while (l < r) {
+    best = Math.max(best, Math.min(height[l], height[r]) * (r - l));
+    if (height[l] < height[r]) l++; else r--;
+  }
+  return best;
+}
+```
+
+**Key points:**
+- Two-pointer sweep is O(n) time, O(1) space versus O(n^2) brute force.
+- Moving the taller side can never increase area, so always move the shorter one.
+
+**Tags:** #algorithm
+
+---
+
+### 39. 3Sum
+
+**Difficulty:** Medium
+**Topics:** array, two-pointer, sorting
+**Position:** OD / SWE
+**Years:** 15-16 (Senior)
+
+**Question:** Find all unique triplets in an array that sum to zero.
+
+**Approach:** Sort, then fix one index and run a two-pointer scan on the remainder, skipping duplicates at every level. Time O(n^2), space O(1) excluding output.
+
+**Python:**
+```python
+def three_sum(nums: list[int]) -> list[list[int]]:
+    nums.sort()
+    res: list[list[int]] = []
+    for i in range(len(nums) - 2):
+        if i > 0 and nums[i] == nums[i - 1]:
+            continue
+        l, r = i + 1, len(nums) - 1
+        while l < r:
+            s = nums[i] + nums[l] + nums[r]
+            if s < 0:
+                l += 1
+            elif s > 0:
+                r -= 1
+            else:
+                res.append([nums[i], nums[l], nums[r]])
+                l += 1
+                r -= 1
+                while l < r and nums[l] == nums[l - 1]:
+                    l += 1
+                while l < r and nums[r] == nums[r + 1]:
+                    r -= 1
+    return res
+```
+
+**TypeScript:**
+```typescript
+function threeSum(nums: number[]): number[][] {
+  nums.sort((a, b) => a - b);
+  const res: number[][] = [];
+  for (let i = 0; i < nums.length - 2; i++) {
+    if (i > 0 && nums[i] === nums[i - 1]) continue;
+    let l = i + 1, r = nums.length - 1;
+    while (l < r) {
+      const s = nums[i] + nums[l] + nums[r];
+      if (s < 0) l++;
+      else if (s > 0) r--;
+      else {
+        res.push([nums[i], nums[l], nums[r]]);
+        l++; r--;
+        while (l < r && nums[l] === nums[l - 1]) l++;
+        while (l < r && nums[r] === nums[r + 1]) r--;
+      }
+    }
+  }
+  return res;
+}
+```
+
+**Java:**
+```java
+List<List<Integer>> threeSum(int[] nums) {
+  Arrays.sort(nums);
+  List<List<Integer>> res = new ArrayList<>();
+  for (int i = 0; i < nums.length - 2; i++) {
+    if (i > 0 && nums[i] == nums[i - 1]) continue;
+    int l = i + 1, r = nums.length - 1;
+    while (l < r) {
+      int s = nums[i] + nums[l] + nums[r];
+      if (s < 0) l++;
+      else if (s > 0) r--;
+      else {
+        res.add(Arrays.asList(nums[i], nums[l], nums[r]));
+        l++; r--;
+        while (l < r && nums[l] == nums[l - 1]) l++;
+        while (l < r && nums[r] == nums[r + 1]) r--;
+      }
+    }
+  }
+  return res;
+}
+```
+
+**Key points:**
+- Sorting plus two-pointer scans gives O(n^2) time, O(1) extra space.
+- Skipping duplicate values at each level is what keeps triplets unique.
+
+**Tags:** #algorithm
+
+---
+
+### 40. Product of Array Except Self
+
+**Difficulty:** Medium
+**Topics:** array, prefix-product
+**Position:** OD / SWE
+**Years:** 15-16 (Senior)
+
+**Question:** Return an array where each element is the product of all others, without division and in O(n).
+
+**Approach:** Two sweeps — store prefix products left-to-right, then multiply by suffix products right-to-left using a running variable. Time O(n), space O(1) extra (output excluded).
+
+**Python:**
+```python
+def product_except_self(nums: list[int]) -> list[int]:
+    n = len(nums)
+    out = [1] * n
+    for i in range(1, n):
+        out[i] = out[i - 1] * nums[i - 1]
+    suffix = 1
+    for i in range(n - 1, -1, -1):
+        out[i] *= suffix
+        suffix *= nums[i]
+    return out
+```
+
+**TypeScript:**
+```typescript
+function productExceptSelf(nums: number[]): number[] {
+  const n = nums.length, out = new Array(n).fill(1);
+  for (let i = 1; i < n; i++) out[i] = out[i - 1] * nums[i - 1];
+  let suffix = 1;
+  for (let i = n - 1; i >= 0; i--) { out[i] *= suffix; suffix *= nums[i]; }
+  return out;
+}
+```
+
+**Java:**
+```java
+int[] productExceptSelf(int[] nums) {
+  int n = nums.length;
+  int[] out = new int[n];
+  out[0] = 1;
+  for (int i = 1; i < n; i++) out[i] = out[i - 1] * nums[i - 1];
+  int suffix = 1;
+  for (int i = n - 1; i >= 0; i--) { out[i] *= suffix; suffix *= nums[i]; }
+  return out;
+}
+```
+
+**Key points:**
+- Two linear sweeps give O(n) time and O(1) extra space.
+- Avoiding division is what makes it robust to zeros in the input.
+
+**Tags:** #algorithm
+
+---
+
+### 41. Search in Rotated Sorted Array
+
+**Difficulty:** Medium
+**Topics:** binary-search, array
+**Position:** OD / SWE
+**Years:** 15-16 (Senior)
+
+**Question:** A sorted array was rotated at an unknown pivot. Find a target's index, or -1.
+
+**Approach:** Modified binary search — at each midpoint one half is sorted; check whether the target lies within that sorted half to pick a side. Time O(log n), space O(1).
+
+**Python:**
+```python
+def search(nums: list[int], target: int) -> int:
+    lo, hi = 0, len(nums) - 1
+    while lo <= hi:
+        mid = lo + (hi - lo) // 2
+        if nums[mid] == target:
+            return mid
+        if nums[lo] <= nums[mid]:
+            if nums[lo] <= target < nums[mid]:
+                hi = mid - 1
+            else:
+                lo = mid + 1
+        else:
+            if nums[mid] < target <= nums[hi]:
+                lo = mid + 1
+            else:
+                hi = mid - 1
+    return -1
+```
+
+**TypeScript:**
+```typescript
+function search(nums: number[], target: number): number {
+  let lo = 0, hi = nums.length - 1;
+  while (lo <= hi) {
+    const mid = lo + ((hi - lo) >> 1);
+    if (nums[mid] === target) return mid;
+    if (nums[lo] <= nums[mid]) {
+      if (nums[lo] <= target && target < nums[mid]) hi = mid - 1; else lo = mid + 1;
+    } else {
+      if (nums[mid] < target && target <= nums[hi]) lo = mid + 1; else hi = mid - 1;
+    }
+  }
+  return -1;
+}
+```
+
+**Java:**
+```java
+int search(int[] nums, int target) {
+  int lo = 0, hi = nums.length - 1;
+  while (lo <= hi) {
+    int mid = lo + (hi - lo) / 2;
+    if (nums[mid] == target) return mid;
+    if (nums[lo] <= nums[mid]) {
+      if (nums[lo] <= target && target < nums[mid]) hi = mid - 1; else lo = mid + 1;
+    } else {
+      if (nums[mid] < target && target <= nums[hi]) lo = mid + 1; else hi = mid - 1;
+    }
+  }
+  return -1;
+}
+```
+
+**Key points:**
+- Still O(log n) time, O(1) space despite the rotation.
+- Decide which half is sorted first, then test the target against that half's bounds.
+
+**Tags:** #algorithm
+
+---
+
+### 42. Find First and Last Position of Element
+
+**Difficulty:** Medium
+**Topics:** binary-search, array
+**Position:** OD / SWE
+**Years:** 15-16 (Senior)
+
+**Question:** In a sorted array find the first and last index of a target, or `[-1, -1]`.
+
+**Approach:** Two binary searches for the lower and upper bound of the target. Time O(log n), space O(1).
+
+**Python:**
+```python
+import bisect
+
+def search_range(nums: list[int], target: int) -> list[int]:
+    lo = bisect.bisect_left(nums, target)
+    if lo == len(nums) or nums[lo] != target:
+        return [-1, -1]
+    hi = bisect.bisect_right(nums, target) - 1
+    return [lo, hi]
+```
+
+**TypeScript:**
+```typescript
+function searchRange(nums: number[], target: number): number[] {
+  const bound = (left: boolean): number => {
+    let lo = 0, hi = nums.length, res = -1;
+    while (lo < hi) {
+      const mid = lo + ((hi - lo) >> 1);
+      if (nums[mid] < target || (!left && nums[mid] === target)) lo = mid + 1;
+      else hi = mid;
+      if (nums[mid] === target) res = mid;
+    }
+    return res;
+  };
+  return [bound(true), bound(false)];
+}
+```
+
+**Java:**
+```java
+int[] searchRange(int[] nums, int target) {
+  int first = bound(nums, target, true);
+  if (first == -1) return new int[] { -1, -1 };
+  return new int[] { first, bound(nums, target, false) };
+}
+
+int bound(int[] nums, int target, boolean left) {
+  int lo = 0, hi = nums.length - 1, res = -1;
+  while (lo <= hi) {
+    int mid = lo + (hi - lo) / 2;
+    if (nums[mid] == target) { res = mid; if (left) hi = mid - 1; else lo = mid + 1; }
+    else if (nums[mid] < target) lo = mid + 1;
+    else hi = mid - 1;
+  }
+  return res;
+}
+```
+
+**Key points:**
+- Two bounded binary searches keep it at O(log n) time, O(1) space.
+- Lower and upper bound differ only in how ties move the pointer.
+
+**Tags:** #algorithm
+
+---
+
+### 43. Merge Intervals
+
+**Difficulty:** Medium
+**Topics:** intervals, sorting
+**Position:** OD / SWE
+**Years:** 15-16 (Senior)
+
+**Question:** Given intervals, merge all overlapping ones.
+
+**Approach:** Sort by start; sweep, extending the last merged interval's end when the next overlaps, else append a new one. Time O(n log n), space O(n).
+
+**Python:**
+```python
+def merge(intervals: list[list[int]]) -> list[list[int]]:
+    intervals.sort()
+    out: list[list[int]] = []
+    for s, e in intervals:
+        if out and s <= out[-1][1]:
+            out[-1][1] = max(out[-1][1], e)
+        else:
+            out.append([s, e])
+    return out
+```
+
+**TypeScript:**
+```typescript
+function merge(intervals: number[][]): number[][] {
+  intervals.sort((a, b) => a[0] - b[0]);
+  const out: number[][] = [];
+  for (const [s, e] of intervals) {
+    const last = out[out.length - 1];
+    if (last && s <= last[1]) last[1] = Math.max(last[1], e);
+    else out.push([s, e]);
+  }
+  return out;
+}
+```
+
+**Java:**
+```java
+int[][] merge(int[][] intervals) {
+  Arrays.sort(intervals, (a, b) -> a[0] - b[0]);
+  List<int[]> out = new ArrayList<>();
+  for (int[] iv : intervals) {
+    if (!out.isEmpty() && iv[0] <= out.get(out.size() - 1)[1])
+      out.get(out.size() - 1)[1] = Math.max(out.get(out.size() - 1)[1], iv[1]);
+    else out.add(iv);
+  }
+  return out.toArray(new int[0][]);
+}
+```
+
+**Key points:**
+- Sorting dominates at O(n log n) time; output is O(n) space.
+- After sorting, overlap is a simple `start <= last_end` test.
+
+**Tags:** #algorithm
+
+---
+
+### 44. Single Number
+
+**Difficulty:** Easy
+**Topics:** bit-manipulation, array
+**Position:** OD / SWE
+**Years:** 13-14 (Junior)
+
+**Question:** Every element appears twice except one. Find the single one in O(n) time and O(1) space.
+
+**Approach:** XOR all elements; pairs cancel to 0, leaving the unique value. Time O(n), space O(1).
+
+**Python:**
+```python
+from functools import reduce
+from operator import xor
+
+def single_number(nums: list[int]) -> int:
+    return reduce(xor, nums, 0)
+```
+
+**TypeScript:**
+```typescript
+function singleNumber(nums: number[]): number {
+  return nums.reduce((acc, x) => acc ^ x, 0);
+}
+```
+
+**Java:**
+```java
+int singleNumber(int[] nums) {
+  int acc = 0;
+  for (int x : nums) acc ^= x;
+  return acc;
+}
+```
+
+**Key points:**
+- XOR is associative and self-inverse, giving O(n) time, O(1) space.
+- No hash set or sorting required — pure bit manipulation.
+
+**Tags:** #algorithm
+
+---
+
+### 45. Base-Station Coverage Merge (Telecom)
+
+**Difficulty:** Medium
+**Topics:** intervals, sorting, greedy
+**Position:** Senior SWE
+**Years:** 17-18 (Expert)
+
+**Question:** Each base station covers a 1D segment `[start, end]` of a highway. Given all coverage segments, merge them into the minimal set of continuous covered ranges, then report total covered length (used to detect coverage gaps).
+
+**Approach:** This is Merge Intervals in a telecom wrapper. Sort segments by start, sweep merging overlaps, and accumulate the merged lengths. Time O(n log n), space O(n).
+
+**Python:**
+```python
+def covered_ranges(segments: list[list[int]]) -> tuple[list[list[int]], int]:
+    segments.sort()
+    merged: list[list[int]] = []
+    for s, e in segments:
+        if merged and s <= merged[-1][1]:
+            merged[-1][1] = max(merged[-1][1], e)
+        else:
+            merged.append([s, e])
+    total = sum(e - s for s, e in merged)
+    return merged, total
+```
+
+**TypeScript:**
+```typescript
+function coveredRanges(segments: number[][]): { merged: number[][]; total: number } {
+  segments.sort((a, b) => a[0] - b[0]);
+  const merged: number[][] = [];
+  for (const [s, e] of segments) {
+    const last = merged[merged.length - 1];
+    if (last && s <= last[1]) last[1] = Math.max(last[1], e);
+    else merged.push([s, e]);
+  }
+  const total = merged.reduce((sum, [s, e]) => sum + (e - s), 0);
+  return { merged, total };
+}
+```
+
+**Java:**
+```java
+int coveredLength(int[][] segments) {
+  Arrays.sort(segments, (a, b) -> a[0] - b[0]);
+  int total = 0, curStart = 0, curEnd = -1;
+  for (int[] seg : segments) {
+    if (seg[0] > curEnd) {
+      if (curEnd >= curStart) total += curEnd - curStart;
+      curStart = seg[0]; curEnd = seg[1];
+    } else {
+      curEnd = Math.max(curEnd, seg[1]);
+    }
+  }
+  if (curEnd >= curStart) total += curEnd - curStart;
+  return total;
+}
+```
+
+**Key points:**
+- Sorting plus a linear sweep is O(n log n) time, O(n) space.
+- Gaps appear as breaks between merged ranges — exactly where coverage is missing.
+
+**Tags:** #algorithm
+
+---
+
 ### 46. 5G Resource-Block Allocation (Interval Scheduling)
 
 **Difficulty:** Medium
@@ -3249,6 +3265,8 @@ int maxTransmissions(int[][] requests) {
 **Tags:** #algorithm
 
 ---
+
+## System Design
 
 ### 47. Design a Telecom Billing System
 
@@ -3370,6 +3388,8 @@ int maxTransmissions(int[][] requests) {
 
 ---
 
+## Behavioral
+
 ### 55. Tell me about embracing the 奋斗者 (dedicator) culture
 
 **Difficulty:** Medium
@@ -3430,6 +3450,8 @@ int maxTransmissions(int[][] requests) {
 
 ---
 
+## Domain Knowledge
+
 ### 59. C/C++ Memory Management and Pointers
 
 **Difficulty:** Hard
@@ -3487,3 +3509,4 @@ int maxTransmissions(int[][] requests) {
 **Approach:** Virtual memory gives each process a private linear address space mapped to physical frames via page tables; the MMU translates addresses, and a TLB caches recent translations. A page fault triggers loading from disk (demand paging); when memory is full the OS evicts a page using a replacement policy (LRU approximations like the clock algorithm). Benefits: isolation, more apparent memory than physical, and easy sharing (shared libraries). Thrashing happens when the working set exceeds RAM. Scheduling: the scheduler multiplexes the CPU among ready threads — policies include round-robin, priority, and Linux's CFS (Completely Fair Scheduler) which uses a red-black tree keyed by virtual runtime to approximate fair sharing. Discuss preemptive vs cooperative, context-switch cost, real-time scheduling classes (SCHED_FIFO/RR for deterministic latency — relevant for telecom/embedded), and the trade-off between throughput and latency/fairness. Tie back to why embedded/carrier systems often need real-time guarantees.
 
 **Tags:** #domain-knowledge
+

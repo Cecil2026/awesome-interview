@@ -18,7 +18,7 @@ sources: Glassdoor, LeetCode Discuss (amazon tag), Blind, leetcode.com/discuss/i
 
 Amazon is unique in how heavily Leadership Principles are weighted — even the best technical performance can be vetoed by a weak LP showing. The 16 LPs (Customer Obsession, Ownership, Invent and Simplify, Are Right A Lot, Learn and Be Curious, Hire and Develop the Best, Insist on the Highest Standards, Think Big, Bias for Action, Frugality, Earn Trust, Dive Deep, Have Backbone, Deliver Results, Strive to be Earth's Best Employer, Success and Scale Bring Responsibility) need at least 2 stories each. Technical bar leans toward OOD (LRU, parking lot), graphs, and AWS-flavored system design.
 
-## Questions
+## Linked List
 
 ### 1. LRU Cache
 
@@ -128,166 +128,7 @@ class LRUCache extends LinkedHashMap<Integer, Integer> {
 
 ---
 
-### 2. Number of Islands
-
-**Difficulty:** Medium
-**Topics:** graph, dfs, bfs, matrix
-**Position:** SWE
-**Years:** L4
-
-**Question:** Given a 2D grid of '1's (land) and '0's (water), count the number of islands.
-
-**Approach:** Iterate cells; on each unvisited '1', DFS to flood-fill the island, increment count. Mark visited in-place. O(m*n) time and space (stack). Common Amazon follow-up: "now imagine the grid is so big it's distributed across machines" → discuss row partitioning + boundary merging via union-find.
-
-**Python:**
-```python
-def num_islands(grid: list[list[str]]) -> int:
-    if not grid:
-        return 0
-    m, n = len(grid), len(grid[0])
-    def dfs(r: int, c: int) -> None:
-        if r < 0 or r >= m or c < 0 or c >= n or grid[r][c] != "1":
-            return
-        grid[r][c] = "0"
-        dfs(r + 1, c); dfs(r - 1, c); dfs(r, c + 1); dfs(r, c - 1)
-    count = 0
-    for r in range(m):
-        for c in range(n):
-            if grid[r][c] == "1":
-                dfs(r, c)
-                count += 1
-    return count
-```
-
-**TypeScript:**
-```typescript
-function numIslands(grid: string[][]): number {
-  if (!grid.length) return 0;
-  const m = grid.length, n = grid[0].length;
-  const dfs = (r: number, c: number): void => {
-    if (r < 0 || r >= m || c < 0 || c >= n || grid[r][c] !== "1") return;
-    grid[r][c] = "0";
-    dfs(r + 1, c); dfs(r - 1, c); dfs(r, c + 1); dfs(r, c - 1);
-  };
-  let count = 0;
-  for (let r = 0; r < m; r++)
-    for (let c = 0; c < n; c++)
-      if (grid[r][c] === "1") { dfs(r, c); count++; }
-  return count;
-}
-```
-
-**Java:**
-```java
-class Solution {
-    private int m, n;
-    public int numIslands(char[][] grid) {
-        if (grid.length == 0) return 0;
-        m = grid.length; n = grid[0].length;
-        int count = 0;
-        for (int r = 0; r < m; r++)
-            for (int c = 0; c < n; c++)
-                if (grid[r][c] == '1') { dfs(grid, r, c); count++; }
-        return count;
-    }
-    private void dfs(char[][] g, int r, int c) {
-        if (r < 0 || r >= m || c < 0 || c >= n || g[r][c] != '1') return;
-        g[r][c] = '0';
-        dfs(g, r + 1, c); dfs(g, r - 1, c); dfs(g, r, c + 1); dfs(g, r, c - 1);
-    }
-}
-```
-
-**Key points:**
-- Flip cells to "0" during DFS to avoid revisits without an extra set.
-- O(m*n) time and O(m*n) recursion stack worst case (one giant island).
-- BFS with a queue avoids deep recursion on huge grids.
-
-**Follow-ups:**
-- Use BFS instead of DFS — when does the recursion stack blow up and how do you size the queue?
-- Return the size of the largest island, not just the count.
-- Streaming grid: rows arrive one at a time — maintain count incrementally.
-- Distributed grid sharded by rows; merge island IDs across shards with union-find.
-- Variant: count islands fully surrounded by water (no border cells).
-
-**Common Pitfalls:**
-- Recursing before bounds-checking; the stack explodes on the first invalid index.
-- Mutating the grid in place when the caller still needs it — clone first if not allowed.
-
-**Tags:** #algorithm
-
----
-
-### 3. Two Sum
-
-**Difficulty:** Easy
-**Topics:** arrays, hashmap
-**Position:** SWE
-**Years:** L4
-
-**Question:** Given an array of integers and a target, return indices of the two numbers that add up to target. Assume exactly one solution.
-
-**Approach:** One pass + hashmap `value -> index`. For each `num`, check if `target - num` is in map; else insert. O(n) time, O(n) space. Amazon OA staple.
-
-**Python:**
-```python
-def two_sum(nums: list[int], target: int) -> list[int]:
-    seen: dict[int, int] = {}
-    for i, x in enumerate(nums):
-        if target - x in seen:
-            return [seen[target - x], i]
-        seen[x] = i
-    return []
-```
-
-**TypeScript:**
-```typescript
-function twoSum(nums: number[], target: number): number[] {
-  const seen = new Map<number, number>();
-  for (let i = 0; i < nums.length; i++) {
-    const need = target - nums[i];
-    if (seen.has(need)) return [seen.get(need)!, i];
-    seen.set(nums[i], i);
-  }
-  return [];
-}
-```
-
-**Java:**
-```java
-class Solution {
-    public int[] twoSum(int[] nums, int target) {
-        Map<Integer, Integer> seen = new HashMap<>();
-        for (int i = 0; i < nums.length; i++) {
-            int need = target - nums[i];
-            if (seen.containsKey(need)) return new int[]{seen.get(need), i};
-            seen.put(nums[i], i);
-        }
-        return new int[0];
-    }
-}
-```
-
-**Key points:**
-- Hash lookup turns the inner search from O(n) into O(1).
-- Insert after the check so the same index is not reused.
-- O(n) time, O(n) extra space.
-
-**Follow-ups:**
-- Input is sorted — two-pointer in O(1) extra space.
-- Return all unique pairs (3Sum-style dedupe).
-- Streaming integers: design `add(num)` + `find(target)` continuous-query API.
-- Multiple solutions exist; return the pair with the smallest index sum.
-
-**Common Pitfalls:**
-- Inserting into the map before the check, which lets `nums[i] + nums[i] == target` reuse the same index.
-- Falling back to brute force O(n^2) despite the "exactly one solution" hint — fails performance bar.
-
-**Tags:** #algorithm
-
----
-
-### 4. Merge K Sorted Lists
+### 2. Merge K Sorted Lists
 
 **Difficulty:** Hard
 **Topics:** linked-list, heap, divide-and-conquer
@@ -378,718 +219,7 @@ class Solution {
 
 ---
 
-### 5. Word Break
-
-**Difficulty:** Medium
-**Topics:** dp, strings, trie
-**Position:** SWE
-**Years:** L4
-
-**Question:** Given a string `s` and a dictionary of words, return true if `s` can be segmented into a sequence of dictionary words.
-
-**Approach:** DP — `dp[i]` = true if `s[0..i)` can be segmented. Transition: `dp[i] = any dp[j] && s[j..i) in dict`. O(n² * L) with hashset lookup. Trie speeds up the inner check. Follow-up: return all segmentations (memoized recursion).
-
-**Python:**
-```python
-def word_break(s: str, word_dict: list[str]) -> bool:
-    words = set(word_dict)
-    n = len(s)
-    dp = [False] * (n + 1)
-    dp[0] = True
-    for i in range(1, n + 1):
-        for j in range(i):
-            if dp[j] and s[j:i] in words:
-                dp[i] = True
-                break
-    return dp[n]
-```
-
-**TypeScript:**
-```typescript
-function wordBreak(s: string, wordDict: string[]): boolean {
-  const words = new Set(wordDict);
-  const n = s.length;
-  const dp = new Array<boolean>(n + 1).fill(false);
-  dp[0] = true;
-  for (let i = 1; i <= n; i++) {
-    for (let j = 0; j < i; j++) {
-      if (dp[j] && words.has(s.slice(j, i))) { dp[i] = true; break; }
-    }
-  }
-  return dp[n];
-}
-```
-
-**Java:**
-```java
-class Solution {
-    public boolean wordBreak(String s, List<String> wordDict) {
-        Set<String> words = new HashSet<>(wordDict);
-        int n = s.length();
-        boolean[] dp = new boolean[n + 1];
-        dp[0] = true;
-        for (int i = 1; i <= n; i++) {
-            for (int j = 0; j < i; j++) {
-                if (dp[j] && words.contains(s.substring(j, i))) { dp[i] = true; break; }
-            }
-        }
-        return dp[n];
-    }
-}
-```
-
-**Key points:**
-- `dp[0] = True` represents the empty prefix.
-- O(n^2) outer-inner with O(L) slice/hash; total O(n^2 * L).
-- Break early once `dp[i]` becomes true to cut the inner loop.
-
-**Follow-ups:**
-- Return all valid segmentations (Word Break II) with memoization.
-- Dictionary at 10^6 entries — switch to a Trie to prune impossible splits early.
-- Online dictionary updates between queries; what gets invalidated?
-- Unicode / multi-byte words; how does runtime scale with average word length L?
-
-**Common Pitfalls:**
-- Missing `dp[0] = True`, which makes every segmentation evaluate to false.
-- Re-creating substrings on every inner iteration — use a Trie or substring index for hot dictionaries.
-
-**Tags:** #algorithm
-
----
-
-### 6. Trapping Rain Water
-
-**Difficulty:** Hard
-**Topics:** arrays, two-pointer, dp
-**Position:** SWE
-**Years:** L5
-
-**Question:** Given `n` non-negative integers representing an elevation map, compute how much water it can trap.
-
-**Approach:** Two pointers from each end. Maintain `left_max`, `right_max`. Move whichever side is shorter; water at that index = `side_max - height[i]`. O(n) time, O(1) space. Alternative: precompute `left_max[]` and `right_max[]` arrays — clearer but O(n) space.
-
-**Python:**
-```python
-def trap(height: list[int]) -> int:
-    l, r = 0, len(height) - 1
-    lmax = rmax = total = 0
-    while l < r:
-        if height[l] < height[r]:
-            lmax = max(lmax, height[l])
-            total += lmax - height[l]
-            l += 1
-        else:
-            rmax = max(rmax, height[r])
-            total += rmax - height[r]
-            r -= 1
-    return total
-```
-
-**TypeScript:**
-```typescript
-function trap(height: number[]): number {
-  let l = 0, r = height.length - 1, lmax = 0, rmax = 0, total = 0;
-  while (l < r) {
-    if (height[l] < height[r]) {
-      lmax = Math.max(lmax, height[l]);
-      total += lmax - height[l];
-      l++;
-    } else {
-      rmax = Math.max(rmax, height[r]);
-      total += rmax - height[r];
-      r--;
-    }
-  }
-  return total;
-}
-```
-
-**Java:**
-```java
-class Solution {
-    public int trap(int[] height) {
-        int l = 0, r = height.length - 1, lmax = 0, rmax = 0, total = 0;
-        while (l < r) {
-            if (height[l] < height[r]) {
-                lmax = Math.max(lmax, height[l]);
-                total += lmax - height[l];
-                l++;
-            } else {
-                rmax = Math.max(rmax, height[r]);
-                total += rmax - height[r];
-                r--;
-            }
-        }
-        return total;
-    }
-}
-```
-
-**Key points:**
-- The shorter side bounds water at its index, so move it inward.
-- O(n) time, O(1) extra space.
-- Precomputed left/right max arrays are easier to reason about but use O(n).
-
-**Follow-ups:**
-- Trapping Rain Water II (2D matrix) — switch to a min-heap starting from the border.
-- Heights arrive as a stream — can the total be updated incrementally?
-- Floating-point / negative heights; what changes in the invariant?
-- Print the actual water level at each index instead of only the total volume.
-
-**Common Pitfalls:**
-- Moving the taller pointer when heights tie — you overcount that index.
-- Off-by-one: forgetting that the leftmost/rightmost bars never trap water.
-
-**Tags:** #algorithm
-
----
-
-### 7. Top K Frequent Elements
-
-**Difficulty:** Medium
-**Topics:** hashmap, heap, bucket-sort
-**Position:** SWE
-**Years:** L4
-
-**Question:** Given a non-empty array of integers, return the k most frequent elements.
-
-**Approach:** Count frequencies in hashmap, then either (a) min-heap of size k by frequency → O(n log k), or (b) bucket sort by frequency (buckets[freq] = list) → O(n). Amazon often pairs with follow-up "what if data is streaming?" → Count-Min Sketch + heap.
-
-**Python:**
-```python
-from collections import Counter
-
-def top_k_frequent(nums: list[int], k: int) -> list[int]:
-    cnt = Counter(nums)
-    buckets: list[list[int]] = [[] for _ in range(len(nums) + 1)]
-    for num, freq in cnt.items():
-        buckets[freq].append(num)
-    out: list[int] = []
-    for freq in range(len(buckets) - 1, 0, -1):
-        for num in buckets[freq]:
-            out.append(num)
-            if len(out) == k:
-                return out
-    return out
-```
-
-**TypeScript:**
-```typescript
-function topKFrequent(nums: number[], k: number): number[] {
-  const cnt = new Map<number, number>();
-  for (const n of nums) cnt.set(n, (cnt.get(n) ?? 0) + 1);
-  const buckets: number[][] = Array.from({ length: nums.length + 1 }, () => []);
-  for (const [num, freq] of cnt) buckets[freq].push(num);
-  const out: number[] = [];
-  for (let f = buckets.length - 1; f > 0 && out.length < k; f--)
-    for (const n of buckets[f]) { out.push(n); if (out.length === k) return out; }
-  return out;
-}
-```
-
-**Java:**
-```java
-class Solution {
-    public int[] topKFrequent(int[] nums, int k) {
-        Map<Integer, Integer> cnt = new HashMap<>();
-        for (int n : nums) cnt.merge(n, 1, Integer::sum);
-        List<List<Integer>> buckets = new ArrayList<>();
-        for (int i = 0; i <= nums.length; i++) buckets.add(new ArrayList<>());
-        cnt.forEach((num, f) -> buckets.get(f).add(num));
-        int[] out = new int[k];
-        int idx = 0;
-        for (int f = buckets.size() - 1; f > 0 && idx < k; f--)
-            for (int num : buckets.get(f)) if (idx < k) out[idx++] = num;
-        return out;
-    }
-}
-```
-
-**Key points:**
-- Bucket sort exploits `freq <= n` for O(n) total.
-- Heap variant is O(n log k) and simpler when k is tiny vs n.
-- Walk buckets from high to low to collect k items.
-
-**Follow-ups:**
-- Streaming Top-K with Count-Min Sketch + min-heap; trade accuracy for memory.
-- Data does not fit in memory — external sort or MapReduce by hash partition.
-- Ties on frequency — define a deterministic ordering (insertion order, value, etc.).
-- k changes per query — keep a sorted bucket structure to answer all k values cheaply.
-
-**Common Pitfalls:**
-- Sorting every element O(n log n) when only top-k is needed.
-- Allocating `n + 1` buckets when distinct elements are sparse — wastes memory on huge inputs.
-
-**Tags:** #algorithm
-
----
-
-### 8. Reorder Log Files
-
-**Difficulty:** Easy
-**Topics:** strings, sorting, comparator
-**Position:** SWE
-**Years:** L3-L4
-
-**Question:** Reorder a list of log files so letter-logs come first (lexicographically by content, then by identifier as tiebreaker), then digit-logs in original order.
-
-**Approach:** Custom comparator: partition into letter-logs and digit-logs; sort letter-logs by `(content, identifier)`; concatenate. Test classifier on first char of post-identifier token. Amazon-classic OA question.
-
-**Python:**
-```python
-def reorder_log_files(logs: list[str]) -> list[str]:
-    letters: list[str] = []
-    digits: list[str] = []
-    for log in logs:
-        ident, rest = log.split(" ", 1)
-        if rest[0].isdigit():
-            digits.append(log)
-        else:
-            letters.append(log)
-    letters.sort(key=lambda s: (s.split(" ", 1)[1], s.split(" ", 1)[0]))
-    return letters + digits
-```
-
-**TypeScript:**
-```typescript
-function reorderLogFiles(logs: string[]): string[] {
-  const letters: string[] = [], digits: string[] = [];
-  for (const log of logs) {
-    const sp = log.indexOf(" ");
-    if (/\d/.test(log[sp + 1])) digits.push(log);
-    else letters.push(log);
-  }
-  letters.sort((a, b) => {
-    const ai = a.indexOf(" "), bi = b.indexOf(" ");
-    const ac = a.slice(ai + 1), bc = b.slice(bi + 1);
-    if (ac !== bc) return ac < bc ? -1 : 1;
-    return a.slice(0, ai) < b.slice(0, bi) ? -1 : 1;
-  });
-  return [...letters, ...digits];
-}
-```
-
-**Java:**
-```java
-class Solution {
-    public String[] reorderLogFiles(String[] logs) {
-        Arrays.sort(logs, (a, b) -> {
-            int ai = a.indexOf(' '), bi = b.indexOf(' ');
-            boolean aDig = Character.isDigit(a.charAt(ai + 1));
-            boolean bDig = Character.isDigit(b.charAt(bi + 1));
-            if (!aDig && !bDig) {
-                int cmp = a.substring(ai + 1).compareTo(b.substring(bi + 1));
-                return cmp != 0 ? cmp : a.substring(0, ai).compareTo(b.substring(0, bi));
-            }
-            return aDig ? (bDig ? 0 : 1) : -1;
-        });
-        return logs;
-    }
-}
-```
-
-**Key points:**
-- Stable partition keeps digit-logs in original order.
-- Sort key is (content, identifier) for tie-break.
-- O(n * k log n) where k is average log length.
-
-**Follow-ups:**
-- 1B logs — parallelize with map-reduce, then merge-sort partitions.
-- Identifier collisions across multiple log streams — namespace by stream id.
-- Case sensitivity (`A` vs `a`) — normalize or document the rule explicitly.
-- Logs arrive as a stream — maintain order without full re-sort on every batch.
-
-**Common Pitfalls:**
-- Using a non-stable sort — destroys the required original order of digit-logs.
-- Splitting on every space instead of only the first one; mishandles logs whose content contains spaces.
-
-**Tags:** #coding
-
----
-
-### 9. Design a Parking Lot
-
-**Difficulty:** Medium
-**Topics:** ood, design
-**Position:** SWE
-**Years:** L4
-
-**Question:** Design the classes for a multi-level parking lot supporting motorcycles, cars, and trucks with different spot sizes.
-
-**Approach:** Classes: `ParkingLot` → `Level[]` → `ParkingSpot[]`. Spot has `size` enum (compact/large/motorcycle). `Vehicle` abstract → `Car/Truck/Motorcycle`, each declares which spot sizes they fit. `park()` finds first compatible spot; `leave()` frees. Show good encapsulation, polymorphism, and discuss extension (electric charging, monthly passes). Don't over-engineer — interviewers want clear class diagrams, not 50 classes.
-
-**Python:**
-```python
-from enum import Enum
-
-class Size(Enum):
-    MOTO = 1; COMPACT = 2; LARGE = 3
-
-class Vehicle:
-    def __init__(self, plate: str, fits: set[Size]) -> None:
-        self.plate, self.fits = plate, fits
-
-class Spot:
-    def __init__(self, size: Size) -> None:
-        self.size, self.vehicle = size, None
-
-class ParkingLot:
-    def __init__(self, spots: list[Spot]) -> None:
-        self.spots = spots
-    def park(self, v: Vehicle) -> Spot | None:
-        for s in self.spots:
-            if s.vehicle is None and s.size in v.fits:
-                s.vehicle = v; return s
-        return None
-    def leave(self, s: Spot) -> None:
-        s.vehicle = None
-```
-
-**TypeScript:**
-```typescript
-enum Size { MOTO, COMPACT, LARGE }
-class Vehicle { constructor(public plate: string, public fits: Set<Size>) {} }
-class Spot { vehicle: Vehicle | null = null; constructor(public size: Size) {} }
-
-class ParkingLot {
-  constructor(private spots: Spot[]) {}
-  park(v: Vehicle): Spot | null {
-    for (const s of this.spots)
-      if (!s.vehicle && v.fits.has(s.size)) { s.vehicle = v; return s; }
-    return null;
-  }
-  leave(s: Spot): void { s.vehicle = null; }
-}
-```
-
-**Java:**
-```java
-enum Size { MOTO, COMPACT, LARGE }
-
-class Vehicle {
-    String plate; Set<Size> fits;
-    Vehicle(String plate, Set<Size> fits) { this.plate = plate; this.fits = fits; }
-}
-
-class Spot {
-    Size size; Vehicle vehicle;
-    Spot(Size size) { this.size = size; }
-}
-
-class ParkingLot {
-    private final List<Spot> spots;
-    public ParkingLot(List<Spot> spots) { this.spots = spots; }
-    public Spot park(Vehicle v) {
-        for (Spot s : spots)
-            if (s.vehicle == null && v.fits.contains(s.size)) { s.vehicle = v; return s; }
-        return null;
-    }
-    public void leave(Spot s) { s.vehicle = null; }
-}
-```
-
-**Key points:**
-- `Vehicle.fits` lets each type declare compatible spot sizes (open/closed principle).
-- Linear scan is fine for an interview; production groups free spots by size in queues.
-- Extend by adding `EVSpot extends Spot` rather than mutating enum.
-
-**Complexity:** `park` is O(S) for a linear scan of S spots (O(1) if free spots are bucketed by size); `leave` is O(1).
-
-**Follow-ups:**
-- Multi-level lot — how do you balance utilization across levels?
-- Electric charging spots with queueing and charge-time tracking.
-- Pricing (hourly / daily / monthly) integrated with a payment service.
-- Real-time availability board — pub/sub vs polling, eventual consistency trade-offs.
-- Reservations with overbooking strategy and no-show timeout.
-
-**Common Pitfalls:**
-- Over-engineering with too many classes; the interviewer wants clear boundaries, not 50 abstractions.
-- Hardcoding spot-vs-vehicle compatibility in `ParkingLot` instead of declaring it on the vehicle type.
-
-**Tags:** #coding
-
----
-
-### 10. Design Amazon Prime Video
-
-**Difficulty:** Hard
-**Topics:** system-design, cdn, video-streaming, drm, recommendation, cloud
-**Position:** Senior SWE
-**Years:** L5
-
-**Question:** Design a video streaming service like Prime Video.
-
-**Approach:** Upload → encoding pipeline (multiple bitrates, codecs, DRM-wrapped HLS/DASH chunks) → blob storage (S3) + CDN (CloudFront). Playback client requests manifest, adapts bitrate (ABR). Metadata in DynamoDB; recommendations from offline training (matrix factorization + content embeddings). Discuss DRM (Widevine/FairPlay/PlayReady), regional licensing, offline downloads, and CDN cost optimization (cache hit ratio). Mention Amazon's open-sourced bitmovin/encoding patterns where relevant.
-
-**Follow-ups:**
-- DRM key rotation and license expiry; how do clients refresh mid-playback?
-- Resume playback at exact timestamp across devices (continue watching).
-- Geo-blocking and regional licensing windows — enforce at manifest or CDN edge?
-- Live event streaming vs on-demand — what changes in encoding and CDN strategy?
-- Recommendation cold-start for new users or new titles.
-
-**Common Pitfalls:**
-- Treating it like generic file storage and missing the encoding pipeline + ABR layer.
-- Ignoring CDN egress cost — typically the largest line item in real streaming systems.
-
-**Tags:** #system-design
-
----
-
-### 11. Design Amazon.com Product Page
-
-**Difficulty:** Hard
-**Topics:** system-design, caching, microservices, search
-**Position:** Senior SWE
-**Years:** L5
-
-**Question:** Design the backend that powers an Amazon product detail page (title, price, inventory, reviews, recommendations) for millions of requests per second.
-
-**Approach:** Page is composed from many services: product info (cached, write-through), price (real-time, may vary per user), inventory (eventually consistent counter), reviews (paginated, sharded by product_id), recommendations (precomputed). BFF (backend-for-frontend) aggregates with fan-out + timeout per service; render with available data on timeout (graceful degradation). Heavy edge cache for read-mostly fields. Discuss eventual consistency on inventory ("only 2 left!" can over-promise) and Black Friday spikes (pre-warm cache, auto-scale).
-
-**Tags:** #system-design
-
----
-
-### 12. Design Kindle Sync
-
-**Difficulty:** Hard
-**Topics:** system-design, sync, conflict-resolution, offline
-**Position:** Senior SWE
-**Years:** L5
-
-**Question:** Design how Kindle syncs reading position, highlights, and notes across a user's devices, even when devices are intermittently offline.
-
-**Approach:** Each device maintains local state + an op log. On reconnect, push ops to a per-user sync service. Server merges ops with last-write-wins for position (or "furthest read" for resilience to misclicks) and append-only for highlights/notes. Use vector clocks or HLC for ordering across devices. Store in DynamoDB sharded by user_id. Push notifications via SNS to peer devices. Discuss conflict cases (notes edited on two devices offline) and eventual convergence guarantees.
-
-**Tags:** #system-design
-
----
-
-### 13. Design Amazon S3
-
-**Difficulty:** Hard
-**Topics:** system-design, blob-storage, consistency, replication, cloud
-**Position:** Senior SWE
-**Years:** L5
-
-**Question:** Design Amazon S3 — a globally available object storage service with strong read-after-write consistency.
-
-**Approach:** Frontend API gateways → request routed by hash(bucket+key) to a shard. Each shard has a metadata service (sharded relational/KV) + erasure-coded object data across many storage nodes (e.g., Reed-Solomon 10+4). Multi-AZ replication; cross-region async replication for DR. Strong consistency via metadata coordinator (Paxos-based). Lifecycle (S3 → Glacier) via background tier-down jobs. Discuss durability math (11 nines), large object multipart upload, and how versioning is implemented (immutable object IDs + version stack in metadata).
-
-**Tags:** #system-design
-
----
-
-### 14. Design a Distributed Lock Service
-
-**Difficulty:** Hard
-**Topics:** system-design, consensus, paxos, zookeeper
-**Position:** Senior SWE
-**Years:** L5
-
-**Question:** Design a distributed lock service (like Chubby or ZooKeeper) for AWS-internal use.
-
-**Approach:** Raft/Paxos cluster of 5-7 nodes for consensus on lock state. Clients request lease-based locks (TTL) to handle client failure. Sessions/heartbeats: if client doesn't heartbeat, lock auto-releases. Discuss fencing tokens (monotonic counter passed to downstream service to reject stale lock holders — the famous Kleppmann argument). Trade-offs: strong consistency vs latency, single-region vs multi-region (don't put a lock service across regions without careful thought).
-
-**Tags:** #system-design
-
----
-
-### 15. Tell me about a time you went above and beyond for a customer
-
-**Difficulty:** Medium
-**Topics:** behavioral, customer-obsession
-**Position:** SWE
-**Years:** L4
-
-**Question:** Describe a time you went above and beyond to delight a customer.
-
-**Approach:** STAR mapping to **Customer Obsession** (LP #1). "Customer" can be internal (another team) or external. Show: you proactively identified a need they hadn't articulated, you went outside your scope to fix it, and there was measurable customer impact. Avoid generic "I responded to a ticket quickly."
-
-**Tags:** #behavioral
-
----
-
-### 16. Tell me about a time you took on something significant outside your responsibility
-
-**Difficulty:** Medium
-**Topics:** behavioral, ownership, bias-for-action
-**Position:** SWE
-**Years:** L4
-
-**Question:** Tell me about a time you took ownership of something that wasn't your job.
-
-**Approach:** STAR mapping to **Ownership** and **Bias for Action**. Show: (1) you saw a gap and didn't wait for someone to assign it, (2) you didn't ask for permission for everything, (3) impact was real. Bonus: you stayed long-term — "I owned it for 6 months until we hired someone." Don't pick a story where you were really just doing your assigned job.
-
-**Tags:** #behavioral
-
----
-
-### 17. Tell me about a time you had to make a decision with incomplete information
-
-**Difficulty:** Medium
-**Topics:** behavioral, bias-for-action, are-right-a-lot
-**Position:** Senior SWE
-**Years:** L5
-
-**Question:** Tell me about a time you had to make a quick decision without all the information you wanted.
-
-**Approach:** STAR mapping to **Bias for Action** and **Are Right A Lot**. Show: (1) the cost of waiting was real and quantifiable, (2) you identified the smallest set of facts you needed, (3) you made the call and committed, (4) you had a rollback or course-correction plan. Decision being wrong is OK if you owned the recovery.
-
-**Tags:** #behavioral
-
----
-
-### 18. Tell me about your most challenging technical project
-
-**Difficulty:** Medium
-**Topics:** behavioral, dive-deep, deliver-results
-**Position:** Senior SWE
-**Years:** L5
-
-**Question:** Walk me through your most technically complex project. What made it hard and what was your role?
-
-**Approach:** STAR mapping to **Dive Deep** and **Deliver Results**. The bar raiser will grill you for 15-20 min on this one — be ready for "why that database?" / "what was the p99?" / "what would you redesign?" Pick a project you owned end-to-end with quantifiable outcome. If you can't speak to architecture trade-offs in detail, pick a different story.
-
-**Tags:** #behavioral
-
----
-
-### 19. Leadership Principle deep-dive: Disagree and Commit
-
-**Difficulty:** Medium
-**Topics:** behavioral, have-backbone, earn-trust
-**Position:** Senior SWE
-**Years:** L5
-
-**Question:** Tell me about a time you respectfully disagreed with a decision but committed to it anyway and helped it succeed.
-
-**Approach:** This maps to **Have Backbone; Disagree and Commit** — one of the most-asked LPs at L5+. Two-part story: (1) you raised your disagreement clearly with data, in the right forum, before the decision was final; (2) once decided against you, you actively committed — not passive acceptance but you helped make it work. Bonus: it turned out the original decision was right and you learned from it.
-
-**Tags:** #domain-knowledge
-
----
-
-### 20. Leadership Principle deep-dive: Frugality
-
-**Difficulty:** Medium
-**Topics:** behavioral, frugality, invent-and-simplify
-**Position:** SWE
-**Years:** L4
-
-**Question:** Tell me about a time you accomplished something significant with limited resources.
-
-**Approach:** Maps to **Frugality** ("accomplish more with less"). Resources can be people, time, money, or compute. Show: you didn't ask for more headcount/budget — you found a clever simplification (also touches **Invent and Simplify**). Concrete: "we needed real-time analytics but couldn't afford Snowflake — I built a Kinesis + DynamoDB streams pipeline for $200/month instead of $20k." Quantify the savings.
-
-**Tags:** #domain-knowledge
-
----
-
-### 21. Trapping Rain Water II
-
-**Difficulty:** Hard
-**Topics:** heap, bfs, matrix
-**Position:** Senior SDE
-**Years:** L5-L6
-
-**Question:** Given an `m x n` integer matrix representing the elevation of each unit cell of a 2D map, compute how much rainwater it can trap.
-
-**Approach:** Min-heap seeded with all boundary cells. Pop the lowest cell, visit neighbors; trapped water at neighbor = `max(0, current_height - neighbor_height)`; push neighbor with `max(current, neighbor)`. O(m*n log(m*n)) time. Key insight: water level at any cell is bounded by the lowest "wall" surrounding it, processed lowest-first.
-
-**Python:**
-```python
-import heapq
-
-def trap_rain_water(height_map: list[list[int]]) -> int:
-    if not height_map or not height_map[0]:
-        return 0
-    m, n = len(height_map), len(height_map[0])
-    visited = [[False] * n for _ in range(m)]
-    heap: list[tuple[int, int, int]] = []
-    for r in range(m):
-        for c in range(n):
-            if r in (0, m - 1) or c in (0, n - 1):
-                heapq.heappush(heap, (height_map[r][c], r, c))
-                visited[r][c] = True
-    total = 0
-    while heap:
-        h, r, c = heapq.heappop(heap)
-        for dr, dc in ((1, 0), (-1, 0), (0, 1), (0, -1)):
-            nr, nc = r + dr, c + dc
-            if 0 <= nr < m and 0 <= nc < n and not visited[nr][nc]:
-                visited[nr][nc] = True
-                total += max(0, h - height_map[nr][nc])
-                heapq.heappush(heap, (max(h, height_map[nr][nc]), nr, nc))
-    return total
-```
-
-**TypeScript:**
-```typescript
-function trapRainWater(heightMap: number[][]): number {
-  const m = heightMap.length, n = heightMap[0]?.length ?? 0;
-  if (!m || !n) return 0;
-  const visited: boolean[][] = Array.from({ length: m }, () => new Array(n).fill(false));
-  const heap: Array<[number, number, number]> = [];
-  const push = (h: number, r: number, c: number) => { heap.push([h, r, c]); heap.sort((a, b) => a[0] - b[0]); };
-  for (let r = 0; r < m; r++) for (let c = 0; c < n; c++)
-    if (r === 0 || r === m - 1 || c === 0 || c === n - 1) { push(heightMap[r][c], r, c); visited[r][c] = true; }
-  let total = 0;
-  const dirs = [[1,0],[-1,0],[0,1],[0,-1]];
-  while (heap.length) {
-    const [h, r, c] = heap.shift()!;
-    for (const [dr, dc] of dirs) {
-      const nr = r + dr, nc = c + dc;
-      if (nr >= 0 && nr < m && nc >= 0 && nc < n && !visited[nr][nc]) {
-        visited[nr][nc] = true;
-        total += Math.max(0, h - heightMap[nr][nc]);
-        push(Math.max(h, heightMap[nr][nc]), nr, nc);
-      }
-    }
-  }
-  return total;
-}
-```
-
-**Java:**
-```java
-class Solution {
-    public int trapRainWater(int[][] heightMap) {
-        int m = heightMap.length, n = heightMap[0].length;
-        if (m < 3 || n < 3) return 0;
-        boolean[][] visited = new boolean[m][n];
-        PriorityQueue<int[]> heap = new PriorityQueue<>((a, b) -> a[0] - b[0]);
-        for (int r = 0; r < m; r++) for (int c = 0; c < n; c++)
-            if (r == 0 || r == m - 1 || c == 0 || c == n - 1) {
-                heap.offer(new int[]{heightMap[r][c], r, c}); visited[r][c] = true;
-            }
-        int total = 0;
-        int[][] dirs = {{1,0},{-1,0},{0,1},{0,-1}};
-        while (!heap.isEmpty()) {
-            int[] cur = heap.poll();
-            for (int[] d : dirs) {
-                int nr = cur[1] + d[0], nc = cur[2] + d[1];
-                if (nr < 0 || nr >= m || nc < 0 || nc >= n || visited[nr][nc]) continue;
-                visited[nr][nc] = true;
-                total += Math.max(0, cur[0] - heightMap[nr][nc]);
-                heap.offer(new int[]{Math.max(cur[0], heightMap[nr][nc]), nr, nc});
-            }
-        }
-        return total;
-    }
-}
-```
-
-**Key points:**
-- Process from the lowest boundary inward so each cell's bounding wall is known.
-- Push `max(current_wall, neighbor)` to model "raised" wall after flooding.
-- O(m*n log(m*n)) time; production TS should use a real heap.
-
-**Tags:** #algorithm
-
----
-
-### 22. LFU Cache
+### 3. LFU Cache
 
 **Difficulty:** Hard
 **Topics:** ood, hashmap, linked-list, design
@@ -1223,7 +353,729 @@ class LFUCache {
 
 ---
 
-### 23. Number of Provinces
+### 4. Copy List with Random Pointer
+
+**Difficulty:** Medium
+**Topics:** linked-list, hashmap
+**Position:** SDE
+**Years:** L4
+
+**Question:** Deep-copy a linked list where each node has `next` and a `random` pointer to any node or null.
+
+**Approach:** Option A: hashmap `original -> copy`, two passes (build nodes, then wire `next`/`random`). O(n) time and space. Option B (O(1) extra): interleave copy nodes (`A -> A' -> B -> B' -> ...`), then `A'.random = A.random.next`, then split lists.
+
+**Python:**
+```python
+def copy_random_list(head: "Node | None") -> "Node | None":
+    if not head:
+        return None
+    m: dict[Node, Node] = {}
+    cur = head
+    while cur:
+        m[cur] = Node(cur.val)
+        cur = cur.next
+    cur = head
+    while cur:
+        m[cur].next = m[cur.next] if cur.next else None
+        m[cur].random = m[cur.random] if cur.random else None
+        cur = cur.next
+    return m[head]
+```
+
+**TypeScript:**
+```typescript
+function copyRandomList(head: RNode | null): RNode | null {
+  if (!head) return null;
+  const m = new Map<RNode, RNode>();
+  let cur: RNode | null = head;
+  while (cur) { m.set(cur, new RNode(cur.val)); cur = cur.next; }
+  cur = head;
+  while (cur) {
+    m.get(cur)!.next = cur.next ? m.get(cur.next)! : null;
+    m.get(cur)!.random = cur.random ? m.get(cur.random)! : null;
+    cur = cur.next;
+  }
+  return m.get(head)!;
+}
+```
+
+**Java:**
+```java
+class Solution {
+    public Node copyRandomList(Node head) {
+        if (head == null) return null;
+        Map<Node, Node> m = new HashMap<>();
+        for (Node cur = head; cur != null; cur = cur.next) m.put(cur, new Node(cur.val));
+        for (Node cur = head; cur != null; cur = cur.next) {
+            m.get(cur).next = m.get(cur.next);
+            m.get(cur).random = m.get(cur.random);
+        }
+        return m.get(head);
+    }
+}
+```
+
+**Key points:**
+- Two passes separate node creation from pointer wiring cleanly.
+- Map handles `random` pointing forward, backward, or at self.
+- O(n) time and O(n) space; O(1)-space interleave variant exists but is trickier.
+
+**Tags:** #algorithm
+
+---
+
+## Tree
+
+### 5. Word Break
+
+**Difficulty:** Medium
+**Topics:** dp, strings, trie
+**Position:** SWE
+**Years:** L4
+
+**Question:** Given a string `s` and a dictionary of words, return true if `s` can be segmented into a sequence of dictionary words.
+
+**Approach:** DP — `dp[i]` = true if `s[0..i)` can be segmented. Transition: `dp[i] = any dp[j] && s[j..i) in dict`. O(n² * L) with hashset lookup. Trie speeds up the inner check. Follow-up: return all segmentations (memoized recursion).
+
+**Python:**
+```python
+def word_break(s: str, word_dict: list[str]) -> bool:
+    words = set(word_dict)
+    n = len(s)
+    dp = [False] * (n + 1)
+    dp[0] = True
+    for i in range(1, n + 1):
+        for j in range(i):
+            if dp[j] and s[j:i] in words:
+                dp[i] = True
+                break
+    return dp[n]
+```
+
+**TypeScript:**
+```typescript
+function wordBreak(s: string, wordDict: string[]): boolean {
+  const words = new Set(wordDict);
+  const n = s.length;
+  const dp = new Array<boolean>(n + 1).fill(false);
+  dp[0] = true;
+  for (let i = 1; i <= n; i++) {
+    for (let j = 0; j < i; j++) {
+      if (dp[j] && words.has(s.slice(j, i))) { dp[i] = true; break; }
+    }
+  }
+  return dp[n];
+}
+```
+
+**Java:**
+```java
+class Solution {
+    public boolean wordBreak(String s, List<String> wordDict) {
+        Set<String> words = new HashSet<>(wordDict);
+        int n = s.length();
+        boolean[] dp = new boolean[n + 1];
+        dp[0] = true;
+        for (int i = 1; i <= n; i++) {
+            for (int j = 0; j < i; j++) {
+                if (dp[j] && words.contains(s.substring(j, i))) { dp[i] = true; break; }
+            }
+        }
+        return dp[n];
+    }
+}
+```
+
+**Key points:**
+- `dp[0] = True` represents the empty prefix.
+- O(n^2) outer-inner with O(L) slice/hash; total O(n^2 * L).
+- Break early once `dp[i]` becomes true to cut the inner loop.
+
+**Follow-ups:**
+- Return all valid segmentations (Word Break II) with memoization.
+- Dictionary at 10^6 entries — switch to a Trie to prune impossible splits early.
+- Online dictionary updates between queries; what gets invalidated?
+- Unicode / multi-byte words; how does runtime scale with average word length L?
+
+**Common Pitfalls:**
+- Missing `dp[0] = True`, which makes every segmentation evaluate to false.
+- Re-creating substrings on every inner iteration — use a Trie or substring index for hot dictionaries.
+
+**Tags:** #algorithm
+
+---
+
+### 6. Concatenated Words
+
+**Difficulty:** Hard
+**Topics:** dp, trie, strings
+**Position:** Senior SDE
+**Years:** L5
+
+**Question:** Given a list of words (no duplicates), return all words that are entirely concatenations of at least two other words from the list.
+
+**Approach:** Build a set of all words. For each word, run a Word-Break-style DP: `dp[i]` true if `s[0..i)` splittable using OTHER words (require at least one split). Trie speeds up prefix scans. O(sum(L_i^2)). Sort by length first so shorter words are processed first if building incrementally.
+
+**Python:**
+```python
+def find_all_concatenated_words(words: list[str]) -> list[str]:
+    word_set = set(words)
+    def can_form(w: str) -> bool:
+        if not w:
+            return False
+        n = len(w)
+        dp = [False] * (n + 1)
+        dp[0] = True
+        for i in range(1, n + 1):
+            for j in range(i):
+                if dp[j] and w[j:i] in word_set and (j > 0 or i < n):
+                    dp[i] = True
+                    break
+        return dp[n]
+    return [w for w in words if can_form(w)]
+```
+
+**TypeScript:**
+```typescript
+function findAllConcatenatedWordsInADict(words: string[]): string[] {
+  const set = new Set(words);
+  const canForm = (w: string): boolean => {
+    if (!w) return false;
+    const n = w.length;
+    const dp = new Array<boolean>(n + 1).fill(false);
+    dp[0] = true;
+    for (let i = 1; i <= n; i++) {
+      for (let j = 0; j < i; j++) {
+        if (dp[j] && set.has(w.slice(j, i)) && (j > 0 || i < n)) { dp[i] = true; break; }
+      }
+    }
+    return dp[n];
+  };
+  return words.filter(canForm);
+}
+```
+
+**Java:**
+```java
+class Solution {
+    public List<String> findAllConcatenatedWordsInADict(String[] words) {
+        Set<String> set = new HashSet<>(Arrays.asList(words));
+        List<String> res = new ArrayList<>();
+        for (String w : words) if (canForm(w, set)) res.add(w);
+        return res;
+    }
+    private boolean canForm(String w, Set<String> set) {
+        if (w.isEmpty()) return false;
+        int n = w.length();
+        boolean[] dp = new boolean[n + 1];
+        dp[0] = true;
+        for (int i = 1; i <= n; i++) {
+            for (int j = 0; j < i; j++) {
+                if (dp[j] && set.contains(w.substring(j, i)) && (j > 0 || i < n)) { dp[i] = true; break; }
+            }
+        }
+        return dp[n];
+    }
+}
+```
+
+**Key points:**
+- The `(j > 0 || i < n)` guard rejects the word matching itself wholly.
+- O(sum L_i^2) per word; trie reduces inner cost further.
+- Same shape as Word Break with a "use at least one other word" rule.
+
+**Tags:** #algorithm
+
+---
+
+### 7. Subtree of Another Tree
+
+**Difficulty:** Easy
+**Topics:** tree, dfs, recursion
+**Position:** SDE
+**Years:** L4
+
+**Question:** Given two binary trees `root` and `subRoot`, return true if there's a subtree of `root` identical in structure and node values to `subRoot`.
+
+**Approach:** Recursive: at each node of `root`, check if `sameTree(node, subRoot)`. `sameTree` recurses both sides. O(m*n) worst case. Faster: serialize both trees with null markers and use string `contains` (or KMP) — O(m+n).
+
+**Python:**
+```python
+def is_subtree(root: TreeNode | None, sub_root: TreeNode | None) -> bool:
+    def same(a: TreeNode | None, b: TreeNode | None) -> bool:
+        if a is None and b is None:
+            return True
+        if a is None or b is None or a.val != b.val:
+            return False
+        return same(a.left, b.left) and same(a.right, b.right)
+    if sub_root is None:
+        return True
+    if root is None:
+        return False
+    if same(root, sub_root):
+        return True
+    return is_subtree(root.left, sub_root) or is_subtree(root.right, sub_root)
+```
+
+**TypeScript:**
+```typescript
+function isSubtree(root: TreeNode | null, subRoot: TreeNode | null): boolean {
+  const same = (a: TreeNode | null, b: TreeNode | null): boolean => {
+    if (!a && !b) return true;
+    if (!a || !b || a.val !== b.val) return false;
+    return same(a.left, b.left) && same(a.right, b.right);
+  };
+  if (!subRoot) return true;
+  if (!root) return false;
+  if (same(root, subRoot)) return true;
+  return isSubtree(root.left, subRoot) || isSubtree(root.right, subRoot);
+}
+```
+
+**Java:**
+```java
+class Solution {
+    public boolean isSubtree(TreeNode root, TreeNode subRoot) {
+        if (subRoot == null) return true;
+        if (root == null) return false;
+        if (same(root, subRoot)) return true;
+        return isSubtree(root.left, subRoot) || isSubtree(root.right, subRoot);
+    }
+    private boolean same(TreeNode a, TreeNode b) {
+        if (a == null && b == null) return true;
+        if (a == null || b == null || a.val != b.val) return false;
+        return same(a.left, b.left) && same(a.right, b.right);
+    }
+}
+```
+
+**Key points:**
+- Empty `subRoot` is trivially a subtree.
+- Worst case O(m * n) where m, n are tree sizes.
+- Serialization with null markers + KMP collapses it to O(m + n).
+
+**Tags:** #algorithm
+
+---
+
+### 8. Serialize and Deserialize Binary Tree
+
+**Difficulty:** Hard
+**Topics:** tree, dfs, bfs, design
+**Position:** Senior SDE
+**Years:** L5
+
+**Question:** Design an algorithm to serialize a binary tree to a string and deserialize it back.
+
+**Approach:** Preorder DFS with null markers: `"1,2,#,#,3,#,#"`. Deserialize via queue/iterator consuming tokens recursively. O(n) both ways. Level-order (BFS) also works and is more readable for debugging. Be explicit about delimiter and null sentinel.
+
+**Python:**
+```python
+def serialize(root: TreeNode | None) -> str:
+    parts: list[str] = []
+    def go(node: TreeNode | None) -> None:
+        if node is None:
+            parts.append("#"); return
+        parts.append(str(node.val))
+        go(node.left); go(node.right)
+    go(root)
+    return ",".join(parts)
+
+def deserialize(data: str) -> TreeNode | None:
+    it = iter(data.split(","))
+    def go() -> TreeNode | None:
+        v = next(it)
+        if v == "#":
+            return None
+        node = TreeNode(int(v))
+        node.left = go(); node.right = go()
+        return node
+    return go()
+```
+
+**TypeScript:**
+```typescript
+function serialize(root: TreeNode | null): string {
+  const parts: string[] = [];
+  const go = (n: TreeNode | null): void => {
+    if (!n) { parts.push("#"); return; }
+    parts.push(String(n.val));
+    go(n.left); go(n.right);
+  };
+  go(root);
+  return parts.join(",");
+}
+
+function deserialize(data: string): TreeNode | null {
+  const tokens = data.split(",");
+  let i = 0;
+  const go = (): TreeNode | null => {
+    const v = tokens[i++];
+    if (v === "#") return null;
+    const node = new TreeNode(parseInt(v, 10));
+    node.left = go(); node.right = go();
+    return node;
+  };
+  return go();
+}
+```
+
+**Java:**
+```java
+public class Codec {
+    public String serialize(TreeNode root) {
+        StringBuilder sb = new StringBuilder();
+        go(root, sb);
+        return sb.toString();
+    }
+    private void go(TreeNode n, StringBuilder sb) {
+        if (n == null) { sb.append("#,"); return; }
+        sb.append(n.val).append(',');
+        go(n.left, sb); go(n.right, sb);
+    }
+    public TreeNode deserialize(String data) {
+        Deque<String> tokens = new ArrayDeque<>(Arrays.asList(data.split(",")));
+        return build(tokens);
+    }
+    private TreeNode build(Deque<String> tokens) {
+        String v = tokens.poll();
+        if (v == null || v.equals("#")) return null;
+        TreeNode node = new TreeNode(Integer.parseInt(v));
+        node.left = build(tokens); node.right = build(tokens);
+        return node;
+    }
+}
+```
+
+**Key points:**
+- Preorder with null markers reconstructs structure unambiguously.
+- O(n) tokens for serialize and deserialize.
+- Use a shared cursor/iterator to consume tokens in order.
+
+**Tags:** #algorithm
+
+---
+
+### 9. Word Search II
+
+**Difficulty:** Hard
+**Topics:** trie, backtracking, dfs, matrix
+**Position:** Senior SDE
+**Years:** L5
+
+**Question:** Given a `m x n` board of characters and a list of words, return all words that exist in the board (adjacent cells, no reuse within a word).
+
+**Approach:** Build a trie of all words. DFS each cell, walking the trie in lockstep with the path. On reaching a trie node marking a word, collect it and clear the marker (avoid duplicates). Prune dead trie branches after exhaustion. O(m*n * 4^L). Trie is the trick — naive per-word DFS TLEs.
+
+**Python:**
+```python
+def find_words(board: list[list[str]], words: list[str]) -> list[str]:
+    trie: dict = {}
+    for w in words:
+        node = trie
+        for c in w:
+            node = node.setdefault(c, {})
+        node["$"] = w
+    m, n = len(board), len(board[0])
+    out: list[str] = []
+    def dfs(r: int, c: int, node: dict) -> None:
+        ch = board[r][c]
+        nxt = node.get(ch)
+        if nxt is None:
+            return
+        if "$" in nxt:
+            out.append(nxt.pop("$"))
+        board[r][c] = "#"
+        for dr, dc in ((1,0),(-1,0),(0,1),(0,-1)):
+            nr, nc = r + dr, c + dc
+            if 0 <= nr < m and 0 <= nc < n and board[nr][nc] != "#":
+                dfs(nr, nc, nxt)
+        board[r][c] = ch
+        if not nxt:
+            node.pop(ch, None)
+    for r in range(m):
+        for c in range(n):
+            dfs(r, c, trie)
+    return out
+```
+
+**TypeScript:**
+```typescript
+function findWords(board: string[][], words: string[]): string[] {
+  type Node = { [k: string]: Node | string };
+  const trie: Node = {};
+  for (const w of words) {
+    let node: Node = trie;
+    for (const c of w) { if (!node[c]) node[c] = {} as Node; node = node[c] as Node; }
+    (node as any).$ = w;
+  }
+  const m = board.length, n = board[0].length;
+  const out: string[] = [];
+  const dfs = (r: number, c: number, node: Node): void => {
+    const ch = board[r][c];
+    const nxt = node[ch] as Node | undefined;
+    if (!nxt) return;
+    if ((nxt as any).$) { out.push((nxt as any).$); delete (nxt as any).$; }
+    board[r][c] = "#";
+    for (const [dr, dc] of [[1,0],[-1,0],[0,1],[0,-1]]) {
+      const nr = r + dr, nc = c + dc;
+      if (nr >= 0 && nr < m && nc >= 0 && nc < n && board[nr][nc] !== "#") dfs(nr, nc, nxt);
+    }
+    board[r][c] = ch;
+    if (Object.keys(nxt).length === 0) delete node[ch];
+  };
+  for (let r = 0; r < m; r++) for (let c = 0; c < n; c++) dfs(r, c, trie);
+  return out;
+}
+```
+
+**Java:**
+```java
+class Solution {
+    static class Node { Map<Character, Node> kids = new HashMap<>(); String word; }
+    private char[][] board; private int m, n;
+    private final List<String> out = new ArrayList<>();
+    public List<String> findWords(char[][] board, String[] words) {
+        this.board = board; m = board.length; n = board[0].length;
+        Node root = new Node();
+        for (String w : words) {
+            Node cur = root;
+            for (char c : w.toCharArray()) cur = cur.kids.computeIfAbsent(c, k -> new Node());
+            cur.word = w;
+        }
+        for (int r = 0; r < m; r++) for (int c = 0; c < n; c++) dfs(r, c, root);
+        return out;
+    }
+    private void dfs(int r, int c, Node node) {
+        if (r < 0 || r >= m || c < 0 || c >= n) return;
+        char ch = board[r][c];
+        Node nxt = ch == '#' ? null : node.kids.get(ch);
+        if (nxt == null) return;
+        if (nxt.word != null) { out.add(nxt.word); nxt.word = null; }
+        board[r][c] = '#';
+        dfs(r + 1, c, nxt); dfs(r - 1, c, nxt); dfs(r, c + 1, nxt); dfs(r, c - 1, nxt);
+        board[r][c] = ch;
+        if (nxt.kids.isEmpty()) node.kids.remove(ch);
+    }
+}
+```
+
+**Key points:**
+- Walk the trie in lockstep with the DFS so dead branches prune.
+- Pop `$` after collecting to avoid duplicates without an extra set.
+- Backtrack by restoring the original char after visiting children.
+
+**Tags:** #algorithm
+
+---
+
+### 10. Lowest Common Ancestor of a Binary Tree
+
+**Difficulty:** Medium
+**Topics:** tree, dfs, recursion
+**Position:** SDE
+**Years:** L4
+
+**Question:** Given a binary tree and two nodes `p`, `q`, find their lowest common ancestor.
+
+**Approach:** Recursive: if root is null or p or q, return root. Recurse left and right. If both non-null, root is LCA; else return whichever is non-null. O(n). Works for BST too but BST has O(log n) by comparing values.
+
+**Python:**
+```python
+def lowest_common_ancestor(root: TreeNode | None, p: TreeNode, q: TreeNode) -> TreeNode | None:
+    if root is None or root is p or root is q:
+        return root
+    l = lowest_common_ancestor(root.left, p, q)
+    r = lowest_common_ancestor(root.right, p, q)
+    if l and r:
+        return root
+    return l or r
+```
+
+**TypeScript:**
+```typescript
+function lowestCommonAncestor(root: TreeNode | null, p: TreeNode, q: TreeNode): TreeNode | null {
+  if (!root || root === p || root === q) return root;
+  const l = lowestCommonAncestor(root.left, p, q);
+  const r = lowestCommonAncestor(root.right, p, q);
+  if (l && r) return root;
+  return l ?? r;
+}
+```
+
+**Java:**
+```java
+class Solution {
+    public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
+        if (root == null || root == p || root == q) return root;
+        TreeNode l = lowestCommonAncestor(root.left, p, q);
+        TreeNode r = lowestCommonAncestor(root.right, p, q);
+        if (l != null && r != null) return root;
+        return l != null ? l : r;
+    }
+}
+```
+
+**Key points:**
+- A node equal to p or q is its own LCA.
+- If both sides return non-null, current node is the split point.
+- O(n) time, O(h) recursion depth.
+
+**Tags:** #algorithm
+
+---
+
+### 11. Validate Binary Search Tree
+
+**Difficulty:** Medium
+**Topics:** tree, dfs, recursion
+**Position:** SDE
+**Years:** L4
+
+**Question:** Given a binary tree, determine if it's a valid BST.
+
+**Approach:** Recursive with `(min, max)` bounds passed down. Each node must satisfy `min < node.val < max`. Tightens bounds on recursion. O(n). Alternative: inorder traversal should yield strictly increasing sequence. Watch INT bounds — use long or Optional.
+
+**Python:**
+```python
+def is_valid_bst(root: TreeNode | None) -> bool:
+    def go(node: TreeNode | None, lo: float, hi: float) -> bool:
+        if node is None:
+            return True
+        if not (lo < node.val < hi):
+            return False
+        return go(node.left, lo, node.val) and go(node.right, node.val, hi)
+    return go(root, float("-inf"), float("inf"))
+```
+
+**TypeScript:**
+```typescript
+function isValidBST(root: TreeNode | null): boolean {
+  const go = (n: TreeNode | null, lo: number, hi: number): boolean => {
+    if (!n) return true;
+    if (!(lo < n.val && n.val < hi)) return false;
+    return go(n.left, lo, n.val) && go(n.right, n.val, hi);
+  };
+  return go(root, -Infinity, Infinity);
+}
+```
+
+**Java:**
+```java
+class Solution {
+    public boolean isValidBST(TreeNode root) {
+        return go(root, Long.MIN_VALUE, Long.MAX_VALUE);
+    }
+    private boolean go(TreeNode n, long lo, long hi) {
+        if (n == null) return true;
+        if (n.val <= lo || n.val >= hi) return false;
+        return go(n.left, lo, n.val) && go(n.right, n.val, hi);
+    }
+}
+```
+
+**Key points:**
+- Strict inequalities enforce uniqueness.
+- Pass bounds down, not up — values get tighter, never looser.
+- Inorder traversal must produce strictly increasing values.
+
+**Tags:** #algorithm
+
+---
+
+## Graph
+
+### 12. Number of Islands
+
+**Difficulty:** Medium
+**Topics:** graph, dfs, bfs, matrix
+**Position:** SWE
+**Years:** L4
+
+**Question:** Given a 2D grid of '1's (land) and '0's (water), count the number of islands.
+
+**Approach:** Iterate cells; on each unvisited '1', DFS to flood-fill the island, increment count. Mark visited in-place. O(m*n) time and space (stack). Common Amazon follow-up: "now imagine the grid is so big it's distributed across machines" → discuss row partitioning + boundary merging via union-find.
+
+**Python:**
+```python
+def num_islands(grid: list[list[str]]) -> int:
+    if not grid:
+        return 0
+    m, n = len(grid), len(grid[0])
+    def dfs(r: int, c: int) -> None:
+        if r < 0 or r >= m or c < 0 or c >= n or grid[r][c] != "1":
+            return
+        grid[r][c] = "0"
+        dfs(r + 1, c); dfs(r - 1, c); dfs(r, c + 1); dfs(r, c - 1)
+    count = 0
+    for r in range(m):
+        for c in range(n):
+            if grid[r][c] == "1":
+                dfs(r, c)
+                count += 1
+    return count
+```
+
+**TypeScript:**
+```typescript
+function numIslands(grid: string[][]): number {
+  if (!grid.length) return 0;
+  const m = grid.length, n = grid[0].length;
+  const dfs = (r: number, c: number): void => {
+    if (r < 0 || r >= m || c < 0 || c >= n || grid[r][c] !== "1") return;
+    grid[r][c] = "0";
+    dfs(r + 1, c); dfs(r - 1, c); dfs(r, c + 1); dfs(r, c - 1);
+  };
+  let count = 0;
+  for (let r = 0; r < m; r++)
+    for (let c = 0; c < n; c++)
+      if (grid[r][c] === "1") { dfs(r, c); count++; }
+  return count;
+}
+```
+
+**Java:**
+```java
+class Solution {
+    private int m, n;
+    public int numIslands(char[][] grid) {
+        if (grid.length == 0) return 0;
+        m = grid.length; n = grid[0].length;
+        int count = 0;
+        for (int r = 0; r < m; r++)
+            for (int c = 0; c < n; c++)
+                if (grid[r][c] == '1') { dfs(grid, r, c); count++; }
+        return count;
+    }
+    private void dfs(char[][] g, int r, int c) {
+        if (r < 0 || r >= m || c < 0 || c >= n || g[r][c] != '1') return;
+        g[r][c] = '0';
+        dfs(g, r + 1, c); dfs(g, r - 1, c); dfs(g, r, c + 1); dfs(g, r, c - 1);
+    }
+}
+```
+
+**Key points:**
+- Flip cells to "0" during DFS to avoid revisits without an extra set.
+- O(m*n) time and O(m*n) recursion stack worst case (one giant island).
+- BFS with a queue avoids deep recursion on huge grids.
+
+**Follow-ups:**
+- Use BFS instead of DFS — when does the recursion stack blow up and how do you size the queue?
+- Return the size of the largest island, not just the count.
+- Streaming grid: rows arrive one at a time — maintain count incrementally.
+- Distributed grid sharded by rows; merge island IDs across shards with union-find.
+- Variant: count islands fully surrounded by water (no border cells).
+
+**Common Pitfalls:**
+- Recursing before bounds-checking; the stack explodes on the first invalid index.
+- Mutating the grid in place when the caller still needs it — clone first if not allowed.
+
+**Tags:** #algorithm
+
+---
+
+### 13. Number of Provinces
 
 **Difficulty:** Medium
 **Topics:** graph, union-find, dfs
@@ -1307,7 +1159,7 @@ class Solution {
 
 ---
 
-### 24. Course Schedule
+### 14. Course Schedule
 
 **Difficulty:** Medium
 **Topics:** graph, topological-sort, dfs, bfs
@@ -1387,7 +1239,7 @@ class Solution {
 
 ---
 
-### 25. Word Ladder II
+### 15. Word Ladder II
 
 **Difficulty:** Hard
 **Topics:** bfs, graph, backtracking, strings
@@ -1523,7 +1375,7 @@ class Solution {
 
 ---
 
-### 26. Critical Connections in a Network
+### 16. Critical Connections in a Network
 
 **Difficulty:** Hard
 **Topics:** graph, dfs, tarjan, bridges
@@ -1624,7 +1476,586 @@ class Solution {
 
 ---
 
-### 27. Cut Off Trees for Golf Event
+### 17. The Maze II
+
+**Difficulty:** Medium
+**Topics:** bfs, dijkstra, matrix
+**Position:** SDE
+**Years:** L4-L5
+
+**Question:** A ball rolls in a maze until it hits a wall, then can change direction. Given start and destination, return the shortest distance (cells traveled) or -1 if unreachable.
+
+**Approach:** Dijkstra with min-heap of `(dist, r, c)`. From each cell, simulate rolling in each of 4 directions until a wall; that's an edge. Relax neighbors. O(m*n * max(m,n) * log) due to roll cost. BFS doesn't suffice because edge costs differ.
+
+**Python:**
+```python
+import heapq
+
+def shortest_distance(maze: list[list[int]], start: list[int], destination: list[int]) -> int:
+    m, n = len(maze), len(maze[0])
+    dist = [[float("inf")] * n for _ in range(m)]
+    dist[start[0]][start[1]] = 0
+    heap: list[tuple[int, int, int]] = [(0, start[0], start[1])]
+    while heap:
+        d, r, c = heapq.heappop(heap)
+        if [r, c] == destination:
+            return d
+        if d > dist[r][c]:
+            continue
+        for dr, dc in ((1,0),(-1,0),(0,1),(0,-1)):
+            nr, nc, steps = r, c, 0
+            while 0 <= nr + dr < m and 0 <= nc + dc < n and maze[nr + dr][nc + dc] == 0:
+                nr += dr; nc += dc; steps += 1
+            nd = d + steps
+            if nd < dist[nr][nc]:
+                dist[nr][nc] = nd
+                heapq.heappush(heap, (nd, nr, nc))
+    return -1
+```
+
+**TypeScript:**
+```typescript
+function shortestDistance(maze: number[][], start: number[], destination: number[]): number {
+  const m = maze.length, n = maze[0].length;
+  const dist: number[][] = Array.from({ length: m }, () => new Array(n).fill(Infinity));
+  dist[start[0]][start[1]] = 0;
+  const heap: Array<[number, number, number]> = [[0, start[0], start[1]]];
+  while (heap.length) {
+    heap.sort((a, b) => a[0] - b[0]);
+    const [d, r, c] = heap.shift()!;
+    if (r === destination[0] && c === destination[1]) return d;
+    if (d > dist[r][c]) continue;
+    for (const [dr, dc] of [[1,0],[-1,0],[0,1],[0,-1]]) {
+      let nr = r, nc = c, steps = 0;
+      while (nr + dr >= 0 && nr + dr < m && nc + dc >= 0 && nc + dc < n && maze[nr + dr][nc + dc] === 0) {
+        nr += dr; nc += dc; steps++;
+      }
+      const nd = d + steps;
+      if (nd < dist[nr][nc]) { dist[nr][nc] = nd; heap.push([nd, nr, nc]); }
+    }
+  }
+  return -1;
+}
+```
+
+**Java:**
+```java
+class Solution {
+    public int shortestDistance(int[][] maze, int[] start, int[] destination) {
+        int m = maze.length, n = maze[0].length;
+        int[][] dist = new int[m][n];
+        for (int[] row : dist) Arrays.fill(row, Integer.MAX_VALUE);
+        dist[start[0]][start[1]] = 0;
+        PriorityQueue<int[]> heap = new PriorityQueue<>((a, b) -> a[0] - b[0]);
+        heap.offer(new int[]{0, start[0], start[1]});
+        int[][] dirs = {{1,0},{-1,0},{0,1},{0,-1}};
+        while (!heap.isEmpty()) {
+            int[] cur = heap.poll();
+            int d = cur[0], r = cur[1], c = cur[2];
+            if (r == destination[0] && c == destination[1]) return d;
+            if (d > dist[r][c]) continue;
+            for (int[] dir : dirs) {
+                int nr = r, nc = c, steps = 0;
+                while (nr + dir[0] >= 0 && nr + dir[0] < m && nc + dir[1] >= 0 && nc + dir[1] < n
+                       && maze[nr + dir[0]][nc + dir[1]] == 0) {
+                    nr += dir[0]; nc += dir[1]; steps++;
+                }
+                int nd = d + steps;
+                if (nd < dist[nr][nc]) { dist[nr][nc] = nd; heap.offer(new int[]{nd, nr, nc}); }
+            }
+        }
+        return -1;
+    }
+}
+```
+
+**Key points:**
+- Each "edge" is a roll until a wall, contributing variable cost.
+- Dijkstra needed because cell distances differ — BFS would be wrong.
+- Stale heap entries skipped via `d > dist[r][c]` check.
+
+**Tags:** #algorithm
+
+---
+
+### 18. Path with Maximum Probability
+
+**Difficulty:** Medium
+**Topics:** graph, dijkstra, heap
+**Position:** SDE
+**Years:** L4-L5
+
+**Question:** Given an undirected weighted graph where weights are probabilities of success, return the maximum probability path from `start` to `end`.
+
+**Approach:** Modified Dijkstra with max-heap (negate probs in languages with only min-heap). Multiply (not add) probabilities. Skip stale heap entries. O((V+E) log V). Note: log-transforming probs (`-log p`) converts to standard shortest-path; avoids underflow on long paths.
+
+**Python:**
+```python
+import heapq
+from collections import defaultdict
+
+def max_probability(n: int, edges: list[list[int]], succ_prob: list[float], start: int, end: int) -> float:
+    graph: defaultdict[int, list[tuple[int, float]]] = defaultdict(list)
+    for (a, b), p in zip(edges, succ_prob):
+        graph[a].append((b, p)); graph[b].append((a, p))
+    best = [0.0] * n
+    best[start] = 1.0
+    heap: list[tuple[float, int]] = [(-1.0, start)]
+    while heap:
+        neg_p, u = heapq.heappop(heap)
+        p = -neg_p
+        if u == end:
+            return p
+        if p < best[u]:
+            continue
+        for v, w in graph[u]:
+            np = p * w
+            if np > best[v]:
+                best[v] = np
+                heapq.heappush(heap, (-np, v))
+    return 0.0
+```
+
+**TypeScript:**
+```typescript
+function maxProbability(n: number, edges: number[][], succProb: number[], start: number, end: number): number {
+  const graph: Array<Array<[number, number]>> = Array.from({ length: n }, () => []);
+  edges.forEach(([a, b], i) => { graph[a].push([b, succProb[i]]); graph[b].push([a, succProb[i]]); });
+  const best = new Array(n).fill(0);
+  best[start] = 1;
+  const heap: Array<[number, number]> = [[1, start]];
+  while (heap.length) {
+    heap.sort((a, b) => b[0] - a[0]);
+    const [p, u] = heap.shift()!;
+    if (u === end) return p;
+    if (p < best[u]) continue;
+    for (const [v, w] of graph[u]) {
+      const np = p * w;
+      if (np > best[v]) { best[v] = np; heap.push([np, v]); }
+    }
+  }
+  return 0;
+}
+```
+
+**Java:**
+```java
+class Solution {
+    public double maxProbability(int n, int[][] edges, double[] succProb, int start, int end) {
+        List<List<double[]>> graph = new ArrayList<>();
+        for (int i = 0; i < n; i++) graph.add(new ArrayList<>());
+        for (int i = 0; i < edges.length; i++) {
+            graph.get(edges[i][0]).add(new double[]{edges[i][1], succProb[i]});
+            graph.get(edges[i][1]).add(new double[]{edges[i][0], succProb[i]});
+        }
+        double[] best = new double[n];
+        best[start] = 1.0;
+        PriorityQueue<double[]> heap = new PriorityQueue<>((a, b) -> Double.compare(b[0], a[0]));
+        heap.offer(new double[]{1.0, start});
+        while (!heap.isEmpty()) {
+            double[] cur = heap.poll();
+            double p = cur[0]; int u = (int) cur[1];
+            if (u == end) return p;
+            if (p < best[u]) continue;
+            for (double[] nb : graph.get(u)) {
+                double np = p * nb[1];
+                int v = (int) nb[0];
+                if (np > best[v]) { best[v] = np; heap.offer(new double[]{np, v}); }
+            }
+        }
+        return 0.0;
+    }
+}
+```
+
+**Key points:**
+- Multiply probabilities along the path; use max-heap by probability.
+- Negate to reuse a min-heap in Python.
+- Skip stale entries when `p < best[u]`; O((V + E) log V) time.
+
+**Tags:** #algorithm
+
+---
+
+### 19. Number of Islands II
+
+**Difficulty:** Hard
+**Topics:** union-find, graph
+**Position:** Senior SDE
+**Years:** L5-L6
+
+**Question:** Given an `m x n` grid initially all water, process a stream of `addLand(r, c)` operations. After each op, return current island count.
+
+**Approach:** Union-Find with path compression and union-by-rank. On each add: count++; union with each of 4 land neighbors and decrement count for each successful union. O(k * alpha(m*n)) for k ops. Encode (r,c) as `r*n + c`.
+
+**Python:**
+```python
+def num_islands2(m: int, n: int, positions: list[list[int]]) -> list[int]:
+    parent: dict[int, int] = {}
+    def find(x: int) -> int:
+        while parent[x] != x:
+            parent[x] = parent[parent[x]]
+            x = parent[x]
+        return x
+    count = 0
+    res: list[int] = []
+    for r, c in positions:
+        idx = r * n + c
+        if idx in parent:
+            res.append(count); continue
+        parent[idx] = idx
+        count += 1
+        for dr, dc in ((1,0),(-1,0),(0,1),(0,-1)):
+            nr, nc = r + dr, c + dc
+            ni = nr * n + nc
+            if 0 <= nr < m and 0 <= nc < n and ni in parent:
+                ra, rb = find(idx), find(ni)
+                if ra != rb:
+                    parent[ra] = rb
+                    count -= 1
+        res.append(count)
+    return res
+```
+
+**TypeScript:**
+```typescript
+function numIslands2(m: number, n: number, positions: number[][]): number[] {
+  const parent = new Map<number, number>();
+  const find = (x: number): number => {
+    while (parent.get(x)! !== x) { parent.set(x, parent.get(parent.get(x)!)!); x = parent.get(x)!; }
+    return x;
+  };
+  let count = 0;
+  const res: number[] = [];
+  for (const [r, c] of positions) {
+    const idx = r * n + c;
+    if (parent.has(idx)) { res.push(count); continue; }
+    parent.set(idx, idx); count++;
+    for (const [dr, dc] of [[1,0],[-1,0],[0,1],[0,-1]]) {
+      const nr = r + dr, nc = c + dc, ni = nr * n + nc;
+      if (nr >= 0 && nr < m && nc >= 0 && nc < n && parent.has(ni)) {
+        const ra = find(idx), rb = find(ni);
+        if (ra !== rb) { parent.set(ra, rb); count--; }
+      }
+    }
+    res.push(count);
+  }
+  return res;
+}
+```
+
+**Java:**
+```java
+class Solution {
+    private Map<Integer, Integer> parent;
+    public List<Integer> numIslands2(int m, int n, int[][] positions) {
+        parent = new HashMap<>();
+        int count = 0;
+        List<Integer> res = new ArrayList<>();
+        int[][] dirs = {{1,0},{-1,0},{0,1},{0,-1}};
+        for (int[] p : positions) {
+            int idx = p[0] * n + p[1];
+            if (parent.containsKey(idx)) { res.add(count); continue; }
+            parent.put(idx, idx); count++;
+            for (int[] d : dirs) {
+                int nr = p[0] + d[0], nc = p[1] + d[1], ni = nr * n + nc;
+                if (nr < 0 || nr >= m || nc < 0 || nc >= n || !parent.containsKey(ni)) continue;
+                int ra = find(idx), rb = find(ni);
+                if (ra != rb) { parent.put(ra, rb); count--; }
+            }
+            res.add(count);
+        }
+        return res;
+    }
+    private int find(int x) {
+        while (parent.get(x) != x) { parent.put(x, parent.get(parent.get(x))); x = parent.get(x); }
+        return x;
+    }
+}
+```
+
+**Key points:**
+- New land starts as its own component, incrementing count.
+- Each successful union with a neighbor decrements count.
+- O(k * alpha(m*n)) per op with path compression.
+
+**Tags:** #algorithm
+
+---
+
+### 20. Optimize Water Distribution in a Village
+
+**Difficulty:** Hard
+**Topics:** graph, mst, union-find
+**Position:** Senior SDE
+**Years:** L5-L6
+
+**Question:** `n` houses; can either build a well in house `i` (cost `wells[i]`) or connect two houses with a pipe of given cost. Find minimum total cost to supply water to every house.
+
+**Approach:** Add a virtual node 0 connected to each house `i` with edge weight `wells[i]`. Now problem = MST on `n+1` nodes. Kruskal with union-find on sorted edges. O((E + n) log(E + n)). Elegant reduction trick worth memorizing.
+
+**Python:**
+```python
+def min_cost_to_supply_water(n: int, wells: list[int], pipes: list[list[int]]) -> int:
+    edges: list[tuple[int, int, int]] = [(cost, 0, i + 1) for i, cost in enumerate(wells)]
+    for a, b, c in pipes:
+        edges.append((c, a, b))
+    edges.sort()
+    parent = list(range(n + 1))
+    def find(x: int) -> int:
+        while parent[x] != x:
+            parent[x] = parent[parent[x]]
+            x = parent[x]
+        return x
+    total = 0
+    for c, a, b in edges:
+        ra, rb = find(a), find(b)
+        if ra != rb:
+            parent[ra] = rb
+            total += c
+    return total
+```
+
+**TypeScript:**
+```typescript
+function minCostToSupplyWater(n: number, wells: number[], pipes: number[][]): number {
+  const edges: Array<[number, number, number]> = wells.map((c, i) => [c, 0, i + 1]);
+  for (const [a, b, c] of pipes) edges.push([c, a, b]);
+  edges.sort((x, y) => x[0] - y[0]);
+  const parent = Array.from({ length: n + 1 }, (_, i) => i);
+  const find = (x: number): number => {
+    while (parent[x] !== x) { parent[x] = parent[parent[x]]; x = parent[x]; }
+    return x;
+  };
+  let total = 0;
+  for (const [c, a, b] of edges) {
+    const ra = find(a), rb = find(b);
+    if (ra !== rb) { parent[ra] = rb; total += c; }
+  }
+  return total;
+}
+```
+
+**Java:**
+```java
+class Solution {
+    private int[] parent;
+    public int minCostToSupplyWater(int n, int[] wells, int[][] pipes) {
+        List<int[]> edges = new ArrayList<>();
+        for (int i = 0; i < wells.length; i++) edges.add(new int[]{wells[i], 0, i + 1});
+        for (int[] p : pipes) edges.add(new int[]{p[2], p[0], p[1]});
+        edges.sort((a, b) -> a[0] - b[0]);
+        parent = new int[n + 1];
+        for (int i = 0; i <= n; i++) parent[i] = i;
+        int total = 0;
+        for (int[] e : edges) {
+            int ra = find(e[1]), rb = find(e[2]);
+            if (ra != rb) { parent[ra] = rb; total += e[0]; }
+        }
+        return total;
+    }
+    private int find(int x) {
+        while (parent[x] != x) { parent[x] = parent[parent[x]]; x = parent[x]; }
+        return x;
+    }
+}
+```
+
+**Key points:**
+- Virtual node 0 turns "build a well" into "edge to 0" — pure MST.
+- Kruskal + union-find: O((E + n) log(E + n)).
+- Each house ends up connected via either pipes or the well edge.
+
+**Tags:** #algorithm
+
+---
+
+## Heap / Priority Queue
+
+### 21. Top K Frequent Elements
+
+**Difficulty:** Medium
+**Topics:** hashmap, heap, bucket-sort
+**Position:** SWE
+**Years:** L4
+
+**Question:** Given a non-empty array of integers, return the k most frequent elements.
+
+**Approach:** Count frequencies in hashmap, then either (a) min-heap of size k by frequency → O(n log k), or (b) bucket sort by frequency (buckets[freq] = list) → O(n). Amazon often pairs with follow-up "what if data is streaming?" → Count-Min Sketch + heap.
+
+**Python:**
+```python
+from collections import Counter
+
+def top_k_frequent(nums: list[int], k: int) -> list[int]:
+    cnt = Counter(nums)
+    buckets: list[list[int]] = [[] for _ in range(len(nums) + 1)]
+    for num, freq in cnt.items():
+        buckets[freq].append(num)
+    out: list[int] = []
+    for freq in range(len(buckets) - 1, 0, -1):
+        for num in buckets[freq]:
+            out.append(num)
+            if len(out) == k:
+                return out
+    return out
+```
+
+**TypeScript:**
+```typescript
+function topKFrequent(nums: number[], k: number): number[] {
+  const cnt = new Map<number, number>();
+  for (const n of nums) cnt.set(n, (cnt.get(n) ?? 0) + 1);
+  const buckets: number[][] = Array.from({ length: nums.length + 1 }, () => []);
+  for (const [num, freq] of cnt) buckets[freq].push(num);
+  const out: number[] = [];
+  for (let f = buckets.length - 1; f > 0 && out.length < k; f--)
+    for (const n of buckets[f]) { out.push(n); if (out.length === k) return out; }
+  return out;
+}
+```
+
+**Java:**
+```java
+class Solution {
+    public int[] topKFrequent(int[] nums, int k) {
+        Map<Integer, Integer> cnt = new HashMap<>();
+        for (int n : nums) cnt.merge(n, 1, Integer::sum);
+        List<List<Integer>> buckets = new ArrayList<>();
+        for (int i = 0; i <= nums.length; i++) buckets.add(new ArrayList<>());
+        cnt.forEach((num, f) -> buckets.get(f).add(num));
+        int[] out = new int[k];
+        int idx = 0;
+        for (int f = buckets.size() - 1; f > 0 && idx < k; f--)
+            for (int num : buckets.get(f)) if (idx < k) out[idx++] = num;
+        return out;
+    }
+}
+```
+
+**Key points:**
+- Bucket sort exploits `freq <= n` for O(n) total.
+- Heap variant is O(n log k) and simpler when k is tiny vs n.
+- Walk buckets from high to low to collect k items.
+
+**Follow-ups:**
+- Streaming Top-K with Count-Min Sketch + min-heap; trade accuracy for memory.
+- Data does not fit in memory — external sort or MapReduce by hash partition.
+- Ties on frequency — define a deterministic ordering (insertion order, value, etc.).
+- k changes per query — keep a sorted bucket structure to answer all k values cheaply.
+
+**Common Pitfalls:**
+- Sorting every element O(n log n) when only top-k is needed.
+- Allocating `n + 1` buckets when distinct elements are sparse — wastes memory on huge inputs.
+
+**Tags:** #algorithm
+
+---
+
+### 22. Trapping Rain Water II
+
+**Difficulty:** Hard
+**Topics:** heap, bfs, matrix
+**Position:** Senior SDE
+**Years:** L5-L6
+
+**Question:** Given an `m x n` integer matrix representing the elevation of each unit cell of a 2D map, compute how much rainwater it can trap.
+
+**Approach:** Min-heap seeded with all boundary cells. Pop the lowest cell, visit neighbors; trapped water at neighbor = `max(0, current_height - neighbor_height)`; push neighbor with `max(current, neighbor)`. O(m*n log(m*n)) time. Key insight: water level at any cell is bounded by the lowest "wall" surrounding it, processed lowest-first.
+
+**Python:**
+```python
+import heapq
+
+def trap_rain_water(height_map: list[list[int]]) -> int:
+    if not height_map or not height_map[0]:
+        return 0
+    m, n = len(height_map), len(height_map[0])
+    visited = [[False] * n for _ in range(m)]
+    heap: list[tuple[int, int, int]] = []
+    for r in range(m):
+        for c in range(n):
+            if r in (0, m - 1) or c in (0, n - 1):
+                heapq.heappush(heap, (height_map[r][c], r, c))
+                visited[r][c] = True
+    total = 0
+    while heap:
+        h, r, c = heapq.heappop(heap)
+        for dr, dc in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+            nr, nc = r + dr, c + dc
+            if 0 <= nr < m and 0 <= nc < n and not visited[nr][nc]:
+                visited[nr][nc] = True
+                total += max(0, h - height_map[nr][nc])
+                heapq.heappush(heap, (max(h, height_map[nr][nc]), nr, nc))
+    return total
+```
+
+**TypeScript:**
+```typescript
+function trapRainWater(heightMap: number[][]): number {
+  const m = heightMap.length, n = heightMap[0]?.length ?? 0;
+  if (!m || !n) return 0;
+  const visited: boolean[][] = Array.from({ length: m }, () => new Array(n).fill(false));
+  const heap: Array<[number, number, number]> = [];
+  const push = (h: number, r: number, c: number) => { heap.push([h, r, c]); heap.sort((a, b) => a[0] - b[0]); };
+  for (let r = 0; r < m; r++) for (let c = 0; c < n; c++)
+    if (r === 0 || r === m - 1 || c === 0 || c === n - 1) { push(heightMap[r][c], r, c); visited[r][c] = true; }
+  let total = 0;
+  const dirs = [[1,0],[-1,0],[0,1],[0,-1]];
+  while (heap.length) {
+    const [h, r, c] = heap.shift()!;
+    for (const [dr, dc] of dirs) {
+      const nr = r + dr, nc = c + dc;
+      if (nr >= 0 && nr < m && nc >= 0 && nc < n && !visited[nr][nc]) {
+        visited[nr][nc] = true;
+        total += Math.max(0, h - heightMap[nr][nc]);
+        push(Math.max(h, heightMap[nr][nc]), nr, nc);
+      }
+    }
+  }
+  return total;
+}
+```
+
+**Java:**
+```java
+class Solution {
+    public int trapRainWater(int[][] heightMap) {
+        int m = heightMap.length, n = heightMap[0].length;
+        if (m < 3 || n < 3) return 0;
+        boolean[][] visited = new boolean[m][n];
+        PriorityQueue<int[]> heap = new PriorityQueue<>((a, b) -> a[0] - b[0]);
+        for (int r = 0; r < m; r++) for (int c = 0; c < n; c++)
+            if (r == 0 || r == m - 1 || c == 0 || c == n - 1) {
+                heap.offer(new int[]{heightMap[r][c], r, c}); visited[r][c] = true;
+            }
+        int total = 0;
+        int[][] dirs = {{1,0},{-1,0},{0,1},{0,-1}};
+        while (!heap.isEmpty()) {
+            int[] cur = heap.poll();
+            for (int[] d : dirs) {
+                int nr = cur[1] + d[0], nc = cur[2] + d[1];
+                if (nr < 0 || nr >= m || nc < 0 || nc >= n || visited[nr][nc]) continue;
+                visited[nr][nc] = true;
+                total += Math.max(0, cur[0] - heightMap[nr][nc]);
+                heap.offer(new int[]{Math.max(cur[0], heightMap[nr][nc]), nr, nc});
+            }
+        }
+        return total;
+    }
+}
+```
+
+**Key points:**
+- Process from the lowest boundary inward so each cell's bounding wall is known.
+- Push `max(current_wall, neighbor)` to model "raised" wall after flooding.
+- O(m*n log(m*n)) time; production TS should use a real heap.
+
+**Tags:** #algorithm
+
+---
+
+### 23. Cut Off Trees for Golf Event
 
 **Difficulty:** Hard
 **Topics:** bfs, heap, matrix
@@ -1750,901 +2181,7 @@ class Solution {
 
 ---
 
-### 28. The Maze II
-
-**Difficulty:** Medium
-**Topics:** bfs, dijkstra, matrix
-**Position:** SDE
-**Years:** L4-L5
-
-**Question:** A ball rolls in a maze until it hits a wall, then can change direction. Given start and destination, return the shortest distance (cells traveled) or -1 if unreachable.
-
-**Approach:** Dijkstra with min-heap of `(dist, r, c)`. From each cell, simulate rolling in each of 4 directions until a wall; that's an edge. Relax neighbors. O(m*n * max(m,n) * log) due to roll cost. BFS doesn't suffice because edge costs differ.
-
-**Python:**
-```python
-import heapq
-
-def shortest_distance(maze: list[list[int]], start: list[int], destination: list[int]) -> int:
-    m, n = len(maze), len(maze[0])
-    dist = [[float("inf")] * n for _ in range(m)]
-    dist[start[0]][start[1]] = 0
-    heap: list[tuple[int, int, int]] = [(0, start[0], start[1])]
-    while heap:
-        d, r, c = heapq.heappop(heap)
-        if [r, c] == destination:
-            return d
-        if d > dist[r][c]:
-            continue
-        for dr, dc in ((1,0),(-1,0),(0,1),(0,-1)):
-            nr, nc, steps = r, c, 0
-            while 0 <= nr + dr < m and 0 <= nc + dc < n and maze[nr + dr][nc + dc] == 0:
-                nr += dr; nc += dc; steps += 1
-            nd = d + steps
-            if nd < dist[nr][nc]:
-                dist[nr][nc] = nd
-                heapq.heappush(heap, (nd, nr, nc))
-    return -1
-```
-
-**TypeScript:**
-```typescript
-function shortestDistance(maze: number[][], start: number[], destination: number[]): number {
-  const m = maze.length, n = maze[0].length;
-  const dist: number[][] = Array.from({ length: m }, () => new Array(n).fill(Infinity));
-  dist[start[0]][start[1]] = 0;
-  const heap: Array<[number, number, number]> = [[0, start[0], start[1]]];
-  while (heap.length) {
-    heap.sort((a, b) => a[0] - b[0]);
-    const [d, r, c] = heap.shift()!;
-    if (r === destination[0] && c === destination[1]) return d;
-    if (d > dist[r][c]) continue;
-    for (const [dr, dc] of [[1,0],[-1,0],[0,1],[0,-1]]) {
-      let nr = r, nc = c, steps = 0;
-      while (nr + dr >= 0 && nr + dr < m && nc + dc >= 0 && nc + dc < n && maze[nr + dr][nc + dc] === 0) {
-        nr += dr; nc += dc; steps++;
-      }
-      const nd = d + steps;
-      if (nd < dist[nr][nc]) { dist[nr][nc] = nd; heap.push([nd, nr, nc]); }
-    }
-  }
-  return -1;
-}
-```
-
-**Java:**
-```java
-class Solution {
-    public int shortestDistance(int[][] maze, int[] start, int[] destination) {
-        int m = maze.length, n = maze[0].length;
-        int[][] dist = new int[m][n];
-        for (int[] row : dist) Arrays.fill(row, Integer.MAX_VALUE);
-        dist[start[0]][start[1]] = 0;
-        PriorityQueue<int[]> heap = new PriorityQueue<>((a, b) -> a[0] - b[0]);
-        heap.offer(new int[]{0, start[0], start[1]});
-        int[][] dirs = {{1,0},{-1,0},{0,1},{0,-1}};
-        while (!heap.isEmpty()) {
-            int[] cur = heap.poll();
-            int d = cur[0], r = cur[1], c = cur[2];
-            if (r == destination[0] && c == destination[1]) return d;
-            if (d > dist[r][c]) continue;
-            for (int[] dir : dirs) {
-                int nr = r, nc = c, steps = 0;
-                while (nr + dir[0] >= 0 && nr + dir[0] < m && nc + dir[1] >= 0 && nc + dir[1] < n
-                       && maze[nr + dir[0]][nc + dir[1]] == 0) {
-                    nr += dir[0]; nc += dir[1]; steps++;
-                }
-                int nd = d + steps;
-                if (nd < dist[nr][nc]) { dist[nr][nc] = nd; heap.offer(new int[]{nd, nr, nc}); }
-            }
-        }
-        return -1;
-    }
-}
-```
-
-**Key points:**
-- Each "edge" is a roll until a wall, contributing variable cost.
-- Dijkstra needed because cell distances differ — BFS would be wrong.
-- Stale heap entries skipped via `d > dist[r][c]` check.
-
-**Tags:** #algorithm
-
----
-
-### 29. Robot Bounded in Circle
-
-**Difficulty:** Medium
-**Topics:** simulation, math
-**Position:** SDE
-**Years:** L4
-
-**Question:** A robot starts at origin facing north and follows a string of instructions (`G`, `L`, `R`). Determine if the robot stays bounded after infinitely repeating instructions.
-
-**Approach:** Simulate one pass. The robot is bounded iff after one pass it's at origin OR not facing north. Reason: facing-not-north means after at most 4 passes it returns to origin (rotation forms a cycle of period 4). O(n).
-
-**Python:**
-```python
-def is_robot_bounded(instructions: str) -> bool:
-    x, y, dx, dy = 0, 0, 0, 1
-    for c in instructions:
-        if c == "G":
-            x += dx; y += dy
-        elif c == "L":
-            dx, dy = -dy, dx
-        else:  # R
-            dx, dy = dy, -dx
-    return (x, y) == (0, 0) or (dx, dy) != (0, 1)
-```
-
-**TypeScript:**
-```typescript
-function isRobotBounded(instructions: string): boolean {
-  let x = 0, y = 0, dx = 0, dy = 1;
-  for (const c of instructions) {
-    if (c === "G") { x += dx; y += dy; }
-    else if (c === "L") { [dx, dy] = [-dy, dx]; }
-    else { [dx, dy] = [dy, -dx]; }
-  }
-  return (x === 0 && y === 0) || dx !== 0 || dy !== 1;
-}
-```
-
-**Java:**
-```java
-class Solution {
-    public boolean isRobotBounded(String instructions) {
-        int x = 0, y = 0, dx = 0, dy = 1;
-        for (char c : instructions.toCharArray()) {
-            if (c == 'G') { x += dx; y += dy; }
-            else if (c == 'L') { int t = dx; dx = -dy; dy = t; }
-            else { int t = dx; dx = dy; dy = -t; }
-        }
-        return (x == 0 && y == 0) || dx != 0 || dy != 1;
-    }
-}
-```
-
-**Key points:**
-- Bounded iff at origin after one pass OR facing a non-north direction.
-- Non-north facing => after at most 4 passes back to origin.
-- O(n) time, O(1) space; no need to simulate multiple passes.
-
-**Tags:** #algorithm
-
----
-
-### 30. Prison Cells After N Days
-
-**Difficulty:** Medium
-**Topics:** simulation, cycle-detection, bit-manipulation
-**Position:** SDE
-**Years:** L4
-
-**Question:** 8 prison cells in a row. Each day, cell becomes 1 if both neighbors were equal, else 0. Endpoints become 0. Given initial state and N, return state after N days.
-
-**Approach:** State space has at most 256 patterns; cycle is inevitable. Simulate while caching `state -> day`. On hit, compute remaining days `% cycle_length` and finish. Encode state as an int (bitmask) for speed. O(min(N, 256)).
-
-**Python:**
-```python
-def prison_after_n_days(cells: list[int], n: int) -> list[int]:
-    def step(state: int) -> int:
-        ns = 0
-        for i in range(1, 7):
-            if ((state >> (i - 1)) & 1) == ((state >> (i + 1)) & 1):
-                ns |= 1 << i
-        return ns
-    state = 0
-    for i, v in enumerate(cells):
-        if v:
-            state |= 1 << i
-    seen: dict[int, int] = {}
-    while n:
-        if state in seen:
-            n %= seen[state] - n
-        seen[state] = n
-        if n:
-            n -= 1
-            state = step(state)
-    return [(state >> i) & 1 for i in range(8)]
-```
-
-**TypeScript:**
-```typescript
-function prisonAfterNDays(cells: number[], n: number): number[] {
-  const step = (s: number): number => {
-    let ns = 0;
-    for (let i = 1; i < 7; i++)
-      if (((s >> (i - 1)) & 1) === ((s >> (i + 1)) & 1)) ns |= 1 << i;
-    return ns;
-  };
-  let state = 0;
-  cells.forEach((v, i) => { if (v) state |= 1 << i; });
-  const seen = new Map<number, number>();
-  while (n) {
-    if (seen.has(state)) n %= seen.get(state)! - n;
-    seen.set(state, n);
-    if (n) { n--; state = step(state); }
-  }
-  return Array.from({ length: 8 }, (_, i) => (state >> i) & 1);
-}
-```
-
-**Java:**
-```java
-class Solution {
-    public int[] prisonAfterNDays(int[] cells, int n) {
-        int state = 0;
-        for (int i = 0; i < cells.length; i++) if (cells[i] == 1) state |= 1 << i;
-        Map<Integer, Integer> seen = new HashMap<>();
-        while (n > 0) {
-            if (seen.containsKey(state)) n %= seen.get(state) - n;
-            seen.put(state, n);
-            if (n > 0) { n--; state = step(state); }
-        }
-        int[] out = new int[8];
-        for (int i = 0; i < 8; i++) out[i] = (state >> i) & 1;
-        return out;
-    }
-    private int step(int s) {
-        int ns = 0;
-        for (int i = 1; i < 7; i++)
-            if (((s >> (i - 1)) & 1) == ((s >> (i + 1)) & 1)) ns |= 1 << i;
-        return ns;
-    }
-}
-```
-
-**Key points:**
-- Bitmask packs 8 cells into a single int for fast equality.
-- Cycle detected via `state -> remaining_days` map.
-- O(min(N, 256)) — at most 256 distinct states.
-
-**Tags:** #algorithm
-
----
-
-### 31. Concatenated Words
-
-**Difficulty:** Hard
-**Topics:** dp, trie, strings
-**Position:** Senior SDE
-**Years:** L5
-
-**Question:** Given a list of words (no duplicates), return all words that are entirely concatenations of at least two other words from the list.
-
-**Approach:** Build a set of all words. For each word, run a Word-Break-style DP: `dp[i]` true if `s[0..i)` splittable using OTHER words (require at least one split). Trie speeds up prefix scans. O(sum(L_i^2)). Sort by length first so shorter words are processed first if building incrementally.
-
-**Python:**
-```python
-def find_all_concatenated_words(words: list[str]) -> list[str]:
-    word_set = set(words)
-    def can_form(w: str) -> bool:
-        if not w:
-            return False
-        n = len(w)
-        dp = [False] * (n + 1)
-        dp[0] = True
-        for i in range(1, n + 1):
-            for j in range(i):
-                if dp[j] and w[j:i] in word_set and (j > 0 or i < n):
-                    dp[i] = True
-                    break
-        return dp[n]
-    return [w for w in words if can_form(w)]
-```
-
-**TypeScript:**
-```typescript
-function findAllConcatenatedWordsInADict(words: string[]): string[] {
-  const set = new Set(words);
-  const canForm = (w: string): boolean => {
-    if (!w) return false;
-    const n = w.length;
-    const dp = new Array<boolean>(n + 1).fill(false);
-    dp[0] = true;
-    for (let i = 1; i <= n; i++) {
-      for (let j = 0; j < i; j++) {
-        if (dp[j] && set.has(w.slice(j, i)) && (j > 0 || i < n)) { dp[i] = true; break; }
-      }
-    }
-    return dp[n];
-  };
-  return words.filter(canForm);
-}
-```
-
-**Java:**
-```java
-class Solution {
-    public List<String> findAllConcatenatedWordsInADict(String[] words) {
-        Set<String> set = new HashSet<>(Arrays.asList(words));
-        List<String> res = new ArrayList<>();
-        for (String w : words) if (canForm(w, set)) res.add(w);
-        return res;
-    }
-    private boolean canForm(String w, Set<String> set) {
-        if (w.isEmpty()) return false;
-        int n = w.length();
-        boolean[] dp = new boolean[n + 1];
-        dp[0] = true;
-        for (int i = 1; i <= n; i++) {
-            for (int j = 0; j < i; j++) {
-                if (dp[j] && set.contains(w.substring(j, i)) && (j > 0 || i < n)) { dp[i] = true; break; }
-            }
-        }
-        return dp[n];
-    }
-}
-```
-
-**Key points:**
-- The `(j > 0 || i < n)` guard rejects the word matching itself wholly.
-- O(sum L_i^2) per word; trie reduces inner cost further.
-- Same shape as Word Break with a "use at least one other word" rule.
-
-**Tags:** #algorithm
-
----
-
-### 32. Substrings of Size Three with Distinct Characters
-
-**Difficulty:** Easy
-**Topics:** strings, sliding-window
-**Position:** SDE
-**Years:** L3-L4
-
-**Question:** Given a string, return the number of good substrings of length 3 with all distinct characters.
-
-**Approach:** Sliding window of size 3; for each, check three chars all differ. O(n). Common Amazon OA warm-up; usually paired with a harder second problem.
-
-**Python:**
-```python
-def count_good_substrings(s: str) -> int:
-    count = 0
-    for i in range(len(s) - 2):
-        a, b, c = s[i], s[i + 1], s[i + 2]
-        if a != b and b != c and a != c:
-            count += 1
-    return count
-```
-
-**TypeScript:**
-```typescript
-function countGoodSubstrings(s: string): number {
-  let count = 0;
-  for (let i = 0; i < s.length - 2; i++) {
-    const a = s[i], b = s[i + 1], c = s[i + 2];
-    if (a !== b && b !== c && a !== c) count++;
-  }
-  return count;
-}
-```
-
-**Java:**
-```java
-class Solution {
-    public int countGoodSubstrings(String s) {
-        int count = 0;
-        for (int i = 0; i + 2 < s.length(); i++) {
-            char a = s.charAt(i), b = s.charAt(i + 1), c = s.charAt(i + 2);
-            if (a != b && b != c && a != c) count++;
-        }
-        return count;
-    }
-}
-```
-
-**Key points:**
-- Window size is fixed, so no two-pointer bookkeeping needed.
-- Three distinct chars iff all three pairwise differ.
-- O(n) time, O(1) space.
-
-**Tags:** #algorithm
-
----
-
-### 33. Subtree of Another Tree
-
-**Difficulty:** Easy
-**Topics:** tree, dfs, recursion
-**Position:** SDE
-**Years:** L4
-
-**Question:** Given two binary trees `root` and `subRoot`, return true if there's a subtree of `root` identical in structure and node values to `subRoot`.
-
-**Approach:** Recursive: at each node of `root`, check if `sameTree(node, subRoot)`. `sameTree` recurses both sides. O(m*n) worst case. Faster: serialize both trees with null markers and use string `contains` (or KMP) — O(m+n).
-
-**Python:**
-```python
-def is_subtree(root: TreeNode | None, sub_root: TreeNode | None) -> bool:
-    def same(a: TreeNode | None, b: TreeNode | None) -> bool:
-        if a is None and b is None:
-            return True
-        if a is None or b is None or a.val != b.val:
-            return False
-        return same(a.left, b.left) and same(a.right, b.right)
-    if sub_root is None:
-        return True
-    if root is None:
-        return False
-    if same(root, sub_root):
-        return True
-    return is_subtree(root.left, sub_root) or is_subtree(root.right, sub_root)
-```
-
-**TypeScript:**
-```typescript
-function isSubtree(root: TreeNode | null, subRoot: TreeNode | null): boolean {
-  const same = (a: TreeNode | null, b: TreeNode | null): boolean => {
-    if (!a && !b) return true;
-    if (!a || !b || a.val !== b.val) return false;
-    return same(a.left, b.left) && same(a.right, b.right);
-  };
-  if (!subRoot) return true;
-  if (!root) return false;
-  if (same(root, subRoot)) return true;
-  return isSubtree(root.left, subRoot) || isSubtree(root.right, subRoot);
-}
-```
-
-**Java:**
-```java
-class Solution {
-    public boolean isSubtree(TreeNode root, TreeNode subRoot) {
-        if (subRoot == null) return true;
-        if (root == null) return false;
-        if (same(root, subRoot)) return true;
-        return isSubtree(root.left, subRoot) || isSubtree(root.right, subRoot);
-    }
-    private boolean same(TreeNode a, TreeNode b) {
-        if (a == null && b == null) return true;
-        if (a == null || b == null || a.val != b.val) return false;
-        return same(a.left, b.left) && same(a.right, b.right);
-    }
-}
-```
-
-**Key points:**
-- Empty `subRoot` is trivially a subtree.
-- Worst case O(m * n) where m, n are tree sizes.
-- Serialization with null markers + KMP collapses it to O(m + n).
-
-**Tags:** #algorithm
-
----
-
-### 34. Most Common Word
-
-**Difficulty:** Easy
-**Topics:** strings, hashmap, parsing
-**Position:** SDE
-**Years:** L3-L4
-
-**Question:** Given a paragraph and a list of banned words, return the most frequent non-banned word. Words are case-insensitive; punctuation should be stripped.
-
-**Approach:** Normalize (lowercase, split on non-letters), count frequencies in a hashmap excluding banned set, return max. O(n). Watch the punctuation regex / manual char filter — most bugs live there.
-
-**Python:**
-```python
-import re
-from collections import Counter
-
-def most_common_word(paragraph: str, banned: list[str]) -> str:
-    banned_set = set(banned)
-    words = re.findall(r"[a-zA-Z]+", paragraph.lower())
-    cnt = Counter(w for w in words if w not in banned_set)
-    return cnt.most_common(1)[0][0]
-```
-
-**TypeScript:**
-```typescript
-function mostCommonWord(paragraph: string, banned: string[]): string {
-  const bannedSet = new Set(banned);
-  const words = paragraph.toLowerCase().match(/[a-z]+/g) ?? [];
-  const cnt = new Map<string, number>();
-  let best = "", bestN = 0;
-  for (const w of words) {
-    if (bannedSet.has(w)) continue;
-    const c = (cnt.get(w) ?? 0) + 1;
-    cnt.set(w, c);
-    if (c > bestN) { bestN = c; best = w; }
-  }
-  return best;
-}
-```
-
-**Java:**
-```java
-class Solution {
-    public String mostCommonWord(String paragraph, String[] banned) {
-        Set<String> bannedSet = new HashSet<>(Arrays.asList(banned));
-        String[] words = paragraph.toLowerCase().split("[^a-z]+");
-        Map<String, Integer> cnt = new HashMap<>();
-        String best = ""; int bestN = 0;
-        for (String w : words) {
-            if (w.isEmpty() || bannedSet.contains(w)) continue;
-            int c = cnt.merge(w, 1, Integer::sum);
-            if (c > bestN) { bestN = c; best = w; }
-        }
-        return best;
-    }
-}
-```
-
-**Key points:**
-- Lowercase before splitting to make banned compare case-insensitive.
-- Single regex handles punctuation, digits, whitespace at once.
-- O(n) over the paragraph length.
-
-**Tags:** #algorithm
-
----
-
-### 35. Copy List with Random Pointer
-
-**Difficulty:** Medium
-**Topics:** linked-list, hashmap
-**Position:** SDE
-**Years:** L4
-
-**Question:** Deep-copy a linked list where each node has `next` and a `random` pointer to any node or null.
-
-**Approach:** Option A: hashmap `original -> copy`, two passes (build nodes, then wire `next`/`random`). O(n) time and space. Option B (O(1) extra): interleave copy nodes (`A -> A' -> B -> B' -> ...`), then `A'.random = A.random.next`, then split lists.
-
-**Python:**
-```python
-def copy_random_list(head: "Node | None") -> "Node | None":
-    if not head:
-        return None
-    m: dict[Node, Node] = {}
-    cur = head
-    while cur:
-        m[cur] = Node(cur.val)
-        cur = cur.next
-    cur = head
-    while cur:
-        m[cur].next = m[cur.next] if cur.next else None
-        m[cur].random = m[cur.random] if cur.random else None
-        cur = cur.next
-    return m[head]
-```
-
-**TypeScript:**
-```typescript
-function copyRandomList(head: RNode | null): RNode | null {
-  if (!head) return null;
-  const m = new Map<RNode, RNode>();
-  let cur: RNode | null = head;
-  while (cur) { m.set(cur, new RNode(cur.val)); cur = cur.next; }
-  cur = head;
-  while (cur) {
-    m.get(cur)!.next = cur.next ? m.get(cur.next)! : null;
-    m.get(cur)!.random = cur.random ? m.get(cur.random)! : null;
-    cur = cur.next;
-  }
-  return m.get(head)!;
-}
-```
-
-**Java:**
-```java
-class Solution {
-    public Node copyRandomList(Node head) {
-        if (head == null) return null;
-        Map<Node, Node> m = new HashMap<>();
-        for (Node cur = head; cur != null; cur = cur.next) m.put(cur, new Node(cur.val));
-        for (Node cur = head; cur != null; cur = cur.next) {
-            m.get(cur).next = m.get(cur.next);
-            m.get(cur).random = m.get(cur.random);
-        }
-        return m.get(head);
-    }
-}
-```
-
-**Key points:**
-- Two passes separate node creation from pointer wiring cleanly.
-- Map handles `random` pointing forward, backward, or at self.
-- O(n) time and O(n) space; O(1)-space interleave variant exists but is trickier.
-
-**Tags:** #algorithm
-
----
-
-### 36. Path with Maximum Probability
-
-**Difficulty:** Medium
-**Topics:** graph, dijkstra, heap
-**Position:** SDE
-**Years:** L4-L5
-
-**Question:** Given an undirected weighted graph where weights are probabilities of success, return the maximum probability path from `start` to `end`.
-
-**Approach:** Modified Dijkstra with max-heap (negate probs in languages with only min-heap). Multiply (not add) probabilities. Skip stale heap entries. O((V+E) log V). Note: log-transforming probs (`-log p`) converts to standard shortest-path; avoids underflow on long paths.
-
-**Python:**
-```python
-import heapq
-from collections import defaultdict
-
-def max_probability(n: int, edges: list[list[int]], succ_prob: list[float], start: int, end: int) -> float:
-    graph: defaultdict[int, list[tuple[int, float]]] = defaultdict(list)
-    for (a, b), p in zip(edges, succ_prob):
-        graph[a].append((b, p)); graph[b].append((a, p))
-    best = [0.0] * n
-    best[start] = 1.0
-    heap: list[tuple[float, int]] = [(-1.0, start)]
-    while heap:
-        neg_p, u = heapq.heappop(heap)
-        p = -neg_p
-        if u == end:
-            return p
-        if p < best[u]:
-            continue
-        for v, w in graph[u]:
-            np = p * w
-            if np > best[v]:
-                best[v] = np
-                heapq.heappush(heap, (-np, v))
-    return 0.0
-```
-
-**TypeScript:**
-```typescript
-function maxProbability(n: number, edges: number[][], succProb: number[], start: number, end: number): number {
-  const graph: Array<Array<[number, number]>> = Array.from({ length: n }, () => []);
-  edges.forEach(([a, b], i) => { graph[a].push([b, succProb[i]]); graph[b].push([a, succProb[i]]); });
-  const best = new Array(n).fill(0);
-  best[start] = 1;
-  const heap: Array<[number, number]> = [[1, start]];
-  while (heap.length) {
-    heap.sort((a, b) => b[0] - a[0]);
-    const [p, u] = heap.shift()!;
-    if (u === end) return p;
-    if (p < best[u]) continue;
-    for (const [v, w] of graph[u]) {
-      const np = p * w;
-      if (np > best[v]) { best[v] = np; heap.push([np, v]); }
-    }
-  }
-  return 0;
-}
-```
-
-**Java:**
-```java
-class Solution {
-    public double maxProbability(int n, int[][] edges, double[] succProb, int start, int end) {
-        List<List<double[]>> graph = new ArrayList<>();
-        for (int i = 0; i < n; i++) graph.add(new ArrayList<>());
-        for (int i = 0; i < edges.length; i++) {
-            graph.get(edges[i][0]).add(new double[]{edges[i][1], succProb[i]});
-            graph.get(edges[i][1]).add(new double[]{edges[i][0], succProb[i]});
-        }
-        double[] best = new double[n];
-        best[start] = 1.0;
-        PriorityQueue<double[]> heap = new PriorityQueue<>((a, b) -> Double.compare(b[0], a[0]));
-        heap.offer(new double[]{1.0, start});
-        while (!heap.isEmpty()) {
-            double[] cur = heap.poll();
-            double p = cur[0]; int u = (int) cur[1];
-            if (u == end) return p;
-            if (p < best[u]) continue;
-            for (double[] nb : graph.get(u)) {
-                double np = p * nb[1];
-                int v = (int) nb[0];
-                if (np > best[v]) { best[v] = np; heap.offer(new double[]{np, v}); }
-            }
-        }
-        return 0.0;
-    }
-}
-```
-
-**Key points:**
-- Multiply probabilities along the path; use max-heap by probability.
-- Negate to reuse a min-heap in Python.
-- Skip stale entries when `p < best[u]`; O((V + E) log V) time.
-
-**Tags:** #algorithm
-
----
-
-### 37. Number of Islands II
-
-**Difficulty:** Hard
-**Topics:** union-find, graph
-**Position:** Senior SDE
-**Years:** L5-L6
-
-**Question:** Given an `m x n` grid initially all water, process a stream of `addLand(r, c)` operations. After each op, return current island count.
-
-**Approach:** Union-Find with path compression and union-by-rank. On each add: count++; union with each of 4 land neighbors and decrement count for each successful union. O(k * alpha(m*n)) for k ops. Encode (r,c) as `r*n + c`.
-
-**Python:**
-```python
-def num_islands2(m: int, n: int, positions: list[list[int]]) -> list[int]:
-    parent: dict[int, int] = {}
-    def find(x: int) -> int:
-        while parent[x] != x:
-            parent[x] = parent[parent[x]]
-            x = parent[x]
-        return x
-    count = 0
-    res: list[int] = []
-    for r, c in positions:
-        idx = r * n + c
-        if idx in parent:
-            res.append(count); continue
-        parent[idx] = idx
-        count += 1
-        for dr, dc in ((1,0),(-1,0),(0,1),(0,-1)):
-            nr, nc = r + dr, c + dc
-            ni = nr * n + nc
-            if 0 <= nr < m and 0 <= nc < n and ni in parent:
-                ra, rb = find(idx), find(ni)
-                if ra != rb:
-                    parent[ra] = rb
-                    count -= 1
-        res.append(count)
-    return res
-```
-
-**TypeScript:**
-```typescript
-function numIslands2(m: number, n: number, positions: number[][]): number[] {
-  const parent = new Map<number, number>();
-  const find = (x: number): number => {
-    while (parent.get(x)! !== x) { parent.set(x, parent.get(parent.get(x)!)!); x = parent.get(x)!; }
-    return x;
-  };
-  let count = 0;
-  const res: number[] = [];
-  for (const [r, c] of positions) {
-    const idx = r * n + c;
-    if (parent.has(idx)) { res.push(count); continue; }
-    parent.set(idx, idx); count++;
-    for (const [dr, dc] of [[1,0],[-1,0],[0,1],[0,-1]]) {
-      const nr = r + dr, nc = c + dc, ni = nr * n + nc;
-      if (nr >= 0 && nr < m && nc >= 0 && nc < n && parent.has(ni)) {
-        const ra = find(idx), rb = find(ni);
-        if (ra !== rb) { parent.set(ra, rb); count--; }
-      }
-    }
-    res.push(count);
-  }
-  return res;
-}
-```
-
-**Java:**
-```java
-class Solution {
-    private Map<Integer, Integer> parent;
-    public List<Integer> numIslands2(int m, int n, int[][] positions) {
-        parent = new HashMap<>();
-        int count = 0;
-        List<Integer> res = new ArrayList<>();
-        int[][] dirs = {{1,0},{-1,0},{0,1},{0,-1}};
-        for (int[] p : positions) {
-            int idx = p[0] * n + p[1];
-            if (parent.containsKey(idx)) { res.add(count); continue; }
-            parent.put(idx, idx); count++;
-            for (int[] d : dirs) {
-                int nr = p[0] + d[0], nc = p[1] + d[1], ni = nr * n + nc;
-                if (nr < 0 || nr >= m || nc < 0 || nc >= n || !parent.containsKey(ni)) continue;
-                int ra = find(idx), rb = find(ni);
-                if (ra != rb) { parent.put(ra, rb); count--; }
-            }
-            res.add(count);
-        }
-        return res;
-    }
-    private int find(int x) {
-        while (parent.get(x) != x) { parent.put(x, parent.get(parent.get(x))); x = parent.get(x); }
-        return x;
-    }
-}
-```
-
-**Key points:**
-- New land starts as its own component, incrementing count.
-- Each successful union with a neighbor decrements count.
-- O(k * alpha(m*n)) per op with path compression.
-
-**Tags:** #algorithm
-
----
-
-### 38. Optimize Water Distribution in a Village
-
-**Difficulty:** Hard
-**Topics:** graph, mst, union-find
-**Position:** Senior SDE
-**Years:** L5-L6
-
-**Question:** `n` houses; can either build a well in house `i` (cost `wells[i]`) or connect two houses with a pipe of given cost. Find minimum total cost to supply water to every house.
-
-**Approach:** Add a virtual node 0 connected to each house `i` with edge weight `wells[i]`. Now problem = MST on `n+1` nodes. Kruskal with union-find on sorted edges. O((E + n) log(E + n)). Elegant reduction trick worth memorizing.
-
-**Python:**
-```python
-def min_cost_to_supply_water(n: int, wells: list[int], pipes: list[list[int]]) -> int:
-    edges: list[tuple[int, int, int]] = [(cost, 0, i + 1) for i, cost in enumerate(wells)]
-    for a, b, c in pipes:
-        edges.append((c, a, b))
-    edges.sort()
-    parent = list(range(n + 1))
-    def find(x: int) -> int:
-        while parent[x] != x:
-            parent[x] = parent[parent[x]]
-            x = parent[x]
-        return x
-    total = 0
-    for c, a, b in edges:
-        ra, rb = find(a), find(b)
-        if ra != rb:
-            parent[ra] = rb
-            total += c
-    return total
-```
-
-**TypeScript:**
-```typescript
-function minCostToSupplyWater(n: number, wells: number[], pipes: number[][]): number {
-  const edges: Array<[number, number, number]> = wells.map((c, i) => [c, 0, i + 1]);
-  for (const [a, b, c] of pipes) edges.push([c, a, b]);
-  edges.sort((x, y) => x[0] - y[0]);
-  const parent = Array.from({ length: n + 1 }, (_, i) => i);
-  const find = (x: number): number => {
-    while (parent[x] !== x) { parent[x] = parent[parent[x]]; x = parent[x]; }
-    return x;
-  };
-  let total = 0;
-  for (const [c, a, b] of edges) {
-    const ra = find(a), rb = find(b);
-    if (ra !== rb) { parent[ra] = rb; total += c; }
-  }
-  return total;
-}
-```
-
-**Java:**
-```java
-class Solution {
-    private int[] parent;
-    public int minCostToSupplyWater(int n, int[] wells, int[][] pipes) {
-        List<int[]> edges = new ArrayList<>();
-        for (int i = 0; i < wells.length; i++) edges.add(new int[]{wells[i], 0, i + 1});
-        for (int[] p : pipes) edges.add(new int[]{p[2], p[0], p[1]});
-        edges.sort((a, b) -> a[0] - b[0]);
-        parent = new int[n + 1];
-        for (int i = 0; i <= n; i++) parent[i] = i;
-        int total = 0;
-        for (int[] e : edges) {
-            int ra = find(e[1]), rb = find(e[2]);
-            if (ra != rb) { parent[ra] = rb; total += e[0]; }
-        }
-        return total;
-    }
-    private int find(int x) {
-        while (parent[x] != x) { parent[x] = parent[parent[x]]; x = parent[x]; }
-        return x;
-    }
-}
-```
-
-**Key points:**
-- Virtual node 0 turns "build a well" into "edge to 0" — pure MST.
-- Kruskal + union-find: O((E + n) log(E + n)).
-- Each house ends up connected via either pipes or the well edge.
-
-**Tags:** #algorithm
-
----
-
-### 39. K Closest Points to Origin
+### 24. K Closest Points to Origin
 
 **Difficulty:** Medium
 **Topics:** heap, quickselect, sorting
@@ -2709,7 +2246,7 @@ class Solution {
 
 ---
 
-### 40. Meeting Rooms II
+### 25. Meeting Rooms II
 
 **Difficulty:** Medium
 **Topics:** heap, intervals, sorting
@@ -2776,7 +2313,7 @@ class Solution {
 
 ---
 
-### 41. Find Median from Data Stream
+### 26. Find Median from Data Stream
 
 **Difficulty:** Hard
 **Topics:** heap, design, streaming
@@ -2853,252 +2390,45 @@ class MedianFinder {
 
 ---
 
-### 42. Serialize and Deserialize Binary Tree
+### 27. Min Cost to Connect Ropes
 
-**Difficulty:** Hard
-**Topics:** tree, dfs, bfs, design
-**Position:** Senior SDE
-**Years:** L5
-
-**Question:** Design an algorithm to serialize a binary tree to a string and deserialize it back.
-
-**Approach:** Preorder DFS with null markers: `"1,2,#,#,3,#,#"`. Deserialize via queue/iterator consuming tokens recursively. O(n) both ways. Level-order (BFS) also works and is more readable for debugging. Be explicit about delimiter and null sentinel.
-
-**Python:**
-```python
-def serialize(root: TreeNode | None) -> str:
-    parts: list[str] = []
-    def go(node: TreeNode | None) -> None:
-        if node is None:
-            parts.append("#"); return
-        parts.append(str(node.val))
-        go(node.left); go(node.right)
-    go(root)
-    return ",".join(parts)
-
-def deserialize(data: str) -> TreeNode | None:
-    it = iter(data.split(","))
-    def go() -> TreeNode | None:
-        v = next(it)
-        if v == "#":
-            return None
-        node = TreeNode(int(v))
-        node.left = go(); node.right = go()
-        return node
-    return go()
-```
-
-**TypeScript:**
-```typescript
-function serialize(root: TreeNode | null): string {
-  const parts: string[] = [];
-  const go = (n: TreeNode | null): void => {
-    if (!n) { parts.push("#"); return; }
-    parts.push(String(n.val));
-    go(n.left); go(n.right);
-  };
-  go(root);
-  return parts.join(",");
-}
-
-function deserialize(data: string): TreeNode | null {
-  const tokens = data.split(",");
-  let i = 0;
-  const go = (): TreeNode | null => {
-    const v = tokens[i++];
-    if (v === "#") return null;
-    const node = new TreeNode(parseInt(v, 10));
-    node.left = go(); node.right = go();
-    return node;
-  };
-  return go();
-}
-```
-
-**Java:**
-```java
-public class Codec {
-    public String serialize(TreeNode root) {
-        StringBuilder sb = new StringBuilder();
-        go(root, sb);
-        return sb.toString();
-    }
-    private void go(TreeNode n, StringBuilder sb) {
-        if (n == null) { sb.append("#,"); return; }
-        sb.append(n.val).append(',');
-        go(n.left, sb); go(n.right, sb);
-    }
-    public TreeNode deserialize(String data) {
-        Deque<String> tokens = new ArrayDeque<>(Arrays.asList(data.split(",")));
-        return build(tokens);
-    }
-    private TreeNode build(Deque<String> tokens) {
-        String v = tokens.poll();
-        if (v == null || v.equals("#")) return null;
-        TreeNode node = new TreeNode(Integer.parseInt(v));
-        node.left = build(tokens); node.right = build(tokens);
-        return node;
-    }
-}
-```
-
-**Key points:**
-- Preorder with null markers reconstructs structure unambiguously.
-- O(n) tokens for serialize and deserialize.
-- Use a shared cursor/iterator to consume tokens in order.
-
-**Tags:** #algorithm
-
----
-
-### 43. Word Search II
-
-**Difficulty:** Hard
-**Topics:** trie, backtracking, dfs, matrix
-**Position:** Senior SDE
-**Years:** L5
-
-**Question:** Given a `m x n` board of characters and a list of words, return all words that exist in the board (adjacent cells, no reuse within a word).
-
-**Approach:** Build a trie of all words. DFS each cell, walking the trie in lockstep with the path. On reaching a trie node marking a word, collect it and clear the marker (avoid duplicates). Prune dead trie branches after exhaustion. O(m*n * 4^L). Trie is the trick — naive per-word DFS TLEs.
-
-**Python:**
-```python
-def find_words(board: list[list[str]], words: list[str]) -> list[str]:
-    trie: dict = {}
-    for w in words:
-        node = trie
-        for c in w:
-            node = node.setdefault(c, {})
-        node["$"] = w
-    m, n = len(board), len(board[0])
-    out: list[str] = []
-    def dfs(r: int, c: int, node: dict) -> None:
-        ch = board[r][c]
-        nxt = node.get(ch)
-        if nxt is None:
-            return
-        if "$" in nxt:
-            out.append(nxt.pop("$"))
-        board[r][c] = "#"
-        for dr, dc in ((1,0),(-1,0),(0,1),(0,-1)):
-            nr, nc = r + dr, c + dc
-            if 0 <= nr < m and 0 <= nc < n and board[nr][nc] != "#":
-                dfs(nr, nc, nxt)
-        board[r][c] = ch
-        if not nxt:
-            node.pop(ch, None)
-    for r in range(m):
-        for c in range(n):
-            dfs(r, c, trie)
-    return out
-```
-
-**TypeScript:**
-```typescript
-function findWords(board: string[][], words: string[]): string[] {
-  type Node = { [k: string]: Node | string };
-  const trie: Node = {};
-  for (const w of words) {
-    let node: Node = trie;
-    for (const c of w) { if (!node[c]) node[c] = {} as Node; node = node[c] as Node; }
-    (node as any).$ = w;
-  }
-  const m = board.length, n = board[0].length;
-  const out: string[] = [];
-  const dfs = (r: number, c: number, node: Node): void => {
-    const ch = board[r][c];
-    const nxt = node[ch] as Node | undefined;
-    if (!nxt) return;
-    if ((nxt as any).$) { out.push((nxt as any).$); delete (nxt as any).$; }
-    board[r][c] = "#";
-    for (const [dr, dc] of [[1,0],[-1,0],[0,1],[0,-1]]) {
-      const nr = r + dr, nc = c + dc;
-      if (nr >= 0 && nr < m && nc >= 0 && nc < n && board[nr][nc] !== "#") dfs(nr, nc, nxt);
-    }
-    board[r][c] = ch;
-    if (Object.keys(nxt).length === 0) delete node[ch];
-  };
-  for (let r = 0; r < m; r++) for (let c = 0; c < n; c++) dfs(r, c, trie);
-  return out;
-}
-```
-
-**Java:**
-```java
-class Solution {
-    static class Node { Map<Character, Node> kids = new HashMap<>(); String word; }
-    private char[][] board; private int m, n;
-    private final List<String> out = new ArrayList<>();
-    public List<String> findWords(char[][] board, String[] words) {
-        this.board = board; m = board.length; n = board[0].length;
-        Node root = new Node();
-        for (String w : words) {
-            Node cur = root;
-            for (char c : w.toCharArray()) cur = cur.kids.computeIfAbsent(c, k -> new Node());
-            cur.word = w;
-        }
-        for (int r = 0; r < m; r++) for (int c = 0; c < n; c++) dfs(r, c, root);
-        return out;
-    }
-    private void dfs(int r, int c, Node node) {
-        if (r < 0 || r >= m || c < 0 || c >= n) return;
-        char ch = board[r][c];
-        Node nxt = ch == '#' ? null : node.kids.get(ch);
-        if (nxt == null) return;
-        if (nxt.word != null) { out.add(nxt.word); nxt.word = null; }
-        board[r][c] = '#';
-        dfs(r + 1, c, nxt); dfs(r - 1, c, nxt); dfs(r, c + 1, nxt); dfs(r, c - 1, nxt);
-        board[r][c] = ch;
-        if (nxt.kids.isEmpty()) node.kids.remove(ch);
-    }
-}
-```
-
-**Key points:**
-- Walk the trie in lockstep with the DFS so dead branches prune.
-- Pop `$` after collecting to avoid duplicates without an extra set.
-- Backtrack by restoring the original char after visiting children.
-
-**Tags:** #algorithm
-
----
-
-### 44. Maximum Units on a Truck
-
-**Difficulty:** Easy
-**Topics:** greedy, sorting
+**Difficulty:** Medium
+**Topics:** heap, greedy
 **Position:** SDE
-**Years:** L3-L4
+**Years:** L4
 
-**Question:** Given box types `[count, unitsPerBox]` and a truck capacity `truckSize` boxes, return the max number of units.
+**Question:** Given an array of rope lengths, the cost to connect two ropes equals their sum. Find the minimum total cost to connect all ropes into one.
 
-**Approach:** Sort by `unitsPerBox` descending. Greedily take as many of the highest-unit boxes as fit. O(n log n). Amazon OA staple framed around delivery trucks.
+**Approach:** Min-heap. Repeatedly pop two smallest, push their sum, accumulate cost. Equivalent to Huffman tree construction. O(n log n). Greedy proof: combining smallest first delays large costs from being multiplied repeatedly.
 
 **Python:**
 ```python
-def maximum_units(box_types: list[list[int]], truck_size: int) -> int:
-    box_types.sort(key=lambda b: -b[1])
+import heapq
+
+def min_cost_to_connect_ropes(ropes: list[int]) -> int:
+    heapq.heapify(ropes)
     total = 0
-    for count, units in box_types:
-        take = min(count, truck_size)
-        total += take * units
-        truck_size -= take
-        if truck_size == 0:
-            break
+    while len(ropes) > 1:
+        a = heapq.heappop(ropes)
+        b = heapq.heappop(ropes)
+        total += a + b
+        heapq.heappush(ropes, a + b)
     return total
 ```
 
 **TypeScript:**
 ```typescript
-function maximumUnits(boxTypes: number[][], truckSize: number): number {
-  boxTypes.sort((a, b) => b[1] - a[1]);
+function minCostToConnectRopes(ropes: number[]): number {
+  ropes.sort((a, b) => a - b);
   let total = 0;
-  for (const [count, units] of boxTypes) {
-    const take = Math.min(count, truckSize);
-    total += take * units;
-    truckSize -= take;
-    if (truckSize === 0) break;
+  while (ropes.length > 1) {
+    const a = ropes.shift()!;
+    const b = ropes.shift()!;
+    const s = a + b;
+    total += s;
+    let i = 0;
+    while (i < ropes.length && ropes[i] < s) i++;
+    ropes.splice(i, 0, s);
   }
   return total;
 }
@@ -3107,14 +2437,14 @@ function maximumUnits(boxTypes: number[][], truckSize: number): number {
 **Java:**
 ```java
 class Solution {
-    public int maximumUnits(int[][] boxTypes, int truckSize) {
-        Arrays.sort(boxTypes, (a, b) -> b[1] - a[1]);
+    public int minCostToConnectRopes(int[] ropes) {
+        PriorityQueue<Integer> heap = new PriorityQueue<>();
+        for (int r : ropes) heap.offer(r);
         int total = 0;
-        for (int[] b : boxTypes) {
-            int take = Math.min(b[0], truckSize);
-            total += take * b[1];
-            truckSize -= take;
-            if (truckSize == 0) break;
+        while (heap.size() > 1) {
+            int s = heap.poll() + heap.poll();
+            total += s;
+            heap.offer(s);
         }
         return total;
     }
@@ -3122,15 +2452,462 @@ class Solution {
 ```
 
 **Key points:**
-- Greedy by units-per-box descending; never beats taking high-density first.
-- O(n log n) for the sort dominates.
-- Break early once the truck is full.
+- Greedy Huffman-style: combine the two smallest first.
+- Each combined sum is added to all future operations, so delay big costs.
+- O(n log n) with a proper heap; production TS should use a heap library.
 
 **Tags:** #algorithm
 
 ---
 
-### 45. Analyze User Website Visit Pattern
+### 28. Reorganize String
+
+**Difficulty:** Medium
+**Topics:** heap, greedy, strings
+**Position:** SDE
+**Years:** L4
+
+**Question:** Given a string, rearrange so no two adjacent chars are equal. Return "" if impossible.
+
+**Approach:** Count frequencies; if max > (n+1)/2, impossible. Max-heap by frequency. Pop top two each step, append both, decrement counts, repush nonzero. O(n log k) with k = unique chars. Alternative: place most-frequent char at even indices first, then fill.
+
+**Python:**
+```python
+import heapq
+from collections import Counter
+
+def reorganize_string(s: str) -> str:
+    cnt = Counter(s)
+    if max(cnt.values()) > (len(s) + 1) // 2:
+        return ""
+    heap = [(-c, ch) for ch, c in cnt.items()]
+    heapq.heapify(heap)
+    out: list[str] = []
+    while len(heap) >= 2:
+        c1, ch1 = heapq.heappop(heap)
+        c2, ch2 = heapq.heappop(heap)
+        out.append(ch1); out.append(ch2)
+        if c1 + 1 < 0: heapq.heappush(heap, (c1 + 1, ch1))
+        if c2 + 1 < 0: heapq.heappush(heap, (c2 + 1, ch2))
+    if heap:
+        out.append(heap[0][1])
+    return "".join(out)
+```
+
+**TypeScript:**
+```typescript
+function reorganizeString(s: string): string {
+  const cnt = new Map<string, number>();
+  for (const c of s) cnt.set(c, (cnt.get(c) ?? 0) + 1);
+  if (Math.max(...cnt.values()) > Math.floor((s.length + 1) / 2)) return "";
+  const heap: Array<[number, string]> = [...cnt].map(([k, v]) => [v, k]);
+  const sort = () => heap.sort((a, b) => b[0] - a[0]);
+  sort();
+  const out: string[] = [];
+  while (heap.length >= 2) {
+    const [c1, ch1] = heap.shift()!;
+    const [c2, ch2] = heap.shift()!;
+    out.push(ch1, ch2);
+    if (c1 - 1 > 0) heap.push([c1 - 1, ch1]);
+    if (c2 - 1 > 0) heap.push([c2 - 1, ch2]);
+    sort();
+  }
+  if (heap.length) out.push(heap[0][1]);
+  return out.join("");
+}
+```
+
+**Java:**
+```java
+class Solution {
+    public String reorganizeString(String s) {
+        int[] cnt = new int[26];
+        for (char c : s.toCharArray()) cnt[c - 'a']++;
+        int max = 0;
+        for (int v : cnt) max = Math.max(max, v);
+        if (max > (s.length() + 1) / 2) return "";
+        PriorityQueue<int[]> heap = new PriorityQueue<>((a, b) -> b[0] - a[0]);
+        for (int i = 0; i < 26; i++) if (cnt[i] > 0) heap.offer(new int[]{cnt[i], i});
+        StringBuilder sb = new StringBuilder();
+        while (heap.size() >= 2) {
+            int[] a = heap.poll(), b = heap.poll();
+            sb.append((char) ('a' + a[1])).append((char) ('a' + b[1]));
+            if (--a[0] > 0) heap.offer(a);
+            if (--b[0] > 0) heap.offer(b);
+        }
+        if (!heap.isEmpty()) sb.append((char) ('a' + heap.poll()[1]));
+        return sb.toString();
+    }
+}
+```
+
+**Key points:**
+- Infeasible iff most frequent char exceeds `(n+1)/2`.
+- Pop the two most frequent and alternate them — they cannot adjoin each other in the output.
+- O(n log k) with k distinct characters.
+
+**Tags:** #algorithm
+
+---
+
+## Stack / Queue
+
+### 29. Sliding Window Maximum
+
+**Difficulty:** Hard
+**Topics:** deque, sliding-window
+**Position:** Senior SDE
+**Years:** L5
+
+**Question:** Given an array and window size k, return the max in each sliding window.
+
+**Approach:** Monotonic deque holding indices, front always the max in current window. For each i: pop from back while `nums[back] <= nums[i]` (they can never be max again), push i; pop front if out of window. Output deque front once `i >= k-1`. O(n).
+
+**Python:**
+```python
+from collections import deque
+
+def max_sliding_window(nums: list[int], k: int) -> list[int]:
+    dq: deque[int] = deque()
+    out: list[int] = []
+    for i, x in enumerate(nums):
+        while dq and nums[dq[-1]] <= x:
+            dq.pop()
+        dq.append(i)
+        if dq[0] <= i - k:
+            dq.popleft()
+        if i >= k - 1:
+            out.append(nums[dq[0]])
+    return out
+```
+
+**TypeScript:**
+```typescript
+function maxSlidingWindow(nums: number[], k: number): number[] {
+  const dq: number[] = [];
+  const out: number[] = [];
+  for (let i = 0; i < nums.length; i++) {
+    while (dq.length && nums[dq[dq.length - 1]] <= nums[i]) dq.pop();
+    dq.push(i);
+    if (dq[0] <= i - k) dq.shift();
+    if (i >= k - 1) out.push(nums[dq[0]]);
+  }
+  return out;
+}
+```
+
+**Java:**
+```java
+class Solution {
+    public int[] maxSlidingWindow(int[] nums, int k) {
+        Deque<Integer> dq = new ArrayDeque<>();
+        int[] out = new int[nums.length - k + 1];
+        for (int i = 0; i < nums.length; i++) {
+            while (!dq.isEmpty() && nums[dq.peekLast()] <= nums[i]) dq.pollLast();
+            dq.offerLast(i);
+            if (dq.peekFirst() <= i - k) dq.pollFirst();
+            if (i >= k - 1) out[i - k + 1] = nums[dq.peekFirst()];
+        }
+        return out;
+    }
+}
+```
+
+**Key points:**
+- Monotonic decreasing deque of indices keeps the front as the current max.
+- Each index is pushed and popped at most once — amortized O(n).
+- Drop the front when it falls outside the window.
+
+**Tags:** #algorithm
+
+---
+
+### 30. Min Stack
+
+**Difficulty:** Medium
+**Topics:** stack, design
+**Position:** SDE
+**Years:** L4
+
+**Question:** Design a stack supporting `push`, `pop`, `top`, and `getMin` all in O(1).
+
+**Approach:** Auxiliary stack of running minimums, pushed in lockstep with main stack (push `min(new, prev_min)`). Alternative: store `(val, current_min)` pairs in single stack. Tricky variant: only push to min stack on `val <= current_min`; pop only when equal.
+
+**Python:**
+```python
+class MinStack:
+    def __init__(self) -> None:
+        self.stack: list[int] = []
+        self.mins: list[int] = []
+
+    def push(self, val: int) -> None:
+        self.stack.append(val)
+        self.mins.append(val if not self.mins else min(val, self.mins[-1]))
+
+    def pop(self) -> None:
+        self.stack.pop()
+        self.mins.pop()
+
+    def top(self) -> int:
+        return self.stack[-1]
+
+    def getMin(self) -> int:
+        return self.mins[-1]
+```
+
+**TypeScript:**
+```typescript
+class MinStack {
+  private stack: number[] = [];
+  private mins: number[] = [];
+  push(val: number): void {
+    this.stack.push(val);
+    this.mins.push(this.mins.length ? Math.min(val, this.mins[this.mins.length - 1]) : val);
+  }
+  pop(): void { this.stack.pop(); this.mins.pop(); }
+  top(): number { return this.stack[this.stack.length - 1]; }
+  getMin(): number { return this.mins[this.mins.length - 1]; }
+}
+```
+
+**Java:**
+```java
+class MinStack {
+    private final Deque<Integer> stack = new ArrayDeque<>();
+    private final Deque<Integer> mins = new ArrayDeque<>();
+    public void push(int val) {
+        stack.push(val);
+        mins.push(mins.isEmpty() ? val : Math.min(val, mins.peek()));
+    }
+    public void pop() { stack.pop(); mins.pop(); }
+    public int top() { return stack.peek(); }
+    public int getMin() { return mins.peek(); }
+}
+```
+
+**Key points:**
+- Parallel min-stack stores the running minimum at every depth.
+- All operations are O(1).
+- Variant stores only strict-decrease entries to save space.
+
+**Tags:** #algorithm
+
+---
+
+### 31. Design Hit Counter
+
+**Difficulty:** Medium
+**Topics:** design, queue, hashmap
+**Position:** SDE
+**Years:** L4
+
+**Question:** Design a hit counter that records hits and returns the number of hits in the past 5 minutes. Hits are recorded in chronological order.
+
+**Approach:** Queue of timestamps; on `getHits(t)`, dequeue all with `ts <= t - 300`, return queue size. Memory grows with hit rate. For scale, use two arrays of size 300: `times[i]` and `hits[i]`, indexed by `t % 300`; reset bucket on stale timestamp. O(1) amortized.
+
+**Python:**
+```python
+class HitCounter:
+    def __init__(self) -> None:
+        self.times = [0] * 300
+        self.hits = [0] * 300
+
+    def hit(self, timestamp: int) -> None:
+        i = timestamp % 300
+        if self.times[i] != timestamp:
+            self.times[i] = timestamp
+            self.hits[i] = 1
+        else:
+            self.hits[i] += 1
+
+    def getHits(self, timestamp: int) -> int:
+        return sum(self.hits[i] for i in range(300) if timestamp - self.times[i] < 300)
+```
+
+**TypeScript:**
+```typescript
+class HitCounter {
+  private times = new Array(300).fill(0);
+  private hits = new Array(300).fill(0);
+  hit(timestamp: number): void {
+    const i = timestamp % 300;
+    if (this.times[i] !== timestamp) { this.times[i] = timestamp; this.hits[i] = 1; }
+    else this.hits[i]++;
+  }
+  getHits(timestamp: number): number {
+    let sum = 0;
+    for (let i = 0; i < 300; i++) if (timestamp - this.times[i] < 300) sum += this.hits[i];
+    return sum;
+  }
+}
+```
+
+**Java:**
+```java
+class HitCounter {
+    private final int[] times = new int[300];
+    private final int[] hits = new int[300];
+    public void hit(int timestamp) {
+        int i = timestamp % 300;
+        if (times[i] != timestamp) { times[i] = timestamp; hits[i] = 1; }
+        else hits[i]++;
+    }
+    public int getHits(int timestamp) {
+        int sum = 0;
+        for (int i = 0; i < 300; i++) if (timestamp - times[i] < 300) sum += hits[i];
+        return sum;
+    }
+}
+```
+
+**Key points:**
+- Bucket per second within the 300s window; stale buckets are auto-reset on next hit.
+- O(1) `hit`, O(300) `getHits` regardless of hit rate.
+- Queue variant is simpler but unbounded under bursty traffic.
+
+**Tags:** #algorithm
+
+---
+
+## Hash Table
+
+### 32. Two Sum
+
+**Difficulty:** Easy
+**Topics:** arrays, hashmap
+**Position:** SWE
+**Years:** L4
+
+**Question:** Given an array of integers and a target, return indices of the two numbers that add up to target. Assume exactly one solution.
+
+**Approach:** One pass + hashmap `value -> index`. For each `num`, check if `target - num` is in map; else insert. O(n) time, O(n) space. Amazon OA staple.
+
+**Python:**
+```python
+def two_sum(nums: list[int], target: int) -> list[int]:
+    seen: dict[int, int] = {}
+    for i, x in enumerate(nums):
+        if target - x in seen:
+            return [seen[target - x], i]
+        seen[x] = i
+    return []
+```
+
+**TypeScript:**
+```typescript
+function twoSum(nums: number[], target: number): number[] {
+  const seen = new Map<number, number>();
+  for (let i = 0; i < nums.length; i++) {
+    const need = target - nums[i];
+    if (seen.has(need)) return [seen.get(need)!, i];
+    seen.set(nums[i], i);
+  }
+  return [];
+}
+```
+
+**Java:**
+```java
+class Solution {
+    public int[] twoSum(int[] nums, int target) {
+        Map<Integer, Integer> seen = new HashMap<>();
+        for (int i = 0; i < nums.length; i++) {
+            int need = target - nums[i];
+            if (seen.containsKey(need)) return new int[]{seen.get(need), i};
+            seen.put(nums[i], i);
+        }
+        return new int[0];
+    }
+}
+```
+
+**Key points:**
+- Hash lookup turns the inner search from O(n) into O(1).
+- Insert after the check so the same index is not reused.
+- O(n) time, O(n) extra space.
+
+**Follow-ups:**
+- Input is sorted — two-pointer in O(1) extra space.
+- Return all unique pairs (3Sum-style dedupe).
+- Streaming integers: design `add(num)` + `find(target)` continuous-query API.
+- Multiple solutions exist; return the pair with the smallest index sum.
+
+**Common Pitfalls:**
+- Inserting into the map before the check, which lets `nums[i] + nums[i] == target` reuse the same index.
+- Falling back to brute force O(n^2) despite the "exactly one solution" hint — fails performance bar.
+
+**Tags:** #algorithm
+
+---
+
+### 33. Most Common Word
+
+**Difficulty:** Easy
+**Topics:** strings, hashmap, parsing
+**Position:** SDE
+**Years:** L3-L4
+
+**Question:** Given a paragraph and a list of banned words, return the most frequent non-banned word. Words are case-insensitive; punctuation should be stripped.
+
+**Approach:** Normalize (lowercase, split on non-letters), count frequencies in a hashmap excluding banned set, return max. O(n). Watch the punctuation regex / manual char filter — most bugs live there.
+
+**Python:**
+```python
+import re
+from collections import Counter
+
+def most_common_word(paragraph: str, banned: list[str]) -> str:
+    banned_set = set(banned)
+    words = re.findall(r"[a-zA-Z]+", paragraph.lower())
+    cnt = Counter(w for w in words if w not in banned_set)
+    return cnt.most_common(1)[0][0]
+```
+
+**TypeScript:**
+```typescript
+function mostCommonWord(paragraph: string, banned: string[]): string {
+  const bannedSet = new Set(banned);
+  const words = paragraph.toLowerCase().match(/[a-z]+/g) ?? [];
+  const cnt = new Map<string, number>();
+  let best = "", bestN = 0;
+  for (const w of words) {
+    if (bannedSet.has(w)) continue;
+    const c = (cnt.get(w) ?? 0) + 1;
+    cnt.set(w, c);
+    if (c > bestN) { bestN = c; best = w; }
+  }
+  return best;
+}
+```
+
+**Java:**
+```java
+class Solution {
+    public String mostCommonWord(String paragraph, String[] banned) {
+        Set<String> bannedSet = new HashSet<>(Arrays.asList(banned));
+        String[] words = paragraph.toLowerCase().split("[^a-z]+");
+        Map<String, Integer> cnt = new HashMap<>();
+        String best = ""; int bestN = 0;
+        for (String w : words) {
+            if (w.isEmpty() || bannedSet.contains(w)) continue;
+            int c = cnt.merge(w, 1, Integer::sum);
+            if (c > bestN) { bestN = c; best = w; }
+        }
+        return best;
+    }
+}
+```
+
+**Key points:**
+- Lowercase before splitting to make banned compare case-insensitive.
+- Single regex handles punctuation, digits, whitespace at once.
+- O(n) over the paragraph length.
+
+**Tags:** #algorithm
+
+---
+
+### 34. Analyze User Website Visit Pattern
 
 **Difficulty:** Medium
 **Topics:** hashmap, sorting, strings
@@ -3229,286 +3006,7 @@ class Solution {
 
 ---
 
-### 46. Min Cost to Connect Ropes
-
-**Difficulty:** Medium
-**Topics:** heap, greedy
-**Position:** SDE
-**Years:** L4
-
-**Question:** Given an array of rope lengths, the cost to connect two ropes equals their sum. Find the minimum total cost to connect all ropes into one.
-
-**Approach:** Min-heap. Repeatedly pop two smallest, push their sum, accumulate cost. Equivalent to Huffman tree construction. O(n log n). Greedy proof: combining smallest first delays large costs from being multiplied repeatedly.
-
-**Python:**
-```python
-import heapq
-
-def min_cost_to_connect_ropes(ropes: list[int]) -> int:
-    heapq.heapify(ropes)
-    total = 0
-    while len(ropes) > 1:
-        a = heapq.heappop(ropes)
-        b = heapq.heappop(ropes)
-        total += a + b
-        heapq.heappush(ropes, a + b)
-    return total
-```
-
-**TypeScript:**
-```typescript
-function minCostToConnectRopes(ropes: number[]): number {
-  ropes.sort((a, b) => a - b);
-  let total = 0;
-  while (ropes.length > 1) {
-    const a = ropes.shift()!;
-    const b = ropes.shift()!;
-    const s = a + b;
-    total += s;
-    let i = 0;
-    while (i < ropes.length && ropes[i] < s) i++;
-    ropes.splice(i, 0, s);
-  }
-  return total;
-}
-```
-
-**Java:**
-```java
-class Solution {
-    public int minCostToConnectRopes(int[] ropes) {
-        PriorityQueue<Integer> heap = new PriorityQueue<>();
-        for (int r : ropes) heap.offer(r);
-        int total = 0;
-        while (heap.size() > 1) {
-            int s = heap.poll() + heap.poll();
-            total += s;
-            heap.offer(s);
-        }
-        return total;
-    }
-}
-```
-
-**Key points:**
-- Greedy Huffman-style: combine the two smallest first.
-- Each combined sum is added to all future operations, so delay big costs.
-- O(n log n) with a proper heap; production TS should use a heap library.
-
-**Tags:** #algorithm
-
----
-
-### 47. Find the Winner of the Circular Game
-
-**Difficulty:** Medium
-**Topics:** simulation, recursion, math
-**Position:** SDE
-**Years:** L4
-
-**Question:** `n` friends in a circle numbered 1..n. Starting from 1, count k friends and eliminate the kth. Continue from the next friend. Return the last remaining.
-
-**Approach:** Josephus problem. Recursive formula `J(1) = 0; J(n) = (J(n-1) + k) % n`. Return `J(n) + 1` for 1-indexed. O(n) time, O(1) iterative. Simulation with a queue/deque is O(n*k) and easier to derive on the fly.
-
-**Python:**
-```python
-def find_the_winner(n: int, k: int) -> int:
-    winner = 0
-    for i in range(2, n + 1):
-        winner = (winner + k) % i
-    return winner + 1
-```
-
-**TypeScript:**
-```typescript
-function findTheWinner(n: number, k: number): number {
-  let winner = 0;
-  for (let i = 2; i <= n; i++) winner = (winner + k) % i;
-  return winner + 1;
-}
-```
-
-**Java:**
-```java
-class Solution {
-    public int findTheWinner(int n, int k) {
-        int winner = 0;
-        for (int i = 2; i <= n; i++) winner = (winner + k) % i;
-        return winner + 1;
-    }
-}
-```
-
-**Key points:**
-- Iterative Josephus recurrence in O(n) with O(1) space.
-- Add 1 at the end to convert to 1-indexed.
-- Queue simulation is O(n*k) but easier to derive under pressure.
-
-**Tags:** #algorithm
-
----
-
-### 48. Reorganize String
-
-**Difficulty:** Medium
-**Topics:** heap, greedy, strings
-**Position:** SDE
-**Years:** L4
-
-**Question:** Given a string, rearrange so no two adjacent chars are equal. Return "" if impossible.
-
-**Approach:** Count frequencies; if max > (n+1)/2, impossible. Max-heap by frequency. Pop top two each step, append both, decrement counts, repush nonzero. O(n log k) with k = unique chars. Alternative: place most-frequent char at even indices first, then fill.
-
-**Python:**
-```python
-import heapq
-from collections import Counter
-
-def reorganize_string(s: str) -> str:
-    cnt = Counter(s)
-    if max(cnt.values()) > (len(s) + 1) // 2:
-        return ""
-    heap = [(-c, ch) for ch, c in cnt.items()]
-    heapq.heapify(heap)
-    out: list[str] = []
-    while len(heap) >= 2:
-        c1, ch1 = heapq.heappop(heap)
-        c2, ch2 = heapq.heappop(heap)
-        out.append(ch1); out.append(ch2)
-        if c1 + 1 < 0: heapq.heappush(heap, (c1 + 1, ch1))
-        if c2 + 1 < 0: heapq.heappush(heap, (c2 + 1, ch2))
-    if heap:
-        out.append(heap[0][1])
-    return "".join(out)
-```
-
-**TypeScript:**
-```typescript
-function reorganizeString(s: string): string {
-  const cnt = new Map<string, number>();
-  for (const c of s) cnt.set(c, (cnt.get(c) ?? 0) + 1);
-  if (Math.max(...cnt.values()) > Math.floor((s.length + 1) / 2)) return "";
-  const heap: Array<[number, string]> = [...cnt].map(([k, v]) => [v, k]);
-  const sort = () => heap.sort((a, b) => b[0] - a[0]);
-  sort();
-  const out: string[] = [];
-  while (heap.length >= 2) {
-    const [c1, ch1] = heap.shift()!;
-    const [c2, ch2] = heap.shift()!;
-    out.push(ch1, ch2);
-    if (c1 - 1 > 0) heap.push([c1 - 1, ch1]);
-    if (c2 - 1 > 0) heap.push([c2 - 1, ch2]);
-    sort();
-  }
-  if (heap.length) out.push(heap[0][1]);
-  return out.join("");
-}
-```
-
-**Java:**
-```java
-class Solution {
-    public String reorganizeString(String s) {
-        int[] cnt = new int[26];
-        for (char c : s.toCharArray()) cnt[c - 'a']++;
-        int max = 0;
-        for (int v : cnt) max = Math.max(max, v);
-        if (max > (s.length() + 1) / 2) return "";
-        PriorityQueue<int[]> heap = new PriorityQueue<>((a, b) -> b[0] - a[0]);
-        for (int i = 0; i < 26; i++) if (cnt[i] > 0) heap.offer(new int[]{cnt[i], i});
-        StringBuilder sb = new StringBuilder();
-        while (heap.size() >= 2) {
-            int[] a = heap.poll(), b = heap.poll();
-            sb.append((char) ('a' + a[1])).append((char) ('a' + b[1]));
-            if (--a[0] > 0) heap.offer(a);
-            if (--b[0] > 0) heap.offer(b);
-        }
-        if (!heap.isEmpty()) sb.append((char) ('a' + heap.poll()[1]));
-        return sb.toString();
-    }
-}
-```
-
-**Key points:**
-- Infeasible iff most frequent char exceeds `(n+1)/2`.
-- Pop the two most frequent and alternate them — they cannot adjoin each other in the output.
-- O(n log k) with k distinct characters.
-
-**Tags:** #algorithm
-
----
-
-### 49. Sliding Window Maximum
-
-**Difficulty:** Hard
-**Topics:** deque, sliding-window
-**Position:** Senior SDE
-**Years:** L5
-
-**Question:** Given an array and window size k, return the max in each sliding window.
-
-**Approach:** Monotonic deque holding indices, front always the max in current window. For each i: pop from back while `nums[back] <= nums[i]` (they can never be max again), push i; pop front if out of window. Output deque front once `i >= k-1`. O(n).
-
-**Python:**
-```python
-from collections import deque
-
-def max_sliding_window(nums: list[int], k: int) -> list[int]:
-    dq: deque[int] = deque()
-    out: list[int] = []
-    for i, x in enumerate(nums):
-        while dq and nums[dq[-1]] <= x:
-            dq.pop()
-        dq.append(i)
-        if dq[0] <= i - k:
-            dq.popleft()
-        if i >= k - 1:
-            out.append(nums[dq[0]])
-    return out
-```
-
-**TypeScript:**
-```typescript
-function maxSlidingWindow(nums: number[], k: number): number[] {
-  const dq: number[] = [];
-  const out: number[] = [];
-  for (let i = 0; i < nums.length; i++) {
-    while (dq.length && nums[dq[dq.length - 1]] <= nums[i]) dq.pop();
-    dq.push(i);
-    if (dq[0] <= i - k) dq.shift();
-    if (i >= k - 1) out.push(nums[dq[0]]);
-  }
-  return out;
-}
-```
-
-**Java:**
-```java
-class Solution {
-    public int[] maxSlidingWindow(int[] nums, int k) {
-        Deque<Integer> dq = new ArrayDeque<>();
-        int[] out = new int[nums.length - k + 1];
-        for (int i = 0; i < nums.length; i++) {
-            while (!dq.isEmpty() && nums[dq.peekLast()] <= nums[i]) dq.pollLast();
-            dq.offerLast(i);
-            if (dq.peekFirst() <= i - k) dq.pollFirst();
-            if (i >= k - 1) out[i - k + 1] = nums[dq.peekFirst()];
-        }
-        return out;
-    }
-}
-```
-
-**Key points:**
-- Monotonic decreasing deque of indices keeps the front as the current max.
-- Each index is pushed and popped at most once — amortized O(n).
-- Drop the front when it falls outside the window.
-
-**Tags:** #algorithm
-
----
-
-### 50. Group Anagrams
+### 35. Group Anagrams
 
 **Difficulty:** Medium
 **Topics:** hashmap, strings, sorting
@@ -3566,7 +3064,96 @@ class Solution {
 
 ---
 
-### 51. Maximum Subarray (Kadane's)
+## Dynamic Programming
+
+### 36. Trapping Rain Water
+
+**Difficulty:** Hard
+**Topics:** arrays, two-pointer, dp
+**Position:** SWE
+**Years:** L5
+
+**Question:** Given `n` non-negative integers representing an elevation map, compute how much water it can trap.
+
+**Approach:** Two pointers from each end. Maintain `left_max`, `right_max`. Move whichever side is shorter; water at that index = `side_max - height[i]`. O(n) time, O(1) space. Alternative: precompute `left_max[]` and `right_max[]` arrays — clearer but O(n) space.
+
+**Python:**
+```python
+def trap(height: list[int]) -> int:
+    l, r = 0, len(height) - 1
+    lmax = rmax = total = 0
+    while l < r:
+        if height[l] < height[r]:
+            lmax = max(lmax, height[l])
+            total += lmax - height[l]
+            l += 1
+        else:
+            rmax = max(rmax, height[r])
+            total += rmax - height[r]
+            r -= 1
+    return total
+```
+
+**TypeScript:**
+```typescript
+function trap(height: number[]): number {
+  let l = 0, r = height.length - 1, lmax = 0, rmax = 0, total = 0;
+  while (l < r) {
+    if (height[l] < height[r]) {
+      lmax = Math.max(lmax, height[l]);
+      total += lmax - height[l];
+      l++;
+    } else {
+      rmax = Math.max(rmax, height[r]);
+      total += rmax - height[r];
+      r--;
+    }
+  }
+  return total;
+}
+```
+
+**Java:**
+```java
+class Solution {
+    public int trap(int[] height) {
+        int l = 0, r = height.length - 1, lmax = 0, rmax = 0, total = 0;
+        while (l < r) {
+            if (height[l] < height[r]) {
+                lmax = Math.max(lmax, height[l]);
+                total += lmax - height[l];
+                l++;
+            } else {
+                rmax = Math.max(rmax, height[r]);
+                total += rmax - height[r];
+                r--;
+            }
+        }
+        return total;
+    }
+}
+```
+
+**Key points:**
+- The shorter side bounds water at its index, so move it inward.
+- O(n) time, O(1) extra space.
+- Precomputed left/right max arrays are easier to reason about but use O(n).
+
+**Follow-ups:**
+- Trapping Rain Water II (2D matrix) — switch to a min-heap starting from the border.
+- Heights arrive as a stream — can the total be updated incrementally?
+- Floating-point / negative heights; what changes in the invariant?
+- Print the actual water level at each index instead of only the total volume.
+
+**Common Pitfalls:**
+- Moving the taller pointer when heights tie — you overcount that index.
+- Off-by-one: forgetting that the leftmost/rightmost bars never trap water.
+
+**Tags:** #algorithm
+
+---
+
+### 37. Maximum Subarray (Kadane's)
 
 **Difficulty:** Medium
 **Topics:** dp, arrays
@@ -3622,63 +3209,7 @@ class Solution {
 
 ---
 
-### 52. Lowest Common Ancestor of a Binary Tree
-
-**Difficulty:** Medium
-**Topics:** tree, dfs, recursion
-**Position:** SDE
-**Years:** L4
-
-**Question:** Given a binary tree and two nodes `p`, `q`, find their lowest common ancestor.
-
-**Approach:** Recursive: if root is null or p or q, return root. Recurse left and right. If both non-null, root is LCA; else return whichever is non-null. O(n). Works for BST too but BST has O(log n) by comparing values.
-
-**Python:**
-```python
-def lowest_common_ancestor(root: TreeNode | None, p: TreeNode, q: TreeNode) -> TreeNode | None:
-    if root is None or root is p or root is q:
-        return root
-    l = lowest_common_ancestor(root.left, p, q)
-    r = lowest_common_ancestor(root.right, p, q)
-    if l and r:
-        return root
-    return l or r
-```
-
-**TypeScript:**
-```typescript
-function lowestCommonAncestor(root: TreeNode | null, p: TreeNode, q: TreeNode): TreeNode | null {
-  if (!root || root === p || root === q) return root;
-  const l = lowestCommonAncestor(root.left, p, q);
-  const r = lowestCommonAncestor(root.right, p, q);
-  if (l && r) return root;
-  return l ?? r;
-}
-```
-
-**Java:**
-```java
-class Solution {
-    public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
-        if (root == null || root == p || root == q) return root;
-        TreeNode l = lowestCommonAncestor(root.left, p, q);
-        TreeNode r = lowestCommonAncestor(root.right, p, q);
-        if (l != null && r != null) return root;
-        return l != null ? l : r;
-    }
-}
-```
-
-**Key points:**
-- A node equal to p or q is its own LCA.
-- If both sides return non-null, current node is the split point.
-- O(n) time, O(h) recursion depth.
-
-**Tags:** #algorithm
-
----
-
-### 53. Maximum Profit in Job Scheduling
+### 38. Maximum Profit in Job Scheduling
 
 **Difficulty:** Hard
 **Topics:** dp, binary-search, sorting
@@ -3752,293 +3283,9 @@ class Solution {
 
 ---
 
-### 54. Min Stack
+## Matrix
 
-**Difficulty:** Medium
-**Topics:** stack, design
-**Position:** SDE
-**Years:** L4
-
-**Question:** Design a stack supporting `push`, `pop`, `top`, and `getMin` all in O(1).
-
-**Approach:** Auxiliary stack of running minimums, pushed in lockstep with main stack (push `min(new, prev_min)`). Alternative: store `(val, current_min)` pairs in single stack. Tricky variant: only push to min stack on `val <= current_min`; pop only when equal.
-
-**Python:**
-```python
-class MinStack:
-    def __init__(self) -> None:
-        self.stack: list[int] = []
-        self.mins: list[int] = []
-
-    def push(self, val: int) -> None:
-        self.stack.append(val)
-        self.mins.append(val if not self.mins else min(val, self.mins[-1]))
-
-    def pop(self) -> None:
-        self.stack.pop()
-        self.mins.pop()
-
-    def top(self) -> int:
-        return self.stack[-1]
-
-    def getMin(self) -> int:
-        return self.mins[-1]
-```
-
-**TypeScript:**
-```typescript
-class MinStack {
-  private stack: number[] = [];
-  private mins: number[] = [];
-  push(val: number): void {
-    this.stack.push(val);
-    this.mins.push(this.mins.length ? Math.min(val, this.mins[this.mins.length - 1]) : val);
-  }
-  pop(): void { this.stack.pop(); this.mins.pop(); }
-  top(): number { return this.stack[this.stack.length - 1]; }
-  getMin(): number { return this.mins[this.mins.length - 1]; }
-}
-```
-
-**Java:**
-```java
-class MinStack {
-    private final Deque<Integer> stack = new ArrayDeque<>();
-    private final Deque<Integer> mins = new ArrayDeque<>();
-    public void push(int val) {
-        stack.push(val);
-        mins.push(mins.isEmpty() ? val : Math.min(val, mins.peek()));
-    }
-    public void pop() { stack.pop(); mins.pop(); }
-    public int top() { return stack.peek(); }
-    public int getMin() { return mins.peek(); }
-}
-```
-
-**Key points:**
-- Parallel min-stack stores the running minimum at every depth.
-- All operations are O(1).
-- Variant stores only strict-decrease entries to save space.
-
-**Tags:** #algorithm
-
----
-
-### 55. Validate Binary Search Tree
-
-**Difficulty:** Medium
-**Topics:** tree, dfs, recursion
-**Position:** SDE
-**Years:** L4
-
-**Question:** Given a binary tree, determine if it's a valid BST.
-
-**Approach:** Recursive with `(min, max)` bounds passed down. Each node must satisfy `min < node.val < max`. Tightens bounds on recursion. O(n). Alternative: inorder traversal should yield strictly increasing sequence. Watch INT bounds — use long or Optional.
-
-**Python:**
-```python
-def is_valid_bst(root: TreeNode | None) -> bool:
-    def go(node: TreeNode | None, lo: float, hi: float) -> bool:
-        if node is None:
-            return True
-        if not (lo < node.val < hi):
-            return False
-        return go(node.left, lo, node.val) and go(node.right, node.val, hi)
-    return go(root, float("-inf"), float("inf"))
-```
-
-**TypeScript:**
-```typescript
-function isValidBST(root: TreeNode | null): boolean {
-  const go = (n: TreeNode | null, lo: number, hi: number): boolean => {
-    if (!n) return true;
-    if (!(lo < n.val && n.val < hi)) return false;
-    return go(n.left, lo, n.val) && go(n.right, n.val, hi);
-  };
-  return go(root, -Infinity, Infinity);
-}
-```
-
-**Java:**
-```java
-class Solution {
-    public boolean isValidBST(TreeNode root) {
-        return go(root, Long.MIN_VALUE, Long.MAX_VALUE);
-    }
-    private boolean go(TreeNode n, long lo, long hi) {
-        if (n == null) return true;
-        if (n.val <= lo || n.val >= hi) return false;
-        return go(n.left, lo, n.val) && go(n.right, n.val, hi);
-    }
-}
-```
-
-**Key points:**
-- Strict inequalities enforce uniqueness.
-- Pass bounds down, not up — values get tighter, never looser.
-- Inorder traversal must produce strictly increasing values.
-
-**Tags:** #algorithm
-
----
-
-### 56. Search in Rotated Sorted Array
-
-**Difficulty:** Medium
-**Topics:** binary-search, arrays
-**Position:** SDE
-**Years:** L4
-
-**Question:** Given a rotated sorted array (originally ascending, then rotated at some pivot) and a target, return its index or -1. O(log n) required.
-
-**Approach:** Modified binary search. At each step determine which half is sorted (compare `nums[lo]` and `nums[mid]`). If target lies in the sorted half's range, search there; else search the other half. O(log n). With duplicates, worst-case degrades to O(n).
-
-**Python:**
-```python
-def search(nums: list[int], target: int) -> int:
-    lo, hi = 0, len(nums) - 1
-    while lo <= hi:
-        mid = (lo + hi) // 2
-        if nums[mid] == target:
-            return mid
-        if nums[lo] <= nums[mid]:
-            if nums[lo] <= target < nums[mid]:
-                hi = mid - 1
-            else:
-                lo = mid + 1
-        else:
-            if nums[mid] < target <= nums[hi]:
-                lo = mid + 1
-            else:
-                hi = mid - 1
-    return -1
-```
-
-**TypeScript:**
-```typescript
-function search(nums: number[], target: number): number {
-  let lo = 0, hi = nums.length - 1;
-  while (lo <= hi) {
-    const mid = (lo + hi) >> 1;
-    if (nums[mid] === target) return mid;
-    if (nums[lo] <= nums[mid]) {
-      if (nums[lo] <= target && target < nums[mid]) hi = mid - 1;
-      else lo = mid + 1;
-    } else {
-      if (nums[mid] < target && target <= nums[hi]) lo = mid + 1;
-      else hi = mid - 1;
-    }
-  }
-  return -1;
-}
-```
-
-**Java:**
-```java
-class Solution {
-    public int search(int[] nums, int target) {
-        int lo = 0, hi = nums.length - 1;
-        while (lo <= hi) {
-            int mid = (lo + hi) >>> 1;
-            if (nums[mid] == target) return mid;
-            if (nums[lo] <= nums[mid]) {
-                if (nums[lo] <= target && target < nums[mid]) hi = mid - 1;
-                else lo = mid + 1;
-            } else {
-                if (nums[mid] < target && target <= nums[hi]) lo = mid + 1;
-                else hi = mid - 1;
-            }
-        }
-        return -1;
-    }
-}
-```
-
-**Key points:**
-- One half is always sorted — decide via `nums[lo] <= nums[mid]`.
-- Inclusive bound check matches the sorted side's endpoints.
-- O(log n) for unique values; degrades to O(n) with duplicates.
-
-**Tags:** #algorithm
-
----
-
-### 57. Design Hit Counter
-
-**Difficulty:** Medium
-**Topics:** design, queue, hashmap
-**Position:** SDE
-**Years:** L4
-
-**Question:** Design a hit counter that records hits and returns the number of hits in the past 5 minutes. Hits are recorded in chronological order.
-
-**Approach:** Queue of timestamps; on `getHits(t)`, dequeue all with `ts <= t - 300`, return queue size. Memory grows with hit rate. For scale, use two arrays of size 300: `times[i]` and `hits[i]`, indexed by `t % 300`; reset bucket on stale timestamp. O(1) amortized.
-
-**Python:**
-```python
-class HitCounter:
-    def __init__(self) -> None:
-        self.times = [0] * 300
-        self.hits = [0] * 300
-
-    def hit(self, timestamp: int) -> None:
-        i = timestamp % 300
-        if self.times[i] != timestamp:
-            self.times[i] = timestamp
-            self.hits[i] = 1
-        else:
-            self.hits[i] += 1
-
-    def getHits(self, timestamp: int) -> int:
-        return sum(self.hits[i] for i in range(300) if timestamp - self.times[i] < 300)
-```
-
-**TypeScript:**
-```typescript
-class HitCounter {
-  private times = new Array(300).fill(0);
-  private hits = new Array(300).fill(0);
-  hit(timestamp: number): void {
-    const i = timestamp % 300;
-    if (this.times[i] !== timestamp) { this.times[i] = timestamp; this.hits[i] = 1; }
-    else this.hits[i]++;
-  }
-  getHits(timestamp: number): number {
-    let sum = 0;
-    for (let i = 0; i < 300; i++) if (timestamp - this.times[i] < 300) sum += this.hits[i];
-    return sum;
-  }
-}
-```
-
-**Java:**
-```java
-class HitCounter {
-    private final int[] times = new int[300];
-    private final int[] hits = new int[300];
-    public void hit(int timestamp) {
-        int i = timestamp % 300;
-        if (times[i] != timestamp) { times[i] = timestamp; hits[i] = 1; }
-        else hits[i]++;
-    }
-    public int getHits(int timestamp) {
-        int sum = 0;
-        for (int i = 0; i < 300; i++) if (timestamp - times[i] < 300) sum += hits[i];
-        return sum;
-    }
-}
-```
-
-**Key points:**
-- Bucket per second within the 300s window; stale buckets are auto-reset on next hit.
-- O(1) `hit`, O(300) `getHits` regardless of hit rate.
-- Queue variant is simpler but unbounded under bursty traffic.
-
-**Tags:** #algorithm
-
----
-
-### 58. Sliding Puzzle
+### 39. Sliding Puzzle
 
 **Difficulty:** Hard
 **Topics:** bfs, matrix, state-search
@@ -4138,73 +3385,7 @@ class Solution {
 
 ---
 
-### 59. Partition Labels
-
-**Difficulty:** Medium
-**Topics:** greedy, strings, two-pointer
-**Position:** SDE
-**Years:** L4
-
-**Question:** Partition a string into as many parts as possible so each letter appears in at most one part. Return the list of part sizes.
-
-**Approach:** Precompute `last[c]` = last index of char c. Walk with two pointers `start`, `end`; extend `end = max(end, last[s[i]])`; when `i == end`, cut a partition and reset `start = i+1`. O(n).
-
-**Python:**
-```python
-def partition_labels(s: str) -> list[int]:
-    last = {c: i for i, c in enumerate(s)}
-    out: list[int] = []
-    start = end = 0
-    for i, c in enumerate(s):
-        end = max(end, last[c])
-        if i == end:
-            out.append(end - start + 1)
-            start = i + 1
-    return out
-```
-
-**TypeScript:**
-```typescript
-function partitionLabels(s: string): number[] {
-  const last = new Map<string, number>();
-  for (let i = 0; i < s.length; i++) last.set(s[i], i);
-  const out: number[] = [];
-  let start = 0, end = 0;
-  for (let i = 0; i < s.length; i++) {
-    end = Math.max(end, last.get(s[i])!);
-    if (i === end) { out.push(end - start + 1); start = i + 1; }
-  }
-  return out;
-}
-```
-
-**Java:**
-```java
-class Solution {
-    public List<Integer> partitionLabels(String s) {
-        int[] last = new int[26];
-        for (int i = 0; i < s.length(); i++) last[s.charAt(i) - 'a'] = i;
-        List<Integer> out = new ArrayList<>();
-        int start = 0, end = 0;
-        for (int i = 0; i < s.length(); i++) {
-            end = Math.max(end, last[s.charAt(i) - 'a']);
-            if (i == end) { out.add(end - start + 1); start = i + 1; }
-        }
-        return out;
-    }
-}
-```
-
-**Key points:**
-- A partition closes when `i` reaches the farthest last-index seen so far.
-- Two passes total; O(n) time, O(1) extra (26 entries for lowercase).
-- Greedy is provably optimal: extending end is mandatory.
-
-**Tags:** #algorithm
-
----
-
-### 60. Design Tic-Tac-Toe
+### 40. Design Tic-Tac-Toe
 
 **Difficulty:** Medium
 **Topics:** design, ood, matrix
@@ -4291,7 +3472,7 @@ class TicTacToe {
 
 ---
 
-### 61. Rotting Oranges
+### 41. Rotting Oranges
 
 **Difficulty:** Medium
 **Topics:** bfs, matrix
@@ -4399,7 +3580,7 @@ class Solution {
 
 ---
 
-### 62. Shortest Path in a Grid with Obstacles Elimination
+### 42. Shortest Path in a Grid with Obstacles Elimination
 
 **Difficulty:** Hard
 **Topics:** bfs, matrix, state-search
@@ -4493,6 +3674,849 @@ class Solution {
 - O(m * n * k) time and space.
 
 **Tags:** #algorithm
+
+---
+
+## Array / String
+
+### 43. Reorder Log Files
+
+**Difficulty:** Easy
+**Topics:** strings, sorting, comparator
+**Position:** SWE
+**Years:** L3-L4
+
+**Question:** Reorder a list of log files so letter-logs come first (lexicographically by content, then by identifier as tiebreaker), then digit-logs in original order.
+
+**Approach:** Custom comparator: partition into letter-logs and digit-logs; sort letter-logs by `(content, identifier)`; concatenate. Test classifier on first char of post-identifier token. Amazon-classic OA question.
+
+**Python:**
+```python
+def reorder_log_files(logs: list[str]) -> list[str]:
+    letters: list[str] = []
+    digits: list[str] = []
+    for log in logs:
+        ident, rest = log.split(" ", 1)
+        if rest[0].isdigit():
+            digits.append(log)
+        else:
+            letters.append(log)
+    letters.sort(key=lambda s: (s.split(" ", 1)[1], s.split(" ", 1)[0]))
+    return letters + digits
+```
+
+**TypeScript:**
+```typescript
+function reorderLogFiles(logs: string[]): string[] {
+  const letters: string[] = [], digits: string[] = [];
+  for (const log of logs) {
+    const sp = log.indexOf(" ");
+    if (/\d/.test(log[sp + 1])) digits.push(log);
+    else letters.push(log);
+  }
+  letters.sort((a, b) => {
+    const ai = a.indexOf(" "), bi = b.indexOf(" ");
+    const ac = a.slice(ai + 1), bc = b.slice(bi + 1);
+    if (ac !== bc) return ac < bc ? -1 : 1;
+    return a.slice(0, ai) < b.slice(0, bi) ? -1 : 1;
+  });
+  return [...letters, ...digits];
+}
+```
+
+**Java:**
+```java
+class Solution {
+    public String[] reorderLogFiles(String[] logs) {
+        Arrays.sort(logs, (a, b) -> {
+            int ai = a.indexOf(' '), bi = b.indexOf(' ');
+            boolean aDig = Character.isDigit(a.charAt(ai + 1));
+            boolean bDig = Character.isDigit(b.charAt(bi + 1));
+            if (!aDig && !bDig) {
+                int cmp = a.substring(ai + 1).compareTo(b.substring(bi + 1));
+                return cmp != 0 ? cmp : a.substring(0, ai).compareTo(b.substring(0, bi));
+            }
+            return aDig ? (bDig ? 0 : 1) : -1;
+        });
+        return logs;
+    }
+}
+```
+
+**Key points:**
+- Stable partition keeps digit-logs in original order.
+- Sort key is (content, identifier) for tie-break.
+- O(n * k log n) where k is average log length.
+
+**Follow-ups:**
+- 1B logs — parallelize with map-reduce, then merge-sort partitions.
+- Identifier collisions across multiple log streams — namespace by stream id.
+- Case sensitivity (`A` vs `a`) — normalize or document the rule explicitly.
+- Logs arrive as a stream — maintain order without full re-sort on every batch.
+
+**Common Pitfalls:**
+- Using a non-stable sort — destroys the required original order of digit-logs.
+- Splitting on every space instead of only the first one; mishandles logs whose content contains spaces.
+
+**Tags:** #coding
+
+---
+
+### 44. Robot Bounded in Circle
+
+**Difficulty:** Medium
+**Topics:** simulation, math
+**Position:** SDE
+**Years:** L4
+
+**Question:** A robot starts at origin facing north and follows a string of instructions (`G`, `L`, `R`). Determine if the robot stays bounded after infinitely repeating instructions.
+
+**Approach:** Simulate one pass. The robot is bounded iff after one pass it's at origin OR not facing north. Reason: facing-not-north means after at most 4 passes it returns to origin (rotation forms a cycle of period 4). O(n).
+
+**Python:**
+```python
+def is_robot_bounded(instructions: str) -> bool:
+    x, y, dx, dy = 0, 0, 0, 1
+    for c in instructions:
+        if c == "G":
+            x += dx; y += dy
+        elif c == "L":
+            dx, dy = -dy, dx
+        else:  # R
+            dx, dy = dy, -dx
+    return (x, y) == (0, 0) or (dx, dy) != (0, 1)
+```
+
+**TypeScript:**
+```typescript
+function isRobotBounded(instructions: string): boolean {
+  let x = 0, y = 0, dx = 0, dy = 1;
+  for (const c of instructions) {
+    if (c === "G") { x += dx; y += dy; }
+    else if (c === "L") { [dx, dy] = [-dy, dx]; }
+    else { [dx, dy] = [dy, -dx]; }
+  }
+  return (x === 0 && y === 0) || dx !== 0 || dy !== 1;
+}
+```
+
+**Java:**
+```java
+class Solution {
+    public boolean isRobotBounded(String instructions) {
+        int x = 0, y = 0, dx = 0, dy = 1;
+        for (char c : instructions.toCharArray()) {
+            if (c == 'G') { x += dx; y += dy; }
+            else if (c == 'L') { int t = dx; dx = -dy; dy = t; }
+            else { int t = dx; dx = dy; dy = -t; }
+        }
+        return (x == 0 && y == 0) || dx != 0 || dy != 1;
+    }
+}
+```
+
+**Key points:**
+- Bounded iff at origin after one pass OR facing a non-north direction.
+- Non-north facing => after at most 4 passes back to origin.
+- O(n) time, O(1) space; no need to simulate multiple passes.
+
+**Tags:** #algorithm
+
+---
+
+### 45. Prison Cells After N Days
+
+**Difficulty:** Medium
+**Topics:** simulation, cycle-detection, bit-manipulation
+**Position:** SDE
+**Years:** L4
+
+**Question:** 8 prison cells in a row. Each day, cell becomes 1 if both neighbors were equal, else 0. Endpoints become 0. Given initial state and N, return state after N days.
+
+**Approach:** State space has at most 256 patterns; cycle is inevitable. Simulate while caching `state -> day`. On hit, compute remaining days `% cycle_length` and finish. Encode state as an int (bitmask) for speed. O(min(N, 256)).
+
+**Python:**
+```python
+def prison_after_n_days(cells: list[int], n: int) -> list[int]:
+    def step(state: int) -> int:
+        ns = 0
+        for i in range(1, 7):
+            if ((state >> (i - 1)) & 1) == ((state >> (i + 1)) & 1):
+                ns |= 1 << i
+        return ns
+    state = 0
+    for i, v in enumerate(cells):
+        if v:
+            state |= 1 << i
+    seen: dict[int, int] = {}
+    while n:
+        if state in seen:
+            n %= seen[state] - n
+        seen[state] = n
+        if n:
+            n -= 1
+            state = step(state)
+    return [(state >> i) & 1 for i in range(8)]
+```
+
+**TypeScript:**
+```typescript
+function prisonAfterNDays(cells: number[], n: number): number[] {
+  const step = (s: number): number => {
+    let ns = 0;
+    for (let i = 1; i < 7; i++)
+      if (((s >> (i - 1)) & 1) === ((s >> (i + 1)) & 1)) ns |= 1 << i;
+    return ns;
+  };
+  let state = 0;
+  cells.forEach((v, i) => { if (v) state |= 1 << i; });
+  const seen = new Map<number, number>();
+  while (n) {
+    if (seen.has(state)) n %= seen.get(state)! - n;
+    seen.set(state, n);
+    if (n) { n--; state = step(state); }
+  }
+  return Array.from({ length: 8 }, (_, i) => (state >> i) & 1);
+}
+```
+
+**Java:**
+```java
+class Solution {
+    public int[] prisonAfterNDays(int[] cells, int n) {
+        int state = 0;
+        for (int i = 0; i < cells.length; i++) if (cells[i] == 1) state |= 1 << i;
+        Map<Integer, Integer> seen = new HashMap<>();
+        while (n > 0) {
+            if (seen.containsKey(state)) n %= seen.get(state) - n;
+            seen.put(state, n);
+            if (n > 0) { n--; state = step(state); }
+        }
+        int[] out = new int[8];
+        for (int i = 0; i < 8; i++) out[i] = (state >> i) & 1;
+        return out;
+    }
+    private int step(int s) {
+        int ns = 0;
+        for (int i = 1; i < 7; i++)
+            if (((s >> (i - 1)) & 1) == ((s >> (i + 1)) & 1)) ns |= 1 << i;
+        return ns;
+    }
+}
+```
+
+**Key points:**
+- Bitmask packs 8 cells into a single int for fast equality.
+- Cycle detected via `state -> remaining_days` map.
+- O(min(N, 256)) — at most 256 distinct states.
+
+**Tags:** #algorithm
+
+---
+
+### 46. Substrings of Size Three with Distinct Characters
+
+**Difficulty:** Easy
+**Topics:** strings, sliding-window
+**Position:** SDE
+**Years:** L3-L4
+
+**Question:** Given a string, return the number of good substrings of length 3 with all distinct characters.
+
+**Approach:** Sliding window of size 3; for each, check three chars all differ. O(n). Common Amazon OA warm-up; usually paired with a harder second problem.
+
+**Python:**
+```python
+def count_good_substrings(s: str) -> int:
+    count = 0
+    for i in range(len(s) - 2):
+        a, b, c = s[i], s[i + 1], s[i + 2]
+        if a != b and b != c and a != c:
+            count += 1
+    return count
+```
+
+**TypeScript:**
+```typescript
+function countGoodSubstrings(s: string): number {
+  let count = 0;
+  for (let i = 0; i < s.length - 2; i++) {
+    const a = s[i], b = s[i + 1], c = s[i + 2];
+    if (a !== b && b !== c && a !== c) count++;
+  }
+  return count;
+}
+```
+
+**Java:**
+```java
+class Solution {
+    public int countGoodSubstrings(String s) {
+        int count = 0;
+        for (int i = 0; i + 2 < s.length(); i++) {
+            char a = s.charAt(i), b = s.charAt(i + 1), c = s.charAt(i + 2);
+            if (a != b && b != c && a != c) count++;
+        }
+        return count;
+    }
+}
+```
+
+**Key points:**
+- Window size is fixed, so no two-pointer bookkeeping needed.
+- Three distinct chars iff all three pairwise differ.
+- O(n) time, O(1) space.
+
+**Tags:** #algorithm
+
+---
+
+### 47. Maximum Units on a Truck
+
+**Difficulty:** Easy
+**Topics:** greedy, sorting
+**Position:** SDE
+**Years:** L3-L4
+
+**Question:** Given box types `[count, unitsPerBox]` and a truck capacity `truckSize` boxes, return the max number of units.
+
+**Approach:** Sort by `unitsPerBox` descending. Greedily take as many of the highest-unit boxes as fit. O(n log n). Amazon OA staple framed around delivery trucks.
+
+**Python:**
+```python
+def maximum_units(box_types: list[list[int]], truck_size: int) -> int:
+    box_types.sort(key=lambda b: -b[1])
+    total = 0
+    for count, units in box_types:
+        take = min(count, truck_size)
+        total += take * units
+        truck_size -= take
+        if truck_size == 0:
+            break
+    return total
+```
+
+**TypeScript:**
+```typescript
+function maximumUnits(boxTypes: number[][], truckSize: number): number {
+  boxTypes.sort((a, b) => b[1] - a[1]);
+  let total = 0;
+  for (const [count, units] of boxTypes) {
+    const take = Math.min(count, truckSize);
+    total += take * units;
+    truckSize -= take;
+    if (truckSize === 0) break;
+  }
+  return total;
+}
+```
+
+**Java:**
+```java
+class Solution {
+    public int maximumUnits(int[][] boxTypes, int truckSize) {
+        Arrays.sort(boxTypes, (a, b) -> b[1] - a[1]);
+        int total = 0;
+        for (int[] b : boxTypes) {
+            int take = Math.min(b[0], truckSize);
+            total += take * b[1];
+            truckSize -= take;
+            if (truckSize == 0) break;
+        }
+        return total;
+    }
+}
+```
+
+**Key points:**
+- Greedy by units-per-box descending; never beats taking high-density first.
+- O(n log n) for the sort dominates.
+- Break early once the truck is full.
+
+**Tags:** #algorithm
+
+---
+
+### 48. Find the Winner of the Circular Game
+
+**Difficulty:** Medium
+**Topics:** simulation, recursion, math
+**Position:** SDE
+**Years:** L4
+
+**Question:** `n` friends in a circle numbered 1..n. Starting from 1, count k friends and eliminate the kth. Continue from the next friend. Return the last remaining.
+
+**Approach:** Josephus problem. Recursive formula `J(1) = 0; J(n) = (J(n-1) + k) % n`. Return `J(n) + 1` for 1-indexed. O(n) time, O(1) iterative. Simulation with a queue/deque is O(n*k) and easier to derive on the fly.
+
+**Python:**
+```python
+def find_the_winner(n: int, k: int) -> int:
+    winner = 0
+    for i in range(2, n + 1):
+        winner = (winner + k) % i
+    return winner + 1
+```
+
+**TypeScript:**
+```typescript
+function findTheWinner(n: number, k: number): number {
+  let winner = 0;
+  for (let i = 2; i <= n; i++) winner = (winner + k) % i;
+  return winner + 1;
+}
+```
+
+**Java:**
+```java
+class Solution {
+    public int findTheWinner(int n, int k) {
+        int winner = 0;
+        for (int i = 2; i <= n; i++) winner = (winner + k) % i;
+        return winner + 1;
+    }
+}
+```
+
+**Key points:**
+- Iterative Josephus recurrence in O(n) with O(1) space.
+- Add 1 at the end to convert to 1-indexed.
+- Queue simulation is O(n*k) but easier to derive under pressure.
+
+**Tags:** #algorithm
+
+---
+
+### 49. Search in Rotated Sorted Array
+
+**Difficulty:** Medium
+**Topics:** binary-search, arrays
+**Position:** SDE
+**Years:** L4
+
+**Question:** Given a rotated sorted array (originally ascending, then rotated at some pivot) and a target, return its index or -1. O(log n) required.
+
+**Approach:** Modified binary search. At each step determine which half is sorted (compare `nums[lo]` and `nums[mid]`). If target lies in the sorted half's range, search there; else search the other half. O(log n). With duplicates, worst-case degrades to O(n).
+
+**Python:**
+```python
+def search(nums: list[int], target: int) -> int:
+    lo, hi = 0, len(nums) - 1
+    while lo <= hi:
+        mid = (lo + hi) // 2
+        if nums[mid] == target:
+            return mid
+        if nums[lo] <= nums[mid]:
+            if nums[lo] <= target < nums[mid]:
+                hi = mid - 1
+            else:
+                lo = mid + 1
+        else:
+            if nums[mid] < target <= nums[hi]:
+                lo = mid + 1
+            else:
+                hi = mid - 1
+    return -1
+```
+
+**TypeScript:**
+```typescript
+function search(nums: number[], target: number): number {
+  let lo = 0, hi = nums.length - 1;
+  while (lo <= hi) {
+    const mid = (lo + hi) >> 1;
+    if (nums[mid] === target) return mid;
+    if (nums[lo] <= nums[mid]) {
+      if (nums[lo] <= target && target < nums[mid]) hi = mid - 1;
+      else lo = mid + 1;
+    } else {
+      if (nums[mid] < target && target <= nums[hi]) lo = mid + 1;
+      else hi = mid - 1;
+    }
+  }
+  return -1;
+}
+```
+
+**Java:**
+```java
+class Solution {
+    public int search(int[] nums, int target) {
+        int lo = 0, hi = nums.length - 1;
+        while (lo <= hi) {
+            int mid = (lo + hi) >>> 1;
+            if (nums[mid] == target) return mid;
+            if (nums[lo] <= nums[mid]) {
+                if (nums[lo] <= target && target < nums[mid]) hi = mid - 1;
+                else lo = mid + 1;
+            } else {
+                if (nums[mid] < target && target <= nums[hi]) lo = mid + 1;
+                else hi = mid - 1;
+            }
+        }
+        return -1;
+    }
+}
+```
+
+**Key points:**
+- One half is always sorted — decide via `nums[lo] <= nums[mid]`.
+- Inclusive bound check matches the sorted side's endpoints.
+- O(log n) for unique values; degrades to O(n) with duplicates.
+
+**Tags:** #algorithm
+
+---
+
+### 50. Partition Labels
+
+**Difficulty:** Medium
+**Topics:** greedy, strings, two-pointer
+**Position:** SDE
+**Years:** L4
+
+**Question:** Partition a string into as many parts as possible so each letter appears in at most one part. Return the list of part sizes.
+
+**Approach:** Precompute `last[c]` = last index of char c. Walk with two pointers `start`, `end`; extend `end = max(end, last[s[i]])`; when `i == end`, cut a partition and reset `start = i+1`. O(n).
+
+**Python:**
+```python
+def partition_labels(s: str) -> list[int]:
+    last = {c: i for i, c in enumerate(s)}
+    out: list[int] = []
+    start = end = 0
+    for i, c in enumerate(s):
+        end = max(end, last[c])
+        if i == end:
+            out.append(end - start + 1)
+            start = i + 1
+    return out
+```
+
+**TypeScript:**
+```typescript
+function partitionLabels(s: string): number[] {
+  const last = new Map<string, number>();
+  for (let i = 0; i < s.length; i++) last.set(s[i], i);
+  const out: number[] = [];
+  let start = 0, end = 0;
+  for (let i = 0; i < s.length; i++) {
+    end = Math.max(end, last.get(s[i])!);
+    if (i === end) { out.push(end - start + 1); start = i + 1; }
+  }
+  return out;
+}
+```
+
+**Java:**
+```java
+class Solution {
+    public List<Integer> partitionLabels(String s) {
+        int[] last = new int[26];
+        for (int i = 0; i < s.length(); i++) last[s.charAt(i) - 'a'] = i;
+        List<Integer> out = new ArrayList<>();
+        int start = 0, end = 0;
+        for (int i = 0; i < s.length(); i++) {
+            end = Math.max(end, last[s.charAt(i) - 'a']);
+            if (i == end) { out.add(end - start + 1); start = i + 1; }
+        }
+        return out;
+    }
+}
+```
+
+**Key points:**
+- A partition closes when `i` reaches the farthest last-index seen so far.
+- Two passes total; O(n) time, O(1) extra (26 entries for lowercase).
+- Greedy is provably optimal: extending end is mandatory.
+
+**Tags:** #algorithm
+
+---
+
+## Other Algorithms
+
+### 51. Design a Parking Lot
+
+**Difficulty:** Medium
+**Topics:** ood, design
+**Position:** SWE
+**Years:** L4
+
+**Question:** Design the classes for a multi-level parking lot supporting motorcycles, cars, and trucks with different spot sizes.
+
+**Approach:** Classes: `ParkingLot` → `Level[]` → `ParkingSpot[]`. Spot has `size` enum (compact/large/motorcycle). `Vehicle` abstract → `Car/Truck/Motorcycle`, each declares which spot sizes they fit. `park()` finds first compatible spot; `leave()` frees. Show good encapsulation, polymorphism, and discuss extension (electric charging, monthly passes). Don't over-engineer — interviewers want clear class diagrams, not 50 classes.
+
+**Python:**
+```python
+from enum import Enum
+
+class Size(Enum):
+    MOTO = 1; COMPACT = 2; LARGE = 3
+
+class Vehicle:
+    def __init__(self, plate: str, fits: set[Size]) -> None:
+        self.plate, self.fits = plate, fits
+
+class Spot:
+    def __init__(self, size: Size) -> None:
+        self.size, self.vehicle = size, None
+
+class ParkingLot:
+    def __init__(self, spots: list[Spot]) -> None:
+        self.spots = spots
+    def park(self, v: Vehicle) -> Spot | None:
+        for s in self.spots:
+            if s.vehicle is None and s.size in v.fits:
+                s.vehicle = v; return s
+        return None
+    def leave(self, s: Spot) -> None:
+        s.vehicle = None
+```
+
+**TypeScript:**
+```typescript
+enum Size { MOTO, COMPACT, LARGE }
+class Vehicle { constructor(public plate: string, public fits: Set<Size>) {} }
+class Spot { vehicle: Vehicle | null = null; constructor(public size: Size) {} }
+
+class ParkingLot {
+  constructor(private spots: Spot[]) {}
+  park(v: Vehicle): Spot | null {
+    for (const s of this.spots)
+      if (!s.vehicle && v.fits.has(s.size)) { s.vehicle = v; return s; }
+    return null;
+  }
+  leave(s: Spot): void { s.vehicle = null; }
+}
+```
+
+**Java:**
+```java
+enum Size { MOTO, COMPACT, LARGE }
+
+class Vehicle {
+    String plate; Set<Size> fits;
+    Vehicle(String plate, Set<Size> fits) { this.plate = plate; this.fits = fits; }
+}
+
+class Spot {
+    Size size; Vehicle vehicle;
+    Spot(Size size) { this.size = size; }
+}
+
+class ParkingLot {
+    private final List<Spot> spots;
+    public ParkingLot(List<Spot> spots) { this.spots = spots; }
+    public Spot park(Vehicle v) {
+        for (Spot s : spots)
+            if (s.vehicle == null && v.fits.contains(s.size)) { s.vehicle = v; return s; }
+        return null;
+    }
+    public void leave(Spot s) { s.vehicle = null; }
+}
+```
+
+**Key points:**
+- `Vehicle.fits` lets each type declare compatible spot sizes (open/closed principle).
+- Linear scan is fine for an interview; production groups free spots by size in queues.
+- Extend by adding `EVSpot extends Spot` rather than mutating enum.
+
+**Complexity:** `park` is O(S) for a linear scan of S spots (O(1) if free spots are bucketed by size); `leave` is O(1).
+
+**Follow-ups:**
+- Multi-level lot — how do you balance utilization across levels?
+- Electric charging spots with queueing and charge-time tracking.
+- Pricing (hourly / daily / monthly) integrated with a payment service.
+- Real-time availability board — pub/sub vs polling, eventual consistency trade-offs.
+- Reservations with overbooking strategy and no-show timeout.
+
+**Common Pitfalls:**
+- Over-engineering with too many classes; the interviewer wants clear boundaries, not 50 abstractions.
+- Hardcoding spot-vs-vehicle compatibility in `ParkingLot` instead of declaring it on the vehicle type.
+
+**Tags:** #coding
+
+---
+
+## System Design
+
+### 52. Design Amazon Prime Video
+
+**Difficulty:** Hard
+**Topics:** system-design, cdn, video-streaming, drm, recommendation, cloud
+**Position:** Senior SWE
+**Years:** L5
+
+**Question:** Design a video streaming service like Prime Video.
+
+**Approach:** Upload → encoding pipeline (multiple bitrates, codecs, DRM-wrapped HLS/DASH chunks) → blob storage (S3) + CDN (CloudFront). Playback client requests manifest, adapts bitrate (ABR). Metadata in DynamoDB; recommendations from offline training (matrix factorization + content embeddings). Discuss DRM (Widevine/FairPlay/PlayReady), regional licensing, offline downloads, and CDN cost optimization (cache hit ratio). Mention Amazon's open-sourced bitmovin/encoding patterns where relevant.
+
+**Follow-ups:**
+- DRM key rotation and license expiry; how do clients refresh mid-playback?
+- Resume playback at exact timestamp across devices (continue watching).
+- Geo-blocking and regional licensing windows — enforce at manifest or CDN edge?
+- Live event streaming vs on-demand — what changes in encoding and CDN strategy?
+- Recommendation cold-start for new users or new titles.
+
+**Common Pitfalls:**
+- Treating it like generic file storage and missing the encoding pipeline + ABR layer.
+- Ignoring CDN egress cost — typically the largest line item in real streaming systems.
+
+**Tags:** #system-design
+
+---
+
+### 53. Design Amazon.com Product Page
+
+**Difficulty:** Hard
+**Topics:** system-design, caching, microservices, search
+**Position:** Senior SWE
+**Years:** L5
+
+**Question:** Design the backend that powers an Amazon product detail page (title, price, inventory, reviews, recommendations) for millions of requests per second.
+
+**Approach:** Page is composed from many services: product info (cached, write-through), price (real-time, may vary per user), inventory (eventually consistent counter), reviews (paginated, sharded by product_id), recommendations (precomputed). BFF (backend-for-frontend) aggregates with fan-out + timeout per service; render with available data on timeout (graceful degradation). Heavy edge cache for read-mostly fields. Discuss eventual consistency on inventory ("only 2 left!" can over-promise) and Black Friday spikes (pre-warm cache, auto-scale).
+
+**Tags:** #system-design
+
+---
+
+### 54. Design Kindle Sync
+
+**Difficulty:** Hard
+**Topics:** system-design, sync, conflict-resolution, offline
+**Position:** Senior SWE
+**Years:** L5
+
+**Question:** Design how Kindle syncs reading position, highlights, and notes across a user's devices, even when devices are intermittently offline.
+
+**Approach:** Each device maintains local state + an op log. On reconnect, push ops to a per-user sync service. Server merges ops with last-write-wins for position (or "furthest read" for resilience to misclicks) and append-only for highlights/notes. Use vector clocks or HLC for ordering across devices. Store in DynamoDB sharded by user_id. Push notifications via SNS to peer devices. Discuss conflict cases (notes edited on two devices offline) and eventual convergence guarantees.
+
+**Tags:** #system-design
+
+---
+
+### 55. Design Amazon S3
+
+**Difficulty:** Hard
+**Topics:** system-design, blob-storage, consistency, replication, cloud
+**Position:** Senior SWE
+**Years:** L5
+
+**Question:** Design Amazon S3 — a globally available object storage service with strong read-after-write consistency.
+
+**Approach:** Frontend API gateways → request routed by hash(bucket+key) to a shard. Each shard has a metadata service (sharded relational/KV) + erasure-coded object data across many storage nodes (e.g., Reed-Solomon 10+4). Multi-AZ replication; cross-region async replication for DR. Strong consistency via metadata coordinator (Paxos-based). Lifecycle (S3 → Glacier) via background tier-down jobs. Discuss durability math (11 nines), large object multipart upload, and how versioning is implemented (immutable object IDs + version stack in metadata).
+
+**Tags:** #system-design
+
+---
+
+### 56. Design a Distributed Lock Service
+
+**Difficulty:** Hard
+**Topics:** system-design, consensus, paxos, zookeeper
+**Position:** Senior SWE
+**Years:** L5
+
+**Question:** Design a distributed lock service (like Chubby or ZooKeeper) for AWS-internal use.
+
+**Approach:** Raft/Paxos cluster of 5-7 nodes for consensus on lock state. Clients request lease-based locks (TTL) to handle client failure. Sessions/heartbeats: if client doesn't heartbeat, lock auto-releases. Discuss fencing tokens (monotonic counter passed to downstream service to reject stale lock holders — the famous Kleppmann argument). Trade-offs: strong consistency vs latency, single-region vs multi-region (don't put a lock service across regions without careful thought).
+
+**Tags:** #system-design
+
+---
+
+## Behavioral
+
+### 57. Tell me about a time you went above and beyond for a customer
+
+**Difficulty:** Medium
+**Topics:** behavioral, customer-obsession
+**Position:** SWE
+**Years:** L4
+
+**Question:** Describe a time you went above and beyond to delight a customer.
+
+**Approach:** STAR mapping to **Customer Obsession** (LP #1). "Customer" can be internal (another team) or external. Show: you proactively identified a need they hadn't articulated, you went outside your scope to fix it, and there was measurable customer impact. Avoid generic "I responded to a ticket quickly."
+
+**Tags:** #behavioral
+
+---
+
+### 58. Tell me about a time you took on something significant outside your responsibility
+
+**Difficulty:** Medium
+**Topics:** behavioral, ownership, bias-for-action
+**Position:** SWE
+**Years:** L4
+
+**Question:** Tell me about a time you took ownership of something that wasn't your job.
+
+**Approach:** STAR mapping to **Ownership** and **Bias for Action**. Show: (1) you saw a gap and didn't wait for someone to assign it, (2) you didn't ask for permission for everything, (3) impact was real. Bonus: you stayed long-term — "I owned it for 6 months until we hired someone." Don't pick a story where you were really just doing your assigned job.
+
+**Tags:** #behavioral
+
+---
+
+### 59. Tell me about a time you had to make a decision with incomplete information
+
+**Difficulty:** Medium
+**Topics:** behavioral, bias-for-action, are-right-a-lot
+**Position:** Senior SWE
+**Years:** L5
+
+**Question:** Tell me about a time you had to make a quick decision without all the information you wanted.
+
+**Approach:** STAR mapping to **Bias for Action** and **Are Right A Lot**. Show: (1) the cost of waiting was real and quantifiable, (2) you identified the smallest set of facts you needed, (3) you made the call and committed, (4) you had a rollback or course-correction plan. Decision being wrong is OK if you owned the recovery.
+
+**Tags:** #behavioral
+
+---
+
+### 60. Tell me about your most challenging technical project
+
+**Difficulty:** Medium
+**Topics:** behavioral, dive-deep, deliver-results
+**Position:** Senior SWE
+**Years:** L5
+
+**Question:** Walk me through your most technically complex project. What made it hard and what was your role?
+
+**Approach:** STAR mapping to **Dive Deep** and **Deliver Results**. The bar raiser will grill you for 15-20 min on this one — be ready for "why that database?" / "what was the p99?" / "what would you redesign?" Pick a project you owned end-to-end with quantifiable outcome. If you can't speak to architecture trade-offs in detail, pick a different story.
+
+**Tags:** #behavioral
+
+---
+
+## Domain Knowledge
+
+### 61. Leadership Principle deep-dive: Disagree and Commit
+
+**Difficulty:** Medium
+**Topics:** behavioral, have-backbone, earn-trust
+**Position:** Senior SWE
+**Years:** L5
+
+**Question:** Tell me about a time you respectfully disagreed with a decision but committed to it anyway and helped it succeed.
+
+**Approach:** This maps to **Have Backbone; Disagree and Commit** — one of the most-asked LPs at L5+. Two-part story: (1) you raised your disagreement clearly with data, in the right forum, before the decision was final; (2) once decided against you, you actively committed — not passive acceptance but you helped make it work. Bonus: it turned out the original decision was right and you learned from it.
+
+**Tags:** #domain-knowledge
+
+---
+
+### 62. Leadership Principle deep-dive: Frugality
+
+**Difficulty:** Medium
+**Topics:** behavioral, frugality, invent-and-simplify
+**Position:** SWE
+**Years:** L4
+
+**Question:** Tell me about a time you accomplished something significant with limited resources.
+
+**Approach:** Maps to **Frugality** ("accomplish more with less"). Resources can be people, time, money, or compute. Show: you didn't ask for more headcount/budget — you found a clever simplification (also touches **Invent and Simplify**). Concrete: "we needed real-time analytics but couldn't afford Snowflake — I built a Kinesis + DynamoDB streams pipeline for $200/month instead of $20k." Quantify the savings.
+
+**Tags:** #domain-knowledge
 
 ---
 

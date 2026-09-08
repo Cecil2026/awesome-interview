@@ -19,7 +19,7 @@ sources: 1point3acres, NowCoder (牛客网), LeetCode-cn, niuke.com
 
 Tencent's interview leans C++ for infrastructure and gaming roles (Tencent runs huge C++ shops behind WeChat, QQ, Honor of Kings, PUBG Mobile, League of Legends backends). Networking knowledge — TCP windowing, NAT traversal, custom UDP protocols, packet loss handling — is expected for game/IM roles. System design centers on social/messaging at WeChat scale (1B+ MAU) and gaming backends (lockstep, state sync, matchmaking). Behavioral is lighter than US firms; they probe collaboration across business groups (BGs) since cross-BG work is structurally hard at Tencent.
 
-## Questions
+## Linked List
 
 ### 1. Add Two Numbers (Linked List)
 
@@ -112,86 +112,7 @@ ListNode addTwoNumbers(ListNode l1, ListNode l2) {
 
 ---
 
-### 2. Add Strings
-
-**Difficulty:** Easy
-**Topics:** strings, math
-**Position:** SWE
-**Years:** T2-T3
-
-**Question:** Given two non-negative integers as strings, return their sum as a string (no using built-in BigInt).
-
-**Approach:** Two pointers from end, carry, append digit. Reverse result. O(max(n, m)). Common Tencent warm-up to check basic correctness coding.
-
-**Python:**
-```python
-def add_strings(num1: str, num2: str) -> str:
-    i, j, carry = len(num1) - 1, len(num2) - 1, 0
-    out: list[str] = []
-    while i >= 0 or j >= 0 or carry:
-        a = ord(num1[i]) - 48 if i >= 0 else 0
-        b = ord(num2[j]) - 48 if j >= 0 else 0
-        carry, d = divmod(a + b + carry, 10)
-        out.append(chr(d + 48))
-        i -= 1
-        j -= 1
-    return "".join(reversed(out))
-```
-
-**TypeScript:**
-```typescript
-function addStrings(num1: string, num2: string): string {
-  let i = num1.length - 1, j = num2.length - 1, carry = 0;
-  const out: string[] = [];
-  while (i >= 0 || j >= 0 || carry) {
-    const a = i >= 0 ? num1.charCodeAt(i) - 48 : 0;
-    const b = j >= 0 ? num2.charCodeAt(j) - 48 : 0;
-    const s = a + b + carry;
-    carry = Math.floor(s / 10);
-    out.push(String.fromCharCode((s % 10) + 48));
-    i--; j--;
-  }
-  return out.reverse().join("");
-}
-```
-
-**Java:**
-```java
-String addStrings(String num1, String num2) {
-  int i = num1.length() - 1, j = num2.length() - 1, carry = 0;
-  StringBuilder out = new StringBuilder();
-  while (i >= 0 || j >= 0 || carry != 0) {
-    int a = i >= 0 ? num1.charAt(i) - '0' : 0;
-    int b = j >= 0 ? num2.charAt(j) - '0' : 0;
-    int s = a + b + carry;
-    carry = s / 10;
-    out.append((char) ('0' + s % 10));
-    i--; j--;
-  }
-  return out.reverse().toString();
-}
-```
-
-**Key points:**
-- Iterate while either index or carry remains.
-- Use char code arithmetic to avoid `parseInt` per digit.
-- Append digits in reverse, then reverse the buffer once at the end.
-
-**Follow-ups:**
-- Multiply strings without using big-int.
-- Add two non-negative integers represented in arbitrary base (binary, hex).
-- Add two strings that may contain a decimal point.
-- Support negative numbers — dispatch to subtract.
-
-**Common Pitfalls:**
-- Forgetting to handle the final carry after the loop.
-- Using `Integer.parseInt` per digit — slow and unnecessary.
-
-**Tags:** #algorithm
-
----
-
-### 3. Linked List Cycle II
+### 2. Linked List Cycle II
 
 **Difficulty:** Medium
 **Topics:** linked-list, two-pointer, floyd
@@ -271,238 +192,9 @@ ListNode detectCycle(ListNode head) {
 
 ---
 
-### 4. Permutations
+## Tree
 
-**Difficulty:** Medium
-**Topics:** backtracking, recursion
-**Position:** SWE
-**Years:** T2-T3
-
-**Question:** Given a distinct integer array, return all possible permutations.
-
-**Approach:** Backtracking — swap current index with each subsequent index, recurse, swap back. Or use a `used[]` boolean array. O(n * n!). Follow-up: with duplicates — sort and skip when `used[i-1]` is false and `nums[i] == nums[i-1]`.
-
-**Python:**
-```python
-def permute(nums: list[int]) -> list[list[int]]:
-    out: list[list[int]] = []
-    def go(start: int) -> None:
-        if start == len(nums):
-            out.append(nums[:])
-            return
-        for i in range(start, len(nums)):
-            nums[start], nums[i] = nums[i], nums[start]
-            go(start + 1)
-            nums[start], nums[i] = nums[i], nums[start]
-    go(0)
-    return out
-```
-
-**TypeScript:**
-```typescript
-function permute(nums: number[]): number[][] {
-  const out: number[][] = [];
-  const go = (start: number): void => {
-    if (start === nums.length) { out.push(nums.slice()); return; }
-    for (let i = start; i < nums.length; i++) {
-      [nums[start], nums[i]] = [nums[i], nums[start]];
-      go(start + 1);
-      [nums[start], nums[i]] = [nums[i], nums[start]];
-    }
-  };
-  go(0);
-  return out;
-}
-```
-
-**Java:**
-```java
-List<List<Integer>> permute(int[] nums) {
-  List<List<Integer>> out = new ArrayList<>();
-  go(nums, 0, out);
-  return out;
-}
-
-void go(int[] nums, int start, List<List<Integer>> out) {
-  if (start == nums.length) {
-    List<Integer> snap = new ArrayList<>();
-    for (int x : nums) snap.add(x);
-    out.add(snap);
-    return;
-  }
-  for (int i = start; i < nums.length; i++) {
-    int t = nums[start]; nums[start] = nums[i]; nums[i] = t;
-    go(nums, start + 1, out);
-    t = nums[start]; nums[start] = nums[i]; nums[i] = t;
-  }
-}
-```
-
-**Key points:**
-- Swap-in-place avoids an explicit `used[]` array.
-- Always undo the swap on the way back to preserve the array.
-- Snapshot via `slice`/`[:]` so later mutations don't corrupt outputs.
-
-**Follow-ups:**
-- Permutations II — input has duplicates, dedupe via sort + skip.
-- Next Permutation — in-place transformation to the next lex order.
-- kth permutation — factoradic, no enumeration.
-- Permutations with constraints (no two adjacent equal, etc.).
-
-**Common Pitfalls:**
-- Forgetting to take a copy of `nums` before adding to output — later swaps overwrite results.
-- Sort-based dedupe but the input was mutated by the swap — invariant lost.
-
-**Tags:** #algorithm
-
----
-
-### 5. Maximum Subarray (Kadane)
-
-**Difficulty:** Easy
-**Topics:** dp, arrays, greedy
-**Position:** SWE
-**Years:** T2-T3
-
-**Question:** Given an integer array, find the contiguous subarray with the largest sum.
-
-**Approach:** Kadane's: track `current = max(num, current + num)`, `best = max(best, current)`. O(n) time, O(1) space. Handle all-negative case (return single max element). Follow-up: also return start/end indices.
-
-**Python:**
-```python
-def max_subarray(nums: list[int]) -> int:
-    cur = best = nums[0]
-    for x in nums[1:]:
-        cur = max(x, cur + x)
-        best = max(best, cur)
-    return best
-```
-
-**TypeScript:**
-```typescript
-function maxSubArray(nums: number[]): number {
-  let cur = nums[0], best = nums[0];
-  for (let i = 1; i < nums.length; i++) {
-    cur = Math.max(nums[i], cur + nums[i]);
-    best = Math.max(best, cur);
-  }
-  return best;
-}
-```
-
-**Java:**
-```java
-int maxSubArray(int[] nums) {
-  int cur = nums[0], best = nums[0];
-  for (int i = 1; i < nums.length; i++) {
-    cur = Math.max(nums[i], cur + nums[i]);
-    best = Math.max(best, cur);
-  }
-  return best;
-}
-```
-
-**Key points:**
-- `cur` is the best sum ending at the current index.
-- Initialize both to `nums[0]` so all-negative arrays still return the max element.
-- Divide-and-conquer also works at O(n log n) but is overkill.
-
-**Follow-ups:**
-- Return the actual subarray (start/end indices), not just the sum.
-- Maximum *product* subarray — track min and max because of negatives.
-- Circular maximum subarray.
-- Maximum sum subarray with at most k elements.
-
-**Common Pitfalls:**
-- Initializing `cur` and `best` to 0 — fails for all-negative input.
-- Adding `nums[0]` twice when the loop starts at index 0 — use `nums[0]` as init and start at 1.
-
-**Tags:** #algorithm
-
----
-
-### 6. Reverse a String In-Place
-
-**Difficulty:** Easy
-**Topics:** strings, two-pointer
-**Position:** SWE
-**Years:** T2
-
-**Question:** Reverse a `char[]` in-place. Then: reverse word order in a sentence in-place (`"the sky is blue"` → `"blue is sky the"`).
-
-**Approach:** Part 1: two pointers swap. Part 2: reverse whole string, then reverse each word. O(n) time, O(1) extra. Tencent C++ classic — interviewers also ask about `std::string` SSO and copy-on-write semantics in pre-C++11.
-
-**Python:**
-```python
-def reverse_words(chars: list[str]) -> None:
-    def rev(l: int, r: int) -> None:
-        while l < r:
-            chars[l], chars[r] = chars[r], chars[l]
-            l += 1
-            r -= 1
-    rev(0, len(chars) - 1)
-    l = 0
-    for r in range(len(chars) + 1):
-        if r == len(chars) or chars[r] == " ":
-            rev(l, r - 1)
-            l = r + 1
-```
-
-**TypeScript:**
-```typescript
-function reverseWords(chars: string[]): void {
-  const rev = (l: number, r: number): void => {
-    while (l < r) { [chars[l], chars[r]] = [chars[r], chars[l]]; l++; r--; }
-  };
-  rev(0, chars.length - 1);
-  let l = 0;
-  for (let r = 0; r <= chars.length; r++) {
-    if (r === chars.length || chars[r] === " ") {
-      rev(l, r - 1);
-      l = r + 1;
-    }
-  }
-}
-```
-
-**Java:**
-```java
-void reverseWords(char[] chars) {
-  rev(chars, 0, chars.length - 1);
-  int l = 0;
-  for (int r = 0; r <= chars.length; r++) {
-    if (r == chars.length || chars[r] == ' ') {
-      rev(chars, l, r - 1);
-      l = r + 1;
-    }
-  }
-}
-
-void rev(char[] a, int l, int r) {
-  while (l < r) { char t = a[l]; a[l++] = a[r]; a[r--] = t; }
-}
-```
-
-**Key points:**
-- Reverse the whole buffer first, then reverse each word in place.
-- Strings in Python/JS are immutable, so the input is a mutable `list`/`array` of chars.
-- O(1) extra space — only index variables are added.
-
-**Follow-ups:**
-- Reverse Words in a String (LeetCode 151) — collapse multiple spaces.
-- Reverse only the vowels in a string.
-- Reverse a sentence in-place but preserve trailing punctuation positions.
-- Reverse a string of UTF-8 bytes safely (don't split multi-byte chars).
-
-**Common Pitfalls:**
-- Using `s[::-1]` when interviewer asked for in-place — O(n) extra space.
-- Splitting on a single space and missing multi-space separators.
-
-**Tags:** #coding
-
----
-
-### 7. Lowest Common Ancestor of BST
+### 3. Lowest Common Ancestor of BST
 
 **Difficulty:** Easy
 **Topics:** tree, bst, recursion
@@ -586,287 +278,309 @@ TreeNode lowestCommonAncestorBST(TreeNode root, TreeNode p, TreeNode q) {
 
 ---
 
-### 8. Min Stack
+### 4. Word Break II
 
-**Difficulty:** Easy
-**Topics:** stack, design
-**Position:** SWE
-**Years:** T2-T3
+**Difficulty:** Hard
+**Topics:** dp, backtracking, memoization, trie
+**Position:** T3-1
+**Years:** T3
 
-**Question:** Design a stack supporting `push`, `pop`, `top`, and `getMin`, all in O(1).
+**Question:** Given string `s` and dictionary, return all sentences where `s` can be space-segmented into dictionary words.
 
-**Approach:** Two stacks: main stack + min stack (push min to min stack only when new value ≤ current min; pop in sync). Or single stack of `(value, current_min)` pairs. O(1) all ops.
+**Approach:** Backtracking + memoization on suffix → list of sentences. For each split point producing a dictionary word prefix, recurse on the suffix. Cache results per starting index. Trie for prefix lookup speeds the prefix scan. Worst case exponential (output-bound).
 
 **Python:**
 ```python
-class MinStack:
-    def __init__(self) -> None:
-        self.stk: list[tuple[int, int]] = []  # (value, running_min)
+from functools import lru_cache
 
-    def push(self, val: int) -> None:
-        cur_min = val if not self.stk else min(val, self.stk[-1][1])
-        self.stk.append((val, cur_min))
-
-    def pop(self) -> None:
-        self.stk.pop()
-
-    def top(self) -> int:
-        return self.stk[-1][0]
-
-    def get_min(self) -> int:
-        return self.stk[-1][1]
+def word_break(s: str, word_dict: list[str]) -> list[str]:
+    words = set(word_dict)
+    @lru_cache(maxsize=None)
+    def go(start: int) -> list[str]:
+        if start == len(s):
+            return [""]
+        result: list[str] = []
+        for end in range(start + 1, len(s) + 1):
+            w = s[start:end]
+            if w in words:
+                for rest in go(end):
+                    result.append(w if not rest else w + " " + rest)
+        return result
+    return go(0)
 ```
 
 **TypeScript:**
 ```typescript
-class MinStack {
-  private stk: Array<[number, number]> = [];
-  push(val: number): void {
-    const m = this.stk.length === 0 ? val : Math.min(val, this.stk[this.stk.length - 1][1]);
-    this.stk.push([val, m]);
-  }
-  pop(): void { this.stk.pop(); }
-  top(): number { return this.stk[this.stk.length - 1][0]; }
-  getMin(): number { return this.stk[this.stk.length - 1][1]; }
+function wordBreak(s: string, wordDict: string[]): string[] {
+  const words = new Set(wordDict);
+  const memo = new Map<number, string[]>();
+  const go = (start: number): string[] => {
+    if (memo.has(start)) return memo.get(start)!;
+    if (start === s.length) return [""];
+    const result: string[] = [];
+    for (let end = start + 1; end <= s.length; end++) {
+      const w = s.slice(start, end);
+      if (words.has(w)) {
+        for (const rest of go(end)) result.push(rest === "" ? w : w + " " + rest);
+      }
+    }
+    memo.set(start, result);
+    return result;
+  };
+  return go(0);
 }
 ```
 
 **Java:**
 ```java
-class MinStack {
-  private final Deque<int[]> stk = new ArrayDeque<>();  // {value, runningMin}
-  public void push(int val) {
-    int m = stk.isEmpty() ? val : Math.min(val, stk.peek()[1]);
-    stk.push(new int[]{val, m});
+Map<Integer, List<String>> memoWB;
+Set<String> wordsWB;
+String sWB;
+
+List<String> wordBreak(String s, List<String> wordDict) {
+  memoWB = new HashMap<>();
+  wordsWB = new HashSet<>(wordDict);
+  sWB = s;
+  return goWB(0);
+}
+
+List<String> goWB(int start) {
+  if (memoWB.containsKey(start)) return memoWB.get(start);
+  List<String> result = new ArrayList<>();
+  if (start == sWB.length()) { result.add(""); return result; }
+  for (int end = start + 1; end <= sWB.length(); end++) {
+    String w = sWB.substring(start, end);
+    if (wordsWB.contains(w)) {
+      for (String rest : goWB(end)) result.add(rest.isEmpty() ? w : w + " " + rest);
+    }
   }
-  public void pop() { stk.pop(); }
-  public int top() { return stk.peek()[0]; }
-  public int getMin() { return stk.peek()[1]; }
+  memoWB.put(start, result);
+  return result;
 }
 ```
 
 **Key points:**
-- Each entry carries the running min so all ops are O(1).
-- Alternative two-stack design saves space when many duplicates of min are pushed.
-- Empty-stack handling depends on the problem contract; here methods assume non-empty.
+- Memoize by suffix start index so each index is expanded once.
+- Empty-rest sentinel `""` signals a clean termination at the end.
+- Trie/longest-prefix optimization helps when the dictionary is large.
 
-**Follow-ups:**
-- Max Stack (return max in O(1)) and `popMax` in O(log n).
-- Queue using two stacks — amortized O(1) per op.
-- Min/Max in a sliding window — monotonic deque.
-- Thread-safe Min Stack — synchronize or lock-free.
-
-**Common Pitfalls:**
-- Storing only the global min in a separate single variable — wrong after `pop` of the min element.
-- Off-by-one when accessing the previous min after a pop — always carry running min per entry.
-
-**Tags:** #coding
+**Tags:** #algorithm
 
 ---
 
-### 9. Design WeChat Messaging Backend
+### 5. Concatenated Words
 
 **Difficulty:** Hard
-**Topics:** system-design, im, websockets, presence, scale
-**Position:** Senior SWE
-**Years:** T3-T4
+**Topics:** dp, trie, strings
+**Position:** T3-1
+**Years:** T3
 
-**Question:** Design WeChat's messaging backend supporting 1B+ MAU, 1:1 chat, group chat (up to 500 members), and global presence.
+**Question:** Given an array of unique strings, return all strings that are concatenations of at least two other strings in the array.
 
-**Approach:** Persistent TCP/MQTT connection from each client to nearest access gateway (sharded by user_id). Messages flow gateway → routing service (looks up recipient's gateway via online registry) → recipient gateway → device. Offline messages persisted to KV store; pushed on reconnect. Group chat: fan-out at the per-group routing service; for 500 members, that's tractable. Presence: in-memory store per region, gossip globally with TTL'd entries (eventual consistency OK). Persist messages 7 days in hot store + 90 days cold. Discuss: end-to-end encryption (Tencent historically not E2E for compliance with Chinese law — call this out honestly), message ordering within a chat (sequence numbers per chat), multi-device sync, and very large group support (broadcast groups have different design).
+**Approach:** For each word, run a Word Break DP using the set of all *other* words (or all words, requiring `>=2` segments). `dp[i]` true if `word[0..i)` is a valid segmentation. Optimize: sort by length, use a growing set. O(N * L^2) typical.
 
-**Follow-ups:**
-- Multi-device sync — logged in on phone + laptop, same message arrives consistently.
-- Message ordering across devices — server-issued sequence per chat.
-- Very large groups (broadcast "公众号"-style) — push goes pull, with cursor.
-- Offline-to-online catch-up — stream window vs full pull.
-- Cross-region latency for international users — anycast gateway or per-region routing?
+**Python:**
+```python
+def find_all_concatenated_words(words: list[str]) -> list[str]:
+    words.sort(key=len)
+    seen: set[str] = set()
+    out: list[str] = []
+    def composable(w: str) -> bool:
+        if not seen:
+            return False
+        n = len(w)
+        dp = [False] * (n + 1)
+        dp[0] = True
+        for i in range(1, n + 1):
+            for j in range(i):
+                if dp[j] and w[j:i] in seen:
+                    dp[i] = True
+                    break
+        return dp[n]
+    for w in words:
+        if composable(w):
+            out.append(w)
+        seen.add(w)
+    return out
+```
 
-**Common Pitfalls:**
-- Promising E2E encryption when the design actually mirrors / archives messages.
-- Naive fan-out for large groups — doesn't scale beyond ~500 members.
+**TypeScript:**
+```typescript
+function findAllConcatenatedWordsInADict(words: string[]): string[] {
+  words.sort((a, b) => a.length - b.length);
+  const seen = new Set<string>();
+  const out: string[] = [];
+  const composable = (w: string): boolean => {
+    if (seen.size === 0) return false;
+    const n = w.length;
+    const dp = new Array<boolean>(n + 1).fill(false);
+    dp[0] = true;
+    for (let i = 1; i <= n; i++) {
+      for (let j = 0; j < i; j++) {
+        if (dp[j] && seen.has(w.slice(j, i))) { dp[i] = true; break; }
+      }
+    }
+    return dp[n];
+  };
+  for (const w of words) {
+    if (composable(w)) out.push(w);
+    seen.add(w);
+  }
+  return out;
+}
+```
 
-**Tags:** #system-design
+**Java:**
+```java
+List<String> findAllConcatenatedWordsInADict(String[] words) {
+  Arrays.sort(words, Comparator.comparingInt(String::length));
+  Set<String> seen = new HashSet<>();
+  List<String> out = new ArrayList<>();
+  for (String w : words) {
+    if (composableCW(w, seen)) out.add(w);
+    seen.add(w);
+  }
+  return out;
+}
+
+boolean composableCW(String w, Set<String> seen) {
+  if (seen.isEmpty()) return false;
+  int n = w.length();
+  boolean[] dp = new boolean[n + 1];
+  dp[0] = true;
+  for (int i = 1; i <= n; i++) {
+    for (int j = 0; j < i; j++) {
+      if (dp[j] && seen.contains(w.substring(j, i))) { dp[i] = true; break; }
+    }
+  }
+  return dp[n];
+}
+```
+
+**Key points:**
+- Sorting by length lets the dictionary only contain shorter words.
+- A concatenated word requires at least two parts, enforced naturally because the word itself isn't in `seen` yet.
+- O(N * L^2) total — each word does Word Break against an incremental set.
+
+**Tags:** #algorithm
 
 ---
 
-### 10. Design WeChat Moments (朋友圈)
+### 6. Count of Smaller Numbers After Self
 
 **Difficulty:** Hard
-**Topics:** system-design, feed, privacy, fanout
-**Position:** Senior SWE
-**Years:** T3-T4
+**Topics:** bit, merge-sort, segment-tree
+**Position:** T3-1
+**Years:** T3
 
-**Question:** Design WeChat Moments — friends-only feed where posts are visible only to mutual friends, with strict privacy controls.
+**Question:** For each `nums[i]`, return the count of `nums[j]` with `j > i` and `nums[j] < nums[i]`.
 
-**Approach:** Closed-graph feed (unlike Twitter/Weibo) — only mutual friends see posts. Hybrid push/pull as in News Feed. Critical privacy property: comments and likes on a post are visible only to mutual friends of the *poster*. So when displaying a post, server filters comments to those by people the viewer is also friends with — done at read time via friend-graph intersection (cache the intersection result). Photos in CDN with signed short-lived URLs (no public discoverable URL). Discuss: "三天可见" (visible-for-3-days) implemented as a per-post TTL flag, message-style notification on comment/like (via the IM system from Q9), and how to handle a viral post (rare in closed graph, but possible — cache aggressively).
+**Approach:** Merge sort with index tracking: when an element from the right half is placed before an element from the left, increment the left element's count. Or BIT over compressed values, processed right-to-left, query prefix. O(n log n).
 
-**Follow-ups:**
-- "仅三天可见" (3-day visibility) — store as TTL or filter at read?
-- Block / un-friend invalidation — cached feed must update immediately.
-- Photo URL re-share via screenshot — add visible watermark or accept the leak?
-- Cross-region replication — user travels abroad, where is the feed served from?
-- Friend-graph intersection cost at read time — cache, precompute, or both?
+**Python:**
+```python
+def count_smaller(nums: list[int]) -> list[int]:
+    n = len(nums)
+    counts = [0] * n
+    indices = list(range(n))
+    def sort(lo: int, hi: int) -> list[int]:
+        if lo >= hi:
+            return [indices[lo]] if lo == hi else []
+        mid = (lo + hi) // 2
+        left = sort(lo, mid)
+        right = sort(mid + 1, hi)
+        merged: list[int] = []
+        i = j = 0
+        while i < len(left) or j < len(right):
+            if j == len(right) or (i < len(left) and nums[left[i]] <= nums[right[j]]):
+                counts[left[i]] += j
+                merged.append(left[i])
+                i += 1
+            else:
+                merged.append(right[j])
+                j += 1
+        for k, idx in enumerate(merged):
+            indices[lo + k] = idx
+        return merged
+    sort(0, n - 1)
+    return counts
+```
 
-**Common Pitfalls:**
-- Showing comments from non-mutual friends — privacy violation, very visible bug.
-- Hot post in a closed graph — still possible if one friend is influential, plan for it.
+**TypeScript:**
+```typescript
+function countSmaller(nums: number[]): number[] {
+  const n = nums.length;
+  const counts = new Array<number>(n).fill(0);
+  const indices = Array.from({ length: n }, (_, i) => i);
+  const sort = (lo: number, hi: number): number[] => {
+    if (lo > hi) return [];
+    if (lo === hi) return [indices[lo]];
+    const mid = (lo + hi) >> 1;
+    const left = sort(lo, mid), right = sort(mid + 1, hi);
+    const merged: number[] = [];
+    let i = 0, j = 0;
+    while (i < left.length || j < right.length) {
+      if (j === right.length || (i < left.length && nums[left[i]] <= nums[right[j]])) {
+        counts[left[i]] += j;
+        merged.push(left[i++]);
+      } else merged.push(right[j++]);
+    }
+    for (let k = 0; k < merged.length; k++) indices[lo + k] = merged[k];
+    return merged;
+  };
+  sort(0, n - 1);
+  return counts;
+}
+```
 
-**Tags:** #system-design
+**Java:**
+```java
+int[] numsCS;
+int[] countsCS;
+int[] indicesCS;
 
----
+List<Integer> countSmaller(int[] nums) {
+  int n = nums.length;
+  numsCS = nums;
+  countsCS = new int[n];
+  indicesCS = new int[n];
+  for (int i = 0; i < n; i++) indicesCS[i] = i;
+  sortCS(0, n - 1);
+  List<Integer> out = new ArrayList<>(n);
+  for (int c : countsCS) out.add(c);
+  return out;
+}
 
-### 11. Design a Multiplayer Game Server (Honor of Kings-style)
+int[] sortCS(int lo, int hi) {
+  if (lo > hi) return new int[0];
+  if (lo == hi) return new int[]{indicesCS[lo]};
+  int mid = (lo + hi) >>> 1;
+  int[] left = sortCS(lo, mid), right = sortCS(mid + 1, hi);
+  int[] merged = new int[left.length + right.length];
+  int i = 0, j = 0, k = 0;
+  while (i < left.length || j < right.length) {
+    if (j == right.length || (i < left.length && numsCS[left[i]] <= numsCS[right[j]])) {
+      countsCS[left[i]] += j;
+      merged[k++] = left[i++];
+    } else merged[k++] = right[j++];
+  }
+  System.arraycopy(merged, 0, indicesCS, lo, merged.length);
+  return merged;
+}
+```
 
-**Difficulty:** Hard
-**Topics:** system-design, gaming, low-latency, state-sync
-**Position:** Senior SWE
-**Years:** T3-T4
+**Key points:**
+- Sort indices, not values, so each element's count remains addressable.
+- When taking a left element, `j` already equals the count of smaller right elements seen.
+- `<=` (not `<`) avoids inflating counts due to ties.
 
-**Question:** Design the backend for a real-time 5v5 MOBA game like Honor of Kings. Latency budget: <100ms perceived.
-
-**Approach:** Matchmaking service (skill + region + party-aware) → game server allocator (Kubernetes pool of dedicated game servers across regions). Game server runs authoritative simulation. **Frame sync (lockstep)**: clients send inputs only (small packets), all clients run identical deterministic simulation in lockstep, advance frame when all inputs received. Tencent's choice for MOBAs — bandwidth tiny, anti-cheat via input-only model. Tradeoff: 1 slow client = everyone waits. **State sync**: server simulates, sends state diffs — used by FPS. Network: custom UDP protocol (with reliability layer); TCP unacceptable for game traffic. Discuss: clock sync (NTP-ish), packet loss tolerance (resend inputs, predict for state-sync), reconnect (replay inputs from last frame), and cheat detection (server-side replay for sample matches).
-
-**Tags:** #system-design
-
----
-
-### 12. Design QQ / WeChat Voice & Video Call
-
-**Difficulty:** Hard
-**Topics:** system-design, webrtc, sfu, nat-traversal, codecs
-**Position:** Senior SWE
-**Years:** T3-T4
-
-**Question:** Design the voice/video call infrastructure for WeChat (1:1 and multi-party up to 9).
-
-**Approach:** Signaling over the IM channel (SDP offer/answer through messaging). Media: WebRTC-style with ICE for NAT traversal (STUN/TURN servers). For 1:1, P2P preferred (lower latency, less server cost). For multi-party, SFU (Selective Forwarding Unit) — each client uploads one stream, server forwards to N-1 others without transcoding (low latency, scales reasonably). Codecs: Opus audio, H.264/H.265 video, adaptive bitrate. Echo cancellation, noise suppression, jitter buffer on client. Discuss: TURN relay cost (many users behind symmetric NAT), regional media servers, and bandwidth adaptation under network degradation.
-
-**Tags:** #system-design
-
----
-
-### 13. Design Tencent Cloud Object Storage (COS)
-
-**Difficulty:** Hard
-**Topics:** system-design, blob-storage, replication, consistency, cloud
-**Position:** Senior SWE
-**Years:** T3-T4
-
-**Question:** Design Tencent COS — object storage API-compatible with S3.
-
-**Approach:** Front-end S3-compatible API → metadata service (sharded by bucket+key) → storage layer with erasure coding (Reed-Solomon 10+4) across many nodes/racks/AZs. Strong consistency within a region via metadata coordinator (Paxos). Multi-region async replication for DR. Discuss: erasure coding vs 3x replication trade-offs (~50% storage savings, more CPU/network on read), large object multipart upload, lifecycle to cold storage (Archive Storage equivalent), and how to handle a hot key (CDN + replica fan-out for popular reads).
-
-**Tags:** #system-design
-
----
-
-### 14. Design a Live Streaming Gift / Bullet-Comment System
-
-**Difficulty:** Hard
-**Topics:** system-design, real-time, fanout, monetization, big-data
-**Position:** Senior SWE
-**Years:** T3-T4
-
-**Question:** Design the gift-sending and bullet-comment system for Tencent Video / NOW Live where viewers can send virtual gifts (with payment) and chat in real-time during a live broadcast.
-
-**Approach:** Gift purchase: transactional flow (debit user wallet → record gift event → broadcast). Wallet write is the consistency-critical step; rest can be eventual. Comment/gift event → per-stream Kafka topic → fan out to viewer WebSocket gateways. On very hot streams (1M+ concurrent), throttle and sample for display; persist all to DB. Big-spender effects (special animations) prioritized in the broadcast queue. Discuss: anti-fraud on gifts (sudden spike from one user = potential card fraud), tax/compliance for streamer revenue share, and graceful degradation when the stream becomes too hot (drop low-value comments first).
-
-**Tags:** #system-design
-
----
-
-### 15. Tell me about a time you collaborated across teams
-
-**Difficulty:** Medium
-**Topics:** behavioral, collaboration, cross-bg
-**Position:** SWE
-**Years:** T2-T3
-
-**Question:** Tell me about a time you had to work with another team or BG to deliver a project. What was hard about it?
-
-**Approach:** Tencent's BG structure makes cross-team work culturally hard — they probe whether you can navigate it. Show: (1) you built the relationship early (didn't just escalate when blocked), (2) you understood their priorities (different OKRs, different leadership), (3) you proposed a win-win framing, (4) you delivered together. Mentioning specific friction (resource allocation, schedule misalignment) and how you resolved it lands well.
-
-**Tags:** #behavioral
-
----
-
-### 16. Time you proactively fixed something not in your scope
-
-**Difficulty:** Medium
-**Topics:** behavioral, ownership, initiative
-**Position:** SWE
-**Years:** T2-T3
-
-**Question:** Tell me about a time you noticed a problem and fixed it without being asked.
-
-**Approach:** Tencent values "主动" (proactive) engineers. Show: (1) the specific problem (production bug, tech debt, missing tool), (2) you didn't wait for prioritization — you spent personal time or off-cycle, (3) you made sure your fix was reviewed and adopted (didn't just commit cowboy-style), (4) impact: it helped the team measurably. Don't pick a story where the fix was actually your direct responsibility.
-
-**Tags:** #behavioral
+**Tags:** #algorithm
 
 ---
 
-### 17. Time you handled a production incident
+## Graph
 
-**Difficulty:** Medium
-**Topics:** behavioral, incident-response, ownership, ops
-**Position:** Senior SWE
-**Years:** T3-T4
-
-**Question:** Walk me through a production incident you led. What happened, how did you respond, and what changed afterward?
-
-**Approach:** Pick a real incident (not a "near miss"). Show: (1) you triaged with cool head — mitigation first, RCA later, (2) you communicated to stakeholders during (status updates every 15-30 min), (3) you ran a blameless retro that produced concrete action items, (4) you followed up on the action items not just filed them. Quantify the impact (downtime minutes, users affected) and the post-fix improvement (MTTR cut by X).
-
-**Tags:** #behavioral
-
----
-
-### 18. Why Tencent
-
-**Difficulty:** Easy
-**Topics:** behavioral, motivation, fit
-**Position:** SWE
-**Years:** T2-T3
-
-**Question:** Why do you want to join Tencent specifically, and which BG/team?
-
-**Approach:** Show specificity. Don't say "big company" or "stock." Pick: (1) a specific product (WeChat ecosystem, a game you love and want to work on), (2) a technical area Tencent is strong in (game tech, IM, cloud), (3) the BG culture (IEG for games, WXG for WeChat — quite different). Mentioning open-source contributions Tencent has made (TARS, ncnn for ML inference) shows you've done homework.
-
-**Tags:** #behavioral
-
----
-
-### 19. TCP deep dive: why does TCP throughput drop on a high-RTT link?
-
-**Difficulty:** Hard
-**Topics:** networking, tcp, performance
-**Position:** Senior SWE
-**Years:** T3-T4
-
-**Question:** A service running cross-region (Shanghai → US-East, 200ms RTT) shows TCP throughput much lower than the available bandwidth. Why? How would you fix it?
-
-**Approach:** Bandwidth-Delay Product (BDP): on a high-RTT link, throughput = window_size / RTT. Default TCP send/recv buffers may be too small — calculate: 1 Gbps × 0.2s = 200 Mbits = 25 MB BDP, but default Linux send buffer is ~4MB. Fixes: (1) increase `net.ipv4.tcp_rmem` / `tcp_wmem`, (2) enable TCP window scaling (RFC 7323 — usually on by default but check), (3) switch congestion control algorithm to BBR (better on high-BDP than CUBIC), (4) use parallel connections to multiply effective throughput, (5) for true bulk transfer, consider QUIC or UDP-based protocols. Mention measurement: `tc`, `ss -i`, `iperf3` to baseline. Tencent has built custom transport protocols precisely for this reason (e.g., for cross-region game traffic).
-
-**Tags:** #domain-knowledge
-
----
-
-### 20. Anti-cheat in a real-time multiplayer game
-
-**Difficulty:** Hard
-**Topics:** gaming, security, anti-cheat
-**Position:** Senior SWE
-**Years:** T3-T4
-
-**Question:** A new PUBG Mobile cheating tool is widespread (aimbot + wallhack). Walk through how you'd architect anti-cheat to detect and respond.
-
-**Approach:** Multi-layered: (1) **Server authority** — never trust client-reported damage/position; server runs hit detection. Wallhack requires the *client* to render data it shouldn't have — fix by not sending data about enemies the player can't see (visibility culling). Trade-off: more server CPU. (2) **Behavioral detection** — server-side ML on aim trajectories, headshot ratios, reaction times; flag outliers for review/shadowban. (3) **Client integrity** — anti-tampering (code obfuscation, native checksums, kernel-mode anti-cheat for PC). Detect known cheat signatures. (4) **Reporting + replay** — player reports trigger server-side replay review, sometimes by ML. (5) **Soft penalties** — shadowban (matchmake cheaters together) before hardban (gives cheat-makers less signal to iterate). Discuss false-positive cost (banning honest players is catastrophic for retention) and the perpetual cat-and-mouse nature.
-
-**Tags:** #domain-knowledge
-
----
-
-### 21. Network Delay Time
+### 7. Network Delay Time
 
 **Difficulty:** Medium
 **Topics:** graph, dijkstra, shortest-path
@@ -948,7 +662,7 @@ int networkDelayTime(int[][] times, int n, int k) {
 
 ---
 
-### 22. Cheapest Flights Within K Stops
+### 8. Cheapest Flights Within K Stops
 
 **Difficulty:** Medium
 **Topics:** graph, bfs, dp, bellman-ford
@@ -1018,7 +732,7 @@ int findCheapestPrice(int n, int[][] flights, int src, int dst, int k) {
 
 ---
 
-### 23. Path with Maximum Probability
+### 9. Path with Maximum Probability
 
 **Difficulty:** Medium
 **Topics:** graph, dijkstra, shortest-path
@@ -1113,80 +827,7 @@ double maxProbability(int n, int[][] edges, double[] succProb, int start, int en
 
 ---
 
-### 24. Minimum Number of Refueling Stops
-
-**Difficulty:** Hard
-**Topics:** greedy, heap, dp
-**Position:** T3-1
-**Years:** T3-T4
-
-**Question:** A car starts with `startFuel` and must reach `target`. Stations along the way provide fuel `stations[i] = [position, liters]`. Return the min number of refuels needed (or -1).
-
-**Approach:** Greedy with max-heap. Drive as far as possible; when you can't reach the next station/target, refuel from the most-fuel-providing station you've passed (pop max-heap). Increment refuel count. O(n log n). Elegant alternative: DP on stops, but heap is cleaner.
-
-**Python:**
-```python
-import heapq
-
-def min_refuel_stops(target: int, start_fuel: int, stations: list[list[int]]) -> int:
-    heap: list[int] = []  # negated liters
-    fuel, i, stops = start_fuel, 0, 0
-    while fuel < target:
-        while i < len(stations) and stations[i][0] <= fuel:
-            heapq.heappush(heap, -stations[i][1])
-            i += 1
-        if not heap:
-            return -1
-        fuel += -heapq.heappop(heap)
-        stops += 1
-    return stops
-```
-
-**TypeScript:**
-```typescript
-function minRefuelStops(target: number, startFuel: number, stations: number[][]): number {
-  const heap: number[] = [];  // negated liters
-  let fuel = startFuel, i = 0, stops = 0;
-  while (fuel < target) {
-    while (i < stations.length && stations[i][0] <= fuel) {
-      heap.push(-stations[i][1]);
-      heap.sort((a, b) => a - b);
-      i++;
-    }
-    if (heap.length === 0) return -1;
-    fuel += -heap.shift()!;
-    stops++;
-  }
-  return stops;
-}
-```
-
-**Java:**
-```java
-int minRefuelStops(int target, int startFuel, int[][] stations) {
-  PriorityQueue<Integer> heap = new PriorityQueue<>(Comparator.reverseOrder());
-  long fuel = startFuel;
-  int i = 0, stops = 0;
-  while (fuel < target) {
-    while (i < stations.length && stations[i][0] <= fuel) heap.offer(stations[i++][1]);
-    if (heap.isEmpty()) return -1;
-    fuel += heap.poll();
-    stops++;
-  }
-  return stops;
-}
-```
-
-**Key points:**
-- Treat passed stations as a "fuel reserve" — only consume when stuck.
-- Always pick the largest passed reserve to maximize range gained per refuel.
-- Stations are assumed sorted by position; if not, sort first.
-
-**Tags:** #algorithm
-
----
-
-### 25. Bus Routes
+### 10. Bus Routes
 
 **Difficulty:** Hard
 **Topics:** graph, bfs
@@ -1287,7 +928,7 @@ int numBusesToDestination(int[][] routes, int source, int target) {
 
 ---
 
-### 26. Critical Connections in a Network
+### 11. Critical Connections in a Network
 
 **Difficulty:** Hard
 **Topics:** graph, dfs, tarjan, bridges
@@ -1391,7 +1032,7 @@ void dfsBridge(int u, int parent) {
 
 ---
 
-### 27. Number of Connected Components in an Undirected Graph
+### 12. Number of Connected Components in an Undirected Graph
 
 **Difficulty:** Medium
 **Topics:** graph, union-find, dfs
@@ -1467,7 +1108,7 @@ int findUF(int x) {
 
 ---
 
-### 28. Number of Provinces (Friend Circles)
+### 13. Number of Provinces (Friend Circles)
 
 **Difficulty:** Medium
 **Topics:** graph, union-find, dfs
@@ -1544,7 +1185,7 @@ void dfsProv(int[][] m, boolean[] visited, int u) {
 
 ---
 
-### 29. Redundant Connection
+### 14. Redundant Connection
 
 **Difficulty:** Medium
 **Topics:** graph, union-find, cycle
@@ -1619,7 +1260,7 @@ int findRC(int x) {
 
 ---
 
-### 30. Course Schedule
+### 15. Course Schedule
 
 **Difficulty:** Medium
 **Topics:** graph, topological-sort, dfs, bfs
@@ -1698,7 +1339,7 @@ boolean canFinish(int numCourses, int[][] prerequisites) {
 
 ---
 
-### 31. Course Schedule II
+### 16. Course Schedule II
 
 **Difficulty:** Medium
 **Topics:** graph, topological-sort
@@ -1778,7 +1419,7 @@ int[] findOrder(int numCourses, int[][] prerequisites) {
 
 ---
 
-### 32. Alien Dictionary
+### 17. Alien Dictionary
 
 **Difficulty:** Hard
 **Topics:** graph, topological-sort, strings
@@ -1890,981 +1531,608 @@ String alienOrder(String[] words) {
 
 ---
 
-### 33. Stone Game
+### 18. Minimum Spanning Tree for Game Server Topology
 
 **Difficulty:** Medium
-**Topics:** dp, game-theory, minimax
+**Topics:** graph, mst, kruskal, prim, union-find
 **Position:** T2-3
 **Years:** T2-T3
 
-**Question:** Even-length piles array. Two players alternate taking either the leftmost or rightmost pile. Both play optimally. Return true if player 1 wins.
+**Question:** Given `n` game-server nodes and the cost of laying a dedicated link between each pair, return the minimum total cost to interconnect them all.
 
-**Approach:** DP `dp[i][j] = max(piles[i] - dp[i+1][j], piles[j] - dp[i][j-1])` representing best score-diff achievable for the current player on `piles[i..j]`. Answer: `dp[0][n-1] > 0`. O(n^2) time/space. Trick answer: always true for even n with even total, but interviewer wants the DP.
+**Approach:** MST via Kruskal: sort edges, union-find to add cheapest non-cycling edges until `n-1` chosen. O(E log E). Prim with min-heap is O(E log V) — preferable for dense graphs. Tencent infra angle: discuss latency-weighted vs cost-weighted edges.
 
 **Python:**
 ```python
-def stone_game(piles: list[int]) -> bool:
-    n = len(piles)
-    dp = [row[:] for row in [[0] * n] * n]
-    for i in range(n):
-        dp[i][i] = piles[i]
-    for length in range(2, n + 1):
-        for i in range(n - length + 1):
-            j = i + length - 1
-            dp[i][j] = max(piles[i] - dp[i + 1][j], piles[j] - dp[i][j - 1])
-    return dp[0][n - 1] > 0
+def min_spanning_tree(n: int, edges: list[tuple[int, int, int]]) -> int:
+    parent = list(range(n))
+    def find(x: int) -> int:
+        while parent[x] != x:
+            parent[x] = parent[parent[x]]
+            x = parent[x]
+        return x
+    edges.sort(key=lambda e: e[2])
+    total, used = 0, 0
+    for u, v, w in edges:
+        ru, rv = find(u), find(v)
+        if ru != rv:
+            parent[ru] = rv
+            total += w
+            used += 1
+            if used == n - 1:
+                break
+    return total if used == n - 1 else -1
 ```
 
 **TypeScript:**
 ```typescript
-function stoneGame(piles: number[]): boolean {
-  const n = piles.length;
-  const dp: number[][] = Array.from({ length: n }, () => new Array(n).fill(0));
-  for (let i = 0; i < n; i++) dp[i][i] = piles[i];
-  for (let len = 2; len <= n; len++) {
-    for (let i = 0; i + len - 1 < n; i++) {
-      const j = i + len - 1;
-      dp[i][j] = Math.max(piles[i] - dp[i + 1][j], piles[j] - dp[i][j - 1]);
-    }
-  }
-  return dp[0][n - 1] > 0;
-}
-```
-
-**Java:**
-```java
-boolean stoneGame(int[] piles) {
-  int n = piles.length;
-  int[][] dp = new int[n][n];
-  for (int i = 0; i < n; i++) dp[i][i] = piles[i];
-  for (int len = 2; len <= n; len++) {
-    for (int i = 0; i + len - 1 < n; i++) {
-      int j = i + len - 1;
-      dp[i][j] = Math.max(piles[i] - dp[i + 1][j], piles[j] - dp[i][j - 1]);
-    }
-  }
-  return dp[0][n - 1] > 0;
-}
-```
-
-**Key points:**
-- `dp[i][j]` is the maximum score difference the player-to-move can guarantee.
-- Fill by interval length so all needed sub-intervals exist first.
-- Both players are optimal — the subtractive recurrence already encodes that.
-
-**Tags:** #algorithm
-
----
-
-### 34. Nim Game
-
-**Difficulty:** Easy
-**Topics:** game-theory, math
-**Position:** T2-3
-**Years:** T2-T3
-
-**Question:** A pile of `n` stones. Players alternate removing 1, 2, or 3 stones. The player taking the last stone wins. You go first — can you always win?
-
-**Approach:** Losing position iff `n % 4 == 0`. Whoever faces a multiple of 4 loses with optimal play (opponent mirrors to keep you at multiples of 4). O(1). Be ready to prove inductively.
-
-**Python:**
-```python
-def can_win_nim(n: int) -> bool:
-    return n % 4 != 0
-```
-
-**TypeScript:**
-```typescript
-function canWinNim(n: number): boolean {
-  return n % 4 !== 0;
-}
-```
-
-**Java:**
-```java
-boolean canWinNim(int n) {
-  return n % 4 != 0;
-}
-```
-
-**Key points:**
-- Multiples of 4 are losing positions; everything else is winning.
-- Mirror strategy: opponent always responds with `4 - your_take` to keep you stuck.
-- Inductive proof: from any `n % 4 != 0`, you can move to a multiple of 4.
-
-**Tags:** #algorithm
-
----
-
-### 35. Predict the Winner
-
-**Difficulty:** Medium
-**Topics:** dp, game-theory, minimax, recursion
-**Position:** T2-3
-**Years:** T2-T3
-
-**Question:** Given a score array, two players alternately pick from either end. Return true if player 1 can win or tie with optimal play.
-
-**Approach:** Same DP as Stone Game: `dp[i][j]` = max score-diff current player can achieve on `nums[i..j]`. Top-down memo also works. O(n^2). Answer: `dp[0][n-1] >= 0`. Tencent variant: ask about space optimization to O(n) using 1D rolling.
-
-**Python:**
-```python
-def predict_the_winner(nums: list[int]) -> bool:
-    n = len(nums)
-    dp = nums[:]  # dp[i] for current j; init j=i
-    for i in range(n - 2, -1, -1):
-        for j in range(i + 1, n):
-            dp[j] = max(nums[i] - dp[j], nums[j] - dp[j - 1])
-    return dp[n - 1] >= 0
-```
-
-**TypeScript:**
-```typescript
-function PredictTheWinner(nums: number[]): boolean {
-  const n = nums.length;
-  const dp = nums.slice();
-  for (let i = n - 2; i >= 0; i--) {
-    for (let j = i + 1; j < n; j++) {
-      dp[j] = Math.max(nums[i] - dp[j], nums[j] - dp[j - 1]);
-    }
-  }
-  return dp[n - 1] >= 0;
-}
-```
-
-**Java:**
-```java
-boolean predictTheWinner(int[] nums) {
-  int n = nums.length;
-  int[] dp = nums.clone();
-  for (int i = n - 2; i >= 0; i--) {
-    for (int j = i + 1; j < n; j++) {
-      dp[j] = Math.max(nums[i] - dp[j], nums[j] - dp[j - 1]);
-    }
-  }
-  return dp[n - 1] >= 0;
-}
-```
-
-**Key points:**
-- 1D rolling array works because `dp[i][j]` depends only on `dp[i+1][j]` and `dp[i][j-1]`.
-- Initialize `dp[j] = nums[j]` to represent the base case `i == j`.
-- Return `>= 0` so ties also count as a player-1 win.
-
-**Tags:** #algorithm
-
----
-
-### 36. Can I Win
-
-**Difficulty:** Medium
-**Topics:** dp, game-theory, bitmask, memoization
-**Position:** T3-1
-**Years:** T3
-
-**Question:** Numbers 1..`maxChoosableInteger`, no replacement. Players alternate picking; first to push the running total ≥ `desiredTotal` wins. Return true if first player can force a win.
-
-**Approach:** Bitmask DP over chosen-set state (`maxChoosable ≤ 20`). Memo `state → win/lose`. For each unchosen number, if picking it wins immediately OR opponent loses from new state, current player wins. Edge cases: if sum < target → impossible (false). O(2^n * n).
-
-**Python:**
-```python
-from functools import lru_cache
-
-def can_i_win(max_choosable: int, desired_total: int) -> bool:
-    if max_choosable * (max_choosable + 1) // 2 < desired_total:
-        return False
-    @lru_cache(maxsize=None)
-    def win(state: int, remaining: int) -> bool:
-        for i in range(1, max_choosable + 1):
-            bit = 1 << (i - 1)
-            if state & bit:
-                continue
-            if i >= remaining or not win(state | bit, remaining - i):
-                return True
-        return False
-    return win(0, desired_total)
-```
-
-**TypeScript:**
-```typescript
-function canIWin(maxChoosable: number, desiredTotal: number): boolean {
-  if ((maxChoosable * (maxChoosable + 1)) / 2 < desiredTotal) return false;
-  const memo = new Map<number, boolean>();
-  const win = (state: number, remaining: number): boolean => {
-    if (memo.has(state)) return memo.get(state)!;
-    for (let i = 1; i <= maxChoosable; i++) {
-      const bit = 1 << (i - 1);
-      if (state & bit) continue;
-      if (i >= remaining || !win(state | bit, remaining - i)) {
-        memo.set(state, true); return true;
-      }
-    }
-    memo.set(state, false); return false;
+function minSpanningTree(n: number, edges: Array<[number, number, number]>): number {
+  const parent = Array.from({ length: n }, (_, i) => i);
+  const find = (x: number): number => {
+    while (parent[x] !== x) { parent[x] = parent[parent[x]]; x = parent[x]; }
+    return x;
   };
-  return win(0, desiredTotal);
+  edges.sort((a, b) => a[2] - b[2]);
+  let total = 0, used = 0;
+  for (const [u, v, w] of edges) {
+    const ru = find(u), rv = find(v);
+    if (ru !== rv) {
+      parent[ru] = rv;
+      total += w;
+      if (++used === n - 1) break;
+    }
+  }
+  return used === n - 1 ? total : -1;
 }
 ```
 
 **Java:**
 ```java
-Map<Integer, Boolean> memoCIW;
-int maxChoosableCIW;
+int[] parMST;
 
-boolean canIWin(int maxChoosable, int desiredTotal) {
-  if (maxChoosable * (maxChoosable + 1) / 2 < desiredTotal) return false;
-  memoCIW = new HashMap<>();
-  maxChoosableCIW = maxChoosable;
-  return winCIW(0, desiredTotal);
-}
-
-boolean winCIW(int state, int remaining) {
-  if (memoCIW.containsKey(state)) return memoCIW.get(state);
-  for (int i = 1; i <= maxChoosableCIW; i++) {
-    int bit = 1 << (i - 1);
-    if ((state & bit) != 0) continue;
-    if (i >= remaining || !winCIW(state | bit, remaining - i)) {
-      memoCIW.put(state, true); return true;
+int minSpanningTree(int n, int[][] edges) {
+  parMST = new int[n];
+  for (int i = 0; i < n; i++) parMST[i] = i;
+  Arrays.sort(edges, (a, b) -> a[2] - b[2]);
+  int total = 0, used = 0;
+  for (int[] e : edges) {
+    int ru = findMST(e[0]), rv = findMST(e[1]);
+    if (ru != rv) {
+      parMST[ru] = rv;
+      total += e[2];
+      if (++used == n - 1) break;
     }
   }
-  memoCIW.put(state, false); return false;
+  return used == n - 1 ? total : -1;
+}
+
+int findMST(int x) {
+  while (parMST[x] != x) { parMST[x] = parMST[parMST[x]]; x = parMST[x]; }
+  return x;
 }
 ```
 
 **Key points:**
-- Bitmask captures the set of used numbers — fits within an int for `n ≤ 20`.
-- Memoize by `state` alone since `remaining` is uniquely determined by `state`.
-- Early-impossible: if total of all numbers < target, no one can win.
+- Sort edges then add the smallest that joins two different components.
+- Stop early once `n - 1` edges are committed.
+- Return -1 when the graph is disconnected (fewer than `n - 1` valid unions).
 
 **Tags:** #algorithm
 
 ---
 
-### 37. Flip Game II
-
-**Difficulty:** Medium
-**Topics:** game-theory, dp, memoization, sprague-grundy
-**Position:** T3-1
-**Years:** T3
-
-**Question:** A string of `+` and `-`. A move flips two consecutive `++` to `--`. Return true if the starting player can guarantee a win.
-
-**Approach:** Recursion + memoization on string state. For each `++` position, flip, recurse opponent — if opponent loses, current wins. Optimize with Sprague-Grundy theorem (XOR of independent runs' Grundy numbers) for O(n^2). Without SG, exponential worst case.
-
-**Python:**
-```python
-def can_win(s: str) -> bool:
-    memo: dict[str, bool] = {}
-    def go(state: str) -> bool:
-        if state in memo:
-            return memo[state]
-        for i in range(len(state) - 1):
-            if state[i:i + 2] == "++":
-                nxt = state[:i] + "--" + state[i + 2:]
-                if not go(nxt):
-                    memo[state] = True
-                    return True
-        memo[state] = False
-        return False
-    return go(s)
-```
-
-**TypeScript:**
-```typescript
-function canWin(s: string): boolean {
-  const memo = new Map<string, boolean>();
-  const go = (state: string): boolean => {
-    if (memo.has(state)) return memo.get(state)!;
-    for (let i = 0; i + 1 < state.length; i++) {
-      if (state[i] === "+" && state[i + 1] === "+") {
-        const nxt = state.slice(0, i) + "--" + state.slice(i + 2);
-        if (!go(nxt)) { memo.set(state, true); return true; }
-      }
-    }
-    memo.set(state, false); return false;
-  };
-  return go(s);
-}
-```
-
-**Java:**
-```java
-Map<String, Boolean> memoFG = new HashMap<>();
-
-boolean canWin(String s) {
-  if (memoFG.containsKey(s)) return memoFG.get(s);
-  for (int i = 0; i + 1 < s.length(); i++) {
-    if (s.charAt(i) == '+' && s.charAt(i + 1) == '+') {
-      String nxt = s.substring(0, i) + "--" + s.substring(i + 2);
-      if (!canWin(nxt)) { memoFG.put(s, true); return true; }
-    }
-  }
-  memoFG.put(s, false); return false;
-}
-```
-
-**Key points:**
-- Current player wins iff some move leaves the opponent in a losing state.
-- Memoize per string state to avoid recomputing common positions.
-- Grundy numbers can collapse runs to O(n^2) but the memoized recursion is simpler.
-
-**Tags:** #algorithm
-
----
-
-### 38. Guess Number Higher or Lower II
-
-**Difficulty:** Medium
-**Topics:** dp, minimax, game-theory
-**Position:** T3-1
-**Years:** T3
-
-**Question:** Pick a number 1..n. Each guess `x` costs `$x`; you're told higher/lower until correct. Return the minimum money guaranteed to win, assuming worst-case answer placement.
-
-**Approach:** Minimax DP. `dp[i][j]` = min money for range `[i, j]`. Try every `k` as guess: `cost(k) = k + max(dp[i][k-1], dp[k+1][j])`. Take min over k. O(n^3). Interval DP — fill by length.
-
-**Python:**
-```python
-def get_money_amount(n: int) -> int:
-    dp = [[0] * (n + 2) for _ in range(n + 2)]
-    for length in range(2, n + 1):
-        for i in range(1, n - length + 2):
-            j = i + length - 1
-            dp[i][j] = min(k + max(dp[i][k - 1], dp[k + 1][j]) for k in range(i, j))
-    return dp[1][n]
-```
-
-**TypeScript:**
-```typescript
-function getMoneyAmount(n: number): number {
-  const dp: number[][] = Array.from({ length: n + 2 }, () => new Array(n + 2).fill(0));
-  for (let len = 2; len <= n; len++) {
-    for (let i = 1; i + len - 1 <= n; i++) {
-      const j = i + len - 1;
-      let best = Infinity;
-      for (let k = i; k < j; k++) {
-        best = Math.min(best, k + Math.max(dp[i][k - 1], dp[k + 1][j]));
-      }
-      dp[i][j] = best;
-    }
-  }
-  return dp[1][n];
-}
-```
-
-**Java:**
-```java
-int getMoneyAmount(int n) {
-  int[][] dp = new int[n + 2][n + 2];
-  for (int len = 2; len <= n; len++) {
-    for (int i = 1; i + len - 1 <= n; i++) {
-      int j = i + len - 1;
-      int best = Integer.MAX_VALUE;
-      for (int k = i; k < j; k++) {
-        best = Math.min(best, k + Math.max(dp[i][k - 1], dp[k + 1][j]));
-      }
-      dp[i][j] = best;
-    }
-  }
-  return dp[1][n];
-}
-```
-
-**Key points:**
-- Worst-case minimax: opponent (the hidden number) picks the worse branch.
-- Range length ordering ensures sub-ranges are filled first.
-- Indices are 1-based to match the value range `[1, n]`.
-
-**Tags:** #algorithm
-
----
-
-### 39. Wildcard Matching
+### 19. Maximum Bipartite Matching (Player-to-Server Assignment)
 
 **Difficulty:** Hard
-**Topics:** dp, strings
-**Position:** T3-1
-**Years:** T3
-
-**Question:** Implement wildcard pattern matching with `?` (any single char) and `*` (any sequence including empty). Return whether the pattern matches the full string.
-
-**Approach:** 2D DP `dp[i][j]` = match `s[0..i)` vs `p[0..j)`. Star: `dp[i][j] = dp[i][j-1] (empty) || dp[i-1][j] (extend)`. Question mark: `dp[i][j] = dp[i-1][j-1]`. Initialize `dp[0][j]` for leading stars. O(n*m).
-
-**Python:**
-```python
-def is_match_wildcard(s: str, p: str) -> bool:
-    n, m = len(s), len(p)
-    dp = [[False] * (m + 1) for _ in range(n + 1)]
-    dp[0][0] = True
-    for j in range(1, m + 1):
-        if p[j - 1] == "*":
-            dp[0][j] = dp[0][j - 1]
-    for i in range(1, n + 1):
-        for j in range(1, m + 1):
-            if p[j - 1] == "*":
-                dp[i][j] = dp[i][j - 1] or dp[i - 1][j]
-            elif p[j - 1] == "?" or p[j - 1] == s[i - 1]:
-                dp[i][j] = dp[i - 1][j - 1]
-    return dp[n][m]
-```
-
-**TypeScript:**
-```typescript
-function isMatchWildcard(s: string, p: string): boolean {
-  const n = s.length, m = p.length;
-  const dp: boolean[][] = Array.from({ length: n + 1 }, () => new Array(m + 1).fill(false));
-  dp[0][0] = true;
-  for (let j = 1; j <= m; j++) if (p[j - 1] === "*") dp[0][j] = dp[0][j - 1];
-  for (let i = 1; i <= n; i++) {
-    for (let j = 1; j <= m; j++) {
-      if (p[j - 1] === "*") dp[i][j] = dp[i][j - 1] || dp[i - 1][j];
-      else if (p[j - 1] === "?" || p[j - 1] === s[i - 1]) dp[i][j] = dp[i - 1][j - 1];
-    }
-  }
-  return dp[n][m];
-}
-```
-
-**Java:**
-```java
-boolean isMatchWildcard(String s, String p) {
-  int n = s.length(), m = p.length();
-  boolean[][] dp = new boolean[n + 1][m + 1];
-  dp[0][0] = true;
-  for (int j = 1; j <= m; j++) if (p.charAt(j - 1) == '*') dp[0][j] = dp[0][j - 1];
-  for (int i = 1; i <= n; i++) {
-    for (int j = 1; j <= m; j++) {
-      char pc = p.charAt(j - 1);
-      if (pc == '*') dp[i][j] = dp[i][j - 1] || dp[i - 1][j];
-      else if (pc == '?' || pc == s.charAt(i - 1)) dp[i][j] = dp[i - 1][j - 1];
-    }
-  }
-  return dp[n][m];
-}
-```
-
-**Key points:**
-- `*` means either match nothing (`dp[i][j-1]`) or extend the match (`dp[i-1][j]`).
-- Leading `*`-only prefixes must seed `dp[0][j]` to true.
-- `?` matches exactly one character — handle like a literal match.
-
-**Tags:** #algorithm
-
----
-
-### 40. Regular Expression Matching
-
-**Difficulty:** Hard
-**Topics:** dp, strings, recursion
+**Topics:** graph, matching, hungarian, bipartite, dfs
 **Position:** T3-1
 **Years:** T3-T4
 
-**Question:** Implement regex matching with `.` (any single char) and `*` (zero or more of preceding element). Match whole string.
+**Question:** Given players and game servers with compatibility constraints (region, ping threshold), assign the maximum number of players to servers (1 player ↔ 1 server within capacity).
 
-**Approach:** DP `dp[i][j]`. If `p[j-1] == '*'`: zero occurrences (`dp[i][j-2]`) OR one+ if `s[i-1]` matches `p[j-2]` (`dp[i-1][j]`). Else: char/dot match → `dp[i-1][j-1]`. Tricky init for patterns like `a*b*c*`. O(n*m).
+**Approach:** Bipartite matching via Hungarian algorithm (Kuhn's): for each unmatched player, DFS through unmatched/augmenting paths, swap matches along the path if augmenting path exists. O(V * E). For weighted maximum matching, Hungarian with potentials or min-cost max-flow. Discuss using Hopcroft–Karp for O(E√V) if scale demands.
 
 **Python:**
 ```python
-def is_match_regex(s: str, p: str) -> bool:
-    n, m = len(s), len(p)
-    dp = [[False] * (m + 1) for _ in range(n + 1)]
-    dp[0][0] = True
-    for j in range(2, m + 1):
-        if p[j - 1] == "*":
-            dp[0][j] = dp[0][j - 2]
-    for i in range(1, n + 1):
-        for j in range(1, m + 1):
-            if p[j - 1] == "*":
-                dp[i][j] = dp[i][j - 2]
-                if p[j - 2] == "." or p[j - 2] == s[i - 1]:
-                    dp[i][j] = dp[i][j] or dp[i - 1][j]
-            elif p[j - 1] == "." or p[j - 1] == s[i - 1]:
-                dp[i][j] = dp[i - 1][j - 1]
-    return dp[n][m]
+def max_bipartite_matching(num_players: int, num_servers: int, edges: list[tuple[int, int]]) -> int:
+    graph: list[list[int]] = [[] for _ in range(num_players)]
+    for p, s in edges:
+        graph[p].append(s)
+    match_to: list[int] = [-1] * num_servers
+    def try_assign(p: int, seen: list[bool]) -> bool:
+        for s in graph[p]:
+            if seen[s]:
+                continue
+            seen[s] = True
+            if match_to[s] == -1 or try_assign(match_to[s], seen):
+                match_to[s] = p
+                return True
+        return False
+    matched = 0
+    for p in range(num_players):
+        seen = [False] * num_servers
+        if try_assign(p, seen):
+            matched += 1
+    return matched
 ```
 
 **TypeScript:**
 ```typescript
-function isMatchRegex(s: string, p: string): boolean {
-  const n = s.length, m = p.length;
-  const dp: boolean[][] = Array.from({ length: n + 1 }, () => new Array(m + 1).fill(false));
-  dp[0][0] = true;
-  for (let j = 2; j <= m; j++) if (p[j - 1] === "*") dp[0][j] = dp[0][j - 2];
-  for (let i = 1; i <= n; i++) {
-    for (let j = 1; j <= m; j++) {
-      if (p[j - 1] === "*") {
-        dp[i][j] = dp[i][j - 2];
-        if (p[j - 2] === "." || p[j - 2] === s[i - 1]) dp[i][j] = dp[i][j] || dp[i - 1][j];
-      } else if (p[j - 1] === "." || p[j - 1] === s[i - 1]) {
-        dp[i][j] = dp[i - 1][j - 1];
+function maxBipartiteMatching(numPlayers: number, numServers: number, edges: Array<[number, number]>): number {
+  const graph: number[][] = Array.from({ length: numPlayers }, () => []);
+  for (const [p, s] of edges) graph[p].push(s);
+  const matchTo = new Array<number>(numServers).fill(-1);
+  const tryAssign = (p: number, seen: boolean[]): boolean => {
+    for (const s of graph[p]) {
+      if (seen[s]) continue;
+      seen[s] = true;
+      if (matchTo[s] === -1 || tryAssign(matchTo[s], seen)) {
+        matchTo[s] = p;
+        return true;
       }
     }
-  }
-  return dp[n][m];
-}
-```
-
-**Java:**
-```java
-boolean isMatchRegex(String s, String p) {
-  int n = s.length(), m = p.length();
-  boolean[][] dp = new boolean[n + 1][m + 1];
-  dp[0][0] = true;
-  for (int j = 2; j <= m; j++) if (p.charAt(j - 1) == '*') dp[0][j] = dp[0][j - 2];
-  for (int i = 1; i <= n; i++) {
-    for (int j = 1; j <= m; j++) {
-      char pc = p.charAt(j - 1);
-      if (pc == '*') {
-        dp[i][j] = dp[i][j - 2];
-        char prev = p.charAt(j - 2);
-        if (prev == '.' || prev == s.charAt(i - 1)) dp[i][j] = dp[i][j] || dp[i - 1][j];
-      } else if (pc == '.' || pc == s.charAt(i - 1)) {
-        dp[i][j] = dp[i - 1][j - 1];
-      }
-    }
-  }
-  return dp[n][m];
-}
-```
-
-**Key points:**
-- `x*` either skips itself (`dp[i][j-2]`) or matches one more character (`dp[i-1][j]`).
-- Initialize `dp[0][j]` for patterns like `a*b*c*` that match empty strings.
-- `.` substitutes for any single character — handle inside the `*` branch too.
-
-**Tags:** #algorithm
-
----
-
-### 41. Longest Palindromic Substring
-
-**Difficulty:** Medium
-**Topics:** strings, dp, two-pointer
-**Position:** T2-3
-**Years:** T2-T3
-
-**Question:** Return the longest palindromic substring of `s`.
-
-**Approach:** Expand-around-center: for each i, expand for odd and even-length palindromes; track longest. O(n^2) time, O(1) space. For O(n) — Manacher's algorithm (interviewer rarely demands but bonus). Don't confuse with longest palindromic *subsequence*.
-
-**Python:**
-```python
-def longest_palindrome(s: str) -> str:
-    def grow(l: int, r: int) -> tuple[int, int]:
-        while l >= 0 and r < len(s) and s[l] == s[r]:
-            l -= 1
-            r += 1
-        return l + 1, r - 1
-    bl, br = 0, 0
-    for i in range(len(s)):
-        for l, r in (grow(i, i), grow(i, i + 1)):
-            if r - l > br - bl:
-                bl, br = l, r
-    return s[bl:br + 1]
-```
-
-**TypeScript:**
-```typescript
-function longestPalindrome(s: string): string {
-  const grow = (l: number, r: number): [number, number] => {
-    while (l >= 0 && r < s.length && s[l] === s[r]) { l--; r++; }
-    return [l + 1, r - 1];
+    return false;
   };
-  let bl = 0, br = 0;
-  for (let i = 0; i < s.length; i++) {
-    for (const [l, r] of [grow(i, i), grow(i, i + 1)]) {
-      if (r - l > br - bl) { bl = l; br = r; }
-    }
+  let matched = 0;
+  for (let p = 0; p < numPlayers; p++) {
+    const seen = new Array<boolean>(numServers).fill(false);
+    if (tryAssign(p, seen)) matched++;
   }
-  return s.slice(bl, br + 1);
+  return matched;
 }
 ```
 
 **Java:**
 ```java
-int blLP = 0, brLP = 0;
+List<List<Integer>> graphBM;
+int[] matchTo;
 
-String longestPalindrome(String s) {
-  for (int i = 0; i < s.length(); i++) {
-    grow(s, i, i);
-    grow(s, i, i + 1);
+int maxBipartiteMatching(int numPlayers, int numServers, int[][] edges) {
+  graphBM = new ArrayList<>();
+  for (int i = 0; i < numPlayers; i++) graphBM.add(new ArrayList<>());
+  for (int[] e : edges) graphBM.get(e[0]).add(e[1]);
+  matchTo = new int[numServers];
+  Arrays.fill(matchTo, -1);
+  int matched = 0;
+  for (int p = 0; p < numPlayers; p++) {
+    boolean[] seen = new boolean[numServers];
+    if (tryAssign(p, seen)) matched++;
   }
-  return s.substring(blLP, brLP + 1);
+  return matched;
 }
 
-void grow(String s, int l, int r) {
-  while (l >= 0 && r < s.length() && s.charAt(l) == s.charAt(r)) { l--; r++; }
-  l++; r--;
-  if (r - l > brLP - blLP) { blLP = l; brLP = r; }
+boolean tryAssign(int p, boolean[] seen) {
+  for (int s : graphBM.get(p)) {
+    if (seen[s]) continue;
+    seen[s] = true;
+    if (matchTo[s] == -1 || tryAssign(matchTo[s], seen)) { matchTo[s] = p; return true; }
+  }
+  return false;
 }
 ```
 
 **Key points:**
-- Try both odd (single-character center) and even (two-character center) expansions.
-- Track best by length comparison, avoiding repeated substring slicing.
-- Manacher gets O(n), but expand-around-center is plenty for typical sizes.
+- Reset `seen` per player so each augmenting search is independent.
+- Augmenting: bump an existing match if it can shift to another server.
+- Hopcroft-Karp shaves to O(E sqrt(V)) for very large bipartite graphs.
 
 **Tags:** #algorithm
 
 ---
 
-### 42. Longest Palindromic Subsequence
+## Heap / Priority Queue
 
-**Difficulty:** Medium
-**Topics:** dp, strings
-**Position:** T2-3
-**Years:** T2-T3
+### 20. Minimum Number of Refueling Stops
 
-**Question:** Return the length of the longest palindromic subsequence in `s` (not necessarily contiguous).
+**Difficulty:** Hard
+**Topics:** greedy, heap, dp
+**Position:** T3-1
+**Years:** T3-T4
 
-**Approach:** Interval DP `dp[i][j]` = LPS length in `s[i..j]`. If `s[i] == s[j]`: `dp[i][j] = dp[i+1][j-1] + 2`. Else: `max(dp[i+1][j], dp[i][j-1])`. Fill by length. O(n^2). Trick: equals LCS of `s` and reverse(`s`).
+**Question:** A car starts with `startFuel` and must reach `target`. Stations along the way provide fuel `stations[i] = [position, liters]`. Return the min number of refuels needed (or -1).
+
+**Approach:** Greedy with max-heap. Drive as far as possible; when you can't reach the next station/target, refuel from the most-fuel-providing station you've passed (pop max-heap). Increment refuel count. O(n log n). Elegant alternative: DP on stops, but heap is cleaner.
 
 **Python:**
 ```python
-def longest_palindrome_subseq(s: str) -> int:
-    n = len(s)
-    dp = [[0] * n for _ in range(n)]
-    for i in range(n):
-        dp[i][i] = 1
-    for length in range(2, n + 1):
-        for i in range(n - length + 1):
-            j = i + length - 1
-            if s[i] == s[j]:
-                dp[i][j] = dp[i + 1][j - 1] + 2
-            else:
-                dp[i][j] = max(dp[i + 1][j], dp[i][j - 1])
-    return dp[0][n - 1]
+import heapq
+
+def min_refuel_stops(target: int, start_fuel: int, stations: list[list[int]]) -> int:
+    heap: list[int] = []  # negated liters
+    fuel, i, stops = start_fuel, 0, 0
+    while fuel < target:
+        while i < len(stations) and stations[i][0] <= fuel:
+            heapq.heappush(heap, -stations[i][1])
+            i += 1
+        if not heap:
+            return -1
+        fuel += -heapq.heappop(heap)
+        stops += 1
+    return stops
 ```
 
 **TypeScript:**
 ```typescript
-function longestPalindromeSubseq(s: string): number {
-  const n = s.length;
-  const dp: number[][] = Array.from({ length: n }, () => new Array(n).fill(0));
-  for (let i = 0; i < n; i++) dp[i][i] = 1;
-  for (let len = 2; len <= n; len++) {
-    for (let i = 0; i + len - 1 < n; i++) {
-      const j = i + len - 1;
-      dp[i][j] = s[i] === s[j] ? dp[i + 1][j - 1] + 2 : Math.max(dp[i + 1][j], dp[i][j - 1]);
+function minRefuelStops(target: number, startFuel: number, stations: number[][]): number {
+  const heap: number[] = [];  // negated liters
+  let fuel = startFuel, i = 0, stops = 0;
+  while (fuel < target) {
+    while (i < stations.length && stations[i][0] <= fuel) {
+      heap.push(-stations[i][1]);
+      heap.sort((a, b) => a - b);
+      i++;
     }
+    if (heap.length === 0) return -1;
+    fuel += -heap.shift()!;
+    stops++;
   }
-  return dp[0][n - 1];
+  return stops;
 }
 ```
 
 **Java:**
 ```java
-int longestPalindromeSubseq(String s) {
-  int n = s.length();
-  int[][] dp = new int[n][n];
-  for (int i = 0; i < n; i++) dp[i][i] = 1;
-  for (int len = 2; len <= n; len++) {
-    for (int i = 0; i + len - 1 < n; i++) {
-      int j = i + len - 1;
-      dp[i][j] = s.charAt(i) == s.charAt(j)
-          ? dp[i + 1][j - 1] + 2
-          : Math.max(dp[i + 1][j], dp[i][j - 1]);
-    }
+int minRefuelStops(int target, int startFuel, int[][] stations) {
+  PriorityQueue<Integer> heap = new PriorityQueue<>(Comparator.reverseOrder());
+  long fuel = startFuel;
+  int i = 0, stops = 0;
+  while (fuel < target) {
+    while (i < stations.length && stations[i][0] <= fuel) heap.offer(stations[i++][1]);
+    if (heap.isEmpty()) return -1;
+    fuel += heap.poll();
+    stops++;
   }
-  return dp[0][n - 1];
+  return stops;
 }
 ```
 
 **Key points:**
-- Interval DP filled by length so subproblems are ready.
-- Each character alone is a palindrome of length 1 — seed the diagonal.
-- Equivalent to LCS of `s` with its reverse, in O(n^2).
+- Treat passed stations as a "fuel reserve" — only consume when stuck.
+- Always pick the largest passed reserve to maximize range gained per refuel.
+- Stations are assumed sorted by position; if not, sort first.
 
 **Tags:** #algorithm
 
 ---
 
-### 43. Palindrome Partitioning
+### 21. Find Median from Data Stream
 
-**Difficulty:** Medium
-**Topics:** backtracking, dp, strings
-**Position:** T2-3
-**Years:** T2-T3
+**Difficulty:** Hard
+**Topics:** heap, design, data-stream
+**Position:** T3-1
+**Years:** T3-T4
 
-**Question:** Partition `s` so every substring is a palindrome. Return all such partitions.
+**Question:** Design a class supporting `addNum(int)` and `findMedian()` over a streaming sequence.
 
-**Approach:** Backtracking: at index `i`, try every prefix `s[i..j]`; if palindrome, recurse from `j+1`. Precompute palindrome table `isP[i][j]` in O(n^2) for speedup. Total O(n * 2^n) worst-case (exponential outputs).
+**Approach:** Two heaps: `lo` (max-heap) holds lower half, `hi` (min-heap) holds upper half. Maintain `len(lo) - len(hi) ∈ {0, 1}`. Add: push to lo, move top to hi, rebalance if hi larger. Median: top of lo or average of tops. O(log n) add, O(1) query.
 
 **Python:**
 ```python
-def partition(s: str) -> list[list[str]]:
-    n = len(s)
-    is_p = [[False] * n for _ in range(n)]
-    for j in range(n):
-        for i in range(j + 1):
-            if s[i] == s[j] and (j - i < 2 or is_p[i + 1][j - 1]):
-                is_p[i][j] = True
-    out: list[list[str]] = []
-    path: list[str] = []
-    def go(start: int) -> None:
-        if start == n:
-            out.append(path[:])
-            return
-        for end in range(start, n):
-            if is_p[start][end]:
-                path.append(s[start:end + 1])
-                go(end + 1)
-                path.pop()
-    go(0)
+import heapq
+
+class MedianFinder:
+    def __init__(self) -> None:
+        self.lo: list[int] = []  # max-heap via negation
+        self.hi: list[int] = []  # min-heap
+
+    def add_num(self, num: int) -> None:
+        heapq.heappush(self.lo, -num)
+        heapq.heappush(self.hi, -heapq.heappop(self.lo))
+        if len(self.hi) > len(self.lo):
+            heapq.heappush(self.lo, -heapq.heappop(self.hi))
+
+    def find_median(self) -> float:
+        if len(self.lo) > len(self.hi):
+            return float(-self.lo[0])
+        return (-self.lo[0] + self.hi[0]) / 2
+```
+
+**TypeScript:**
+```typescript
+class MedianFinder {
+  private lo: number[] = [];  // max-heap (negate)
+  private hi: number[] = [];  // min-heap
+  private push(heap: number[], v: number): void {
+    heap.push(v); heap.sort((a, b) => a - b);
+  }
+  addNum(num: number): void {
+    this.push(this.lo, -num);
+    this.push(this.hi, -this.lo.shift()!);
+    if (this.hi.length > this.lo.length) this.push(this.lo, -this.hi.shift()!);
+  }
+  findMedian(): number {
+    return this.lo.length > this.hi.length ? -this.lo[0] : (-this.lo[0] + this.hi[0]) / 2;
+  }
+}
+```
+
+**Java:**
+```java
+class MedianFinder {
+  private final PriorityQueue<Integer> lo = new PriorityQueue<>(Comparator.reverseOrder());
+  private final PriorityQueue<Integer> hi = new PriorityQueue<>();
+
+  public void addNum(int num) {
+    lo.offer(num);
+    hi.offer(lo.poll());
+    if (hi.size() > lo.size()) lo.offer(hi.poll());
+  }
+
+  public double findMedian() {
+    return lo.size() > hi.size() ? lo.peek() : (lo.peek() + hi.peek()) / 2.0;
+  }
+}
+```
+
+**Key points:**
+- `lo` always holds the smaller half (size `n/2` ceil), `hi` the larger half.
+- Rebalance with a one-element swap after each add.
+- Median is the `lo` top when odd, average of both tops when even.
+
+**Tags:** #algorithm
+
+---
+
+### 22. Sliding Window Median
+
+**Difficulty:** Hard
+**Topics:** heap, sliding-window, design
+**Position:** T3-1
+**Years:** T3-T4
+
+**Question:** Given an array and window size `k`, return the median of each sliding window.
+
+**Approach:** Two heaps + lazy deletion (hash map of pending removals). Each step: add new num; mark outgoing num for removal; clean up tops by popping invalidated entries; rebalance heap sizes. O(n log k). Alternative: ordered multiset (C++ `multiset`).
+
+**Python:**
+```python
+from sortedcontainers import SortedList
+
+def median_sliding_window(nums: list[int], k: int) -> list[float]:
+    window = SortedList(nums[:k])
+    out: list[float] = []
+    def median() -> float:
+        if k % 2:
+            return float(window[k // 2])
+        return (window[k // 2 - 1] + window[k // 2]) / 2
+    out.append(median())
+    for i in range(k, len(nums)):
+        window.remove(nums[i - k])
+        window.add(nums[i])
+        out.append(median())
     return out
 ```
 
 **TypeScript:**
 ```typescript
-function partition(s: string): string[][] {
-  const n = s.length;
-  const isP: boolean[][] = Array.from({ length: n }, () => new Array(n).fill(false));
-  for (let j = 0; j < n; j++) {
-    for (let i = 0; i <= j; i++) {
-      if (s[i] === s[j] && (j - i < 2 || isP[i + 1][j - 1])) isP[i][j] = true;
-    }
-  }
-  const out: string[][] = [];
-  const path: string[] = [];
-  const go = (start: number): void => {
-    if (start === n) { out.push(path.slice()); return; }
-    for (let end = start; end < n; end++) {
-      if (isP[start][end]) {
-        path.push(s.slice(start, end + 1));
-        go(end + 1);
-        path.pop();
-      }
-    }
+function medianSlidingWindow(nums: number[], k: number): number[] {
+  const window = nums.slice(0, k).sort((a, b) => a - b);
+  const out: number[] = [];
+  const bisect = (v: number): number => {
+    let lo = 0, hi = window.length;
+    while (lo < hi) { const m = (lo + hi) >> 1; if (window[m] < v) lo = m + 1; else hi = m; }
+    return lo;
   };
-  go(0);
+  const median = (): number =>
+    k % 2 ? window[k >> 1] : (window[(k >> 1) - 1] + window[k >> 1]) / 2;
+  out.push(median());
+  for (let i = k; i < nums.length; i++) {
+    window.splice(bisect(nums[i - k]), 1);
+    window.splice(bisect(nums[i]), 0, nums[i]);
+    out.push(median());
+  }
   return out;
 }
 ```
 
 **Java:**
 ```java
-List<List<String>> partition(String s) {
-  int n = s.length();
-  boolean[][] isP = new boolean[n][n];
-  for (int j = 0; j < n; j++) {
-    for (int i = 0; i <= j; i++) {
-      if (s.charAt(i) == s.charAt(j) && (j - i < 2 || isP[i + 1][j - 1])) isP[i][j] = true;
-    }
+double[] medianSlidingWindow(int[] nums, int k) {
+  TreeMap<Integer, Integer> window = new TreeMap<>();
+  for (int i = 0; i < k; i++) window.merge(nums[i], 1, Integer::sum);
+  int n = nums.length;
+  double[] out = new double[n - k + 1];
+  out[0] = medianOf(window, k);
+  for (int i = k; i < n; i++) {
+    int outV = nums[i - k];
+    if (window.get(outV) == 1) window.remove(outV); else window.merge(outV, -1, Integer::sum);
+    window.merge(nums[i], 1, Integer::sum);
+    out[i - k + 1] = medianOf(window, k);
   }
-  List<List<String>> out = new ArrayList<>();
-  goPP(s, 0, isP, new ArrayList<>(), out);
   return out;
 }
 
-void goPP(String s, int start, boolean[][] isP, List<String> path, List<List<String>> out) {
-  if (start == s.length()) { out.add(new ArrayList<>(path)); return; }
-  for (int end = start; end < s.length(); end++) {
-    if (isP[start][end]) {
-      path.add(s.substring(start, end + 1));
-      goPP(s, end + 1, isP, path, out);
-      path.remove(path.size() - 1);
-    }
+double medianOf(TreeMap<Integer, Integer> window, int k) {
+  int[] mids = k % 2 == 1 ? new int[]{k / 2} : new int[]{k / 2 - 1, k / 2};
+  long sum = 0; int seen = 0, idx = 0;
+  for (var e : window.entrySet()) {
+    int next = seen + e.getValue();
+    while (idx < mids.length && mids[idx] < next) { sum += e.getKey(); idx++; }
+    seen = next;
+    if (idx == mids.length) break;
   }
+  return sum / (double) mids.length;
 }
 ```
 
 **Key points:**
-- Precomputed `isP` makes palindrome checks O(1) during backtracking.
-- Use a shared mutable `path` and snapshot it on completion.
-- Worst-case exponential output (e.g., string of all same chars).
+- A sorted multiset (Python `SortedList`, C++ `multiset`) is the cleanest model.
+- Insertion + deletion are O(log k); median lookup is O(1) by index.
+- Two-heap + lazy deletion variant avoids external libraries when needed.
 
 **Tags:** #algorithm
 
 ---
 
-### 44. Word Break II
+### 23. Smallest Range Covering Elements from K Lists
 
 **Difficulty:** Hard
-**Topics:** dp, backtracking, memoization, trie
+**Topics:** heap, sliding-window
 **Position:** T3-1
 **Years:** T3
 
-**Question:** Given string `s` and dictionary, return all sentences where `s` can be space-segmented into dictionary words.
+**Question:** Given `k` sorted lists, find the smallest range `[a, b]` such that at least one element from each list lies within.
 
-**Approach:** Backtracking + memoization on suffix → list of sentences. For each split point producing a dictionary word prefix, recurse on the suffix. Cache results per starting index. Trie for prefix lookup speeds the prefix scan. Worst case exponential (output-bound).
+**Approach:** Min-heap holding one element per list plus indices. Track current max among heap entries. Pop min; range = `[min, max]`; if best, save. Advance that list — if exhausted, stop. Push new element, update max. O(N log k).
 
 **Python:**
 ```python
-from functools import lru_cache
+import heapq
 
-def word_break(s: str, word_dict: list[str]) -> list[str]:
-    words = set(word_dict)
-    @lru_cache(maxsize=None)
-    def go(start: int) -> list[str]:
-        if start == len(s):
-            return [""]
-        result: list[str] = []
-        for end in range(start + 1, len(s) + 1):
-            w = s[start:end]
-            if w in words:
-                for rest in go(end):
-                    result.append(w if not rest else w + " " + rest)
-        return result
-    return go(0)
+def smallest_range(nums: list[list[int]]) -> list[int]:
+    heap: list[tuple[int, int, int]] = []  # (val, list_idx, pos)
+    cur_max = float("-inf")
+    for i, row in enumerate(nums):
+        heapq.heappush(heap, (row[0], i, 0))
+        cur_max = max(cur_max, row[0])
+    best_lo, best_hi = -10**9, 10**9
+    while heap:
+        v, i, j = heapq.heappop(heap)
+        if cur_max - v < best_hi - best_lo:
+            best_lo, best_hi = v, int(cur_max)
+        if j + 1 == len(nums[i]):
+            return [best_lo, best_hi]
+        nxt = nums[i][j + 1]
+        cur_max = max(cur_max, nxt)
+        heapq.heappush(heap, (nxt, i, j + 1))
+    return [best_lo, best_hi]
 ```
 
 **TypeScript:**
 ```typescript
-function wordBreak(s: string, wordDict: string[]): string[] {
-  const words = new Set(wordDict);
-  const memo = new Map<number, string[]>();
-  const go = (start: number): string[] => {
-    if (memo.has(start)) return memo.get(start)!;
-    if (start === s.length) return [""];
-    const result: string[] = [];
-    for (let end = start + 1; end <= s.length; end++) {
-      const w = s.slice(start, end);
-      if (words.has(w)) {
-        for (const rest of go(end)) result.push(rest === "" ? w : w + " " + rest);
-      }
-    }
-    memo.set(start, result);
-    return result;
-  };
-  return go(0);
+function smallestRange(nums: number[][]): number[] {
+  const heap: Array<[number, number, number]> = [];
+  let curMax = -Infinity;
+  nums.forEach((row, i) => { heap.push([row[0], i, 0]); curMax = Math.max(curMax, row[0]); });
+  heap.sort((a, b) => a[0] - b[0]);
+  let bestLo = -1e9, bestHi = 1e9;
+  while (heap.length) {
+    const [v, i, j] = heap.shift()!;
+    if (curMax - v < bestHi - bestLo) { bestLo = v; bestHi = curMax; }
+    if (j + 1 === nums[i].length) return [bestLo, bestHi];
+    const nxt = nums[i][j + 1];
+    curMax = Math.max(curMax, nxt);
+    heap.push([nxt, i, j + 1]);
+    heap.sort((a, b) => a[0] - b[0]);
+  }
+  return [bestLo, bestHi];
 }
 ```
 
 **Java:**
 ```java
-Map<Integer, List<String>> memoWB;
-Set<String> wordsWB;
-String sWB;
-
-List<String> wordBreak(String s, List<String> wordDict) {
-  memoWB = new HashMap<>();
-  wordsWB = new HashSet<>(wordDict);
-  sWB = s;
-  return goWB(0);
-}
-
-List<String> goWB(int start) {
-  if (memoWB.containsKey(start)) return memoWB.get(start);
-  List<String> result = new ArrayList<>();
-  if (start == sWB.length()) { result.add(""); return result; }
-  for (int end = start + 1; end <= sWB.length(); end++) {
-    String w = sWB.substring(start, end);
-    if (wordsWB.contains(w)) {
-      for (String rest : goWB(end)) result.add(rest.isEmpty() ? w : w + " " + rest);
-    }
+int[] smallestRange(List<List<Integer>> nums) {
+  PriorityQueue<int[]> heap = new PriorityQueue<>((a, b) -> a[0] - b[0]);
+  int curMax = Integer.MIN_VALUE;
+  for (int i = 0; i < nums.size(); i++) {
+    int v = nums.get(i).get(0);
+    heap.offer(new int[]{v, i, 0});
+    curMax = Math.max(curMax, v);
   }
-  memoWB.put(start, result);
-  return result;
+  int bestLo = 0, bestHi = Integer.MAX_VALUE;
+  while (!heap.isEmpty()) {
+    int[] cur = heap.poll();
+    int v = cur[0], i = cur[1], j = cur[2];
+    if ((long) curMax - v < (long) bestHi - bestLo) { bestLo = v; bestHi = curMax; }
+    if (j + 1 == nums.get(i).size()) return new int[]{bestLo, bestHi};
+    int nxt = nums.get(i).get(j + 1);
+    curMax = Math.max(curMax, nxt);
+    heap.offer(new int[]{nxt, i, j + 1});
+  }
+  return new int[]{bestLo, bestHi};
 }
 ```
 
 **Key points:**
-- Memoize by suffix start index so each index is expanded once.
-- Empty-rest sentinel `""` signals a clean termination at the end.
-- Trie/longest-prefix optimization helps when the dictionary is large.
+- Window is implicitly `[heap_min, cur_max]` and always contains one item per list.
+- Terminate as soon as any list is exhausted — moving its pointer is impossible.
+- Update `cur_max` lazily on each push to avoid scanning the heap.
 
 **Tags:** #algorithm
 
 ---
 
-### 45. Concatenated Words
+## Stack / Queue
 
-**Difficulty:** Hard
-**Topics:** dp, trie, strings
-**Position:** T3-1
-**Years:** T3
+### 24. Min Stack
 
-**Question:** Given an array of unique strings, return all strings that are concatenations of at least two other strings in the array.
+**Difficulty:** Easy
+**Topics:** stack, design
+**Position:** SWE
+**Years:** T2-T3
 
-**Approach:** For each word, run a Word Break DP using the set of all *other* words (or all words, requiring `>=2` segments). `dp[i]` true if `word[0..i)` is a valid segmentation. Optimize: sort by length, use a growing set. O(N * L^2) typical.
+**Question:** Design a stack supporting `push`, `pop`, `top`, and `getMin`, all in O(1).
+
+**Approach:** Two stacks: main stack + min stack (push min to min stack only when new value ≤ current min; pop in sync). Or single stack of `(value, current_min)` pairs. O(1) all ops.
 
 **Python:**
 ```python
-def find_all_concatenated_words(words: list[str]) -> list[str]:
-    words.sort(key=len)
-    seen: set[str] = set()
-    out: list[str] = []
-    def composable(w: str) -> bool:
-        if not seen:
-            return False
-        n = len(w)
-        dp = [False] * (n + 1)
-        dp[0] = True
-        for i in range(1, n + 1):
-            for j in range(i):
-                if dp[j] and w[j:i] in seen:
-                    dp[i] = True
-                    break
-        return dp[n]
-    for w in words:
-        if composable(w):
-            out.append(w)
-        seen.add(w)
-    return out
+class MinStack:
+    def __init__(self) -> None:
+        self.stk: list[tuple[int, int]] = []  # (value, running_min)
+
+    def push(self, val: int) -> None:
+        cur_min = val if not self.stk else min(val, self.stk[-1][1])
+        self.stk.append((val, cur_min))
+
+    def pop(self) -> None:
+        self.stk.pop()
+
+    def top(self) -> int:
+        return self.stk[-1][0]
+
+    def get_min(self) -> int:
+        return self.stk[-1][1]
 ```
 
 **TypeScript:**
 ```typescript
-function findAllConcatenatedWordsInADict(words: string[]): string[] {
-  words.sort((a, b) => a.length - b.length);
-  const seen = new Set<string>();
-  const out: string[] = [];
-  const composable = (w: string): boolean => {
-    if (seen.size === 0) return false;
-    const n = w.length;
-    const dp = new Array<boolean>(n + 1).fill(false);
-    dp[0] = true;
-    for (let i = 1; i <= n; i++) {
-      for (let j = 0; j < i; j++) {
-        if (dp[j] && seen.has(w.slice(j, i))) { dp[i] = true; break; }
-      }
-    }
-    return dp[n];
-  };
-  for (const w of words) {
-    if (composable(w)) out.push(w);
-    seen.add(w);
+class MinStack {
+  private stk: Array<[number, number]> = [];
+  push(val: number): void {
+    const m = this.stk.length === 0 ? val : Math.min(val, this.stk[this.stk.length - 1][1]);
+    this.stk.push([val, m]);
   }
-  return out;
+  pop(): void { this.stk.pop(); }
+  top(): number { return this.stk[this.stk.length - 1][0]; }
+  getMin(): number { return this.stk[this.stk.length - 1][1]; }
 }
 ```
 
 **Java:**
 ```java
-List<String> findAllConcatenatedWordsInADict(String[] words) {
-  Arrays.sort(words, Comparator.comparingInt(String::length));
-  Set<String> seen = new HashSet<>();
-  List<String> out = new ArrayList<>();
-  for (String w : words) {
-    if (composableCW(w, seen)) out.add(w);
-    seen.add(w);
+class MinStack {
+  private final Deque<int[]> stk = new ArrayDeque<>();  // {value, runningMin}
+  public void push(int val) {
+    int m = stk.isEmpty() ? val : Math.min(val, stk.peek()[1]);
+    stk.push(new int[]{val, m});
   }
-  return out;
-}
-
-boolean composableCW(String w, Set<String> seen) {
-  if (seen.isEmpty()) return false;
-  int n = w.length();
-  boolean[] dp = new boolean[n + 1];
-  dp[0] = true;
-  for (int i = 1; i <= n; i++) {
-    for (int j = 0; j < i; j++) {
-      if (dp[j] && seen.contains(w.substring(j, i))) { dp[i] = true; break; }
-    }
-  }
-  return dp[n];
+  public void pop() { stk.pop(); }
+  public int top() { return stk.peek()[0]; }
+  public int getMin() { return stk.peek()[1]; }
 }
 ```
 
 **Key points:**
-- Sorting by length lets the dictionary only contain shorter words.
-- A concatenated word requires at least two parts, enforced naturally because the word itself isn't in `seen` yet.
-- O(N * L^2) total — each word does Word Break against an incremental set.
+- Each entry carries the running min so all ops are O(1).
+- Alternative two-stack design saves space when many duplicates of min are pushed.
+- Empty-stack handling depends on the problem contract; here methods assume non-empty.
 
-**Tags:** #algorithm
+**Follow-ups:**
+- Max Stack (return max in O(1)) and `popMax` in O(log n).
+- Queue using two stacks — amortized O(1) per op.
+- Min/Max in a sliding window — monotonic deque.
+- Thread-safe Min Stack — synchronize or lock-free.
+
+**Common Pitfalls:**
+- Storing only the global min in a separate single variable — wrong after `pop` of the min element.
+- Off-by-one when accessing the previous min after a pop — always carry running min per entry.
+
+**Tags:** #coding
 
 ---
 
-### 46. Number of Atoms
+### 25. Number of Atoms
 
 **Difficulty:** Hard
 **Topics:** stack, parsing, hashmap, strings
@@ -2994,7 +2262,7 @@ String countOfAtoms(String formula) {
 
 ---
 
-### 47. Basic Calculator II
+### 26. Basic Calculator II
 
 **Difficulty:** Medium
 **Topics:** stack, parsing, strings
@@ -3080,7 +2348,7 @@ int calculate(String s) {
 
 ---
 
-### 48. Decode String
+### 27. Decode String
 
 **Difficulty:** Medium
 **Topics:** stack, parsing, recursion, strings
@@ -3157,7 +2425,7 @@ String decodeString(String s) {
 
 ---
 
-### 49. Mini Parser (Flatten Nested List Iterator)
+### 28. Mini Parser (Flatten Nested List Iterator)
 
 **Difficulty:** Medium
 **Topics:** stack, parsing, design, strings
@@ -3254,7 +2522,1187 @@ NestedInteger deserialize(String s) {
 
 ---
 
-### 50. Reverse Pairs
+## Dynamic Programming
+
+### 29. Maximum Subarray (Kadane)
+
+**Difficulty:** Easy
+**Topics:** dp, arrays, greedy
+**Position:** SWE
+**Years:** T2-T3
+
+**Question:** Given an integer array, find the contiguous subarray with the largest sum.
+
+**Approach:** Kadane's: track `current = max(num, current + num)`, `best = max(best, current)`. O(n) time, O(1) space. Handle all-negative case (return single max element). Follow-up: also return start/end indices.
+
+**Python:**
+```python
+def max_subarray(nums: list[int]) -> int:
+    cur = best = nums[0]
+    for x in nums[1:]:
+        cur = max(x, cur + x)
+        best = max(best, cur)
+    return best
+```
+
+**TypeScript:**
+```typescript
+function maxSubArray(nums: number[]): number {
+  let cur = nums[0], best = nums[0];
+  for (let i = 1; i < nums.length; i++) {
+    cur = Math.max(nums[i], cur + nums[i]);
+    best = Math.max(best, cur);
+  }
+  return best;
+}
+```
+
+**Java:**
+```java
+int maxSubArray(int[] nums) {
+  int cur = nums[0], best = nums[0];
+  for (int i = 1; i < nums.length; i++) {
+    cur = Math.max(nums[i], cur + nums[i]);
+    best = Math.max(best, cur);
+  }
+  return best;
+}
+```
+
+**Key points:**
+- `cur` is the best sum ending at the current index.
+- Initialize both to `nums[0]` so all-negative arrays still return the max element.
+- Divide-and-conquer also works at O(n log n) but is overkill.
+
+**Follow-ups:**
+- Return the actual subarray (start/end indices), not just the sum.
+- Maximum *product* subarray — track min and max because of negatives.
+- Circular maximum subarray.
+- Maximum sum subarray with at most k elements.
+
+**Common Pitfalls:**
+- Initializing `cur` and `best` to 0 — fails for all-negative input.
+- Adding `nums[0]` twice when the loop starts at index 0 — use `nums[0]` as init and start at 1.
+
+**Tags:** #algorithm
+
+---
+
+### 30. Stone Game
+
+**Difficulty:** Medium
+**Topics:** dp, game-theory, minimax
+**Position:** T2-3
+**Years:** T2-T3
+
+**Question:** Even-length piles array. Two players alternate taking either the leftmost or rightmost pile. Both play optimally. Return true if player 1 wins.
+
+**Approach:** DP `dp[i][j] = max(piles[i] - dp[i+1][j], piles[j] - dp[i][j-1])` representing best score-diff achievable for the current player on `piles[i..j]`. Answer: `dp[0][n-1] > 0`. O(n^2) time/space. Trick answer: always true for even n with even total, but interviewer wants the DP.
+
+**Python:**
+```python
+def stone_game(piles: list[int]) -> bool:
+    n = len(piles)
+    dp = [row[:] for row in [[0] * n] * n]
+    for i in range(n):
+        dp[i][i] = piles[i]
+    for length in range(2, n + 1):
+        for i in range(n - length + 1):
+            j = i + length - 1
+            dp[i][j] = max(piles[i] - dp[i + 1][j], piles[j] - dp[i][j - 1])
+    return dp[0][n - 1] > 0
+```
+
+**TypeScript:**
+```typescript
+function stoneGame(piles: number[]): boolean {
+  const n = piles.length;
+  const dp: number[][] = Array.from({ length: n }, () => new Array(n).fill(0));
+  for (let i = 0; i < n; i++) dp[i][i] = piles[i];
+  for (let len = 2; len <= n; len++) {
+    for (let i = 0; i + len - 1 < n; i++) {
+      const j = i + len - 1;
+      dp[i][j] = Math.max(piles[i] - dp[i + 1][j], piles[j] - dp[i][j - 1]);
+    }
+  }
+  return dp[0][n - 1] > 0;
+}
+```
+
+**Java:**
+```java
+boolean stoneGame(int[] piles) {
+  int n = piles.length;
+  int[][] dp = new int[n][n];
+  for (int i = 0; i < n; i++) dp[i][i] = piles[i];
+  for (int len = 2; len <= n; len++) {
+    for (int i = 0; i + len - 1 < n; i++) {
+      int j = i + len - 1;
+      dp[i][j] = Math.max(piles[i] - dp[i + 1][j], piles[j] - dp[i][j - 1]);
+    }
+  }
+  return dp[0][n - 1] > 0;
+}
+```
+
+**Key points:**
+- `dp[i][j]` is the maximum score difference the player-to-move can guarantee.
+- Fill by interval length so all needed sub-intervals exist first.
+- Both players are optimal — the subtractive recurrence already encodes that.
+
+**Tags:** #algorithm
+
+---
+
+### 31. Predict the Winner
+
+**Difficulty:** Medium
+**Topics:** dp, game-theory, minimax, recursion
+**Position:** T2-3
+**Years:** T2-T3
+
+**Question:** Given a score array, two players alternately pick from either end. Return true if player 1 can win or tie with optimal play.
+
+**Approach:** Same DP as Stone Game: `dp[i][j]` = max score-diff current player can achieve on `nums[i..j]`. Top-down memo also works. O(n^2). Answer: `dp[0][n-1] >= 0`. Tencent variant: ask about space optimization to O(n) using 1D rolling.
+
+**Python:**
+```python
+def predict_the_winner(nums: list[int]) -> bool:
+    n = len(nums)
+    dp = nums[:]  # dp[i] for current j; init j=i
+    for i in range(n - 2, -1, -1):
+        for j in range(i + 1, n):
+            dp[j] = max(nums[i] - dp[j], nums[j] - dp[j - 1])
+    return dp[n - 1] >= 0
+```
+
+**TypeScript:**
+```typescript
+function PredictTheWinner(nums: number[]): boolean {
+  const n = nums.length;
+  const dp = nums.slice();
+  for (let i = n - 2; i >= 0; i--) {
+    for (let j = i + 1; j < n; j++) {
+      dp[j] = Math.max(nums[i] - dp[j], nums[j] - dp[j - 1]);
+    }
+  }
+  return dp[n - 1] >= 0;
+}
+```
+
+**Java:**
+```java
+boolean predictTheWinner(int[] nums) {
+  int n = nums.length;
+  int[] dp = nums.clone();
+  for (int i = n - 2; i >= 0; i--) {
+    for (int j = i + 1; j < n; j++) {
+      dp[j] = Math.max(nums[i] - dp[j], nums[j] - dp[j - 1]);
+    }
+  }
+  return dp[n - 1] >= 0;
+}
+```
+
+**Key points:**
+- 1D rolling array works because `dp[i][j]` depends only on `dp[i+1][j]` and `dp[i][j-1]`.
+- Initialize `dp[j] = nums[j]` to represent the base case `i == j`.
+- Return `>= 0` so ties also count as a player-1 win.
+
+**Tags:** #algorithm
+
+---
+
+### 32. Can I Win
+
+**Difficulty:** Medium
+**Topics:** dp, game-theory, bitmask, memoization
+**Position:** T3-1
+**Years:** T3
+
+**Question:** Numbers 1..`maxChoosableInteger`, no replacement. Players alternate picking; first to push the running total ≥ `desiredTotal` wins. Return true if first player can force a win.
+
+**Approach:** Bitmask DP over chosen-set state (`maxChoosable ≤ 20`). Memo `state → win/lose`. For each unchosen number, if picking it wins immediately OR opponent loses from new state, current player wins. Edge cases: if sum < target → impossible (false). O(2^n * n).
+
+**Python:**
+```python
+from functools import lru_cache
+
+def can_i_win(max_choosable: int, desired_total: int) -> bool:
+    if max_choosable * (max_choosable + 1) // 2 < desired_total:
+        return False
+    @lru_cache(maxsize=None)
+    def win(state: int, remaining: int) -> bool:
+        for i in range(1, max_choosable + 1):
+            bit = 1 << (i - 1)
+            if state & bit:
+                continue
+            if i >= remaining or not win(state | bit, remaining - i):
+                return True
+        return False
+    return win(0, desired_total)
+```
+
+**TypeScript:**
+```typescript
+function canIWin(maxChoosable: number, desiredTotal: number): boolean {
+  if ((maxChoosable * (maxChoosable + 1)) / 2 < desiredTotal) return false;
+  const memo = new Map<number, boolean>();
+  const win = (state: number, remaining: number): boolean => {
+    if (memo.has(state)) return memo.get(state)!;
+    for (let i = 1; i <= maxChoosable; i++) {
+      const bit = 1 << (i - 1);
+      if (state & bit) continue;
+      if (i >= remaining || !win(state | bit, remaining - i)) {
+        memo.set(state, true); return true;
+      }
+    }
+    memo.set(state, false); return false;
+  };
+  return win(0, desiredTotal);
+}
+```
+
+**Java:**
+```java
+Map<Integer, Boolean> memoCIW;
+int maxChoosableCIW;
+
+boolean canIWin(int maxChoosable, int desiredTotal) {
+  if (maxChoosable * (maxChoosable + 1) / 2 < desiredTotal) return false;
+  memoCIW = new HashMap<>();
+  maxChoosableCIW = maxChoosable;
+  return winCIW(0, desiredTotal);
+}
+
+boolean winCIW(int state, int remaining) {
+  if (memoCIW.containsKey(state)) return memoCIW.get(state);
+  for (int i = 1; i <= maxChoosableCIW; i++) {
+    int bit = 1 << (i - 1);
+    if ((state & bit) != 0) continue;
+    if (i >= remaining || !winCIW(state | bit, remaining - i)) {
+      memoCIW.put(state, true); return true;
+    }
+  }
+  memoCIW.put(state, false); return false;
+}
+```
+
+**Key points:**
+- Bitmask captures the set of used numbers — fits within an int for `n ≤ 20`.
+- Memoize by `state` alone since `remaining` is uniquely determined by `state`.
+- Early-impossible: if total of all numbers < target, no one can win.
+
+**Tags:** #algorithm
+
+---
+
+### 33. Flip Game II
+
+**Difficulty:** Medium
+**Topics:** game-theory, dp, memoization, sprague-grundy
+**Position:** T3-1
+**Years:** T3
+
+**Question:** A string of `+` and `-`. A move flips two consecutive `++` to `--`. Return true if the starting player can guarantee a win.
+
+**Approach:** Recursion + memoization on string state. For each `++` position, flip, recurse opponent — if opponent loses, current wins. Optimize with Sprague-Grundy theorem (XOR of independent runs' Grundy numbers) for O(n^2). Without SG, exponential worst case.
+
+**Python:**
+```python
+def can_win(s: str) -> bool:
+    memo: dict[str, bool] = {}
+    def go(state: str) -> bool:
+        if state in memo:
+            return memo[state]
+        for i in range(len(state) - 1):
+            if state[i:i + 2] == "++":
+                nxt = state[:i] + "--" + state[i + 2:]
+                if not go(nxt):
+                    memo[state] = True
+                    return True
+        memo[state] = False
+        return False
+    return go(s)
+```
+
+**TypeScript:**
+```typescript
+function canWin(s: string): boolean {
+  const memo = new Map<string, boolean>();
+  const go = (state: string): boolean => {
+    if (memo.has(state)) return memo.get(state)!;
+    for (let i = 0; i + 1 < state.length; i++) {
+      if (state[i] === "+" && state[i + 1] === "+") {
+        const nxt = state.slice(0, i) + "--" + state.slice(i + 2);
+        if (!go(nxt)) { memo.set(state, true); return true; }
+      }
+    }
+    memo.set(state, false); return false;
+  };
+  return go(s);
+}
+```
+
+**Java:**
+```java
+Map<String, Boolean> memoFG = new HashMap<>();
+
+boolean canWin(String s) {
+  if (memoFG.containsKey(s)) return memoFG.get(s);
+  for (int i = 0; i + 1 < s.length(); i++) {
+    if (s.charAt(i) == '+' && s.charAt(i + 1) == '+') {
+      String nxt = s.substring(0, i) + "--" + s.substring(i + 2);
+      if (!canWin(nxt)) { memoFG.put(s, true); return true; }
+    }
+  }
+  memoFG.put(s, false); return false;
+}
+```
+
+**Key points:**
+- Current player wins iff some move leaves the opponent in a losing state.
+- Memoize per string state to avoid recomputing common positions.
+- Grundy numbers can collapse runs to O(n^2) but the memoized recursion is simpler.
+
+**Tags:** #algorithm
+
+---
+
+### 34. Guess Number Higher or Lower II
+
+**Difficulty:** Medium
+**Topics:** dp, minimax, game-theory
+**Position:** T3-1
+**Years:** T3
+
+**Question:** Pick a number 1..n. Each guess `x` costs `$x`; you're told higher/lower until correct. Return the minimum money guaranteed to win, assuming worst-case answer placement.
+
+**Approach:** Minimax DP. `dp[i][j]` = min money for range `[i, j]`. Try every `k` as guess: `cost(k) = k + max(dp[i][k-1], dp[k+1][j])`. Take min over k. O(n^3). Interval DP — fill by length.
+
+**Python:**
+```python
+def get_money_amount(n: int) -> int:
+    dp = [[0] * (n + 2) for _ in range(n + 2)]
+    for length in range(2, n + 1):
+        for i in range(1, n - length + 2):
+            j = i + length - 1
+            dp[i][j] = min(k + max(dp[i][k - 1], dp[k + 1][j]) for k in range(i, j))
+    return dp[1][n]
+```
+
+**TypeScript:**
+```typescript
+function getMoneyAmount(n: number): number {
+  const dp: number[][] = Array.from({ length: n + 2 }, () => new Array(n + 2).fill(0));
+  for (let len = 2; len <= n; len++) {
+    for (let i = 1; i + len - 1 <= n; i++) {
+      const j = i + len - 1;
+      let best = Infinity;
+      for (let k = i; k < j; k++) {
+        best = Math.min(best, k + Math.max(dp[i][k - 1], dp[k + 1][j]));
+      }
+      dp[i][j] = best;
+    }
+  }
+  return dp[1][n];
+}
+```
+
+**Java:**
+```java
+int getMoneyAmount(int n) {
+  int[][] dp = new int[n + 2][n + 2];
+  for (int len = 2; len <= n; len++) {
+    for (int i = 1; i + len - 1 <= n; i++) {
+      int j = i + len - 1;
+      int best = Integer.MAX_VALUE;
+      for (int k = i; k < j; k++) {
+        best = Math.min(best, k + Math.max(dp[i][k - 1], dp[k + 1][j]));
+      }
+      dp[i][j] = best;
+    }
+  }
+  return dp[1][n];
+}
+```
+
+**Key points:**
+- Worst-case minimax: opponent (the hidden number) picks the worse branch.
+- Range length ordering ensures sub-ranges are filled first.
+- Indices are 1-based to match the value range `[1, n]`.
+
+**Tags:** #algorithm
+
+---
+
+### 35. Wildcard Matching
+
+**Difficulty:** Hard
+**Topics:** dp, strings
+**Position:** T3-1
+**Years:** T3
+
+**Question:** Implement wildcard pattern matching with `?` (any single char) and `*` (any sequence including empty). Return whether the pattern matches the full string.
+
+**Approach:** 2D DP `dp[i][j]` = match `s[0..i)` vs `p[0..j)`. Star: `dp[i][j] = dp[i][j-1] (empty) || dp[i-1][j] (extend)`. Question mark: `dp[i][j] = dp[i-1][j-1]`. Initialize `dp[0][j]` for leading stars. O(n*m).
+
+**Python:**
+```python
+def is_match_wildcard(s: str, p: str) -> bool:
+    n, m = len(s), len(p)
+    dp = [[False] * (m + 1) for _ in range(n + 1)]
+    dp[0][0] = True
+    for j in range(1, m + 1):
+        if p[j - 1] == "*":
+            dp[0][j] = dp[0][j - 1]
+    for i in range(1, n + 1):
+        for j in range(1, m + 1):
+            if p[j - 1] == "*":
+                dp[i][j] = dp[i][j - 1] or dp[i - 1][j]
+            elif p[j - 1] == "?" or p[j - 1] == s[i - 1]:
+                dp[i][j] = dp[i - 1][j - 1]
+    return dp[n][m]
+```
+
+**TypeScript:**
+```typescript
+function isMatchWildcard(s: string, p: string): boolean {
+  const n = s.length, m = p.length;
+  const dp: boolean[][] = Array.from({ length: n + 1 }, () => new Array(m + 1).fill(false));
+  dp[0][0] = true;
+  for (let j = 1; j <= m; j++) if (p[j - 1] === "*") dp[0][j] = dp[0][j - 1];
+  for (let i = 1; i <= n; i++) {
+    for (let j = 1; j <= m; j++) {
+      if (p[j - 1] === "*") dp[i][j] = dp[i][j - 1] || dp[i - 1][j];
+      else if (p[j - 1] === "?" || p[j - 1] === s[i - 1]) dp[i][j] = dp[i - 1][j - 1];
+    }
+  }
+  return dp[n][m];
+}
+```
+
+**Java:**
+```java
+boolean isMatchWildcard(String s, String p) {
+  int n = s.length(), m = p.length();
+  boolean[][] dp = new boolean[n + 1][m + 1];
+  dp[0][0] = true;
+  for (int j = 1; j <= m; j++) if (p.charAt(j - 1) == '*') dp[0][j] = dp[0][j - 1];
+  for (int i = 1; i <= n; i++) {
+    for (int j = 1; j <= m; j++) {
+      char pc = p.charAt(j - 1);
+      if (pc == '*') dp[i][j] = dp[i][j - 1] || dp[i - 1][j];
+      else if (pc == '?' || pc == s.charAt(i - 1)) dp[i][j] = dp[i - 1][j - 1];
+    }
+  }
+  return dp[n][m];
+}
+```
+
+**Key points:**
+- `*` means either match nothing (`dp[i][j-1]`) or extend the match (`dp[i-1][j]`).
+- Leading `*`-only prefixes must seed `dp[0][j]` to true.
+- `?` matches exactly one character — handle like a literal match.
+
+**Tags:** #algorithm
+
+---
+
+### 36. Regular Expression Matching
+
+**Difficulty:** Hard
+**Topics:** dp, strings, recursion
+**Position:** T3-1
+**Years:** T3-T4
+
+**Question:** Implement regex matching with `.` (any single char) and `*` (zero or more of preceding element). Match whole string.
+
+**Approach:** DP `dp[i][j]`. If `p[j-1] == '*'`: zero occurrences (`dp[i][j-2]`) OR one+ if `s[i-1]` matches `p[j-2]` (`dp[i-1][j]`). Else: char/dot match → `dp[i-1][j-1]`. Tricky init for patterns like `a*b*c*`. O(n*m).
+
+**Python:**
+```python
+def is_match_regex(s: str, p: str) -> bool:
+    n, m = len(s), len(p)
+    dp = [[False] * (m + 1) for _ in range(n + 1)]
+    dp[0][0] = True
+    for j in range(2, m + 1):
+        if p[j - 1] == "*":
+            dp[0][j] = dp[0][j - 2]
+    for i in range(1, n + 1):
+        for j in range(1, m + 1):
+            if p[j - 1] == "*":
+                dp[i][j] = dp[i][j - 2]
+                if p[j - 2] == "." or p[j - 2] == s[i - 1]:
+                    dp[i][j] = dp[i][j] or dp[i - 1][j]
+            elif p[j - 1] == "." or p[j - 1] == s[i - 1]:
+                dp[i][j] = dp[i - 1][j - 1]
+    return dp[n][m]
+```
+
+**TypeScript:**
+```typescript
+function isMatchRegex(s: string, p: string): boolean {
+  const n = s.length, m = p.length;
+  const dp: boolean[][] = Array.from({ length: n + 1 }, () => new Array(m + 1).fill(false));
+  dp[0][0] = true;
+  for (let j = 2; j <= m; j++) if (p[j - 1] === "*") dp[0][j] = dp[0][j - 2];
+  for (let i = 1; i <= n; i++) {
+    for (let j = 1; j <= m; j++) {
+      if (p[j - 1] === "*") {
+        dp[i][j] = dp[i][j - 2];
+        if (p[j - 2] === "." || p[j - 2] === s[i - 1]) dp[i][j] = dp[i][j] || dp[i - 1][j];
+      } else if (p[j - 1] === "." || p[j - 1] === s[i - 1]) {
+        dp[i][j] = dp[i - 1][j - 1];
+      }
+    }
+  }
+  return dp[n][m];
+}
+```
+
+**Java:**
+```java
+boolean isMatchRegex(String s, String p) {
+  int n = s.length(), m = p.length();
+  boolean[][] dp = new boolean[n + 1][m + 1];
+  dp[0][0] = true;
+  for (int j = 2; j <= m; j++) if (p.charAt(j - 1) == '*') dp[0][j] = dp[0][j - 2];
+  for (int i = 1; i <= n; i++) {
+    for (int j = 1; j <= m; j++) {
+      char pc = p.charAt(j - 1);
+      if (pc == '*') {
+        dp[i][j] = dp[i][j - 2];
+        char prev = p.charAt(j - 2);
+        if (prev == '.' || prev == s.charAt(i - 1)) dp[i][j] = dp[i][j] || dp[i - 1][j];
+      } else if (pc == '.' || pc == s.charAt(i - 1)) {
+        dp[i][j] = dp[i - 1][j - 1];
+      }
+    }
+  }
+  return dp[n][m];
+}
+```
+
+**Key points:**
+- `x*` either skips itself (`dp[i][j-2]`) or matches one more character (`dp[i-1][j]`).
+- Initialize `dp[0][j]` for patterns like `a*b*c*` that match empty strings.
+- `.` substitutes for any single character — handle inside the `*` branch too.
+
+**Tags:** #algorithm
+
+---
+
+### 37. Longest Palindromic Substring
+
+**Difficulty:** Medium
+**Topics:** strings, dp, two-pointer
+**Position:** T2-3
+**Years:** T2-T3
+
+**Question:** Return the longest palindromic substring of `s`.
+
+**Approach:** Expand-around-center: for each i, expand for odd and even-length palindromes; track longest. O(n^2) time, O(1) space. For O(n) — Manacher's algorithm (interviewer rarely demands but bonus). Don't confuse with longest palindromic *subsequence*.
+
+**Python:**
+```python
+def longest_palindrome(s: str) -> str:
+    def grow(l: int, r: int) -> tuple[int, int]:
+        while l >= 0 and r < len(s) and s[l] == s[r]:
+            l -= 1
+            r += 1
+        return l + 1, r - 1
+    bl, br = 0, 0
+    for i in range(len(s)):
+        for l, r in (grow(i, i), grow(i, i + 1)):
+            if r - l > br - bl:
+                bl, br = l, r
+    return s[bl:br + 1]
+```
+
+**TypeScript:**
+```typescript
+function longestPalindrome(s: string): string {
+  const grow = (l: number, r: number): [number, number] => {
+    while (l >= 0 && r < s.length && s[l] === s[r]) { l--; r++; }
+    return [l + 1, r - 1];
+  };
+  let bl = 0, br = 0;
+  for (let i = 0; i < s.length; i++) {
+    for (const [l, r] of [grow(i, i), grow(i, i + 1)]) {
+      if (r - l > br - bl) { bl = l; br = r; }
+    }
+  }
+  return s.slice(bl, br + 1);
+}
+```
+
+**Java:**
+```java
+int blLP = 0, brLP = 0;
+
+String longestPalindrome(String s) {
+  for (int i = 0; i < s.length(); i++) {
+    grow(s, i, i);
+    grow(s, i, i + 1);
+  }
+  return s.substring(blLP, brLP + 1);
+}
+
+void grow(String s, int l, int r) {
+  while (l >= 0 && r < s.length() && s.charAt(l) == s.charAt(r)) { l--; r++; }
+  l++; r--;
+  if (r - l > brLP - blLP) { blLP = l; brLP = r; }
+}
+```
+
+**Key points:**
+- Try both odd (single-character center) and even (two-character center) expansions.
+- Track best by length comparison, avoiding repeated substring slicing.
+- Manacher gets O(n), but expand-around-center is plenty for typical sizes.
+
+**Tags:** #algorithm
+
+---
+
+### 38. Longest Palindromic Subsequence
+
+**Difficulty:** Medium
+**Topics:** dp, strings
+**Position:** T2-3
+**Years:** T2-T3
+
+**Question:** Return the length of the longest palindromic subsequence in `s` (not necessarily contiguous).
+
+**Approach:** Interval DP `dp[i][j]` = LPS length in `s[i..j]`. If `s[i] == s[j]`: `dp[i][j] = dp[i+1][j-1] + 2`. Else: `max(dp[i+1][j], dp[i][j-1])`. Fill by length. O(n^2). Trick: equals LCS of `s` and reverse(`s`).
+
+**Python:**
+```python
+def longest_palindrome_subseq(s: str) -> int:
+    n = len(s)
+    dp = [[0] * n for _ in range(n)]
+    for i in range(n):
+        dp[i][i] = 1
+    for length in range(2, n + 1):
+        for i in range(n - length + 1):
+            j = i + length - 1
+            if s[i] == s[j]:
+                dp[i][j] = dp[i + 1][j - 1] + 2
+            else:
+                dp[i][j] = max(dp[i + 1][j], dp[i][j - 1])
+    return dp[0][n - 1]
+```
+
+**TypeScript:**
+```typescript
+function longestPalindromeSubseq(s: string): number {
+  const n = s.length;
+  const dp: number[][] = Array.from({ length: n }, () => new Array(n).fill(0));
+  for (let i = 0; i < n; i++) dp[i][i] = 1;
+  for (let len = 2; len <= n; len++) {
+    for (let i = 0; i + len - 1 < n; i++) {
+      const j = i + len - 1;
+      dp[i][j] = s[i] === s[j] ? dp[i + 1][j - 1] + 2 : Math.max(dp[i + 1][j], dp[i][j - 1]);
+    }
+  }
+  return dp[0][n - 1];
+}
+```
+
+**Java:**
+```java
+int longestPalindromeSubseq(String s) {
+  int n = s.length();
+  int[][] dp = new int[n][n];
+  for (int i = 0; i < n; i++) dp[i][i] = 1;
+  for (int len = 2; len <= n; len++) {
+    for (int i = 0; i + len - 1 < n; i++) {
+      int j = i + len - 1;
+      dp[i][j] = s.charAt(i) == s.charAt(j)
+          ? dp[i + 1][j - 1] + 2
+          : Math.max(dp[i + 1][j], dp[i][j - 1]);
+    }
+  }
+  return dp[0][n - 1];
+}
+```
+
+**Key points:**
+- Interval DP filled by length so subproblems are ready.
+- Each character alone is a palindrome of length 1 — seed the diagonal.
+- Equivalent to LCS of `s` with its reverse, in O(n^2).
+
+**Tags:** #algorithm
+
+---
+
+### 39. Palindrome Partitioning
+
+**Difficulty:** Medium
+**Topics:** backtracking, dp, strings
+**Position:** T2-3
+**Years:** T2-T3
+
+**Question:** Partition `s` so every substring is a palindrome. Return all such partitions.
+
+**Approach:** Backtracking: at index `i`, try every prefix `s[i..j]`; if palindrome, recurse from `j+1`. Precompute palindrome table `isP[i][j]` in O(n^2) for speedup. Total O(n * 2^n) worst-case (exponential outputs).
+
+**Python:**
+```python
+def partition(s: str) -> list[list[str]]:
+    n = len(s)
+    is_p = [[False] * n for _ in range(n)]
+    for j in range(n):
+        for i in range(j + 1):
+            if s[i] == s[j] and (j - i < 2 or is_p[i + 1][j - 1]):
+                is_p[i][j] = True
+    out: list[list[str]] = []
+    path: list[str] = []
+    def go(start: int) -> None:
+        if start == n:
+            out.append(path[:])
+            return
+        for end in range(start, n):
+            if is_p[start][end]:
+                path.append(s[start:end + 1])
+                go(end + 1)
+                path.pop()
+    go(0)
+    return out
+```
+
+**TypeScript:**
+```typescript
+function partition(s: string): string[][] {
+  const n = s.length;
+  const isP: boolean[][] = Array.from({ length: n }, () => new Array(n).fill(false));
+  for (let j = 0; j < n; j++) {
+    for (let i = 0; i <= j; i++) {
+      if (s[i] === s[j] && (j - i < 2 || isP[i + 1][j - 1])) isP[i][j] = true;
+    }
+  }
+  const out: string[][] = [];
+  const path: string[] = [];
+  const go = (start: number): void => {
+    if (start === n) { out.push(path.slice()); return; }
+    for (let end = start; end < n; end++) {
+      if (isP[start][end]) {
+        path.push(s.slice(start, end + 1));
+        go(end + 1);
+        path.pop();
+      }
+    }
+  };
+  go(0);
+  return out;
+}
+```
+
+**Java:**
+```java
+List<List<String>> partition(String s) {
+  int n = s.length();
+  boolean[][] isP = new boolean[n][n];
+  for (int j = 0; j < n; j++) {
+    for (int i = 0; i <= j; i++) {
+      if (s.charAt(i) == s.charAt(j) && (j - i < 2 || isP[i + 1][j - 1])) isP[i][j] = true;
+    }
+  }
+  List<List<String>> out = new ArrayList<>();
+  goPP(s, 0, isP, new ArrayList<>(), out);
+  return out;
+}
+
+void goPP(String s, int start, boolean[][] isP, List<String> path, List<List<String>> out) {
+  if (start == s.length()) { out.add(new ArrayList<>(path)); return; }
+  for (int end = start; end < s.length(); end++) {
+    if (isP[start][end]) {
+      path.add(s.substring(start, end + 1));
+      goPP(s, end + 1, isP, path, out);
+      path.remove(path.size() - 1);
+    }
+  }
+}
+```
+
+**Key points:**
+- Precomputed `isP` makes palindrome checks O(1) during backtracking.
+- Use a shared mutable `path` and snapshot it on completion.
+- Worst-case exponential output (e.g., string of all same chars).
+
+**Tags:** #algorithm
+
+---
+
+### 40. Skill-Based Matchmaking (Balanced Team Split)
+
+**Difficulty:** Hard
+**Topics:** dp, partition, subset-sum, gaming
+**Position:** T3-1
+**Years:** T3-T4
+
+**Question:** Given an array of `2n` player skill ratings, split them into two teams of size `n` such that the absolute difference of team skill sums is minimized. This mirrors Honor of Kings matchmaking.
+
+**Approach:** Subset-sum DP constrained to exactly `n` elements. `dp[k][s]` = achievable to pick `k` elements summing to `s`. After filling, find achievable `s` closest to `total / 2` with `k = n`. O(n * total). For larger inputs, heuristic / approximation. Bring up MMR variance, queue time vs match quality trade-off.
+
+**Python:**
+```python
+def min_team_diff(skills: list[int]) -> int:
+    total = sum(skills)
+    n = len(skills) // 2
+    # dp[k] = set of sums achievable using exactly k elements
+    dp: list[set[int]] = [set() for _ in range(n + 1)]
+    dp[0].add(0)
+    for s in skills:
+        for k in range(n, 0, -1):
+            for prev in dp[k - 1]:
+                dp[k].add(prev + s)
+    best = total
+    for s in dp[n]:
+        best = min(best, abs(total - 2 * s))
+    return best
+```
+
+**TypeScript:**
+```typescript
+function minTeamDiff(skills: number[]): number {
+  const total = skills.reduce((a, b) => a + b, 0);
+  const n = skills.length / 2;
+  const dp: Array<Set<number>> = Array.from({ length: n + 1 }, () => new Set());
+  dp[0].add(0);
+  for (const s of skills) {
+    for (let k = n; k >= 1; k--) {
+      for (const prev of dp[k - 1]) dp[k].add(prev + s);
+    }
+  }
+  let best = total;
+  for (const s of dp[n]) best = Math.min(best, Math.abs(total - 2 * s));
+  return best;
+}
+```
+
+**Java:**
+```java
+int minTeamDiff(int[] skills) {
+  int total = 0;
+  for (int s : skills) total += s;
+  int n = skills.length / 2;
+  List<Set<Integer>> dp = new ArrayList<>();
+  for (int i = 0; i <= n; i++) dp.add(new HashSet<>());
+  dp.get(0).add(0);
+  for (int s : skills) {
+    for (int k = n; k >= 1; k--) {
+      Set<Integer> add = new HashSet<>();
+      for (int prev : dp.get(k - 1)) add.add(prev + s);
+      dp.get(k).addAll(add);
+    }
+  }
+  int best = total;
+  for (int s : dp.get(n)) best = Math.min(best, Math.abs(total - 2 * s));
+  return best;
+}
+```
+
+**Key points:**
+- Iterate `k` descending so each player contributes to at most one new state per round.
+- Final answer is the achievable team-1 sum closest to `total / 2`.
+- For larger inputs swap to bit-DP or randomized search for tractability.
+
+**Tags:** #algorithm
+
+---
+
+## Backtracking
+
+### 41. Permutations
+
+**Difficulty:** Medium
+**Topics:** backtracking, recursion
+**Position:** SWE
+**Years:** T2-T3
+
+**Question:** Given a distinct integer array, return all possible permutations.
+
+**Approach:** Backtracking — swap current index with each subsequent index, recurse, swap back. Or use a `used[]` boolean array. O(n * n!). Follow-up: with duplicates — sort and skip when `used[i-1]` is false and `nums[i] == nums[i-1]`.
+
+**Python:**
+```python
+def permute(nums: list[int]) -> list[list[int]]:
+    out: list[list[int]] = []
+    def go(start: int) -> None:
+        if start == len(nums):
+            out.append(nums[:])
+            return
+        for i in range(start, len(nums)):
+            nums[start], nums[i] = nums[i], nums[start]
+            go(start + 1)
+            nums[start], nums[i] = nums[i], nums[start]
+    go(0)
+    return out
+```
+
+**TypeScript:**
+```typescript
+function permute(nums: number[]): number[][] {
+  const out: number[][] = [];
+  const go = (start: number): void => {
+    if (start === nums.length) { out.push(nums.slice()); return; }
+    for (let i = start; i < nums.length; i++) {
+      [nums[start], nums[i]] = [nums[i], nums[start]];
+      go(start + 1);
+      [nums[start], nums[i]] = [nums[i], nums[start]];
+    }
+  };
+  go(0);
+  return out;
+}
+```
+
+**Java:**
+```java
+List<List<Integer>> permute(int[] nums) {
+  List<List<Integer>> out = new ArrayList<>();
+  go(nums, 0, out);
+  return out;
+}
+
+void go(int[] nums, int start, List<List<Integer>> out) {
+  if (start == nums.length) {
+    List<Integer> snap = new ArrayList<>();
+    for (int x : nums) snap.add(x);
+    out.add(snap);
+    return;
+  }
+  for (int i = start; i < nums.length; i++) {
+    int t = nums[start]; nums[start] = nums[i]; nums[i] = t;
+    go(nums, start + 1, out);
+    t = nums[start]; nums[start] = nums[i]; nums[i] = t;
+  }
+}
+```
+
+**Key points:**
+- Swap-in-place avoids an explicit `used[]` array.
+- Always undo the swap on the way back to preserve the array.
+- Snapshot via `slice`/`[:]` so later mutations don't corrupt outputs.
+
+**Follow-ups:**
+- Permutations II — input has duplicates, dedupe via sort + skip.
+- Next Permutation — in-place transformation to the next lex order.
+- kth permutation — factoradic, no enumeration.
+- Permutations with constraints (no two adjacent equal, etc.).
+
+**Common Pitfalls:**
+- Forgetting to take a copy of `nums` before adding to output — later swaps overwrite results.
+- Sort-based dedupe but the input was mutated by the swap — invariant lost.
+
+**Tags:** #algorithm
+
+---
+
+## Array / String
+
+### 42. Add Strings
+
+**Difficulty:** Easy
+**Topics:** strings, math
+**Position:** SWE
+**Years:** T2-T3
+
+**Question:** Given two non-negative integers as strings, return their sum as a string (no using built-in BigInt).
+
+**Approach:** Two pointers from end, carry, append digit. Reverse result. O(max(n, m)). Common Tencent warm-up to check basic correctness coding.
+
+**Python:**
+```python
+def add_strings(num1: str, num2: str) -> str:
+    i, j, carry = len(num1) - 1, len(num2) - 1, 0
+    out: list[str] = []
+    while i >= 0 or j >= 0 or carry:
+        a = ord(num1[i]) - 48 if i >= 0 else 0
+        b = ord(num2[j]) - 48 if j >= 0 else 0
+        carry, d = divmod(a + b + carry, 10)
+        out.append(chr(d + 48))
+        i -= 1
+        j -= 1
+    return "".join(reversed(out))
+```
+
+**TypeScript:**
+```typescript
+function addStrings(num1: string, num2: string): string {
+  let i = num1.length - 1, j = num2.length - 1, carry = 0;
+  const out: string[] = [];
+  while (i >= 0 || j >= 0 || carry) {
+    const a = i >= 0 ? num1.charCodeAt(i) - 48 : 0;
+    const b = j >= 0 ? num2.charCodeAt(j) - 48 : 0;
+    const s = a + b + carry;
+    carry = Math.floor(s / 10);
+    out.push(String.fromCharCode((s % 10) + 48));
+    i--; j--;
+  }
+  return out.reverse().join("");
+}
+```
+
+**Java:**
+```java
+String addStrings(String num1, String num2) {
+  int i = num1.length() - 1, j = num2.length() - 1, carry = 0;
+  StringBuilder out = new StringBuilder();
+  while (i >= 0 || j >= 0 || carry != 0) {
+    int a = i >= 0 ? num1.charAt(i) - '0' : 0;
+    int b = j >= 0 ? num2.charAt(j) - '0' : 0;
+    int s = a + b + carry;
+    carry = s / 10;
+    out.append((char) ('0' + s % 10));
+    i--; j--;
+  }
+  return out.reverse().toString();
+}
+```
+
+**Key points:**
+- Iterate while either index or carry remains.
+- Use char code arithmetic to avoid `parseInt` per digit.
+- Append digits in reverse, then reverse the buffer once at the end.
+
+**Follow-ups:**
+- Multiply strings without using big-int.
+- Add two non-negative integers represented in arbitrary base (binary, hex).
+- Add two strings that may contain a decimal point.
+- Support negative numbers — dispatch to subtract.
+
+**Common Pitfalls:**
+- Forgetting to handle the final carry after the loop.
+- Using `Integer.parseInt` per digit — slow and unnecessary.
+
+**Tags:** #algorithm
+
+---
+
+### 43. Reverse a String In-Place
+
+**Difficulty:** Easy
+**Topics:** strings, two-pointer
+**Position:** SWE
+**Years:** T2
+
+**Question:** Reverse a `char[]` in-place. Then: reverse word order in a sentence in-place (`"the sky is blue"` → `"blue is sky the"`).
+
+**Approach:** Part 1: two pointers swap. Part 2: reverse whole string, then reverse each word. O(n) time, O(1) extra. Tencent C++ classic — interviewers also ask about `std::string` SSO and copy-on-write semantics in pre-C++11.
+
+**Python:**
+```python
+def reverse_words(chars: list[str]) -> None:
+    def rev(l: int, r: int) -> None:
+        while l < r:
+            chars[l], chars[r] = chars[r], chars[l]
+            l += 1
+            r -= 1
+    rev(0, len(chars) - 1)
+    l = 0
+    for r in range(len(chars) + 1):
+        if r == len(chars) or chars[r] == " ":
+            rev(l, r - 1)
+            l = r + 1
+```
+
+**TypeScript:**
+```typescript
+function reverseWords(chars: string[]): void {
+  const rev = (l: number, r: number): void => {
+    while (l < r) { [chars[l], chars[r]] = [chars[r], chars[l]]; l++; r--; }
+  };
+  rev(0, chars.length - 1);
+  let l = 0;
+  for (let r = 0; r <= chars.length; r++) {
+    if (r === chars.length || chars[r] === " ") {
+      rev(l, r - 1);
+      l = r + 1;
+    }
+  }
+}
+```
+
+**Java:**
+```java
+void reverseWords(char[] chars) {
+  rev(chars, 0, chars.length - 1);
+  int l = 0;
+  for (int r = 0; r <= chars.length; r++) {
+    if (r == chars.length || chars[r] == ' ') {
+      rev(chars, l, r - 1);
+      l = r + 1;
+    }
+  }
+}
+
+void rev(char[] a, int l, int r) {
+  while (l < r) { char t = a[l]; a[l++] = a[r]; a[r--] = t; }
+}
+```
+
+**Key points:**
+- Reverse the whole buffer first, then reverse each word in place.
+- Strings in Python/JS are immutable, so the input is a mutable `list`/`array` of chars.
+- O(1) extra space — only index variables are added.
+
+**Follow-ups:**
+- Reverse Words in a String (LeetCode 151) — collapse multiple spaces.
+- Reverse only the vowels in a string.
+- Reverse a sentence in-place but preserve trailing punctuation positions.
+- Reverse a string of UTF-8 bytes safely (don't split multi-byte chars).
+
+**Common Pitfalls:**
+- Using `s[::-1]` when interviewer asked for in-place — O(n) extra space.
+- Splitting on a single space and missing multi-space separators.
+
+**Tags:** #coding
+
+---
+
+### 44. Nim Game
+
+**Difficulty:** Easy
+**Topics:** game-theory, math
+**Position:** T2-3
+**Years:** T2-T3
+
+**Question:** A pile of `n` stones. Players alternate removing 1, 2, or 3 stones. The player taking the last stone wins. You go first — can you always win?
+
+**Approach:** Losing position iff `n % 4 == 0`. Whoever faces a multiple of 4 loses with optimal play (opponent mirrors to keep you at multiples of 4). O(1). Be ready to prove inductively.
+
+**Python:**
+```python
+def can_win_nim(n: int) -> bool:
+    return n % 4 != 0
+```
+
+**TypeScript:**
+```typescript
+function canWinNim(n: number): boolean {
+  return n % 4 !== 0;
+}
+```
+
+**Java:**
+```java
+boolean canWinNim(int n) {
+  return n % 4 != 0;
+}
+```
+
+**Key points:**
+- Multiples of 4 are losing positions; everything else is winning.
+- Mirror strategy: opponent always responds with `4 - your_take` to keep you stuck.
+- Inductive proof: from any `n % 4 != 0`, you can move to a multiple of 4.
+
+**Tags:** #algorithm
+
+---
+
+### 45. Reverse Pairs
 
 **Difficulty:** Hard
 **Topics:** merge-sort, bit, divide-and-conquer
@@ -3339,119 +3787,7 @@ int sortRP(int lo, int hi) {
 
 ---
 
-### 51. Count of Smaller Numbers After Self
-
-**Difficulty:** Hard
-**Topics:** bit, merge-sort, segment-tree
-**Position:** T3-1
-**Years:** T3
-
-**Question:** For each `nums[i]`, return the count of `nums[j]` with `j > i` and `nums[j] < nums[i]`.
-
-**Approach:** Merge sort with index tracking: when an element from the right half is placed before an element from the left, increment the left element's count. Or BIT over compressed values, processed right-to-left, query prefix. O(n log n).
-
-**Python:**
-```python
-def count_smaller(nums: list[int]) -> list[int]:
-    n = len(nums)
-    counts = [0] * n
-    indices = list(range(n))
-    def sort(lo: int, hi: int) -> list[int]:
-        if lo >= hi:
-            return [indices[lo]] if lo == hi else []
-        mid = (lo + hi) // 2
-        left = sort(lo, mid)
-        right = sort(mid + 1, hi)
-        merged: list[int] = []
-        i = j = 0
-        while i < len(left) or j < len(right):
-            if j == len(right) or (i < len(left) and nums[left[i]] <= nums[right[j]]):
-                counts[left[i]] += j
-                merged.append(left[i])
-                i += 1
-            else:
-                merged.append(right[j])
-                j += 1
-        for k, idx in enumerate(merged):
-            indices[lo + k] = idx
-        return merged
-    sort(0, n - 1)
-    return counts
-```
-
-**TypeScript:**
-```typescript
-function countSmaller(nums: number[]): number[] {
-  const n = nums.length;
-  const counts = new Array<number>(n).fill(0);
-  const indices = Array.from({ length: n }, (_, i) => i);
-  const sort = (lo: number, hi: number): number[] => {
-    if (lo > hi) return [];
-    if (lo === hi) return [indices[lo]];
-    const mid = (lo + hi) >> 1;
-    const left = sort(lo, mid), right = sort(mid + 1, hi);
-    const merged: number[] = [];
-    let i = 0, j = 0;
-    while (i < left.length || j < right.length) {
-      if (j === right.length || (i < left.length && nums[left[i]] <= nums[right[j]])) {
-        counts[left[i]] += j;
-        merged.push(left[i++]);
-      } else merged.push(right[j++]);
-    }
-    for (let k = 0; k < merged.length; k++) indices[lo + k] = merged[k];
-    return merged;
-  };
-  sort(0, n - 1);
-  return counts;
-}
-```
-
-**Java:**
-```java
-int[] numsCS;
-int[] countsCS;
-int[] indicesCS;
-
-List<Integer> countSmaller(int[] nums) {
-  int n = nums.length;
-  numsCS = nums;
-  countsCS = new int[n];
-  indicesCS = new int[n];
-  for (int i = 0; i < n; i++) indicesCS[i] = i;
-  sortCS(0, n - 1);
-  List<Integer> out = new ArrayList<>(n);
-  for (int c : countsCS) out.add(c);
-  return out;
-}
-
-int[] sortCS(int lo, int hi) {
-  if (lo > hi) return new int[0];
-  if (lo == hi) return new int[]{indicesCS[lo]};
-  int mid = (lo + hi) >>> 1;
-  int[] left = sortCS(lo, mid), right = sortCS(mid + 1, hi);
-  int[] merged = new int[left.length + right.length];
-  int i = 0, j = 0, k = 0;
-  while (i < left.length || j < right.length) {
-    if (j == right.length || (i < left.length && numsCS[left[i]] <= numsCS[right[j]])) {
-      countsCS[left[i]] += j;
-      merged[k++] = left[i++];
-    } else merged[k++] = right[j++];
-  }
-  System.arraycopy(merged, 0, indicesCS, lo, merged.length);
-  return merged;
-}
-```
-
-**Key points:**
-- Sort indices, not values, so each element's count remains addressable.
-- When taking a left element, `j` already equals the count of smaller right elements seen.
-- `<=` (not `<`) avoids inflating counts due to ties.
-
-**Tags:** #algorithm
-
----
-
-### 52. Count of Range Sum
+### 46. Count of Range Sum
 
 **Difficulty:** Hard
 **Topics:** merge-sort, prefix-sum, bit
@@ -3547,264 +3883,7 @@ int sortCRS(int lo, int hi) {
 
 ---
 
-### 53. Find Median from Data Stream
-
-**Difficulty:** Hard
-**Topics:** heap, design, data-stream
-**Position:** T3-1
-**Years:** T3-T4
-
-**Question:** Design a class supporting `addNum(int)` and `findMedian()` over a streaming sequence.
-
-**Approach:** Two heaps: `lo` (max-heap) holds lower half, `hi` (min-heap) holds upper half. Maintain `len(lo) - len(hi) ∈ {0, 1}`. Add: push to lo, move top to hi, rebalance if hi larger. Median: top of lo or average of tops. O(log n) add, O(1) query.
-
-**Python:**
-```python
-import heapq
-
-class MedianFinder:
-    def __init__(self) -> None:
-        self.lo: list[int] = []  # max-heap via negation
-        self.hi: list[int] = []  # min-heap
-
-    def add_num(self, num: int) -> None:
-        heapq.heappush(self.lo, -num)
-        heapq.heappush(self.hi, -heapq.heappop(self.lo))
-        if len(self.hi) > len(self.lo):
-            heapq.heappush(self.lo, -heapq.heappop(self.hi))
-
-    def find_median(self) -> float:
-        if len(self.lo) > len(self.hi):
-            return float(-self.lo[0])
-        return (-self.lo[0] + self.hi[0]) / 2
-```
-
-**TypeScript:**
-```typescript
-class MedianFinder {
-  private lo: number[] = [];  // max-heap (negate)
-  private hi: number[] = [];  // min-heap
-  private push(heap: number[], v: number): void {
-    heap.push(v); heap.sort((a, b) => a - b);
-  }
-  addNum(num: number): void {
-    this.push(this.lo, -num);
-    this.push(this.hi, -this.lo.shift()!);
-    if (this.hi.length > this.lo.length) this.push(this.lo, -this.hi.shift()!);
-  }
-  findMedian(): number {
-    return this.lo.length > this.hi.length ? -this.lo[0] : (-this.lo[0] + this.hi[0]) / 2;
-  }
-}
-```
-
-**Java:**
-```java
-class MedianFinder {
-  private final PriorityQueue<Integer> lo = new PriorityQueue<>(Comparator.reverseOrder());
-  private final PriorityQueue<Integer> hi = new PriorityQueue<>();
-
-  public void addNum(int num) {
-    lo.offer(num);
-    hi.offer(lo.poll());
-    if (hi.size() > lo.size()) lo.offer(hi.poll());
-  }
-
-  public double findMedian() {
-    return lo.size() > hi.size() ? lo.peek() : (lo.peek() + hi.peek()) / 2.0;
-  }
-}
-```
-
-**Key points:**
-- `lo` always holds the smaller half (size `n/2` ceil), `hi` the larger half.
-- Rebalance with a one-element swap after each add.
-- Median is the `lo` top when odd, average of both tops when even.
-
-**Tags:** #algorithm
-
----
-
-### 54. Sliding Window Median
-
-**Difficulty:** Hard
-**Topics:** heap, sliding-window, design
-**Position:** T3-1
-**Years:** T3-T4
-
-**Question:** Given an array and window size `k`, return the median of each sliding window.
-
-**Approach:** Two heaps + lazy deletion (hash map of pending removals). Each step: add new num; mark outgoing num for removal; clean up tops by popping invalidated entries; rebalance heap sizes. O(n log k). Alternative: ordered multiset (C++ `multiset`).
-
-**Python:**
-```python
-from sortedcontainers import SortedList
-
-def median_sliding_window(nums: list[int], k: int) -> list[float]:
-    window = SortedList(nums[:k])
-    out: list[float] = []
-    def median() -> float:
-        if k % 2:
-            return float(window[k // 2])
-        return (window[k // 2 - 1] + window[k // 2]) / 2
-    out.append(median())
-    for i in range(k, len(nums)):
-        window.remove(nums[i - k])
-        window.add(nums[i])
-        out.append(median())
-    return out
-```
-
-**TypeScript:**
-```typescript
-function medianSlidingWindow(nums: number[], k: number): number[] {
-  const window = nums.slice(0, k).sort((a, b) => a - b);
-  const out: number[] = [];
-  const bisect = (v: number): number => {
-    let lo = 0, hi = window.length;
-    while (lo < hi) { const m = (lo + hi) >> 1; if (window[m] < v) lo = m + 1; else hi = m; }
-    return lo;
-  };
-  const median = (): number =>
-    k % 2 ? window[k >> 1] : (window[(k >> 1) - 1] + window[k >> 1]) / 2;
-  out.push(median());
-  for (let i = k; i < nums.length; i++) {
-    window.splice(bisect(nums[i - k]), 1);
-    window.splice(bisect(nums[i]), 0, nums[i]);
-    out.push(median());
-  }
-  return out;
-}
-```
-
-**Java:**
-```java
-double[] medianSlidingWindow(int[] nums, int k) {
-  TreeMap<Integer, Integer> window = new TreeMap<>();
-  for (int i = 0; i < k; i++) window.merge(nums[i], 1, Integer::sum);
-  int n = nums.length;
-  double[] out = new double[n - k + 1];
-  out[0] = medianOf(window, k);
-  for (int i = k; i < n; i++) {
-    int outV = nums[i - k];
-    if (window.get(outV) == 1) window.remove(outV); else window.merge(outV, -1, Integer::sum);
-    window.merge(nums[i], 1, Integer::sum);
-    out[i - k + 1] = medianOf(window, k);
-  }
-  return out;
-}
-
-double medianOf(TreeMap<Integer, Integer> window, int k) {
-  int[] mids = k % 2 == 1 ? new int[]{k / 2} : new int[]{k / 2 - 1, k / 2};
-  long sum = 0; int seen = 0, idx = 0;
-  for (var e : window.entrySet()) {
-    int next = seen + e.getValue();
-    while (idx < mids.length && mids[idx] < next) { sum += e.getKey(); idx++; }
-    seen = next;
-    if (idx == mids.length) break;
-  }
-  return sum / (double) mids.length;
-}
-```
-
-**Key points:**
-- A sorted multiset (Python `SortedList`, C++ `multiset`) is the cleanest model.
-- Insertion + deletion are O(log k); median lookup is O(1) by index.
-- Two-heap + lazy deletion variant avoids external libraries when needed.
-
-**Tags:** #algorithm
-
----
-
-### 55. Smallest Range Covering Elements from K Lists
-
-**Difficulty:** Hard
-**Topics:** heap, sliding-window
-**Position:** T3-1
-**Years:** T3
-
-**Question:** Given `k` sorted lists, find the smallest range `[a, b]` such that at least one element from each list lies within.
-
-**Approach:** Min-heap holding one element per list plus indices. Track current max among heap entries. Pop min; range = `[min, max]`; if best, save. Advance that list — if exhausted, stop. Push new element, update max. O(N log k).
-
-**Python:**
-```python
-import heapq
-
-def smallest_range(nums: list[list[int]]) -> list[int]:
-    heap: list[tuple[int, int, int]] = []  # (val, list_idx, pos)
-    cur_max = float("-inf")
-    for i, row in enumerate(nums):
-        heapq.heappush(heap, (row[0], i, 0))
-        cur_max = max(cur_max, row[0])
-    best_lo, best_hi = -10**9, 10**9
-    while heap:
-        v, i, j = heapq.heappop(heap)
-        if cur_max - v < best_hi - best_lo:
-            best_lo, best_hi = v, int(cur_max)
-        if j + 1 == len(nums[i]):
-            return [best_lo, best_hi]
-        nxt = nums[i][j + 1]
-        cur_max = max(cur_max, nxt)
-        heapq.heappush(heap, (nxt, i, j + 1))
-    return [best_lo, best_hi]
-```
-
-**TypeScript:**
-```typescript
-function smallestRange(nums: number[][]): number[] {
-  const heap: Array<[number, number, number]> = [];
-  let curMax = -Infinity;
-  nums.forEach((row, i) => { heap.push([row[0], i, 0]); curMax = Math.max(curMax, row[0]); });
-  heap.sort((a, b) => a[0] - b[0]);
-  let bestLo = -1e9, bestHi = 1e9;
-  while (heap.length) {
-    const [v, i, j] = heap.shift()!;
-    if (curMax - v < bestHi - bestLo) { bestLo = v; bestHi = curMax; }
-    if (j + 1 === nums[i].length) return [bestLo, bestHi];
-    const nxt = nums[i][j + 1];
-    curMax = Math.max(curMax, nxt);
-    heap.push([nxt, i, j + 1]);
-    heap.sort((a, b) => a[0] - b[0]);
-  }
-  return [bestLo, bestHi];
-}
-```
-
-**Java:**
-```java
-int[] smallestRange(List<List<Integer>> nums) {
-  PriorityQueue<int[]> heap = new PriorityQueue<>((a, b) -> a[0] - b[0]);
-  int curMax = Integer.MIN_VALUE;
-  for (int i = 0; i < nums.size(); i++) {
-    int v = nums.get(i).get(0);
-    heap.offer(new int[]{v, i, 0});
-    curMax = Math.max(curMax, v);
-  }
-  int bestLo = 0, bestHi = Integer.MAX_VALUE;
-  while (!heap.isEmpty()) {
-    int[] cur = heap.poll();
-    int v = cur[0], i = cur[1], j = cur[2];
-    if ((long) curMax - v < (long) bestHi - bestLo) { bestLo = v; bestHi = curMax; }
-    if (j + 1 == nums.get(i).size()) return new int[]{bestLo, bestHi};
-    int nxt = nums.get(i).get(j + 1);
-    curMax = Math.max(curMax, nxt);
-    heap.offer(new int[]{nxt, i, j + 1});
-  }
-  return new int[]{bestLo, bestHi};
-}
-```
-
-**Key points:**
-- Window is implicitly `[heap_min, cur_max]` and always contains one item per list.
-- Terminate as soon as any list is exhausted — moving its pointer is impossible.
-- Update `cur_max` lazily on each push to avoid scanning the heap.
-
-**Tags:** #algorithm
-
----
-
-### 56. Single Number II
+### 47. Single Number II
 
 **Difficulty:** Medium
 **Topics:** bit-manipulation, math
@@ -3858,7 +3937,93 @@ int singleNumber(int[] nums) {
 
 ---
 
-### 57. Single Number III
+### 48. Bitwise AND of Numbers Range
+
+**Difficulty:** Medium
+**Topics:** bit-manipulation, math
+**Position:** T2-3
+**Years:** T2-T3
+
+**Question:** Given `[m, n]`, return the bitwise AND of all integers in the range inclusive.
+
+**Approach:** Result = common prefix of `m` and `n` in binary. Right-shift both until equal, counting shifts; then left-shift back. Or: while `m < n`, `n = n & (n - 1)`. O(log n).
+
+**Python:**
+```python
+def range_bitwise_and(m: int, n: int) -> int:
+    while m < n:
+        n &= n - 1
+    return n
+```
+
+**TypeScript:**
+```typescript
+function rangeBitwiseAnd(m: number, n: number): number {
+  while (m < n) n &= n - 1;
+  return n;
+}
+```
+
+**Java:**
+```java
+int rangeBitwiseAnd(int m, int n) {
+  while (m < n) n &= n - 1;
+  return n;
+}
+```
+
+**Key points:**
+- `n & (n - 1)` clears the lowest set bit of `n`.
+- Repeating until `n <= m` leaves only the common high-bit prefix.
+- O(log n) — each iteration removes one set bit.
+
+**Tags:** #algorithm
+
+---
+
+### 49. Power of Four
+
+**Difficulty:** Easy
+**Topics:** bit-manipulation, math
+**Position:** T2-3
+**Years:** T2
+
+**Question:** Given an integer `n`, return true if it is a power of four.
+
+**Approach:** `n > 0 && (n & (n-1)) == 0 && (n & 0x55555555) != 0`. First two ensure power of 2; mask ensures the single bit is in an odd position. O(1). Common bit-trick warm-up.
+
+**Python:**
+```python
+def is_power_of_four(n: int) -> bool:
+    return n > 0 and (n & (n - 1)) == 0 and (n & 0x55555555) != 0
+```
+
+**TypeScript:**
+```typescript
+function isPowerOfFour(n: number): boolean {
+  return n > 0 && (n & (n - 1)) === 0 && (n & 0x55555555) !== 0;
+}
+```
+
+**Java:**
+```java
+boolean isPowerOfFour(int n) {
+  return n > 0 && (n & (n - 1)) == 0 && (n & 0x55555555) != 0;
+}
+```
+
+**Key points:**
+- First two checks: `n` is a positive power of 2.
+- Mask `0x55555555` has bits only at even positions (1, 4, 16, ...).
+- All three conditions are O(1) — no loops or divisions.
+
+**Tags:** #algorithm
+
+---
+
+## Other Algorithms
+
+### 50. Single Number III
 
 **Difficulty:** Medium
 **Topics:** bit-manipulation, xor
@@ -3924,354 +4089,211 @@ int[] singleNumberIII(int[] nums) {
 
 ---
 
-### 58. Bitwise AND of Numbers Range
+## System Design
 
-**Difficulty:** Medium
-**Topics:** bit-manipulation, math
-**Position:** T2-3
-**Years:** T2-T3
+### 51. Design WeChat Messaging Backend
 
-**Question:** Given `[m, n]`, return the bitwise AND of all integers in the range inclusive.
+**Difficulty:** Hard
+**Topics:** system-design, im, websockets, presence, scale
+**Position:** Senior SWE
+**Years:** T3-T4
 
-**Approach:** Result = common prefix of `m` and `n` in binary. Right-shift both until equal, counting shifts; then left-shift back. Or: while `m < n`, `n = n & (n - 1)`. O(log n).
+**Question:** Design WeChat's messaging backend supporting 1B+ MAU, 1:1 chat, group chat (up to 500 members), and global presence.
 
-**Python:**
-```python
-def range_bitwise_and(m: int, n: int) -> int:
-    while m < n:
-        n &= n - 1
-    return n
-```
+**Approach:** Persistent TCP/MQTT connection from each client to nearest access gateway (sharded by user_id). Messages flow gateway → routing service (looks up recipient's gateway via online registry) → recipient gateway → device. Offline messages persisted to KV store; pushed on reconnect. Group chat: fan-out at the per-group routing service; for 500 members, that's tractable. Presence: in-memory store per region, gossip globally with TTL'd entries (eventual consistency OK). Persist messages 7 days in hot store + 90 days cold. Discuss: end-to-end encryption (Tencent historically not E2E for compliance with Chinese law — call this out honestly), message ordering within a chat (sequence numbers per chat), multi-device sync, and very large group support (broadcast groups have different design).
 
-**TypeScript:**
-```typescript
-function rangeBitwiseAnd(m: number, n: number): number {
-  while (m < n) n &= n - 1;
-  return n;
-}
-```
+**Follow-ups:**
+- Multi-device sync — logged in on phone + laptop, same message arrives consistently.
+- Message ordering across devices — server-issued sequence per chat.
+- Very large groups (broadcast "公众号"-style) — push goes pull, with cursor.
+- Offline-to-online catch-up — stream window vs full pull.
+- Cross-region latency for international users — anycast gateway or per-region routing?
 
-**Java:**
-```java
-int rangeBitwiseAnd(int m, int n) {
-  while (m < n) n &= n - 1;
-  return n;
-}
-```
+**Common Pitfalls:**
+- Promising E2E encryption when the design actually mirrors / archives messages.
+- Naive fan-out for large groups — doesn't scale beyond ~500 members.
 
-**Key points:**
-- `n & (n - 1)` clears the lowest set bit of `n`.
-- Repeating until `n <= m` leaves only the common high-bit prefix.
-- O(log n) — each iteration removes one set bit.
-
-**Tags:** #algorithm
+**Tags:** #system-design
 
 ---
 
-### 59. Power of Four
+### 52. Design WeChat Moments (朋友圈)
+
+**Difficulty:** Hard
+**Topics:** system-design, feed, privacy, fanout
+**Position:** Senior SWE
+**Years:** T3-T4
+
+**Question:** Design WeChat Moments — friends-only feed where posts are visible only to mutual friends, with strict privacy controls.
+
+**Approach:** Closed-graph feed (unlike Twitter/Weibo) — only mutual friends see posts. Hybrid push/pull as in News Feed. Critical privacy property: comments and likes on a post are visible only to mutual friends of the *poster*. So when displaying a post, server filters comments to those by people the viewer is also friends with — done at read time via friend-graph intersection (cache the intersection result). Photos in CDN with signed short-lived URLs (no public discoverable URL). Discuss: "三天可见" (visible-for-3-days) implemented as a per-post TTL flag, message-style notification on comment/like (via the IM system from Q9), and how to handle a viral post (rare in closed graph, but possible — cache aggressively).
+
+**Follow-ups:**
+- "仅三天可见" (3-day visibility) — store as TTL or filter at read?
+- Block / un-friend invalidation — cached feed must update immediately.
+- Photo URL re-share via screenshot — add visible watermark or accept the leak?
+- Cross-region replication — user travels abroad, where is the feed served from?
+- Friend-graph intersection cost at read time — cache, precompute, or both?
+
+**Common Pitfalls:**
+- Showing comments from non-mutual friends — privacy violation, very visible bug.
+- Hot post in a closed graph — still possible if one friend is influential, plan for it.
+
+**Tags:** #system-design
+
+---
+
+### 53. Design a Multiplayer Game Server (Honor of Kings-style)
+
+**Difficulty:** Hard
+**Topics:** system-design, gaming, low-latency, state-sync
+**Position:** Senior SWE
+**Years:** T3-T4
+
+**Question:** Design the backend for a real-time 5v5 MOBA game like Honor of Kings. Latency budget: <100ms perceived.
+
+**Approach:** Matchmaking service (skill + region + party-aware) → game server allocator (Kubernetes pool of dedicated game servers across regions). Game server runs authoritative simulation. **Frame sync (lockstep)**: clients send inputs only (small packets), all clients run identical deterministic simulation in lockstep, advance frame when all inputs received. Tencent's choice for MOBAs — bandwidth tiny, anti-cheat via input-only model. Tradeoff: 1 slow client = everyone waits. **State sync**: server simulates, sends state diffs — used by FPS. Network: custom UDP protocol (with reliability layer); TCP unacceptable for game traffic. Discuss: clock sync (NTP-ish), packet loss tolerance (resend inputs, predict for state-sync), reconnect (replay inputs from last frame), and cheat detection (server-side replay for sample matches).
+
+**Tags:** #system-design
+
+---
+
+### 54. Design QQ / WeChat Voice & Video Call
+
+**Difficulty:** Hard
+**Topics:** system-design, webrtc, sfu, nat-traversal, codecs
+**Position:** Senior SWE
+**Years:** T3-T4
+
+**Question:** Design the voice/video call infrastructure for WeChat (1:1 and multi-party up to 9).
+
+**Approach:** Signaling over the IM channel (SDP offer/answer through messaging). Media: WebRTC-style with ICE for NAT traversal (STUN/TURN servers). For 1:1, P2P preferred (lower latency, less server cost). For multi-party, SFU (Selective Forwarding Unit) — each client uploads one stream, server forwards to N-1 others without transcoding (low latency, scales reasonably). Codecs: Opus audio, H.264/H.265 video, adaptive bitrate. Echo cancellation, noise suppression, jitter buffer on client. Discuss: TURN relay cost (many users behind symmetric NAT), regional media servers, and bandwidth adaptation under network degradation.
+
+**Tags:** #system-design
+
+---
+
+### 55. Design Tencent Cloud Object Storage (COS)
+
+**Difficulty:** Hard
+**Topics:** system-design, blob-storage, replication, consistency, cloud
+**Position:** Senior SWE
+**Years:** T3-T4
+
+**Question:** Design Tencent COS — object storage API-compatible with S3.
+
+**Approach:** Front-end S3-compatible API → metadata service (sharded by bucket+key) → storage layer with erasure coding (Reed-Solomon 10+4) across many nodes/racks/AZs. Strong consistency within a region via metadata coordinator (Paxos). Multi-region async replication for DR. Discuss: erasure coding vs 3x replication trade-offs (~50% storage savings, more CPU/network on read), large object multipart upload, lifecycle to cold storage (Archive Storage equivalent), and how to handle a hot key (CDN + replica fan-out for popular reads).
+
+**Tags:** #system-design
+
+---
+
+### 56. Design a Live Streaming Gift / Bullet-Comment System
+
+**Difficulty:** Hard
+**Topics:** system-design, real-time, fanout, monetization, big-data
+**Position:** Senior SWE
+**Years:** T3-T4
+
+**Question:** Design the gift-sending and bullet-comment system for Tencent Video / NOW Live where viewers can send virtual gifts (with payment) and chat in real-time during a live broadcast.
+
+**Approach:** Gift purchase: transactional flow (debit user wallet → record gift event → broadcast). Wallet write is the consistency-critical step; rest can be eventual. Comment/gift event → per-stream Kafka topic → fan out to viewer WebSocket gateways. On very hot streams (1M+ concurrent), throttle and sample for display; persist all to DB. Big-spender effects (special animations) prioritized in the broadcast queue. Discuss: anti-fraud on gifts (sudden spike from one user = potential card fraud), tax/compliance for streamer revenue share, and graceful degradation when the stream becomes too hot (drop low-value comments first).
+
+**Tags:** #system-design
+
+---
+
+## Behavioral
+
+### 57. Tell me about a time you collaborated across teams
+
+**Difficulty:** Medium
+**Topics:** behavioral, collaboration, cross-bg
+**Position:** SWE
+**Years:** T2-T3
+
+**Question:** Tell me about a time you had to work with another team or BG to deliver a project. What was hard about it?
+
+**Approach:** Tencent's BG structure makes cross-team work culturally hard — they probe whether you can navigate it. Show: (1) you built the relationship early (didn't just escalate when blocked), (2) you understood their priorities (different OKRs, different leadership), (3) you proposed a win-win framing, (4) you delivered together. Mentioning specific friction (resource allocation, schedule misalignment) and how you resolved it lands well.
+
+**Tags:** #behavioral
+
+---
+
+### 58. Time you proactively fixed something not in your scope
+
+**Difficulty:** Medium
+**Topics:** behavioral, ownership, initiative
+**Position:** SWE
+**Years:** T2-T3
+
+**Question:** Tell me about a time you noticed a problem and fixed it without being asked.
+
+**Approach:** Tencent values "主动" (proactive) engineers. Show: (1) the specific problem (production bug, tech debt, missing tool), (2) you didn't wait for prioritization — you spent personal time or off-cycle, (3) you made sure your fix was reviewed and adopted (didn't just commit cowboy-style), (4) impact: it helped the team measurably. Don't pick a story where the fix was actually your direct responsibility.
+
+**Tags:** #behavioral
+
+---
+
+### 59. Time you handled a production incident
+
+**Difficulty:** Medium
+**Topics:** behavioral, incident-response, ownership, ops
+**Position:** Senior SWE
+**Years:** T3-T4
+
+**Question:** Walk me through a production incident you led. What happened, how did you respond, and what changed afterward?
+
+**Approach:** Pick a real incident (not a "near miss"). Show: (1) you triaged with cool head — mitigation first, RCA later, (2) you communicated to stakeholders during (status updates every 15-30 min), (3) you ran a blameless retro that produced concrete action items, (4) you followed up on the action items not just filed them. Quantify the impact (downtime minutes, users affected) and the post-fix improvement (MTTR cut by X).
+
+**Tags:** #behavioral
+
+---
+
+### 60. Why Tencent
 
 **Difficulty:** Easy
-**Topics:** bit-manipulation, math
-**Position:** T2-3
-**Years:** T2
-
-**Question:** Given an integer `n`, return true if it is a power of four.
-
-**Approach:** `n > 0 && (n & (n-1)) == 0 && (n & 0x55555555) != 0`. First two ensure power of 2; mask ensures the single bit is in an odd position. O(1). Common bit-trick warm-up.
-
-**Python:**
-```python
-def is_power_of_four(n: int) -> bool:
-    return n > 0 and (n & (n - 1)) == 0 and (n & 0x55555555) != 0
-```
-
-**TypeScript:**
-```typescript
-function isPowerOfFour(n: number): boolean {
-  return n > 0 && (n & (n - 1)) === 0 && (n & 0x55555555) !== 0;
-}
-```
-
-**Java:**
-```java
-boolean isPowerOfFour(int n) {
-  return n > 0 && (n & (n - 1)) == 0 && (n & 0x55555555) != 0;
-}
-```
-
-**Key points:**
-- First two checks: `n` is a positive power of 2.
-- Mask `0x55555555` has bits only at even positions (1, 4, 16, ...).
-- All three conditions are O(1) — no loops or divisions.
-
-**Tags:** #algorithm
-
----
-
-### 60. Skill-Based Matchmaking (Balanced Team Split)
-
-**Difficulty:** Hard
-**Topics:** dp, partition, subset-sum, gaming
-**Position:** T3-1
-**Years:** T3-T4
-
-**Question:** Given an array of `2n` player skill ratings, split them into two teams of size `n` such that the absolute difference of team skill sums is minimized. This mirrors Honor of Kings matchmaking.
-
-**Approach:** Subset-sum DP constrained to exactly `n` elements. `dp[k][s]` = achievable to pick `k` elements summing to `s`. After filling, find achievable `s` closest to `total / 2` with `k = n`. O(n * total). For larger inputs, heuristic / approximation. Bring up MMR variance, queue time vs match quality trade-off.
-
-**Python:**
-```python
-def min_team_diff(skills: list[int]) -> int:
-    total = sum(skills)
-    n = len(skills) // 2
-    # dp[k] = set of sums achievable using exactly k elements
-    dp: list[set[int]] = [set() for _ in range(n + 1)]
-    dp[0].add(0)
-    for s in skills:
-        for k in range(n, 0, -1):
-            for prev in dp[k - 1]:
-                dp[k].add(prev + s)
-    best = total
-    for s in dp[n]:
-        best = min(best, abs(total - 2 * s))
-    return best
-```
-
-**TypeScript:**
-```typescript
-function minTeamDiff(skills: number[]): number {
-  const total = skills.reduce((a, b) => a + b, 0);
-  const n = skills.length / 2;
-  const dp: Array<Set<number>> = Array.from({ length: n + 1 }, () => new Set());
-  dp[0].add(0);
-  for (const s of skills) {
-    for (let k = n; k >= 1; k--) {
-      for (const prev of dp[k - 1]) dp[k].add(prev + s);
-    }
-  }
-  let best = total;
-  for (const s of dp[n]) best = Math.min(best, Math.abs(total - 2 * s));
-  return best;
-}
-```
-
-**Java:**
-```java
-int minTeamDiff(int[] skills) {
-  int total = 0;
-  for (int s : skills) total += s;
-  int n = skills.length / 2;
-  List<Set<Integer>> dp = new ArrayList<>();
-  for (int i = 0; i <= n; i++) dp.add(new HashSet<>());
-  dp.get(0).add(0);
-  for (int s : skills) {
-    for (int k = n; k >= 1; k--) {
-      Set<Integer> add = new HashSet<>();
-      for (int prev : dp.get(k - 1)) add.add(prev + s);
-      dp.get(k).addAll(add);
-    }
-  }
-  int best = total;
-  for (int s : dp.get(n)) best = Math.min(best, Math.abs(total - 2 * s));
-  return best;
-}
-```
-
-**Key points:**
-- Iterate `k` descending so each player contributes to at most one new state per round.
-- Final answer is the achievable team-1 sum closest to `total / 2`.
-- For larger inputs swap to bit-DP or randomized search for tractability.
-
-**Tags:** #algorithm
-
----
-
-### 61. Minimum Spanning Tree for Game Server Topology
-
-**Difficulty:** Medium
-**Topics:** graph, mst, kruskal, prim, union-find
-**Position:** T2-3
+**Topics:** behavioral, motivation, fit
+**Position:** SWE
 **Years:** T2-T3
 
-**Question:** Given `n` game-server nodes and the cost of laying a dedicated link between each pair, return the minimum total cost to interconnect them all.
+**Question:** Why do you want to join Tencent specifically, and which BG/team?
 
-**Approach:** MST via Kruskal: sort edges, union-find to add cheapest non-cycling edges until `n-1` chosen. O(E log E). Prim with min-heap is O(E log V) — preferable for dense graphs. Tencent infra angle: discuss latency-weighted vs cost-weighted edges.
+**Approach:** Show specificity. Don't say "big company" or "stock." Pick: (1) a specific product (WeChat ecosystem, a game you love and want to work on), (2) a technical area Tencent is strong in (game tech, IM, cloud), (3) the BG culture (IEG for games, WXG for WeChat — quite different). Mentioning open-source contributions Tencent has made (TARS, ncnn for ML inference) shows you've done homework.
 
-**Python:**
-```python
-def min_spanning_tree(n: int, edges: list[tuple[int, int, int]]) -> int:
-    parent = list(range(n))
-    def find(x: int) -> int:
-        while parent[x] != x:
-            parent[x] = parent[parent[x]]
-            x = parent[x]
-        return x
-    edges.sort(key=lambda e: e[2])
-    total, used = 0, 0
-    for u, v, w in edges:
-        ru, rv = find(u), find(v)
-        if ru != rv:
-            parent[ru] = rv
-            total += w
-            used += 1
-            if used == n - 1:
-                break
-    return total if used == n - 1 else -1
-```
-
-**TypeScript:**
-```typescript
-function minSpanningTree(n: number, edges: Array<[number, number, number]>): number {
-  const parent = Array.from({ length: n }, (_, i) => i);
-  const find = (x: number): number => {
-    while (parent[x] !== x) { parent[x] = parent[parent[x]]; x = parent[x]; }
-    return x;
-  };
-  edges.sort((a, b) => a[2] - b[2]);
-  let total = 0, used = 0;
-  for (const [u, v, w] of edges) {
-    const ru = find(u), rv = find(v);
-    if (ru !== rv) {
-      parent[ru] = rv;
-      total += w;
-      if (++used === n - 1) break;
-    }
-  }
-  return used === n - 1 ? total : -1;
-}
-```
-
-**Java:**
-```java
-int[] parMST;
-
-int minSpanningTree(int n, int[][] edges) {
-  parMST = new int[n];
-  for (int i = 0; i < n; i++) parMST[i] = i;
-  Arrays.sort(edges, (a, b) -> a[2] - b[2]);
-  int total = 0, used = 0;
-  for (int[] e : edges) {
-    int ru = findMST(e[0]), rv = findMST(e[1]);
-    if (ru != rv) {
-      parMST[ru] = rv;
-      total += e[2];
-      if (++used == n - 1) break;
-    }
-  }
-  return used == n - 1 ? total : -1;
-}
-
-int findMST(int x) {
-  while (parMST[x] != x) { parMST[x] = parMST[parMST[x]]; x = parMST[x]; }
-  return x;
-}
-```
-
-**Key points:**
-- Sort edges then add the smallest that joins two different components.
-- Stop early once `n - 1` edges are committed.
-- Return -1 when the graph is disconnected (fewer than `n - 1` valid unions).
-
-**Tags:** #algorithm
+**Tags:** #behavioral
 
 ---
 
-### 62. Maximum Bipartite Matching (Player-to-Server Assignment)
+## Domain Knowledge
+
+### 61. TCP deep dive: why does TCP throughput drop on a high-RTT link?
 
 **Difficulty:** Hard
-**Topics:** graph, matching, hungarian, bipartite, dfs
-**Position:** T3-1
+**Topics:** networking, tcp, performance
+**Position:** Senior SWE
 **Years:** T3-T4
 
-**Question:** Given players and game servers with compatibility constraints (region, ping threshold), assign the maximum number of players to servers (1 player ↔ 1 server within capacity).
+**Question:** A service running cross-region (Shanghai → US-East, 200ms RTT) shows TCP throughput much lower than the available bandwidth. Why? How would you fix it?
 
-**Approach:** Bipartite matching via Hungarian algorithm (Kuhn's): for each unmatched player, DFS through unmatched/augmenting paths, swap matches along the path if augmenting path exists. O(V * E). For weighted maximum matching, Hungarian with potentials or min-cost max-flow. Discuss using Hopcroft–Karp for O(E√V) if scale demands.
+**Approach:** Bandwidth-Delay Product (BDP): on a high-RTT link, throughput = window_size / RTT. Default TCP send/recv buffers may be too small — calculate: 1 Gbps × 0.2s = 200 Mbits = 25 MB BDP, but default Linux send buffer is ~4MB. Fixes: (1) increase `net.ipv4.tcp_rmem` / `tcp_wmem`, (2) enable TCP window scaling (RFC 7323 — usually on by default but check), (3) switch congestion control algorithm to BBR (better on high-BDP than CUBIC), (4) use parallel connections to multiply effective throughput, (5) for true bulk transfer, consider QUIC or UDP-based protocols. Mention measurement: `tc`, `ss -i`, `iperf3` to baseline. Tencent has built custom transport protocols precisely for this reason (e.g., for cross-region game traffic).
 
-**Python:**
-```python
-def max_bipartite_matching(num_players: int, num_servers: int, edges: list[tuple[int, int]]) -> int:
-    graph: list[list[int]] = [[] for _ in range(num_players)]
-    for p, s in edges:
-        graph[p].append(s)
-    match_to: list[int] = [-1] * num_servers
-    def try_assign(p: int, seen: list[bool]) -> bool:
-        for s in graph[p]:
-            if seen[s]:
-                continue
-            seen[s] = True
-            if match_to[s] == -1 or try_assign(match_to[s], seen):
-                match_to[s] = p
-                return True
-        return False
-    matched = 0
-    for p in range(num_players):
-        seen = [False] * num_servers
-        if try_assign(p, seen):
-            matched += 1
-    return matched
-```
+**Tags:** #domain-knowledge
 
-**TypeScript:**
-```typescript
-function maxBipartiteMatching(numPlayers: number, numServers: number, edges: Array<[number, number]>): number {
-  const graph: number[][] = Array.from({ length: numPlayers }, () => []);
-  for (const [p, s] of edges) graph[p].push(s);
-  const matchTo = new Array<number>(numServers).fill(-1);
-  const tryAssign = (p: number, seen: boolean[]): boolean => {
-    for (const s of graph[p]) {
-      if (seen[s]) continue;
-      seen[s] = true;
-      if (matchTo[s] === -1 || tryAssign(matchTo[s], seen)) {
-        matchTo[s] = p;
-        return true;
-      }
-    }
-    return false;
-  };
-  let matched = 0;
-  for (let p = 0; p < numPlayers; p++) {
-    const seen = new Array<boolean>(numServers).fill(false);
-    if (tryAssign(p, seen)) matched++;
-  }
-  return matched;
-}
-```
+---
 
-**Java:**
-```java
-List<List<Integer>> graphBM;
-int[] matchTo;
+### 62. Anti-cheat in a real-time multiplayer game
 
-int maxBipartiteMatching(int numPlayers, int numServers, int[][] edges) {
-  graphBM = new ArrayList<>();
-  for (int i = 0; i < numPlayers; i++) graphBM.add(new ArrayList<>());
-  for (int[] e : edges) graphBM.get(e[0]).add(e[1]);
-  matchTo = new int[numServers];
-  Arrays.fill(matchTo, -1);
-  int matched = 0;
-  for (int p = 0; p < numPlayers; p++) {
-    boolean[] seen = new boolean[numServers];
-    if (tryAssign(p, seen)) matched++;
-  }
-  return matched;
-}
+**Difficulty:** Hard
+**Topics:** gaming, security, anti-cheat
+**Position:** Senior SWE
+**Years:** T3-T4
 
-boolean tryAssign(int p, boolean[] seen) {
-  for (int s : graphBM.get(p)) {
-    if (seen[s]) continue;
-    seen[s] = true;
-    if (matchTo[s] == -1 || tryAssign(matchTo[s], seen)) { matchTo[s] = p; return true; }
-  }
-  return false;
-}
-```
+**Question:** A new PUBG Mobile cheating tool is widespread (aimbot + wallhack). Walk through how you'd architect anti-cheat to detect and respond.
 
-**Key points:**
-- Reset `seen` per player so each augmenting search is independent.
-- Augmenting: bump an existing match if it can shift to another server.
-- Hopcroft-Karp shaves to O(E sqrt(V)) for very large bipartite graphs.
+**Approach:** Multi-layered: (1) **Server authority** — never trust client-reported damage/position; server runs hit detection. Wallhack requires the *client* to render data it shouldn't have — fix by not sending data about enemies the player can't see (visibility culling). Trade-off: more server CPU. (2) **Behavioral detection** — server-side ML on aim trajectories, headshot ratios, reaction times; flag outliers for review/shadowban. (3) **Client integrity** — anti-tampering (code obfuscation, native checksums, kernel-mode anti-cheat for PC). Detect known cheat signatures. (4) **Reporting + replay** — player reports trigger server-side replay review, sometimes by ML. (5) **Soft penalties** — shadowban (matchmake cheaters together) before hardban (gives cheat-makers less signal to iterate). Discuss false-positive cost (banning honest players is catastrophic for retention) and the perpetual cat-and-mouse nature.
 
-**Tags:** #algorithm
+**Tags:** #domain-knowledge
 
 ---
 
