@@ -409,9 +409,278 @@ ListNode mergeKLists(ListNode[] lists) {
 
 ---
 
+### 6. 两数相加（Add Two Numbers）
+
+**难度：** 中等
+**主题：** linked-list, math, two-pointer
+**岗位：** OD / SWE
+**级别：** 15-16（高级）
+
+**问题：** 两个非空链表按逆序存储两个非负整数，每个节点存一位数字。将它们相加并以链表形式返回结果。
+
+**思路：** 同时遍历两个链表并维护进位，每个位置生成一个结果节点；只要任一链表还有节点或存在进位就继续。时间 O(max(n, m))，空间 O(max(n, m))（结果链表）。逆序存储意味着最低位在最前，无需预先反转。
+
+**Python：**
+```python
+class ListNode:
+    def __init__(self, val: int = 0, next: "ListNode | None" = None) -> None:
+        self.val, self.next = val, next
+
+def add_two_numbers(a: ListNode | None, b: ListNode | None) -> ListNode | None:
+    dummy = ListNode()
+    tail, carry = dummy, 0
+    while a or b or carry:
+        s = carry + (a.val if a else 0) + (b.val if b else 0)
+        carry, digit = divmod(s, 10)
+        tail.next = ListNode(digit)
+        tail = tail.next
+        a = a.next if a else None
+        b = b.next if b else None
+    return dummy.next
+```
+
+**TypeScript：**
+```typescript
+class ListNode {
+  val: number; next: ListNode | null;
+  constructor(val = 0, next: ListNode | null = null) { this.val = val; this.next = next; }
+}
+
+function addTwoNumbers(a: ListNode | null, b: ListNode | null): ListNode | null {
+  const dummy = new ListNode();
+  let tail = dummy, carry = 0;
+  while (a || b || carry) {
+    const s = carry + (a?.val ?? 0) + (b?.val ?? 0);
+    carry = Math.floor(s / 10);
+    tail.next = new ListNode(s % 10);
+    tail = tail.next;
+    a = a?.next ?? null;
+    b = b?.next ?? null;
+  }
+  return dummy.next;
+}
+```
+
+**Java：**
+```java
+class ListNode {
+  int val; ListNode next;
+  ListNode(int val) { this.val = val; }
+}
+
+ListNode addTwoNumbers(ListNode a, ListNode b) {
+  ListNode dummy = new ListNode(0), tail = dummy;
+  int carry = 0;
+  while (a != null || b != null || carry != 0) {
+    int s = carry + (a != null ? a.val : 0) + (b != null ? b.val : 0);
+    carry = s / 10;
+    tail.next = new ListNode(s % 10);
+    tail = tail.next;
+    if (a != null) a = a.next;
+    if (b != null) b = b.next;
+  }
+  return dummy.next;
+}
+```
+
+**要点：**
+- 循环条件必须包含 `carry`，这样最高位进位（如 5+5）才能生成新节点。
+- 哑头节点避免对首个结果节点做特殊处理。
+- 数字逆序存储使得可以从低位到高位相加，无需反转链表。
+
+**标签：** #algorithm
+
+---
+
+### 7. 复制带随机指针的链表（Copy List with Random Pointer）
+
+**难度：** 中等
+**主题：** linked-list, hash-table
+**岗位：** OD / SWE
+**级别：** 15-16（高级）
+
+**问题：** 每个节点有一个 `next` 指针和一个 `random` 指针，`random` 可指向任意节点或为空。返回该链表的深拷贝。
+
+**思路：** O(1) 空间的技巧是交织复制节点：把每个副本插到其原节点之后（A -> A' -> B -> B'），这样 `curr.random.next` 恰好就是随机目标的副本；随后连接随机指针，最后拆分两条链表。两趟遍历，时间 O(n)，除输出外空间 O(1)。（用哈希表 original->copy 是更简单的 O(n) 空间方案。）
+
+**Python：**
+```python
+class Node:
+    def __init__(self, val: int, next: "Node | None" = None, random: "Node | None" = None) -> None:
+        self.val, self.next, self.random = val, next, random
+
+def copy_random_list(head: Node | None) -> Node | None:
+    if not head:
+        return None
+    cur = head
+    while cur:
+        cur.next = Node(cur.val, cur.next)
+        cur = cur.next.next
+    cur = head
+    while cur:
+        if cur.random:
+            cur.next.random = cur.random.next
+        cur = cur.next.next
+    new_head = head.next
+    cur = head
+    while cur:
+        copy = cur.next
+        cur.next = copy.next
+        copy.next = copy.next.next if copy.next else None
+        cur = cur.next
+    return new_head
+```
+
+**TypeScript：**
+```typescript
+class Node {
+  val: number; next: Node | null; random: Node | null;
+  constructor(val: number, next: Node | null = null, random: Node | null = null) {
+    this.val = val; this.next = next; this.random = random;
+  }
+}
+
+function copyRandomList(head: Node | null): Node | null {
+  if (!head) return null;
+  for (let cur: Node | null = head; cur; cur = cur.next!.next)
+    cur.next = new Node(cur.val, cur.next);
+  for (let cur: Node | null = head; cur; cur = cur.next!.next)
+    if (cur.random) cur.next!.random = cur.random.next;
+  const newHead = head.next;
+  for (let cur: Node | null = head; cur; cur = cur.next) {
+    const copy = cur.next!;
+    cur.next = copy.next;
+    copy.next = copy.next ? copy.next.next : null;
+  }
+  return newHead;
+}
+```
+
+**Java：**
+```java
+class Node {
+  int val; Node next, random;
+  Node(int val) { this.val = val; }
+}
+
+Node copyRandomList(Node head) {
+  if (head == null) return null;
+  for (Node cur = head; cur != null; cur = cur.next.next) {
+    Node copy = new Node(cur.val);
+    copy.next = cur.next;
+    cur.next = copy;
+  }
+  for (Node cur = head; cur != null; cur = cur.next.next)
+    if (cur.random != null) cur.next.random = cur.random.next;
+  Node newHead = head.next;
+  for (Node cur = head; cur != null; cur = cur.next) {
+    Node copy = cur.next;
+    cur.next = copy.next;
+    copy.next = copy.next != null ? copy.next.next : null;
+  }
+  return newHead;
+}
+```
+
+**要点：**
+- 交织复制使得可以通过 `cur.random.next` 找到随机目标的副本，无需哈希表。
+- 必须先连接随机指针再拆分，否则交织结构会被破坏。
+- 拆分时恢复原链表的 `next` 指针，保证输入不被修改。
+
+**标签：** #algorithm
+
+---
+
+### 8. 重排链表（Reorder List）
+
+**难度：** 中等
+**主题：** linked-list, two-pointer
+**岗位：** OD / SWE
+**级别：** 15-16（高级）
+
+**问题：** 给定链表 L0 -> L1 -> ... -> Ln-1 -> Ln，原地将其重排为 L0 -> Ln -> L1 -> Ln-1 -> L2 -> ...，不得修改节点的值。
+
+**思路：** 三个经典步骤：用快慢指针找中点，反转后半段，再将两半交替合并。时间 O(n)，空间 O(1)。纯指针操作，是考察原地链表操作能力的常见题。
+
+**Python：**
+```python
+class ListNode:
+    def __init__(self, val: int = 0, next: "ListNode | None" = None) -> None:
+        self.val, self.next = val, next
+
+def reorder_list(head: ListNode | None) -> None:
+    if not head or not head.next:
+        return
+    slow, fast = head, head
+    while fast.next and fast.next.next:
+        slow, fast = slow.next, fast.next.next
+    prev, cur = None, slow.next
+    slow.next = None
+    while cur:
+        cur.next, prev, cur = prev, cur, cur.next
+    first, second = head, prev
+    while second:
+        first.next, second.next, first, second = second, first.next, first.next, second.next
+```
+
+**TypeScript：**
+```typescript
+class ListNode {
+  val: number; next: ListNode | null;
+  constructor(val = 0, next: ListNode | null = null) { this.val = val; this.next = next; }
+}
+
+function reorderList(head: ListNode | null): void {
+  if (!head || !head.next) return;
+  let slow = head, fast = head;
+  while (fast.next && fast.next.next) { slow = slow.next!; fast = fast.next.next; }
+  let prev: ListNode | null = null, cur = slow.next;
+  slow.next = null;
+  while (cur) { const nxt = cur.next; cur.next = prev; prev = cur; cur = nxt; }
+  let first: ListNode | null = head, second = prev;
+  while (second) {
+    const f = first!.next, s = second.next;
+    first!.next = second; second.next = f;
+    first = f; second = s;
+  }
+}
+```
+
+**Java：**
+```java
+class ListNode {
+  int val; ListNode next;
+  ListNode(int val) { this.val = val; }
+}
+
+void reorderList(ListNode head) {
+  if (head == null || head.next == null) return;
+  ListNode slow = head, fast = head;
+  while (fast.next != null && fast.next.next != null) { slow = slow.next; fast = fast.next.next; }
+  ListNode prev = null, cur = slow.next;
+  slow.next = null;
+  while (cur != null) { ListNode nxt = cur.next; cur.next = prev; prev = cur; cur = nxt; }
+  ListNode first = head, second = prev;
+  while (second != null) {
+    ListNode f = first.next, s = second.next;
+    first.next = second; second.next = f;
+    first = f; second = s;
+  }
+}
+```
+
+**要点：**
+- 在中点处断链（`slow.next = null`），使两半在合并前相互独立。
+- 使用快慢指针时前半段长度 >= 后半段，因此合并循环可以以 `second` 为终止条件。
+- 全部通过指针重连原地完成，额外空间 O(1)。
+
+**标签：** #algorithm
+
+---
+
 ## 树
 
-### 6. 翻转二叉树（Invert Binary Tree）
+### 9. 翻转二叉树（Invert Binary Tree）
 
 **难度：** 简单
 **主题：** tree, recursion, dfs
@@ -478,7 +747,7 @@ TreeNode invertTree(TreeNode root) {
 
 ---
 
-### 7. 二叉树的最大深度（Maximum Depth of Binary Tree）
+### 10. 二叉树的最大深度（Maximum Depth of Binary Tree）
 
 **难度：** 简单
 **主题：** tree, dfs, recursion
@@ -537,7 +806,7 @@ int maxDepth(TreeNode root) {
 
 ---
 
-### 8. 验证二叉搜索树（Validate Binary Search Tree）
+### 11. 验证二叉搜索树（Validate Binary Search Tree）
 
 **难度：** 中等
 **主题：** tree, dfs, bst
@@ -609,7 +878,7 @@ boolean check(TreeNode n, long lo, long hi) {
 
 ---
 
-### 9. 二叉树的层序遍历（Binary Tree Level Order Traversal）
+### 12. 二叉树的层序遍历（Binary Tree Level Order Traversal）
 
 **难度：** 中等
 **主题：** tree, bfs, queue
@@ -707,7 +976,7 @@ List<List<Integer>> levelOrder(TreeNode root) {
 
 ---
 
-### 10. 二叉树的最近公共祖先（Lowest Common Ancestor of a Binary Tree）
+### 13. 二叉树的最近公共祖先（Lowest Common Ancestor of a Binary Tree）
 
 **难度：** 中等
 **主题：** tree, dfs, recursion
@@ -776,7 +1045,7 @@ TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
 
 ---
 
-### 11. 实现 Trie（前缀树）（Implement Trie）
+### 14. 实现 Trie（前缀树）（Implement Trie）
 
 **难度：** 中等
 **主题：** trie, design, string
@@ -893,9 +1162,399 @@ class Trie {
 
 ---
 
+### 15. 二叉树的直径（Diameter of Binary Tree）
+
+**难度：** 简单
+**主题：** tree, dfs, recursion
+**岗位：** OD / SWE
+**级别：** 13-14（初级）
+
+**问题：** 给定二叉树的根节点，返回其直径：任意两节点间最长路径的边数（该路径不一定经过根节点）。
+
+**思路：** 后序 DFS 在返回每个节点高度的同时更新全局最优值。经过某节点的最长路径为 `左高 + 右高`（以边计），而该节点返回的高度为 `1 + max(左, 右)`。仅一次遍历，时间 O(n)，空间 O(h)。
+
+**Python：**
+```python
+class TreeNode:
+    def __init__(self, val: int = 0, left=None, right=None) -> None:
+        self.val, self.left, self.right = val, left, right
+
+def diameter_of_binary_tree(root: TreeNode | None) -> int:
+    best = 0
+    def height(node: TreeNode | None) -> int:
+        nonlocal best
+        if not node:
+            return 0
+        l, r = height(node.left), height(node.right)
+        best = max(best, l + r)
+        return 1 + max(l, r)
+    height(root)
+    return best
+```
+
+**TypeScript：**
+```typescript
+class TreeNode {
+  val: number; left: TreeNode | null; right: TreeNode | null;
+  constructor(val = 0, left: TreeNode | null = null, right: TreeNode | null = null) {
+    this.val = val; this.left = left; this.right = right;
+  }
+}
+
+function diameterOfBinaryTree(root: TreeNode | null): number {
+  let best = 0;
+  const height = (node: TreeNode | null): number => {
+    if (!node) return 0;
+    const l = height(node.left), r = height(node.right);
+    best = Math.max(best, l + r);
+    return 1 + Math.max(l, r);
+  };
+  height(root);
+  return best;
+}
+```
+
+**Java：**
+```java
+class TreeNode {
+  int val; TreeNode left, right;
+  TreeNode(int val) { this.val = val; }
+}
+
+int best = 0;
+int diameterOfBinaryTree(TreeNode root) {
+  height(root);
+  return best;
+}
+
+int height(TreeNode node) {
+  if (node == null) return 0;
+  int l = height(node.left), r = height(node.right);
+  best = Math.max(best, l + r);
+  return 1 + Math.max(l, r);
+}
+```
+
+**要点：**
+- 直径按边计数，故合并子树高度用 `l + r` 而非 `l + r + 1`。
+- 一次后序遍历同时求出高度与答案：时间 O(n)，栈空间 O(h)。
+
+**标签：** #algorithm
+
+---
+
+### 16. 二叉树的右视图（Binary Tree Right Side View）
+
+**难度：** 中等
+**主题：** tree, bfs, dfs
+**岗位：** OD / SWE
+**级别：** 15-16（高级）
+
+**问题：** 给定二叉树的根节点，返回从右侧观察这棵树时自上而下能看到的节点值。
+
+**思路：** 逐层 BFS，取每层最后一个节点，即为该层最右可见节点。或采用先右后左的 DFS，记录每个深度首次遇到的节点。时间 O(n)，空间 O(n)（最宽层的队列）或 O(h)（DFS）。
+
+**Python：**
+```python
+from collections import deque
+
+class TreeNode:
+    def __init__(self, val: int = 0, left=None, right=None) -> None:
+        self.val, self.left, self.right = val, left, right
+
+def right_side_view(root: TreeNode | None) -> list[int]:
+    if not root:
+        return []
+    view, q = [], deque([root])
+    while q:
+        n = len(q)
+        for i in range(n):
+            node = q.popleft()
+            if i == n - 1:
+                view.append(node.val)
+            if node.left:
+                q.append(node.left)
+            if node.right:
+                q.append(node.right)
+    return view
+```
+
+**TypeScript：**
+```typescript
+class TreeNode {
+  val: number; left: TreeNode | null; right: TreeNode | null;
+  constructor(val = 0, left: TreeNode | null = null, right: TreeNode | null = null) {
+    this.val = val; this.left = left; this.right = right;
+  }
+}
+
+function rightSideView(root: TreeNode | null): number[] {
+  if (!root) return [];
+  const view: number[] = [];
+  let level: TreeNode[] = [root];
+  while (level.length) {
+    view.push(level[level.length - 1].val);
+    const next: TreeNode[] = [];
+    for (const node of level) {
+      if (node.left) next.push(node.left);
+      if (node.right) next.push(node.right);
+    }
+    level = next;
+  }
+  return view;
+}
+```
+
+**Java：**
+```java
+import java.util.*;
+
+class TreeNode {
+  int val; TreeNode left, right;
+  TreeNode(int val) { this.val = val; }
+}
+
+List<Integer> rightSideView(TreeNode root) {
+  List<Integer> view = new ArrayList<>();
+  if (root == null) return view;
+  Queue<TreeNode> q = new LinkedList<>();
+  q.offer(root);
+  while (!q.isEmpty()) {
+    int n = q.size();
+    for (int i = 0; i < n; i++) {
+      TreeNode node = q.poll();
+      if (i == n - 1) view.add(node.val);
+      if (node.left != null) q.offer(node.left);
+      if (node.right != null) q.offer(node.right);
+    }
+  }
+  return view;
+}
+```
+
+**要点：**
+- 每层最右可见节点是 BFS 中该层最后出队的节点，不一定是右孩子。
+- 先右后左的 DFS 配合按深度索引的结果，可用 O(h) 额外空间得到同样答案。
+
+**标签：** #algorithm
+
+---
+
+### 17. 二叉搜索树中第 K 小的元素（Kth Smallest Element in a BST）
+
+**难度：** 中等
+**主题：** tree, bst, dfs
+**岗位：** OD / SWE
+**级别：** 15-16（高级）
+
+**问题：** 给定二叉搜索树的根节点与整数 k，返回所有节点值中第 k 小（从 1 计数）的值。
+
+**思路：** BST 的中序遍历按升序访问节点值，因此在第 k 个处停止即可。用显式栈的迭代中序遍历可提前退出。时间 O(h + k)，空间 O(h)。
+
+**Python：**
+```python
+class TreeNode:
+    def __init__(self, val: int = 0, left=None, right=None) -> None:
+        self.val, self.left, self.right = val, left, right
+
+def kth_smallest(root: TreeNode | None, k: int) -> int:
+    stack, node = [], root
+    while stack or node:
+        while node:
+            stack.append(node)
+            node = node.left
+        node = stack.pop()
+        k -= 1
+        if k == 0:
+            return node.val
+        node = node.right
+    raise ValueError("k out of range")
+```
+
+**TypeScript：**
+```typescript
+class TreeNode {
+  val: number; left: TreeNode | null; right: TreeNode | null;
+  constructor(val = 0, left: TreeNode | null = null, right: TreeNode | null = null) {
+    this.val = val; this.left = left; this.right = right;
+  }
+}
+
+function kthSmallest(root: TreeNode | null, k: number): number {
+  const stack: TreeNode[] = [];
+  let node = root;
+  while (stack.length || node) {
+    while (node) {
+      stack.push(node);
+      node = node.left;
+    }
+    node = stack.pop()!;
+    if (--k === 0) return node.val;
+    node = node.right;
+  }
+  throw new Error("k out of range");
+}
+```
+
+**Java：**
+```java
+import java.util.*;
+
+class TreeNode {
+  int val; TreeNode left, right;
+  TreeNode(int val) { this.val = val; }
+}
+
+int kthSmallest(TreeNode root, int k) {
+  Deque<TreeNode> stack = new ArrayDeque<>();
+  TreeNode node = root;
+  while (!stack.isEmpty() || node != null) {
+    while (node != null) {
+      stack.push(node);
+      node = node.left;
+    }
+    node = stack.pop();
+    if (--k == 0) return node.val;
+    node = node.right;
+  }
+  throw new IllegalArgumentException("k out of range");
+}
+```
+
+**要点：**
+- BST 的中序遍历产生升序序列，故弹出的第 k 个节点即为答案。
+- 迭代栈在 k 归零时立即停止：时间 O(h + k)，空间 O(h)。
+
+**标签：** #algorithm
+
+---
+
+### 18. 二叉树的序列化与反序列化（Serialize and Deserialize Binary Tree）
+
+**难度：** 困难
+**主题：** tree, dfs, design
+**岗位：** OD / SWE
+**级别：** 17-18（专家）
+
+**问题：** 设计算法将二叉树序列化为字符串，并能将该字符串反序列化还原为原始树结构。节点值可能重复，节点可能为空。
+
+**思路：** 前序 DFS 输出每个值，并为空孩子输出哨兵，得到逗号分隔的字符串。反序列化按相同的前序顺序消费 token，依次重建根、左子树、右子树。双向均为时间 O(n)、空间 O(n)，与网络设备上持久化配置树时的树到线编码思路一致。
+
+**Python：**
+```python
+class TreeNode:
+    def __init__(self, val: int = 0, left=None, right=None) -> None:
+        self.val, self.left, self.right = val, left, right
+
+def serialize(root: TreeNode | None) -> str:
+    out: list[str] = []
+    def dfs(node: TreeNode | None) -> None:
+        if not node:
+            out.append("#")
+            return
+        out.append(str(node.val))
+        dfs(node.left)
+        dfs(node.right)
+    dfs(root)
+    return ",".join(out)
+
+def deserialize(data: str) -> TreeNode | None:
+    it = iter(data.split(","))
+    def build() -> TreeNode | None:
+        v = next(it)
+        if v == "#":
+            return None
+        node = TreeNode(int(v))
+        node.left = build()
+        node.right = build()
+        return node
+    return build()
+```
+
+**TypeScript：**
+```typescript
+class TreeNode {
+  val: number; left: TreeNode | null; right: TreeNode | null;
+  constructor(val = 0, left: TreeNode | null = null, right: TreeNode | null = null) {
+    this.val = val; this.left = left; this.right = right;
+  }
+}
+
+function serialize(root: TreeNode | null): string {
+  const out: string[] = [];
+  const dfs = (node: TreeNode | null): void => {
+    if (!node) { out.push("#"); return; }
+    out.push(String(node.val));
+    dfs(node.left);
+    dfs(node.right);
+  };
+  dfs(root);
+  return out.join(",");
+}
+
+function deserialize(data: string): TreeNode | null {
+  const tokens = data.split(",");
+  let i = 0;
+  const build = (): TreeNode | null => {
+    const v = tokens[i++];
+    if (v === "#") return null;
+    const node = new TreeNode(Number(v));
+    node.left = build();
+    node.right = build();
+    return node;
+  };
+  return build();
+}
+```
+
+**Java：**
+```java
+import java.util.*;
+
+class TreeNode {
+  int val; TreeNode left, right;
+  TreeNode(int val) { this.val = val; }
+}
+
+String serialize(TreeNode root) {
+  StringBuilder sb = new StringBuilder();
+  dfsSer(root, sb);
+  return sb.toString();
+}
+
+void dfsSer(TreeNode node, StringBuilder sb) {
+  if (node == null) { sb.append("#,"); return; }
+  sb.append(node.val).append(",");
+  dfsSer(node.left, sb);
+  dfsSer(node.right, sb);
+}
+
+TreeNode deserialize(String data) {
+  Deque<String> tokens = new ArrayDeque<>(Arrays.asList(data.split(",")));
+  return build(tokens);
+}
+
+TreeNode build(Deque<String> tokens) {
+  String v = tokens.poll();
+  if (v == null || v.equals("#")) return null;
+  TreeNode node = new TreeNode(Integer.parseInt(v));
+  node.left = build(tokens);
+  node.right = build(tokens);
+  return node;
+}
+```
+
+**要点：**
+- 空节点哨兵使结构无歧义，仅凭前序即可重建整棵树。
+- 序列化与反序列化必须约定相同的遍历顺序，并按该顺序消费 token。
+
+**标签：** #algorithm
+
+---
+
 ## 图
 
-### 12. 岛屿数量（Number of Islands）
+### 19. 岛屿数量（Number of Islands）
 
 **难度：** 中等
 **主题：** graph, dfs, bfs, grid, union-find
@@ -969,7 +1628,7 @@ void sink(char[][] g, int r, int c) {
 
 ---
 
-### 13. 腐烂的橘子（Rotting Oranges）
+### 20. 腐烂的橘子（Rotting Oranges）
 
 **难度：** 中等
 **主题：** graph, bfs, grid
@@ -1072,7 +1731,7 @@ int orangesRotting(int[][] grid) {
 
 ---
 
-### 14. 课程表（Course Schedule）
+### 21. 课程表（Course Schedule）
 
 **难度：** 中等
 **主题：** graph, topological-sort, bfs
@@ -1150,7 +1809,7 @@ boolean canFinish(int numCourses, int[][] prerequisites) {
 
 ---
 
-### 15. 省份数量（并查集）（Number of Provinces）
+### 22. 省份数量（并查集）（Number of Provinces）
 
 **难度：** 中等
 **主题：** union-find, graph, dsu
@@ -1230,7 +1889,7 @@ int find(int[] parent, int x) {
 
 ---
 
-### 16. 数据包路由最短路径（Dijkstra）（Packet Routing Shortest Path）
+### 23. 数据包路由最短路径（Dijkstra）（Packet Routing Shortest Path）
 
 **难度：** 中等
 **主题：** graph, dijkstra, heap, shortest-path
@@ -1314,9 +1973,270 @@ int[] shortestLatencies(int n, int[][] links, int src) {
 
 ---
 
+### 24. 克隆图（Clone Graph）
+
+**难度：** 中等
+**主题：** graph, dfs, hash-table, recursion
+**岗位：** OD / SWE
+**级别：** 15-16（高级）
+
+**问题：** 给定连通无向图中某个节点的引用，返回该图的深拷贝（克隆）。每个节点包含一个值和一个邻居列表。
+
+**思路：** 用 DFS 并用哈希表记录「原节点→克隆节点」的映射，保证每个节点只克隆一次，且能正确处理环。这类似于在华为设备管理中对活跃网络拓扑图做深拷贝。时间 O(V + E)，空间 O(V)。
+
+**Python：**
+```python
+class Node:
+    def __init__(self, val: int = 0, neighbors: list["Node"] | None = None):
+        self.val = val
+        self.neighbors = neighbors or []
+
+def clone_graph(node: "Node | None") -> "Node | None":
+    if node is None:
+        return None
+    clones: dict[Node, Node] = {}
+    def dfs(cur: Node) -> Node:
+        if cur in clones:
+            return clones[cur]
+        copy = Node(cur.val)
+        clones[cur] = copy
+        for nb in cur.neighbors:
+            copy.neighbors.append(dfs(nb))
+        return copy
+    return dfs(node)
+```
+
+**TypeScript：**
+```typescript
+class GNode {
+  val: number;
+  neighbors: GNode[];
+  constructor(val = 0, neighbors: GNode[] = []) {
+    this.val = val;
+    this.neighbors = neighbors;
+  }
+}
+
+function cloneGraph(node: GNode | null): GNode | null {
+  if (node === null) return null;
+  const clones = new Map<GNode, GNode>();
+  const dfs = (cur: GNode): GNode => {
+    const existing = clones.get(cur);
+    if (existing) return existing;
+    const copy = new GNode(cur.val);
+    clones.set(cur, copy);
+    for (const nb of cur.neighbors) copy.neighbors.push(dfs(nb));
+    return copy;
+  };
+  return dfs(node);
+}
+```
+
+**Java：**
+```java
+class Node {
+  int val;
+  List<Node> neighbors;
+  Node(int val) { this.val = val; this.neighbors = new ArrayList<>(); }
+}
+
+Node cloneGraph(Node node) {
+  if (node == null) return null;
+  return dfs(node, new HashMap<>());
+}
+
+Node dfs(Node cur, Map<Node, Node> clones) {
+  if (clones.containsKey(cur)) return clones.get(cur);
+  Node copy = new Node(cur.val);
+  clones.put(cur, copy);
+  for (Node nb : cur.neighbors) copy.neighbors.add(dfs(nb, clones));
+  return copy;
+}
+```
+
+**要点：**
+- 打破环的关键在哈希表：递归邻居之前先把克隆节点登记进去。
+- 用队列做 BFS 也是同样有效的遍历顺序，两者都是 O(V + E)。
+
+**标签：** #algorithm
+
+---
+
+### 25. 有限跳数的最低成本路由（Cheapest Flights Within K Stops）
+
+**难度：** 中等
+**主题：** graph, bellman-ford, shortest-path, dynamic-programming
+**岗位：** OD / SWE
+**级别：** 15-16（高级）
+
+**问题：** 网络有 `n` 个节点和有向链路 `[u, v, w]`（成本为 `w`）。求从 `src` 到 `dst`、最多经过 `k` 个中转跳数的最低成本；若在限制内不可达则返回 `-1`。
+
+**思路：** 用 Bellman-Ford，恰好松弛 `k + 1` 轮。每轮先对距离数组做快照，避免本轮的松弛在同一轮内继续传播，从而严格控制跳数上限。契合电信路由中数据包只能经过有限中继的场景。时间 O(k * E)，空间 O(V)。
+
+**Python：**
+```python
+def cheapest_route(n: int, flights: list[tuple[int, int, int]], src: int, dst: int, k: int) -> int:
+    dist = [float("inf")] * n
+    dist[src] = 0
+    for _ in range(k + 1):
+        tmp = dist[:]
+        for u, v, w in flights:
+            if dist[u] + w < tmp[v]:
+                tmp[v] = dist[u] + w
+        dist = tmp
+    return -1 if dist[dst] == float("inf") else dist[dst]
+```
+
+**TypeScript：**
+```typescript
+function cheapestRoute(n: number, flights: [number, number, number][], src: number, dst: number, k: number): number {
+  let dist = new Array(n).fill(Infinity);
+  dist[src] = 0;
+  for (let i = 0; i <= k; i++) {
+    const tmp = dist.slice();
+    for (const [u, v, w] of flights)
+      if (dist[u] + w < tmp[v]) tmp[v] = dist[u] + w;
+    dist = tmp;
+  }
+  return dist[dst] === Infinity ? -1 : dist[dst];
+}
+```
+
+**Java：**
+```java
+int cheapestRoute(int n, int[][] flights, int src, int dst, int k) {
+  int[] dist = new int[n];
+  Arrays.fill(dist, Integer.MAX_VALUE);
+  dist[src] = 0;
+  for (int i = 0; i <= k; i++) {
+    int[] tmp = dist.clone();
+    for (int[] f : flights)
+      if (dist[f[0]] != Integer.MAX_VALUE && dist[f[0]] + f[2] < tmp[f[1]])
+        tmp[f[1]] = dist[f[0]] + f[2];
+    dist = tmp;
+  }
+  return dist[dst] == Integer.MAX_VALUE ? -1 : dist[dst];
+}
+```
+
+**要点：**
+- 每轮复制 `dist` 是关键；原地松弛会允许超过 `k` 跳。
+- 朴素 Dijkstra 在这里会失败，因为最便宜的路径可能用了超过限制的跳数。
+
+**标签：** #algorithm
+
+---
+
+### 26. 连接所有点的最小成本（Min Cost to Connect All Points）
+
+**难度：** 中等
+**主题：** graph, minimum-spanning-tree, union-find, greedy
+**岗位：** OD / SWE
+**级别：** 15-16（高级）
+
+**问题：** 给定二维平面上的 `points`，连接两点的成本为它们的曼哈顿距离。返回把所有点连通（任意两点可达）的最小总成本。
+
+**思路：** 这是最小生成树问题。构造所有候选边，按成本排序，用 Kruskal + 并查集，每次加入连接两个不同连通分量的最便宜边，直到用满 `n - 1` 条边。这类似于在华为各站点间铺设成本最小的网络骨干。时间 O(n^2 log n)，空间 O(n^2)。
+
+**Python：**
+```python
+def min_cost_connect(points: list[list[int]]) -> int:
+    n = len(points)
+    parent = list(range(n))
+    def find(x: int) -> int:
+        while parent[x] != x:
+            parent[x] = parent[parent[x]]
+            x = parent[x]
+        return x
+    edges = []
+    for i in range(n):
+        for j in range(i + 1, n):
+            cost = abs(points[i][0] - points[j][0]) + abs(points[i][1] - points[j][1])
+            edges.append((cost, i, j))
+    edges.sort()
+    total = used = 0
+    for cost, i, j in edges:
+        ri, rj = find(i), find(j)
+        if ri != rj:
+            parent[ri] = rj
+            total += cost
+            used += 1
+            if used == n - 1:
+                break
+    return total
+```
+
+**TypeScript：**
+```typescript
+function minCostConnect(points: number[][]): number {
+  const n = points.length;
+  const parent = Array.from({ length: n }, (_, i) => i);
+  const find = (x: number): number => {
+    while (parent[x] !== x) { parent[x] = parent[parent[x]]; x = parent[x]; }
+    return x;
+  };
+  const edges: [number, number, number][] = [];
+  for (let i = 0; i < n; i++)
+    for (let j = i + 1; j < n; j++)
+      edges.push([Math.abs(points[i][0] - points[j][0]) + Math.abs(points[i][1] - points[j][1]), i, j]);
+  edges.sort((a, b) => a[0] - b[0]);
+  let total = 0, used = 0;
+  for (const [cost, i, j] of edges) {
+    const ri = find(i), rj = find(j);
+    if (ri !== rj) {
+      parent[ri] = rj;
+      total += cost;
+      if (++used === n - 1) break;
+    }
+  }
+  return total;
+}
+```
+
+**Java：**
+```java
+int[] parent;
+
+int find(int x) {
+  while (parent[x] != x) { parent[x] = parent[parent[x]]; x = parent[x]; }
+  return x;
+}
+
+int minCostConnect(int[][] points) {
+  int n = points.length;
+  parent = new int[n];
+  for (int i = 0; i < n; i++) parent[i] = i;
+  List<int[]> edges = new ArrayList<>();
+  for (int i = 0; i < n; i++)
+    for (int j = i + 1; j < n; j++) {
+      int cost = Math.abs(points[i][0] - points[j][0]) + Math.abs(points[i][1] - points[j][1]);
+      edges.add(new int[] { cost, i, j });
+    }
+  edges.sort((a, b) -> a[0] - b[0]);
+  int total = 0, used = 0;
+  for (int[] e : edges) {
+    int ri = find(e[1]), rj = find(e[2]);
+    if (ri != rj) {
+      parent[ri] = rj;
+      total += e[0];
+      if (++used == n - 1) break;
+    }
+  }
+  return total;
+}
+```
+
+**要点：**
+- 并查集的路径压缩让每次 find 摊还接近 O(1)，排序才是主要开销。
+- 用堆实现的 Prim 是另一种选择，在稠密图上更优，可达 O(n^2)。
+
+**标签：** #algorithm
+
+---
+
 ## 堆 / 优先队列
 
-### 17. 前 K 个高频元素（Top K Frequent Elements）
+### 27. 前 K 个高频元素（Top K Frequent Elements）
 
 **难度：** 中等
 **主题：** heap, hash-table, bucket-sort
@@ -1387,7 +2307,7 @@ int[] topKFrequent(int[] nums, int k) {
 
 ---
 
-### 18. 数组中的第 K 个最大元素（Kth Largest Element in an Array）
+### 28. 数组中的第 K 个最大元素（Kth Largest Element in an Array）
 
 **难度：** 中等
 **主题：** heap, quickselect, sorting
@@ -1439,7 +2359,7 @@ int findKthLargest(int[] nums, int k) {
 
 ---
 
-### 19. 电信信号任务调度（贪心 + 堆）（Telecom Signal Task Scheduling）
+### 29. 电信信号任务调度（贪心 + 堆）（Telecom Signal Task Scheduling）
 
 **难度：** 中等
 **主题：** heap, greedy, intervals
@@ -1500,9 +2420,149 @@ int minUnits(int[][] tasks) {
 
 ---
 
+### 30. 数据流的中位数（Find Median from Data Stream）
+
+**难度：** 困难
+**主题：** heap, design, two-heaps
+**岗位：** OD / SWE（部分嵌入式/网络方向）
+**级别：** 17-18（专家）
+
+**问题：** 设计一个数据结构，支持不断加入整数，并能随时返回当前所有元素的中位数。
+
+**思路：** 用两个堆维护：大顶堆 `small` 存较小的一半，小顶堆 `large` 存较大的一半。插入时先入一个堆再倒手，最后平衡两堆大小，使 `small` 至多比 `large` 多 1 个。取中位数看两堆大小。插入 O(log n)，查询 O(1)。华为云监控、5G 网络指标的实时分位数统计常用类似思路。
+
+**Python：**
+```python
+import heapq
+
+class MedianFinder:
+    def __init__(self) -> None:
+        self.small: list[int] = []  # 大顶堆（存负值）
+        self.large: list[int] = []  # 小顶堆
+
+    def add_num(self, num: int) -> None:
+        heapq.heappush(self.small, -num)
+        heapq.heappush(self.large, -heapq.heappop(self.small))
+        if len(self.large) > len(self.small):
+            heapq.heappush(self.small, -heapq.heappop(self.large))
+
+    def find_median(self) -> float:
+        if len(self.small) > len(self.large):
+            return -self.small[0]
+        return (-self.small[0] + self.large[0]) / 2
+```
+
+**TypeScript：**
+```typescript
+class MedianFinder {
+  private nums: number[] = []; // 无内置堆时用有序数组 + 二分插入
+
+  addNum(num: number): void {
+    let lo = 0, hi = this.nums.length;
+    while (lo < hi) {
+      const mid = (lo + hi) >> 1;
+      if (this.nums[mid] < num) lo = mid + 1; else hi = mid;
+    }
+    this.nums.splice(lo, 0, num);
+  }
+
+  findMedian(): number {
+    const n = this.nums.length, m = n >> 1;
+    return n % 2 ? this.nums[m] : (this.nums[m - 1] + this.nums[m]) / 2;
+  }
+}
+```
+
+**Java：**
+```java
+class MedianFinder {
+  private final PriorityQueue<Integer> small = new PriorityQueue<>(Collections.reverseOrder());
+  private final PriorityQueue<Integer> large = new PriorityQueue<>();
+
+  public void addNum(int num) {
+    small.add(num);
+    large.add(small.poll());
+    if (large.size() > small.size()) small.add(large.poll());
+  }
+
+  public double findMedian() {
+    if (small.size() > large.size()) return small.peek();
+    return (small.peek() + large.peek()) / 2.0;
+  }
+}
+```
+
+**要点：**
+- 双堆平衡：插入 O(log n)，取中位数 O(1)。
+- 关键不变量：`small` 的大小等于或比 `large` 多 1。
+- 无堆库时可用有序数组 + 二分插入，插入退化为 O(n)。
+
+**标签：** #algorithm
+
+---
+
+### 31. 最接近原点的 K 个点（K Closest Points to Origin）
+
+**难度：** 中等
+**主题：** heap, sorting, geometry
+**岗位：** OD / SWE（部分嵌入式/网络方向）
+**级别：** 15-16（高级）
+
+**问题：** 给定平面上的一组点，返回距离原点最近的 K 个点（欧氏距离）。
+
+**思路：** 维护一个大小为 K 的大顶堆（按距离平方比较，无需开方）。遍历所有点，堆未满则入堆，否则当前点比堆顶更近时替换堆顶。时间 O(n log k)，空间 O(k)。基站选址、IoT 设备就近接入等场景常做「Top-K 最近」查询。
+
+**Python：**
+```python
+import heapq
+
+def k_closest(points: list[list[int]], k: int) -> list[list[int]]:
+    heap: list[tuple[int, list[int]]] = []
+    for x, y in points:
+        d = -(x * x + y * y)  # 取负模拟大顶堆
+        if len(heap) < k:
+            heapq.heappush(heap, (d, [x, y]))
+        elif d > heap[0][0]:
+            heapq.heapreplace(heap, (d, [x, y]))
+    return [p for _, p in heap]
+```
+
+**TypeScript：**
+```typescript
+function kClosest(points: number[][], k: number): number[][] {
+  // 无堆库时用排序，O(n log n)
+  return points
+    .slice()
+    .sort((a, b) => a[0] * a[0] + a[1] * a[1] - (b[0] * b[0] + b[1] * b[1]))
+    .slice(0, k);
+}
+```
+
+**Java：**
+```java
+int[][] kClosest(int[][] points, int k) {
+  PriorityQueue<int[]> heap = new PriorityQueue<>(
+      (a, b) -> (b[0] * b[0] + b[1] * b[1]) - (a[0] * a[0] + a[1] * a[1]));
+  for (int[] p : points) {
+    heap.add(p);
+    if (heap.size() > k) heap.poll();
+  }
+  return heap.toArray(new int[0][]);
+}
+```
+
+**要点：**
+- 用距离平方比较，避免开方带来的精度与性能损耗。
+- 大小为 K 的大顶堆将复杂度降到 O(n log k)，优于全排序的 O(n log n)。
+- Quickselect 可做到平均 O(n)。
+
+**标签：** #algorithm
+
+---
+
 ## 栈 / 队列
 
-### 20. 有效的括号（Valid Parentheses）
+### 32. 有效的括号（Valid Parentheses）
 
 **难度：** 简单
 **主题：** string, stack
@@ -1573,9 +2633,146 @@ boolean isValid(String s) {
 
 ---
 
+### 33. 最小栈（Min Stack）
+
+**难度：** 简单
+**主题：** stack, design
+**岗位：** OD / SWE（部分嵌入式/网络方向）
+**级别：** 13-14（初级）
+
+**问题：** 设计一个栈，支持 push、pop、top，并能在 O(1) 时间返回当前栈内最小元素。
+
+**思路：** 每个栈元素同时记录「入栈时的当前最小值」，即存 `(值, 到此为止的最小值)`。push 时用新值与旧栈顶的最小值取较小者，pop 直接弹出。所有操作 O(1)，空间 O(n)。这类「附带聚合信息」的栈在解析器、撤销栈、监控滑窗中很常见。
+
+**Python：**
+```python
+class MinStack:
+    def __init__(self) -> None:
+        self.stack: list[tuple[int, int]] = []
+
+    def push(self, val: int) -> None:
+        cur_min = min(val, self.stack[-1][1]) if self.stack else val
+        self.stack.append((val, cur_min))
+
+    def pop(self) -> None:
+        self.stack.pop()
+
+    def top(self) -> int:
+        return self.stack[-1][0]
+
+    def get_min(self) -> int:
+        return self.stack[-1][1]
+```
+
+**TypeScript：**
+```typescript
+class MinStack {
+  private stack: [number, number][] = [];
+
+  push(val: number): void {
+    const min = this.stack.length
+      ? Math.min(val, this.stack[this.stack.length - 1][1])
+      : val;
+    this.stack.push([val, min]);
+  }
+  pop(): void { this.stack.pop(); }
+  top(): number { return this.stack[this.stack.length - 1][0]; }
+  getMin(): number { return this.stack[this.stack.length - 1][1]; }
+}
+```
+
+**Java：**
+```java
+class MinStack {
+  private final Deque<int[]> stack = new ArrayDeque<>();
+
+  public void push(int val) {
+    int min = stack.isEmpty() ? val : Math.min(val, stack.peek()[1]);
+    stack.push(new int[]{val, min});
+  }
+  public void pop() { stack.pop(); }
+  public int top() { return stack.peek()[0]; }
+  public int getMin() { return stack.peek()[1]; }
+}
+```
+
+**要点：**
+- 每个元素随身携带前缀最小值，保证 getMin 为 O(1)。
+- 也可用双栈（一个数据栈、一个最小值栈）实现，思路等价。
+- 全部操作均摊 O(1)，额外空间 O(n)。
+
+**标签：** #algorithm
+
+---
+
+### 34. 每日温度（Daily Temperatures）
+
+**难度：** 中等
+**主题：** stack, monotonic-stack, array
+**岗位：** OD / SWE（部分嵌入式/网络方向）
+**级别：** 15-16（高级）
+
+**问题：** 给定每日温度数组，返回一个数组，其中第 i 个元素表示第 i 天之后要过几天才会遇到更高的温度；若之后不再升高则为 0。
+
+**思路：** 单调递减栈存下标。遍历时，只要当前温度高于栈顶对应的温度，就弹栈并用「当前下标 − 弹出下标」填结果。每个下标最多进出栈一次，时间 O(n)，空间 O(n)。这是「下一个更大元素」的经典模板，广泛用于告警去抖、指标趋势分析。
+
+**Python：**
+```python
+def daily_temperatures(temps: list[int]) -> list[int]:
+    res = [0] * len(temps)
+    stack: list[int] = []  # 存下标，对应温度单调递减
+    for i, t in enumerate(temps):
+        while stack and temps[stack[-1]] < t:
+            j = stack.pop()
+            res[j] = i - j
+        stack.append(i)
+    return res
+```
+
+**TypeScript：**
+```typescript
+function dailyTemperatures(temps: number[]): number[] {
+  const res = new Array<number>(temps.length).fill(0);
+  const stack: number[] = [];
+  for (let i = 0; i < temps.length; i++) {
+    while (stack.length && temps[stack[stack.length - 1]] < temps[i]) {
+      const j = stack.pop()!;
+      res[j] = i - j;
+    }
+    stack.push(i);
+  }
+  return res;
+}
+```
+
+**Java：**
+```java
+int[] dailyTemperatures(int[] temps) {
+  int[] res = new int[temps.length];
+  Deque<Integer> stack = new ArrayDeque<>();
+  for (int i = 0; i < temps.length; i++) {
+    while (!stack.isEmpty() && temps[stack.peek()] < temps[i]) {
+      int j = stack.pop();
+      res[j] = i - j;
+    }
+    stack.push(i);
+  }
+  return res;
+}
+```
+
+**要点：**
+- 单调栈存下标而非数值，便于计算距离。
+- 每个下标只进出栈一次，摊还 O(n)。
+- 这是「下一个更大元素」问题的通用模板。
+
+**标签：** #algorithm
+
+---
+
 ## 哈希表
 
-### 21. 两数之和（Two Sum）
+### 35. 两数之和（Two Sum）
 
 **难度：** 简单
 **主题：** array, hash-table
@@ -1637,7 +2834,7 @@ int[] twoSum(int[] nums, int target) {
 
 ---
 
-### 22. 有效的字母异位词（Valid Anagram）
+### 36. 有效的字母异位词（Valid Anagram）
 
 **难度：** 简单
 **主题：** string, hash-table, counting
@@ -1701,7 +2898,7 @@ boolean isAnagram(String s, String t) {
 
 ---
 
-### 23. 字母异位词分组（Group Anagrams）
+### 37. 字母异位词分组（Group Anagrams）
 
 **难度：** 中等
 **主题：** string, hash-table, sorting
@@ -1762,7 +2959,7 @@ List<List<String>> groupAnagrams(String[] words) {
 
 ---
 
-### 24. 无重复字符的最长子串（Longest Substring Without Repeating Characters）
+### 38. 无重复字符的最长子串（Longest Substring Without Repeating Characters）
 
 **难度：** 中等
 **主题：** string, sliding-window, hash-table
@@ -1824,7 +3021,7 @@ int lengthOfLongestSubstring(String s) {
 
 ---
 
-### 25. 最小覆盖子串（Minimum Window Substring）
+### 39. 最小覆盖子串（Minimum Window Substring）
 
 **难度：** 困难
 **主题：** string, sliding-window, hash-table
@@ -1912,9 +3109,333 @@ String minWindow(String s, String t) {
 
 ---
 
+### 40. 最长连续序列（Longest Consecutive Sequence）
+
+**难度：** 中等
+**主题：** hash-table, array, union-find
+**岗位：** OD / SWE（部分嵌入式/网络方向）
+**级别：** 15-16（高级）
+
+**问题：** 给定一个未排序的整数数组，返回最长连续元素序列的长度，要求时间复杂度 O(n)。
+
+**思路：** 全部放入哈希集合。只从「序列起点」（即 `n-1` 不在集合中的数）向后数连续元素，累计长度。每个数至多被访问两次，时间 O(n)，空间 O(n)。相比先排序的 O(n log n)，哈希法是华为机试追求线性复杂度时的标准解。
+
+**Python：**
+```python
+def longest_consecutive(nums: list[int]) -> int:
+    num_set = set(nums)
+    best = 0
+    for n in num_set:
+        if n - 1 not in num_set:  # 仅从序列起点开始数
+            length = 1
+            while n + length in num_set:
+                length += 1
+            best = max(best, length)
+    return best
+```
+
+**TypeScript：**
+```typescript
+function longestConsecutive(nums: number[]): number {
+  const set = new Set(nums);
+  let best = 0;
+  for (const n of set) {
+    if (!set.has(n - 1)) {
+      let length = 1;
+      while (set.has(n + length)) length++;
+      best = Math.max(best, length);
+    }
+  }
+  return best;
+}
+```
+
+**Java：**
+```java
+int longestConsecutive(int[] nums) {
+  Set<Integer> set = new HashSet<>();
+  for (int n : nums) set.add(n);
+  int best = 0;
+  for (int n : set) {
+    if (!set.contains(n - 1)) {
+      int length = 1;
+      while (set.contains(n + length)) length++;
+      best = Math.max(best, length);
+    }
+  }
+  return best;
+}
+```
+
+**要点：**
+- 只从序列起点扩展，保证整体 O(n) 而非 O(n^2)。
+- 哈希集合把「是否存在某值」降到 O(1)。
+- 用集合天然去重，重复元素不影响结果。
+
+**标签：** #algorithm
+
+---
+
+### 41. 和为 K 的子数组（Subarray Sum Equals K）
+
+**难度：** 中等
+**主题：** hash-table, prefix-sum, array
+**岗位：** OD / SWE（部分嵌入式/网络方向）
+**级别：** 15-16（高级）
+
+**问题：** 给定整数数组和整数 K，返回和恰好为 K 的连续子数组的个数（数组可能含负数）。
+
+**思路：** 前缀和 + 哈希表。遍历时维护当前前缀和 `prefix`，若之前出现过 `prefix - k`，则以当前位置结尾的合法子数组数量就是该前缀和出现的次数。用哈希表记录各前缀和出现次数，初始放入 `{0: 1}`。时间 O(n)，空间 O(n)。含负数时不能用滑动窗口，这是常见考点。
+
+**Python：**
+```python
+from collections import defaultdict
+
+def subarray_sum(nums: list[int], k: int) -> int:
+    seen: dict[int, int] = defaultdict(int)
+    seen[0] = 1
+    prefix = count = 0
+    for x in nums:
+        prefix += x
+        count += seen[prefix - k]
+        seen[prefix] += 1
+    return count
+```
+
+**TypeScript：**
+```typescript
+function subarraySum(nums: number[], k: number): number {
+  const seen = new Map<number, number>([[0, 1]]);
+  let prefix = 0, count = 0;
+  for (const x of nums) {
+    prefix += x;
+    count += seen.get(prefix - k) ?? 0;
+    seen.set(prefix, (seen.get(prefix) ?? 0) + 1);
+  }
+  return count;
+}
+```
+
+**Java：**
+```java
+int subarraySum(int[] nums, int k) {
+  Map<Integer, Integer> seen = new HashMap<>();
+  seen.put(0, 1);
+  int prefix = 0, count = 0;
+  for (int x : nums) {
+    prefix += x;
+    count += seen.getOrDefault(prefix - k, 0);
+    seen.merge(prefix, 1, Integer::sum);
+  }
+  return count;
+}
+```
+
+**要点：**
+- 前缀和之差等于子数组和，哈希表记录前缀和频次实现 O(n)。
+- 初始 `{0: 1}` 用于处理从下标 0 开始的子数组。
+- 数组含负数时滑动窗口失效，必须用前缀和 + 哈希。
+
+**标签：** #algorithm
+
+---
+
+## 二分查找
+
+### 42. 搜索二维矩阵（Search a 2D Matrix）
+
+**难度：** 中等
+**主题：** binary-search, matrix, array
+**岗位：** OD / SWE（部分嵌入式/网络方向）
+**级别：** 15-16（高级）
+
+**问题：** 给定一个每行升序、且每行首元素大于上一行末元素的 m×n 矩阵，判断目标值是否存在。
+
+**思路：** 由于展平后整体有序，可把二维坐标映射为一维下标做二分：下标 `mid` 对应元素 `matrix[mid // cols][mid % cols]`。时间 O(log(m·n))，空间 O(1)。相比逐行二分（O(m log n)）更优，是排序表/索引查找的通用技巧。
+
+**Python：**
+```python
+def search_matrix(matrix: list[list[int]], target: int) -> bool:
+    if not matrix or not matrix[0]:
+        return False
+    rows, cols = len(matrix), len(matrix[0])
+    lo, hi = 0, rows * cols - 1
+    while lo <= hi:
+        mid = (lo + hi) // 2
+        val = matrix[mid // cols][mid % cols]
+        if val == target:
+            return True
+        if val < target:
+            lo = mid + 1
+        else:
+            hi = mid - 1
+    return False
+```
+
+**TypeScript：**
+```typescript
+function searchMatrix(matrix: number[][], target: number): boolean {
+  const rows = matrix.length, cols = matrix[0].length;
+  let lo = 0, hi = rows * cols - 1;
+  while (lo <= hi) {
+    const mid = (lo + hi) >> 1;
+    const val = matrix[Math.floor(mid / cols)][mid % cols];
+    if (val === target) return true;
+    if (val < target) lo = mid + 1; else hi = mid - 1;
+  }
+  return false;
+}
+```
+
+**Java：**
+```java
+boolean searchMatrix(int[][] matrix, int target) {
+  int rows = matrix.length, cols = matrix[0].length;
+  int lo = 0, hi = rows * cols - 1;
+  while (lo <= hi) {
+    int mid = (lo + hi) >>> 1;
+    int val = matrix[mid / cols][mid % cols];
+    if (val == target) return true;
+    if (val < target) lo = mid + 1; else hi = mid - 1;
+  }
+  return false;
+}
+```
+
+**要点：**
+- 把矩阵视为展平的有序数组，用 `mid / cols` 与 `mid % cols` 换算坐标。
+- 时间 O(log(m·n))，优于逐行二分。
+- Java 用 `>>>` 无符号右移可避免大下标相加溢出。
+
+**标签：** #algorithm
+
+---
+
+### 43. 寻找旋转排序数组中的最小值（Find Minimum in Rotated Sorted Array）
+
+**难度：** 中等
+**主题：** binary-search, array
+**岗位：** OD / SWE（部分嵌入式/网络方向）
+**级别：** 15-16（高级）
+
+**问题：** 一个升序数组在某个未知点被旋转（元素互不相同），找出其中的最小值。
+
+**思路：** 二分时用中点与右端点比较：若 `nums[mid] > nums[hi]`，最小值一定在右半部分（`lo = mid + 1`）；否则最小值在左半部分含 `mid`（`hi = mid`）。循环到 `lo == hi` 即为答案。时间 O(log n)，空间 O(1)。与右端点比较可正确处理未旋转的情形。
+
+**Python：**
+```python
+def find_min(nums: list[int]) -> int:
+    lo, hi = 0, len(nums) - 1
+    while lo < hi:
+        mid = (lo + hi) // 2
+        if nums[mid] > nums[hi]:
+            lo = mid + 1
+        else:
+            hi = mid
+    return nums[lo]
+```
+
+**TypeScript：**
+```typescript
+function findMin(nums: number[]): number {
+  let lo = 0, hi = nums.length - 1;
+  while (lo < hi) {
+    const mid = (lo + hi) >> 1;
+    if (nums[mid] > nums[hi]) lo = mid + 1; else hi = mid;
+  }
+  return nums[lo];
+}
+```
+
+**Java：**
+```java
+int findMin(int[] nums) {
+  int lo = 0, hi = nums.length - 1;
+  while (lo < hi) {
+    int mid = (lo + hi) >>> 1;
+    if (nums[mid] > nums[hi]) lo = mid + 1; else hi = mid;
+  }
+  return nums[lo];
+}
+```
+
+**要点：**
+- 与右端点比较，而非左端点，才能正确判断最小值所在的半区。
+- 循环条件用 `lo < hi`，收敛到唯一位置，避免死循环。
+- 时间 O(log n)，空间 O(1)。
+
+**标签：** #algorithm
+
+---
+
+### 44. 爱吃香蕉的珂珂（Koko Eating Bananas）
+
+**难度：** 中等
+**主题：** binary-search, search-on-answer, greedy
+**岗位：** OD / SWE（部分嵌入式/网络方向）
+**级别：** 15-16（高级）
+
+**问题：** 有若干堆香蕉，第 i 堆有 `piles[i]` 根。珂珂每小时选一堆，以速度 k 根/小时吃，吃不完整堆则本小时结束；一堆吃完不足一小时也占用整小时。给定总时长 h 小时，求能在 h 小时内吃完的最小速度 k。
+
+**思路：** 「对答案二分」。速度越大耗时越少，具单调性。在 `[1, max(piles)]` 上二分速度 k，用 `ceil(pile / k)` 累计总小时数，若 ≤ h 则尝试更小的 k，否则增大 k。时间 O(n·log(max))，空间 O(1)。这类「限时选最小速率」正是华为链路带宽/限流阈值整定的典型模型。
+
+**Python：**
+```python
+import math
+
+def min_eating_speed(piles: list[int], h: int) -> int:
+    lo, hi = 1, max(piles)
+    while lo < hi:
+        mid = (lo + hi) // 2
+        hours = sum(math.ceil(p / mid) for p in piles)
+        if hours <= h:
+            hi = mid
+        else:
+            lo = mid + 1
+    return lo
+```
+
+**TypeScript：**
+```typescript
+function minEatingSpeed(piles: number[], h: number): number {
+  let lo = 1, hi = Math.max(...piles);
+  while (lo < hi) {
+    const mid = (lo + hi) >> 1;
+    let hours = 0;
+    for (const p of piles) hours += Math.ceil(p / mid);
+    if (hours <= h) hi = mid; else lo = mid + 1;
+  }
+  return lo;
+}
+```
+
+**Java：**
+```java
+int minEatingSpeed(int[] piles, int h) {
+  int lo = 1, hi = 0;
+  for (int p : piles) hi = Math.max(hi, p);
+  while (lo < hi) {
+    int mid = (lo + hi) >>> 1;
+    long hours = 0;
+    for (int p : piles) hours += (p + mid - 1) / mid;  // 向上取整
+    if (hours <= h) hi = mid; else lo = mid + 1;
+  }
+  return lo;
+}
+```
+
+**要点：**
+- 对答案二分：可行速度关于时长单调，故可二分。
+- 上界取 `max(piles)`（每小时一堆），下界取 1。
+- 向上取整用 `(p + k - 1) / k`，避免浮点误差；Java 累加用 long 防溢出。
+
+**标签：** #algorithm
+
+---
+
 ## 动态规划
 
-### 26. 买卖股票的最佳时机（Best Time to Buy and Sell Stock）
+### 45. 买卖股票的最佳时机（Best Time to Buy and Sell Stock）
 
 **难度：** 简单
 **主题：** array, dynamic-programming
@@ -1973,7 +3494,7 @@ int maxProfit(int[] prices) {
 
 ---
 
-### 27. 最大子数组和（Kadane）
+### 46. 最大子数组和（Kadane）
 
 **难度：** 中等
 **主题：** array, dynamic-programming
@@ -2032,7 +3553,7 @@ int maxSubArray(int[] nums) {
 
 ---
 
-### 28. 爬楼梯（Climbing Stairs）
+### 47. 爬楼梯（Climbing Stairs）
 
 **难度：** 简单
 **主题：** dynamic-programming
@@ -2086,7 +3607,7 @@ int climbStairs(int n) {
 
 ---
 
-### 29. 零钱兑换（Coin Change）
+### 48. 零钱兑换（Coin Change）
 
 **难度：** 中等
 **主题：** dynamic-programming
@@ -2142,7 +3663,7 @@ int coinChange(int[] coins, int amount) {
 
 ---
 
-### 30. 最长递增子序列（Longest Increasing Subsequence）
+### 49. 最长递增子序列（Longest Increasing Subsequence）
 
 **难度：** 中等
 **主题：** dynamic-programming, binary-search
@@ -2208,7 +3729,7 @@ int lengthOfLIS(int[] nums) {
 
 ---
 
-### 31. 打家劫舍（House Robber）
+### 50. 打家劫舍（House Robber）
 
 **难度：** 中等
 **主题：** dynamic-programming
@@ -2254,7 +3775,7 @@ int rob(int[] nums) {
 
 ---
 
-### 32. 单词拆分（Word Break）
+### 51. 单词拆分（Word Break）
 
 **难度：** 中等
 **主题：** dynamic-programming, string
@@ -2313,9 +3834,256 @@ boolean wordBreak(String s, List<String> wordDict) {
 
 ---
 
+### 52. 编辑距离（Edit Distance）
+
+**难度：** 中等
+**主题：** dynamic-programming, string
+**岗位：** OD / SWE
+**级别：** 15-16（高级）
+
+**问题：** 给定两个字符串，返回将第一个转换成第二个所需的最少插入、删除或替换操作数。
+
+**思路：** 二维 DP，`dp[i][j]` 表示 `a` 前 `i` 个字符与 `b` 前 `j` 个字符的编辑距离；字符相等则继承对角线，否则取三个邻居的最小值加一。时间 O(m·n)，空间 O(m·n)。华为在 diff/补丁工具与日志模糊匹配中使用同一递推。
+
+**Python：**
+```python
+def min_distance(a: str, b: str) -> int:
+    m, n = len(a), len(b)
+    dp = [[0] * (n + 1) for _ in range(m + 1)]
+    for i in range(m + 1):
+        dp[i][0] = i
+    for j in range(n + 1):
+        dp[0][j] = j
+    for i in range(1, m + 1):
+        for j in range(1, n + 1):
+            if a[i - 1] == b[j - 1]:
+                dp[i][j] = dp[i - 1][j - 1]
+            else:
+                dp[i][j] = 1 + min(dp[i - 1][j], dp[i][j - 1], dp[i - 1][j - 1])
+    return dp[m][n]
+```
+
+**TypeScript：**
+```typescript
+function minDistance(a: string, b: string): number {
+  const m = a.length, n = b.length;
+  const dp: number[][] = Array.from({ length: m + 1 }, () => new Array(n + 1).fill(0));
+  for (let i = 0; i <= m; i++) dp[i][0] = i;
+  for (let j = 0; j <= n; j++) dp[0][j] = j;
+  for (let i = 1; i <= m; i++)
+    for (let j = 1; j <= n; j++)
+      dp[i][j] = a[i - 1] === b[j - 1]
+        ? dp[i - 1][j - 1]
+        : 1 + Math.min(dp[i - 1][j], dp[i][j - 1], dp[i - 1][j - 1]);
+  return dp[m][n];
+}
+```
+
+**Java：**
+```java
+int minDistance(String a, String b) {
+  int m = a.length(), n = b.length();
+  int[][] dp = new int[m + 1][n + 1];
+  for (int i = 0; i <= m; i++) dp[i][0] = i;
+  for (int j = 0; j <= n; j++) dp[0][j] = j;
+  for (int i = 1; i <= m; i++)
+    for (int j = 1; j <= n; j++)
+      dp[i][j] = a.charAt(i - 1) == b.charAt(j - 1)
+        ? dp[i - 1][j - 1]
+        : 1 + Math.min(dp[i - 1][j - 1], Math.min(dp[i - 1][j], dp[i][j - 1]));
+  return dp[m][n];
+}
+```
+
+**要点：**
+- 三种转移分别对应删除（`dp[i-1][j]`）、插入（`dp[i][j-1]`）、替换（`dp[i-1][j-1]`）。
+- 首行首列表示与空串互转的代价。
+- 用滚动行可将空间降到 O(n)。
+
+**标签：** #algorithm
+
+---
+
+### 53. 不同路径（Unique Paths）
+
+**难度：** 中等
+**主题：** dynamic-programming, combinatorics
+**岗位：** OD / SWE
+**级别：** 15-16（高级）
+
+**问题：** m x n 网格上的机器人从左上角出发，只能向右或向下移动，求到达右下角的不同路径数。
+
+**思路：** `dp[i][j]` 为到达 (i, j) 的路径数 = 上方路径数 + 左侧路径数。压缩为一行并从左到右更新。时间 O(m·n)，空间 O(n)。
+
+**Python：**
+```python
+def unique_paths(m: int, n: int) -> int:
+    dp = [1] * n
+    for _ in range(1, m):
+        for j in range(1, n):
+            dp[j] += dp[j - 1]
+    return dp[n - 1]
+```
+
+**TypeScript：**
+```typescript
+function uniquePaths(m: number, n: number): number {
+  const dp = new Array(n).fill(1);
+  for (let i = 1; i < m; i++)
+    for (let j = 1; j < n; j++) dp[j] += dp[j - 1];
+  return dp[n - 1];
+}
+```
+
+**Java：**
+```java
+int uniquePaths(int m, int n) {
+  int[] dp = new int[n];
+  Arrays.fill(dp, 1);
+  for (int i = 1; i < m; i++)
+    for (int j = 1; j < n; j++) dp[j] += dp[j - 1];
+  return dp[n - 1];
+}
+```
+
+**要点：**
+- 首行首列全为 1，因为沿边只有一条路径。
+- 滚动数组中 `dp[j-1]` 是本行已更新值，`dp[j]` 是上一行旧值。
+- 组合数公式 C(m+n-2, m-1) 也可行，但需注意溢出。
+
+**标签：** #algorithm
+
+---
+
+### 54. 最长公共子序列（Longest Common Subsequence）
+
+**难度：** 中等
+**主题：** dynamic-programming, string
+**岗位：** OD / SWE
+**级别：** 15-16（高级）
+
+**问题：** 给定两个字符串，返回最长公共子序列的长度（字符保持相对顺序但不要求连续）。
+
+**思路：** `dp[i][j]` 为 `a` 前 `i` 个字符与 `b` 前 `j` 个字符的 LCS；当前字符相等则对角线加一，否则取丢弃任一字符中的较大者。时间 O(m·n)，空间 O(m·n)。它是 diff 与版本合并算法的核心。
+
+**Python：**
+```python
+def longest_common_subsequence(a: str, b: str) -> int:
+    m, n = len(a), len(b)
+    dp = [[0] * (n + 1) for _ in range(m + 1)]
+    for i in range(1, m + 1):
+        for j in range(1, n + 1):
+            if a[i - 1] == b[j - 1]:
+                dp[i][j] = dp[i - 1][j - 1] + 1
+            else:
+                dp[i][j] = max(dp[i - 1][j], dp[i][j - 1])
+    return dp[m][n]
+```
+
+**TypeScript：**
+```typescript
+function longestCommonSubsequence(a: string, b: string): number {
+  const m = a.length, n = b.length;
+  const dp: number[][] = Array.from({ length: m + 1 }, () => new Array(n + 1).fill(0));
+  for (let i = 1; i <= m; i++)
+    for (let j = 1; j <= n; j++)
+      dp[i][j] = a[i - 1] === b[j - 1]
+        ? dp[i - 1][j - 1] + 1
+        : Math.max(dp[i - 1][j], dp[i][j - 1]);
+  return dp[m][n];
+}
+```
+
+**Java：**
+```java
+int longestCommonSubsequence(String a, String b) {
+  int m = a.length(), n = b.length();
+  int[][] dp = new int[m + 1][n + 1];
+  for (int i = 1; i <= m; i++)
+    for (int j = 1; j <= n; j++)
+      dp[i][j] = a.charAt(i - 1) == b.charAt(j - 1)
+        ? dp[i - 1][j - 1] + 1
+        : Math.max(dp[i - 1][j], dp[i][j - 1]);
+  return dp[m][n];
+}
+```
+
+**要点：**
+- 匹配时延伸对角线；不匹配时从任一字符串丢弃一个字符。
+- 与需连续、遇不匹配即归零的最长公共子串不同。
+- 沿表格回溯可还原具体子序列。
+
+**标签：** #algorithm
+
+---
+
+### 55. 分割等和子集（Partition Equal Subset Sum）
+
+**难度：** 中等
+**主题：** dynamic-programming, knapsack
+**岗位：** OD / SWE
+**级别：** 15-16（高级）
+
+**问题：** 判断正整数数组能否分成两个和相等的子集。
+
+**思路：** 总和为奇数则不可能；否则化为 0/1 背包：是否存在子集之和等于 `total/2`。用布尔 DP 记录可达和，遍历每个数并从高到低扫描以保证每个元素只用一次。时间 O(n·target)，空间 O(target)。这种子集均衡模式对应电信线卡间的负载均衡。
+
+**Python：**
+```python
+def can_partition(nums: list[int]) -> bool:
+    total = sum(nums)
+    if total % 2:
+        return False
+    target = total // 2
+    dp = [False] * (target + 1)
+    dp[0] = True
+    for x in nums:
+        for s in range(target, x - 1, -1):
+            dp[s] = dp[s] or dp[s - x]
+    return dp[target]
+```
+
+**TypeScript：**
+```typescript
+function canPartition(nums: number[]): boolean {
+  const total = nums.reduce((a, b) => a + b, 0);
+  if (total % 2 !== 0) return false;
+  const target = total / 2;
+  const dp = new Array(target + 1).fill(false);
+  dp[0] = true;
+  for (const x of nums)
+    for (let s = target; s >= x; s--) dp[s] = dp[s] || dp[s - x];
+  return dp[target];
+}
+```
+
+**Java：**
+```java
+boolean canPartition(int[] nums) {
+  int total = 0;
+  for (int x : nums) total += x;
+  if (total % 2 != 0) return false;
+  int target = total / 2;
+  boolean[] dp = new boolean[target + 1];
+  dp[0] = true;
+  for (int x : nums)
+    for (int s = target; s >= x; s--) dp[s] = dp[s] || dp[s - x];
+  return dp[target];
+}
+```
+
+**要点：**
+- 内层逆序遍历避免重复使用同一元素（0/1 背包而非完全背包）。
+- `dp[0] = true` 表示空子集。
+- 总和为奇数可直接返回 false。
+
+**标签：** #algorithm
+
+---
+
 ## 回溯
 
-### 33. 单词搜索（Word Search）
+### 56. 单词搜索（Word Search）
 
 **难度：** 中等
 **主题：** backtracking, dfs, grid
@@ -2396,7 +4164,7 @@ boolean dfs(char[][] b, String w, int r, int c, int i) {
 
 ---
 
-### 34. 组合总和（Combination Sum）
+### 57. 组合总和（Combination Sum）
 
 **难度：** 中等
 **主题：** backtracking, recursion
@@ -2473,7 +4241,7 @@ void dfs(int[] cand, int start, int remain, List<Integer> path, List<List<Intege
 
 ---
 
-### 35. 全排列（Permutations）
+### 58. 全排列（Permutations）
 
 **难度：** 中等
 **主题：** backtracking, recursion
@@ -2553,7 +4321,7 @@ void dfs(int[] nums, boolean[] used, List<Integer> path, List<List<Integer>> res
 
 ---
 
-### 36. 子集（Subsets）
+### 59. 子集（Subsets）
 
 **难度：** 中等
 **主题：** backtracking, bit-manipulation
@@ -2623,9 +4391,378 @@ void dfs(int[] nums, int start, List<Integer> path, List<List<Integer>> res) {
 
 ---
 
+### 60. 括号生成（Generate Parentheses）
+
+**难度：** 中等
+**主题：** backtracking, string
+**岗位：** OD / SWE
+**级别：** 15-16（高级）
+
+**问题：** 给定 n 对括号，生成所有合法的括号组合。
+
+**思路：** 回溯时跟踪已用的左、右括号数量。左括号数 < n 时可加 `(`；右括号数 < 左括号数时才可加 `)`，从而无需额外校验即保证合法。时间 O(4^n / sqrt(n))（第 n 个卡特兰数），空间 O(n) 递归深度。
+
+**Python：**
+```python
+def generate_parenthesis(n: int) -> list[str]:
+    res: list[str] = []
+    def backtrack(cur: str, open_: int, close: int) -> None:
+        if len(cur) == 2 * n:
+            res.append(cur)
+            return
+        if open_ < n:
+            backtrack(cur + "(", open_ + 1, close)
+        if close < open_:
+            backtrack(cur + ")", open_, close + 1)
+    backtrack("", 0, 0)
+    return res
+```
+
+**TypeScript：**
+```typescript
+function generateParenthesis(n: number): string[] {
+  const res: string[] = [];
+  const backtrack = (cur: string, open: number, close: number): void => {
+    if (cur.length === 2 * n) { res.push(cur); return; }
+    if (open < n) backtrack(cur + "(", open + 1, close);
+    if (close < open) backtrack(cur + ")", open, close + 1);
+  };
+  backtrack("", 0, 0);
+  return res;
+}
+```
+
+**Java：**
+```java
+List<String> generateParenthesis(int n) {
+  List<String> res = new ArrayList<>();
+  backtrack(res, "", 0, 0, n);
+  return res;
+}
+
+void backtrack(List<String> res, String cur, int open, int close, int n) {
+  if (cur.length() == 2 * n) { res.add(cur); return; }
+  if (open < n) backtrack(res, cur + "(", open + 1, close, n);
+  if (close < open) backtrack(res, cur + ")", open, close + 1, n);
+}
+```
+
+**要点：**
+- `close < open` 的剪枝保证只在合法前缀上继续搜索。
+- 结果数量等于第 n 个卡特兰数。
+- 字符串不可变天然实现回退；用字符缓冲可避免每次复制。
+
+**标签：** #algorithm
+
+---
+
+### 61. N 皇后（N-Queens）
+
+**难度：** 困难
+**主题：** backtracking, recursion
+**岗位：** Senior SWE
+**级别：** 17-18（专家）
+
+**问题：** 统计在 n x n 棋盘上放置 n 个皇后且互不攻击的不同方案数。
+
+**思路：** 每行放一个皇后，逐列回溯。用哈希集合记录已占用的列以及两条对角线（`row - col` 与 `row + col`），使每次放置判断为 O(1)。时间 O(n!)，空间 O(n)。
+
+**Python：**
+```python
+def total_n_queens(n: int) -> int:
+    cols: set[int] = set()
+    diag1: set[int] = set()
+    diag2: set[int] = set()
+    def backtrack(r: int) -> int:
+        if r == n:
+            return 1
+        count = 0
+        for c in range(n):
+            if c in cols or (r - c) in diag1 or (r + c) in diag2:
+                continue
+            cols.add(c); diag1.add(r - c); diag2.add(r + c)
+            count += backtrack(r + 1)
+            cols.remove(c); diag1.remove(r - c); diag2.remove(r + c)
+        return count
+    return backtrack(0)
+```
+
+**TypeScript：**
+```typescript
+function totalNQueens(n: number): number {
+  const cols = new Set<number>();
+  const diag1 = new Set<number>();
+  const diag2 = new Set<number>();
+  const backtrack = (r: number): number => {
+    if (r === n) return 1;
+    let count = 0;
+    for (let c = 0; c < n; c++) {
+      if (cols.has(c) || diag1.has(r - c) || diag2.has(r + c)) continue;
+      cols.add(c); diag1.add(r - c); diag2.add(r + c);
+      count += backtrack(r + 1);
+      cols.delete(c); diag1.delete(r - c); diag2.delete(r + c);
+    }
+    return count;
+  };
+  return backtrack(0);
+}
+```
+
+**Java：**
+```java
+int totalNQueens(int n) {
+  return backtrack(0, n, new HashSet<>(), new HashSet<>(), new HashSet<>());
+}
+
+int backtrack(int r, int n, Set<Integer> cols, Set<Integer> d1, Set<Integer> d2) {
+  if (r == n) return 1;
+  int count = 0;
+  for (int c = 0; c < n; c++) {
+    if (cols.contains(c) || d1.contains(r - c) || d2.contains(r + c)) continue;
+    cols.add(c); d1.add(r - c); d2.add(r + c);
+    count += backtrack(r + 1, n, cols, d1, d2);
+    cols.remove(c); d1.remove(r - c); d2.remove(r + c);
+  }
+  return count;
+}
+```
+
+**要点：**
+- 每行一个皇后消除了整整一维搜索空间。
+- 同一主对角线上 `row - col` 恒定，副对角线上 `row + col` 恒定。
+- 递归返回后必须对称地撤销每次加入。
+
+**标签：** #algorithm
+
+---
+
+## 双指针 / 滑动窗口
+
+### 62. 接雨水（Trapping Rain Water）
+
+**难度：** 困难
+**主题：** two-pointers, array
+**岗位：** Senior SWE
+**级别：** 17-18（专家）
+
+**问题：** 给定以柱高表示的高程图，计算下雨后能接住多少水。
+
+**思路：** 双指针从两端向内，维护 `leftMax` 与 `rightMax`。较矮的一侧决定该指针处的水量，因此移动较低的一侧并在此累加 `max - height`。时间 O(n)，空间 O(1)。
+
+**Python：**
+```python
+def trap(height: list[int]) -> int:
+    left, right = 0, len(height) - 1
+    left_max = right_max = 0
+    water = 0
+    while left < right:
+        if height[left] < height[right]:
+            left_max = max(left_max, height[left])
+            water += left_max - height[left]
+            left += 1
+        else:
+            right_max = max(right_max, height[right])
+            water += right_max - height[right]
+            right -= 1
+    return water
+```
+
+**TypeScript：**
+```typescript
+function trap(height: number[]): number {
+  let left = 0, right = height.length - 1;
+  let leftMax = 0, rightMax = 0, water = 0;
+  while (left < right) {
+    if (height[left] < height[right]) {
+      leftMax = Math.max(leftMax, height[left]);
+      water += leftMax - height[left];
+      left++;
+    } else {
+      rightMax = Math.max(rightMax, height[right]);
+      water += rightMax - height[right];
+      right--;
+    }
+  }
+  return water;
+}
+```
+
+**Java：**
+```java
+int trap(int[] height) {
+  int left = 0, right = height.length - 1;
+  int leftMax = 0, rightMax = 0, water = 0;
+  while (left < right) {
+    if (height[left] < height[right]) {
+      leftMax = Math.max(leftMax, height[left]);
+      water += leftMax - height[left];
+      left++;
+    } else {
+      rightMax = Math.max(rightMax, height[right]);
+      water += rightMax - height[right];
+      right--;
+    }
+  }
+  return water;
+}
+```
+
+**要点：**
+- 某柱上方的水量等于 min(leftMax, rightMax) - height。
+- 移动较低一侧是安全的，因为其最大值才是约束条件。
+- 双指针写法省去了前缀最大值数组的 O(n) 空间。
+
+**标签：** #algorithm
+
+---
+
+### 63. 滑动窗口最大值（Sliding Window Maximum）
+
+**难度：** 困难
+**主题：** sliding-window, monotonic-deque
+**岗位：** Senior SWE
+**级别：** 17-18（专家）
+
+**问题：** 给定数组和窗口大小 k，当窗口从左到右滑动时，返回每个窗口内的最大值。
+
+**思路：** 维护一个索引单调递减的双端队列。入队前弹出队尾较小的值（在新元素存在期间它们不可能成为最大值）；当队首滑出窗口时弹出队首。队首始终是当前窗口最大值。每个索引入队出队各一次，时间 O(n)，空间 O(k)。可用于网络链路的滚动峰值吞吐监控。
+
+**Python：**
+```python
+from collections import deque
+
+def max_sliding_window(nums: list[int], k: int) -> list[int]:
+    dq: deque[int] = deque()
+    res: list[int] = []
+    for i, x in enumerate(nums):
+        while dq and nums[dq[-1]] <= x:
+            dq.pop()
+        dq.append(i)
+        if dq[0] <= i - k:
+            dq.popleft()
+        if i >= k - 1:
+            res.append(nums[dq[0]])
+    return res
+```
+
+**TypeScript：**
+```typescript
+function maxSlidingWindow(nums: number[], k: number): number[] {
+  const dq: number[] = [];
+  const res: number[] = [];
+  for (let i = 0; i < nums.length; i++) {
+    while (dq.length && nums[dq[dq.length - 1]] <= nums[i]) dq.pop();
+    dq.push(i);
+    if (dq[0] <= i - k) dq.shift();
+    if (i >= k - 1) res.push(nums[dq[0]]);
+  }
+  return res;
+}
+```
+
+**Java：**
+```java
+int[] maxSlidingWindow(int[] nums, int k) {
+  Deque<Integer> dq = new ArrayDeque<>();
+  int[] res = new int[nums.length - k + 1];
+  int idx = 0;
+  for (int i = 0; i < nums.length; i++) {
+    while (!dq.isEmpty() && nums[dq.peekLast()] <= nums[i]) dq.pollLast();
+    dq.offerLast(i);
+    if (dq.peekFirst() <= i - k) dq.pollFirst();
+    if (i >= k - 1) res[idx++] = nums[dq.peekFirst()];
+  }
+  return res;
+}
+```
+
+**要点：**
+- 队列存索引而非数值，便于判断队首是否过期。
+- 队列保持单调递减，因此队首即窗口最大值。
+- 均摊 O(n)：每个索引最多入队、出队各一次。
+
+**标签：** #algorithm
+
+---
+
+### 64. 找到字符串中所有字母异位词（Find All Anagrams in a String）
+
+**难度：** 中等
+**主题：** sliding-window, hash-table
+**岗位：** OD / SWE
+**级别：** 15-16（高级）
+
+**问题：** 给定字符串 s 和 p，返回 s 中所有为 p 的字母异位词的子串的起始索引。
+
+**思路：** 在 s 上用长度为 `len(p)` 的定长滑动窗口，配两个长度 26 的频次数组。滑动时加入新字符、移除旧字符；当窗口频次与 p 相同即记录起始索引。时间 O(n)，空间 O(1)（26 个计数器）。
+
+**Python：**
+```python
+def find_anagrams(s: str, p: str) -> list[int]:
+    if len(p) > len(s):
+        return []
+    need = [0] * 26
+    window = [0] * 26
+    for c in p:
+        need[ord(c) - 97] += 1
+    res: list[int] = []
+    for i, c in enumerate(s):
+        window[ord(c) - 97] += 1
+        if i >= len(p):
+            window[ord(s[i - len(p)]) - 97] -= 1
+        if window == need:
+            res.append(i - len(p) + 1)
+    return res
+```
+
+**TypeScript：**
+```typescript
+function findAnagrams(s: string, p: string): number[] {
+  if (p.length > s.length) return [];
+  const need = new Array(26).fill(0);
+  const win = new Array(26).fill(0);
+  const a = "a".charCodeAt(0);
+  for (const c of p) need[c.charCodeAt(0) - a]++;
+  const res: number[] = [];
+  for (let i = 0; i < s.length; i++) {
+    win[s.charCodeAt(i) - a]++;
+    if (i >= p.length) win[s.charCodeAt(i - p.length) - a]--;
+    if (i >= p.length - 1 && need.every((v, j) => v === win[j]))
+      res.push(i - p.length + 1);
+  }
+  return res;
+}
+```
+
+**Java：**
+```java
+List<Integer> findAnagrams(String s, String p) {
+  List<Integer> res = new ArrayList<>();
+  if (p.length() > s.length()) return res;
+  int[] need = new int[26], win = new int[26];
+  for (char c : p.toCharArray()) need[c - 'a']++;
+  for (int i = 0; i < s.length(); i++) {
+    win[s.charAt(i) - 'a']++;
+    if (i >= p.length()) win[s.charAt(i - p.length()) - 'a']--;
+    if (i >= p.length() - 1 && Arrays.equals(need, win))
+      res.add(i - p.length() + 1);
+  }
+  return res;
+}
+```
+
+**要点：**
+- 判断异位词等价于比较字符频次数组是否相等。
+- 定长窗口每步仅一次加入与一次移除，无需重新扫描。
+- 比较长度 26 的数组是 O(1)，全程保持 O(n)。
+
+**标签：** #algorithm
+
+---
+
 ## 数组 / 字符串
 
-### 37. 二分查找（Binary Search）
+### 65. 二分查找（Binary Search）
 
 **难度：** 简单
 **主题：** binary-search, array
@@ -2693,7 +4830,7 @@ int binarySearch(int[] nums, int target) {
 
 ---
 
-### 38. 盛最多水的容器（Container With Most Water）
+### 66. 盛最多水的容器（Container With Most Water）
 
 **难度：** 中等
 **主题：** array, two-pointer, greedy
@@ -2749,7 +4886,7 @@ int maxArea(int[] height) {
 
 ---
 
-### 39. 三数之和（3Sum）
+### 67. 三数之和（3Sum）
 
 **难度：** 中等
 **主题：** array, two-pointer, sorting
@@ -2842,7 +4979,7 @@ List<List<Integer>> threeSum(int[] nums) {
 
 ---
 
-### 40. 除自身以外数组的乘积（Product of Array Except Self）
+### 68. 除自身以外数组的乘积（Product of Array Except Self）
 
 **难度：** 中等
 **主题：** array, prefix-product
@@ -2899,7 +5036,7 @@ int[] productExceptSelf(int[] nums) {
 
 ---
 
-### 41. 搜索旋转排序数组（Search in Rotated Sorted Array）
+### 69. 搜索旋转排序数组（Search in Rotated Sorted Array）
 
 **难度：** 中等
 **主题：** binary-search, array
@@ -2973,7 +5110,7 @@ int search(int[] nums, int target) {
 
 ---
 
-### 42. 在排序数组中查找元素的首末位置（Find First and Last Position of Element）
+### 70. 在排序数组中查找元素的首末位置（Find First and Last Position of Element）
 
 **难度：** 中等
 **主题：** binary-search, array
@@ -3041,7 +5178,7 @@ int bound(int[] nums, int target, boolean left) {
 
 ---
 
-### 43. 合并区间（Merge Intervals）
+### 71. 合并区间（Merge Intervals）
 
 **难度：** 中等
 **主题：** intervals, sorting
@@ -3101,7 +5238,7 @@ int[][] merge(int[][] intervals) {
 
 ---
 
-### 44. 只出现一次的数字（Single Number）
+### 72. 只出现一次的数字（Single Number）
 
 **难度：** 简单
 **主题：** bit-manipulation, array
@@ -3145,7 +5282,7 @@ int singleNumber(int[] nums) {
 
 ---
 
-### 45. 基站覆盖合并（电信）（Base-Station Coverage Merge）
+### 73. 基站覆盖合并（电信）（Base-Station Coverage Merge）
 
 **难度：** 中等
 **主题：** intervals, sorting, greedy
@@ -3211,7 +5348,7 @@ int coveredLength(int[][] segments) {
 
 ---
 
-### 46. 5G 资源块分配（区间调度）（5G Resource-Block Allocation）
+### 74. 5G 资源块分配（区间调度）（5G Resource-Block Allocation）
 
 **难度：** 中等
 **主题：** greedy, intervals, activity-selection
@@ -3266,9 +5403,219 @@ int maxTransmissions(int[][] requests) {
 
 ---
 
+### 75. 移动零（Move Zeroes）
+
+**难度：** 简单
+**主题：** array, two-pointers, in-place
+**岗位：** OD / SWE
+**级别：** 13-14（初级）
+
+**问题：** 给定整数数组 `nums`，将所有 `0` 移动到末尾，同时保持非零元素的相对顺序。要求原地操作，不复制数组。
+
+**思路：** 用写指针 `j` 指向下一个非零元素应放的位置。用 `i` 遍历；当 `nums[i]` 非零时，把它交换到位置 `j` 并前移 `j`。这样非零元素保持顺序，零自然被推到末尾。时间 O(n)，空间 O(1)——典型的机试指针操作热身题。
+
+**Python：**
+```python
+def move_zeroes(nums: list[int]) -> None:
+    j = 0
+    for i in range(len(nums)):
+        if nums[i] != 0:
+            nums[i], nums[j] = nums[j], nums[i]
+            j += 1
+```
+
+**TypeScript：**
+```typescript
+function moveZeroes(nums: number[]): void {
+  let j = 0;
+  for (let i = 0; i < nums.length; i++) {
+    if (nums[i] !== 0) {
+      [nums[i], nums[j]] = [nums[j], nums[i]];
+      j++;
+    }
+  }
+}
+```
+
+**Java：**
+```java
+void moveZeroes(int[] nums) {
+  int j = 0;
+  for (int i = 0; i < nums.length; i++) {
+    if (nums[i] != 0) {
+      int tmp = nums[j]; nums[j] = nums[i]; nums[i] = tmp;
+      j++;
+    }
+  }
+}
+```
+
+**要点：**
+- 写指针 `j` 记录已见到的非零元素数量，交换操作保持相对顺序。
+- 单次遍历、O(1) 额外空间；用交换（而非仅覆盖）避免再扫一遍补零。
+
+**标签：** #algorithm
+
+---
+
+### 76. 颜色分类（Sort Colors）
+
+**难度：** 中等
+**主题：** array, two-pointers, sorting
+**岗位：** OD / SWE
+**级别：** 15-16（高级）
+
+**问题：** 给定一个只含 0、1、2 三种元素的数组（分别代表红、白、蓝），原地对其排序，使相同颜色相邻且按红、白、蓝顺序排列，不使用库排序函数。
+
+**思路：** 荷兰国旗问题，三指针一趟扫描。`low` 指向下一个 0 应放的位置，`high` 指向下一个 2 应放的位置，`i` 为当前遍历指针。遇 0 与 `low` 交换并双双右移；遇 2 与 `high` 交换并 `high` 左移（`i` 不动，需重新检查换来的值）；遇 1 则 `i` 右移。时间 O(n)，空间 O(1)。
+
+**Python：**
+```python
+from typing import List
+
+def sort_colors(nums: List[int]) -> None:
+    low, i, high = 0, 0, len(nums) - 1
+    while i <= high:
+        if nums[i] == 0:
+            nums[low], nums[i] = nums[i], nums[low]
+            low += 1
+            i += 1
+        elif nums[i] == 2:
+            nums[high], nums[i] = nums[i], nums[high]
+            high -= 1
+        else:
+            i += 1
+```
+
+**TypeScript：**
+```typescript
+function sortColors(nums: number[]): void {
+  let low = 0, i = 0, high = nums.length - 1;
+  while (i <= high) {
+    if (nums[i] === 0) {
+      [nums[low], nums[i]] = [nums[i], nums[low]];
+      low++;
+      i++;
+    } else if (nums[i] === 2) {
+      [nums[high], nums[i]] = [nums[i], nums[high]];
+      high--;
+    } else {
+      i++;
+    }
+  }
+}
+```
+
+**Java：**
+```java
+static void sortColors(int[] nums) {
+    int low = 0, i = 0, high = nums.length - 1;
+    while (i <= high) {
+        if (nums[i] == 0) {
+            int t = nums[low]; nums[low] = nums[i]; nums[i] = t;
+            low++;
+            i++;
+        } else if (nums[i] == 2) {
+            int t = nums[high]; nums[high] = nums[i]; nums[i] = t;
+            high--;
+        } else {
+            i++;
+        }
+    }
+}
+```
+
+**要点：**
+- 换来 2 时 `i` 不能右移，必须重新检查交换过来的值。
+- 循环条件 `i <= high`，越过 `high` 的元素已就位。
+- 一趟扫描、常数空间，优于两趟计数法。
+
+**标签：** #algorithm
+
+---
+
+### 77. 最长回文子串（Longest Palindromic Substring）
+
+**难度：** 中等
+**主题：** string, two-pointers, dynamic-programming
+**岗位：** OD / SWE
+**级别：** 15-16（高级）
+
+**问题：** 给定字符串 `s`，返回 `s` 中最长的连续回文子串。
+
+**思路：** 中心扩展：每个回文都有一个中心，或为单个字符（奇数长度），或为两字符之间的间隙（偶数长度）。对 `2n-1` 个中心逐一向外扩展，字符匹配则继续，并记录最宽的区间。时间 O(n^2)，空间 O(1)——比 Manacher 的 O(n) 简单，且足以应对面试输入规模。
+
+**Python：**
+```python
+def longest_palindrome(s: str) -> str:
+    if not s:
+        return ""
+    start, end = 0, 0
+    def expand(l: int, r: int) -> tuple[int, int]:
+        while l >= 0 and r < len(s) and s[l] == s[r]:
+            l -= 1
+            r += 1
+        return l + 1, r - 1
+    for i in range(len(s)):
+        l1, r1 = expand(i, i)
+        l2, r2 = expand(i, i + 1)
+        if r1 - l1 > end - start:
+            start, end = l1, r1
+        if r2 - l2 > end - start:
+            start, end = l2, r2
+    return s[start:end + 1]
+```
+
+**TypeScript：**
+```typescript
+function longestPalindrome(s: string): string {
+  if (s.length === 0) return "";
+  let start = 0, end = 0;
+  const expand = (l: number, r: number): [number, number] => {
+    while (l >= 0 && r < s.length && s[l] === s[r]) { l--; r++; }
+    return [l + 1, r - 1];
+  };
+  for (let i = 0; i < s.length; i++) {
+    const [l1, r1] = expand(i, i);
+    const [l2, r2] = expand(i, i + 1);
+    if (r1 - l1 > end - start) { start = l1; end = r1; }
+    if (r2 - l2 > end - start) { start = l2; end = r2; }
+  }
+  return s.substring(start, end + 1);
+}
+```
+
+**Java：**
+```java
+String longestPalindrome(String s) {
+  if (s.isEmpty()) return "";
+  int start = 0, end = 0;
+  for (int i = 0; i < s.length(); i++) {
+    int[] a = expand(s, i, i);
+    int[] b = expand(s, i, i + 1);
+    if (a[1] - a[0] > end - start) { start = a[0]; end = a[1]; }
+    if (b[1] - b[0] > end - start) { start = b[0]; end = b[1]; }
+  }
+  return s.substring(start, end + 1);
+}
+
+int[] expand(String s, int l, int r) {
+  while (l >= 0 && r < s.length() && s.charAt(l) == s.charAt(r)) { l--; r++; }
+  return new int[] { l + 1, r - 1 };
+}
+```
+
+**要点：**
+- 同时检查奇数中心（`i, i`）与偶数中心（`i, i+1`），覆盖所有回文。
+- 循环结束时 `expand` 向两侧各多扩了一格，故有效区间为 `[l+1, r-1]`。
+
+**标签：** #algorithm
+
+---
+
 ## 系统设计
 
-### 47. 设计电信计费系统
+### 78. 设计电信计费系统
 
 **难度：** 困难
 **主题：** system-design, billing, streaming, consistency
@@ -3283,7 +5630,7 @@ int maxTransmissions(int[][] requests) {
 
 ---
 
-### 48. 设计 HarmonyOS 分布式软总线 / 跨设备数据同步
+### 79. 设计 HarmonyOS 分布式软总线 / 跨设备数据同步
 
 **难度：** 困难
 **主题：** system-design, distributed, sync, iot
@@ -3298,7 +5645,7 @@ int maxTransmissions(int[][] requests) {
 
 ---
 
-### 49. 设计 5G 基站 OTA 固件升级系统
+### 80. 设计 5G 基站 OTA 固件升级系统
 
 **难度：** 困难
 **主题：** system-design, ota, rollout, reliability
@@ -3313,7 +5660,7 @@ int maxTransmissions(int[][] requests) {
 
 ---
 
-### 50. 设计 CDN
+### 81. 设计 CDN
 
 **难度：** 困难
 **主题：** system-design, cdn, caching, dns
@@ -3328,7 +5675,7 @@ int maxTransmissions(int[][] requests) {
 
 ---
 
-### 51. 设计分布式消息队列
+### 82. 设计分布式消息队列
 
 **难度：** 困难
 **主题：** system-design, messaging, replication, ordering
@@ -3343,7 +5690,7 @@ int maxTransmissions(int[][] requests) {
 
 ---
 
-### 52. 设计华为云对象存储（OBS）
+### 83. 设计华为云对象存储（OBS）
 
 **难度：** 困难
 **主题：** system-design, blob-storage, erasure-coding, consistency
@@ -3358,7 +5705,7 @@ int maxTransmissions(int[][] requests) {
 
 ---
 
-### 53. 设计实时物联网设备管理平台
+### 84. 设计实时物联网设备管理平台
 
 **难度：** 困难
 **主题：** system-design, iot, mqtt, time-series
@@ -3373,7 +5720,7 @@ int maxTransmissions(int[][] requests) {
 
 ---
 
-### 54. 设计运营商网络的高可用数据库
+### 85. 设计运营商网络的高可用数据库
 
 **难度：** 困难
 **主题：** system-design, database, replication, consensus
@@ -3388,9 +5735,54 @@ int maxTransmissions(int[][] requests) {
 
 ---
 
+### 86. 设计分布式关系数据库（Distributed SQL Database，如 GaussDB）
+
+**难度：** 困难
+**主题：** system-design, distributed, database, consensus, transactions
+**岗位：** Senior SWE
+**级别：** 17-18（专家）
+
+**问题：** 设计一个可水平扩展的分布式关系数据库，在多节点上支持 ACID 事务与标准 SQL，满足如 GaussDB 这类云数据库的需求。
+
+**思路：** 将 SQL/计算层（解析、生成计划、分布式执行）与存储层分离（存算分离，云原生模式）。按主键用哈希或范围分片；每个分片是一个复制组，通过 Raft/Paxos 保持一致与高可用（主节点处理写、从节点提供一致性读并在故障时接管）。用 MVCC 加全局时间戳源（TSO 或混合逻辑时钟 HLC）提供快照隔离，使读看到一致快照而不阻塞写。跨分片事务在各分片 Raft 之上用两阶段提交保证原子性。关键权衡：强一致 vs 延迟（跨地域提交需多轮往返——可用从节点读、把相关行就近放置）、范围分片 vs 哈希分片（范围利于区间扫描但易热点；哈希均衡负载但扫描分散）、以及分片变热时的在线再分片/负载均衡。讨论 Raft 主选举下的故障恢复、分布式死锁检测，以及查询计划器如何将谓词下推到存储层以减少数据搬移。
+
+**标签：** #system-design
+
+---
+
+### 87. 设计 5G 网络切片管理系统（5G Network Slicing Management）
+
+**难度：** 困难
+**主题：** system-design, 5g, orchestration, sla, telecom
+**岗位：** Senior SWE
+**级别：** 17-18（专家）
+
+**问题：** 设计一个创建并管理 5G 网络切片的系统——每个切片是端到端的逻辑网络（RAN + 传输 + 核心网），各自拥有独立 SLA，服务于不同租户与业务类型。
+
+**思路：** 切片是横跨无线接入网、传输网与 5G 核心网的隔离逻辑网络，面向不同业务等级定制：eMBB（大带宽）、URLLC（超低时延，如工业控制/自动驾驶）、mMTC（海量物联网）。架构分层：切片管理功能（NSMF）把租户 SLA 转换为子网需求，下发给各子网管理者（NSSMF）负责 RAN/传输/核心网；资源编排器通过 NFV/SDN 分配并隔离算力、频谱与带宽；闭环自动化层采集每切片遥测，检测 SLA 违约并自动扩缩或重配。生命周期：设计、实例化、激活、监控、扩缩、释放。关键权衡：硬隔离（专属资源、强保障、利用率低）vs 软隔离（共享资源加 QoS 优先级，利用率高但有邻居干扰风险）；集中式 vs 分布式控制（控制面时延）；静态分配 vs AI 驱动的动态再分配。讨论切片间的多租户与安全隔离、按切片计量/计费，以及时延、吞吐、可用性等 KPI 如何驱动闭环。
+
+**标签：** #system-design
+
+---
+
+### 88. 设计运营商网络设备的实时遥测与故障检测系统
+
+**难度：** 困难
+**主题：** system-design, telemetry, streaming, monitoring, reliability
+**岗位：** Senior SWE
+**级别：** 17-18（专家）
+
+**问题：** 设计一个系统，从数百万台运营商网络设备（路由器、交换机、基站）采集实时遥测数据，并足够快地检测故障以保障 SLA。
+
+**思路：** 优先采用流式遥测（模型驱动，gNMI/gRPC 以亚秒级推送），而非传统 SNMP 轮询——推送扩展性更好，数据更新鲜且不会造成轮询风暴。设备将指标流入可水平扩展的接入层（Kafka），按设备/区域分区。流处理器（Flink/Spark Streaming）计算滑动聚合、阈值与异常检测（基线加统计/机器学习模型），写入分级保留的时序数据库（原始数据保留数小时，降采样汇总用于长期）。关联/根因引擎将相关告警聚合以对抗告警风暴（一次断纤可触发数千条下游告警），并驱动闭环自愈流程。关键权衡：推送 vs 轮询（新鲜度与扩展性 vs 简单性）、基数爆炸（每接口/每设备标签——控制标签基数并预聚合）、存储成本 vs 分辨率（降采样）、检测的时延 vs 准确率（硬故障用快速阈值，细微劣化用较慢的 ML）。确保监控面本身高可用且独立于被监控网络，避免网络中断时运维同时失明。
+
+**标签：** #system-design
+
+---
+
 ## 行为面试
 
-### 55. 谈谈拥抱"奋斗者"文化
+### 89. 谈谈拥抱"奋斗者"文化
 
 **难度：** 中等
 **主题：** behavioral, culture, dedication
@@ -3405,7 +5797,7 @@ int maxTransmissions(int[][] requests) {
 
 ---
 
-### 56. 在高压期限下交付的经历
+### 90. 在高压期限下交付的经历
 
 **难度：** 中等
 **主题：** behavioral, pressure, delivery
@@ -3420,7 +5812,7 @@ int maxTransmissions(int[][] requests) {
 
 ---
 
-### 57. 大型组织中的跨团队协作
+### 91. 大型组织中的跨团队协作
 
 **难度：** 中等
 **主题：** behavioral, collaboration, communication
@@ -3435,7 +5827,7 @@ int maxTransmissions(int[][] requests) {
 
 ---
 
-### 58. 为什么选择华为
+### 92. 为什么选择华为
 
 **难度：** 简单
 **主题：** behavioral, motivation, fit
@@ -3450,9 +5842,39 @@ int maxTransmissions(int[][] requests) {
 
 ---
 
+### 93. 讲一次你以客户为中心的经历（Customer-Centricity）
+
+**难度：** 中等
+**主题：** behavioral, customer-centric, star, ownership
+**岗位：** OD / SWE
+**级别：** 15-16（高级）
+
+**问题：** 华为的核心价值观是以客户为中心。请讲一次你超越本职范围去解决客户真实问题的经历，以及最终结果如何。
+
+**思路：** 用 STAR 结构，选一个由客户真实需求（而非仅工单文字）驱动你行动的故事。情境（Situation）：点明客户（内部或外部）、痛点与业务影响（例如某运营商客户反复宕机，面临 SLA 罚款风险）。任务（Task）：你的职责，以及为何默认处理方式不够。行动（Action）：描述你如何深挖真正根因、直接与客户沟通理解其场景，并做了额外工作——在其环境复现问题、交付针对性修复，或对一个内部看似不错却损害客户的方案提出反对。强调具体步骤，以及你为客户长期利益承担的短期成本（长期主义）。结果（Result）：量化——宕机减少、SLA 恢复、重建信任、后续订单。收尾点出体会：真正解决客户的根本问题、而非仅关闭工单，才是以客户为中心的实践含义。保持真实具体；面试官会追问你个人做了什么、而非团队。
+
+**标签：** #behavioral
+
+---
+
+### 94. 讲一次失败与你的自我批判（Self-Criticism）
+
+**难度：** 中等
+**主题：** behavioral, self-criticism, star, growth
+**岗位：** OD / SWE
+**级别：** 15-16（高级）
+
+**问题：** 华为把自我批判视为改进的驱动力。请描述一次你主动承担的重大错误或失败，你如何对其进行批判性反思，以及之后带来了什么改变。
+
+**思路：** 用 STAR 结构，选一次真正有代价的失败——不要变相自夸。情境（Situation）：背景与风险（例如你推的一次变更导致线上事故，或低估了依赖导致交付延期）。任务（Task）：你的具体职责。行动（Action）：这是自我批判的核心——坦承自己的责任，不甩锅给他人或客观条件。说明你如何主导或参与了诚实的复盘，找到真正根因（包括自己决策上的疏漏：跳过评审、估算过于乐观、沟通不足），并把无责的系统性修复与个人教训区分开。结果（Result）：具体改变——新增测试卡点、检查清单、更早暴露风险的习惯——以及有效的证据（未再复发、之后交付更快更稳）。收尾把自我批判定位为持续改进而非自我惩罚：目标是更强的流程和更好的自己。面试官看重成熟度、担当与真实改变——避免假装的缺点或指责团队。
+
+**标签：** #behavioral
+
+---
+
 ## 领域知识
 
-### 59. C/C++ 内存管理与指针
+### 95. C/C++ 内存管理与指针
 
 **难度：** 困难
 **主题：** domain-knowledge, c-cpp, memory, pointers
@@ -3467,7 +5889,7 @@ int maxTransmissions(int[][] requests) {
 
 ---
 
-### 60. TCP/IP 网络深挖
+### 96. TCP/IP 网络深挖
 
 **难度：** 困难
 **主题：** domain-knowledge, networking, tcp, protocols
@@ -3482,7 +5904,7 @@ int maxTransmissions(int[][] requests) {
 
 ---
 
-### 61. Linux 进程、线程与 IPC
+### 97. Linux 进程、线程与 IPC
 
 **难度：** 困难
 **主题：** domain-knowledge, linux, concurrency, ipc
@@ -3497,7 +5919,7 @@ int maxTransmissions(int[][] requests) {
 
 ---
 
-### 62. 操作系统概念
+### 98. 操作系统概念
 
 **难度：** 困难
 **主题：** domain-knowledge, operating-systems, scheduling, memory
@@ -3507,6 +5929,36 @@ int maxTransmissions(int[][] requests) {
 **问题：** 解释虚拟内存与分页，并描述现代操作系统中的 CPU 调度如何工作。
 
 **思路：** 虚拟内存给每个进程一个私有线性地址空间，经页表映射到物理帧；MMU 完成地址转换，TLB 缓存近期转换。缺页触发从磁盘加载（按需分页）；内存满时 OS 用替换策略（如时钟算法等 LRU 近似）淘汰页。好处：隔离、看似多于物理的内存、易于共享（共享库）。当工作集超过 RAM 时发生抖动。调度：调度器在就绪线程间复用 CPU——策略包括轮转、优先级，以及 Linux 的 CFS（完全公平调度器），它用按虚拟运行时间为键的红黑树近似公平共享。讨论抢占式 vs 协作式、上下文切换成本、实时调度类（SCHED_FIFO/RR 用于确定性延迟——与电信/嵌入式相关），以及吞吐与延迟/公平性的权衡。回到嵌入式/运营商系统为何常需实时保证。
+
+**标签：** #domain-knowledge
+
+---
+
+### 99. 哈希表与平衡树（Hash Tables vs Balanced Trees）
+
+**难度：** 中等
+**主题：** domain-knowledge, data-structures, hash-tables, trees
+**岗位：** OD / SWE
+**级别：** 15-16（高级）
+
+**问题：** 对比哈希表与平衡二叉搜索树：它们的内部实现、复杂度，以及何时选用哪一个。
+
+**思路：** 哈希表：通过哈希函数把键映射到桶；查/增/删平均 O(1)，但冲突严重时最坏 O(n)。冲突处理——链地址法（每桶一条链表/树，如 Java HashMap 在长桶时树化为 O(log n)）vs 开放寻址（线性/二次探测、robin-hood——缓存局部性更好，但需要合适的负载因子，且删除需要墓碑标记）。当负载因子超阈值时扩容再散列（均摊 O(1)）。无序；迭代顺序任意。平衡 BST（红黑树/AVL/B 树）：保持键有序，查/增/删保证 O(log n)（无糟糕的最坏情况），支持有序操作——区间查询、前驱/后继、中序遍历、floor/ceil。AVL 更严格平衡（读更快），红黑树重平衡更少（写更快）；B 树是面向磁盘/数据库的变体（高扇出、少 I/O）。如何选择：纯键值查找、顺序无关、追求最快平均访问时用哈希表（缓存、去重、等值索引）；需要有序、区间扫描或硬性最坏保证时用平衡树（调度器、数据库索引，如 std::map vs std::unordered_map）。可提及哈希质量与构造冲突导致的 DoS，以及数据库为何在区间查询上用 B 树索引而非哈希索引。
+
+**标签：** #domain-knowledge
+
+---
+
+### 100. 编译器的编译流程（Compilation Phases）
+
+**难度：** 中等
+**主题：** domain-knowledge, compilers, parsing, code-generation
+**岗位：** OD / SWE
+**级别：** 15-16（高级）
+
+**问题：** 讲解编译器把源代码变成可执行文件所经历的各个阶段，以及每个阶段产出什么。
+
+**思路：** 前端：(1) 词法分析（扫描器）把字符流切分为记号（标识符、关键字、字面量、运算符），丢弃空白/注释；通常由正则表达式/有限自动机驱动。(2) 语法分析（解析器）按语言文法（上下文无关文法）检查记号，构建语法树/抽象语法树（AST）；采用 LL 或 LR 解析。(3) 语义分析：类型检查、作用域/名字解析、构建符号表，捕获未声明变量、类型不匹配等错误。中端：(4) 中间表示（IR）生成——与机器无关的形式（三地址码、LLVM IR），便于可移植优化。(5) 优化——机器无关变换：常量折叠、死代码消除、公共子表达式消除、循环不变量外提、内联。后端：(6) 代码生成把 IR 下降为目标机器/汇编代码，涉及指令选择、寄存器分配与指令调度。(7) 机器相关的（窥孔）优化，随后汇编与链接。区分前端（依赖语言）与后端（依赖目标）——IR 是解耦点，使一个前端可面向多种架构（LLVM 模型）。可对比静态编译 vs 动态（JIT）编译以及解释器。
 
 **标签：** #domain-knowledge
 

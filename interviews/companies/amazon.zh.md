@@ -424,9 +424,283 @@ class Solution {
 
 ---
 
+### 5. K 个一组翻转链表
+
+**难度：** 困难
+**主题：** linked-list, recursion, in-place
+**岗位：** SWE
+**级别：** L5-L6
+
+**问题：** 给定链表，每 `k` 个节点一组进行翻转，返回翻转后的链表；不足 `k` 个的一组保持原有顺序。
+
+**思路：** 用一个 `dummy` 指向头，维护 `group_prev` 指针。每轮先向前走 `k` 步定位本组末尾 `kth`；若不足 `k` 个则停止。随后在组内做标准的头插式翻转，最后接回前驱与后继。全程只改指针，时间 O(n)，空间 O(1)。物流/订单流水常需按固定批量分块处理，本题是其抽象。
+
+**Python：**
+```python
+def reverse_k_group(head: ListNode | None, k: int) -> ListNode | None:
+    dummy = ListNode(0, head)
+    group_prev = dummy
+    while True:
+        kth = group_prev
+        for _ in range(k):
+            kth = kth.next
+            if not kth:
+                return dummy.next
+        group_next = kth.next
+        prev, cur = group_next, group_prev.next
+        while cur is not group_next:
+            cur.next, prev, cur = prev, cur, cur.next
+        tmp = group_prev.next
+        group_prev.next = kth
+        group_prev = tmp
+```
+
+**TypeScript：**
+```typescript
+function reverseKGroup(head: ListNode | null, k: number): ListNode | null {
+  const dummy = new ListNode(0, head);
+  let groupPrev: ListNode = dummy;
+  while (true) {
+    let kth: ListNode | null = groupPrev;
+    for (let i = 0; i < k; i++) {
+      kth = kth!.next;
+      if (!kth) return dummy.next;
+    }
+    const groupNext = kth.next;
+    let prev = groupNext, cur = groupPrev.next;
+    while (cur !== groupNext) {
+      const nxt = cur!.next;
+      cur!.next = prev;
+      prev = cur;
+      cur = nxt;
+    }
+    const tmp = groupPrev.next!;
+    groupPrev.next = kth;
+    groupPrev = tmp;
+  }
+}
+```
+
+**Java：**
+```java
+class Solution {
+    public ListNode reverseKGroup(ListNode head, int k) {
+        ListNode dummy = new ListNode(0, head), groupPrev = dummy;
+        while (true) {
+            ListNode kth = groupPrev;
+            for (int i = 0; i < k; i++) {
+                kth = kth.next;
+                if (kth == null) return dummy.next;
+            }
+            ListNode groupNext = kth.next, prev = groupNext, cur = groupPrev.next;
+            while (cur != groupNext) {
+                ListNode nxt = cur.next;
+                cur.next = prev;
+                prev = cur;
+                cur = nxt;
+            }
+            ListNode tmp = groupPrev.next;
+            groupPrev.next = kth;
+            groupPrev = tmp;
+        }
+    }
+}
+```
+
+**要点：**
+- 先探测本组是否够 `k` 个，不够则整组不翻转直接返回。
+- 用哨兵 `dummy` 统一处理头节点被翻转的情形。
+- 时间 O(n)，仅指针改写，空间 O(1)。
+
+**常见追问：**
+- 递归写法如何实现？栈深度是多少？
+- 若要求“不足 k 个的尾组也翻转”，代码如何改？
+
+**常见坑：**
+- 翻转后忘记把上一组末尾接到本组新头，导致链断裂。
+- `group_prev` 更新错误，误接到已翻转前的旧头。
+
+**标签：** #algorithm
+
+---
+
+### 6. 两数相加
+
+**难度：** 中等
+**主题：** linked-list, math, simulation
+**岗位：** SWE
+**级别：** L5
+
+**问题：** 两个非空链表按逆序存储两个非负整数，每个节点存一位数字。将两数相加，以同样的逆序链表返回结果。
+
+**思路：** 同步遍历两条链表，逐位相加并维护进位 `carry`。用哨兵 `dummy` 简化建表，每步新建节点值为 `(a + b + carry) % 10`，进位为 `// 10`。任一链表走完则按 0 处理，循环终止条件包含 `carry` 非零。时间 O(max(m, n))，空间 O(max(m, n))（结果链表）。逆序存储天然契合从低位开始相加。
+
+**Python：**
+```python
+def add_two_numbers(l1: ListNode | None, l2: ListNode | None) -> ListNode | None:
+    dummy = ListNode()
+    cur = dummy
+    carry = 0
+    while l1 or l2 or carry:
+        a = l1.val if l1 else 0
+        b = l2.val if l2 else 0
+        carry, digit = divmod(a + b + carry, 10)
+        cur.next = ListNode(digit)
+        cur = cur.next
+        l1 = l1.next if l1 else None
+        l2 = l2.next if l2 else None
+    return dummy.next
+```
+
+**TypeScript：**
+```typescript
+function addTwoNumbers(l1: ListNode | null, l2: ListNode | null): ListNode | null {
+  const dummy = new ListNode();
+  let cur = dummy, carry = 0;
+  while (l1 || l2 || carry) {
+    const sum = (l1?.val ?? 0) + (l2?.val ?? 0) + carry;
+    carry = Math.floor(sum / 10);
+    cur.next = new ListNode(sum % 10);
+    cur = cur.next;
+    l1 = l1?.next ?? null;
+    l2 = l2?.next ?? null;
+  }
+  return dummy.next;
+}
+```
+
+**Java：**
+```java
+class Solution {
+    public ListNode addTwoNumbers(ListNode l1, ListNode l2) {
+        ListNode dummy = new ListNode(), cur = dummy;
+        int carry = 0;
+        while (l1 != null || l2 != null || carry != 0) {
+            int a = l1 != null ? l1.val : 0;
+            int b = l2 != null ? l2.val : 0;
+            int sum = a + b + carry;
+            carry = sum / 10;
+            cur.next = new ListNode(sum % 10);
+            cur = cur.next;
+            if (l1 != null) l1 = l1.next;
+            if (l2 != null) l2 = l2.next;
+        }
+        return dummy.next;
+    }
+}
+```
+
+**要点：**
+- 循环条件带上 `carry`，处理最高位进位（如 5+5）。
+- 哨兵 `dummy` 免去对结果头节点的特判。
+- 两链表长度不等时，短的按 0 补齐。
+
+**常见追问：**
+- 若数字按正序（最高位在前）存储，如何做？（用栈或先翻转）
+- 如何原地复用其中一条链表以省空间？
+
+**常见坑：**
+- 忘记处理最后残留的进位，导致结果少一位。
+- 只在两链表都非空时才继续，漏掉长度不等的尾部。
+
+**标签：** #algorithm
+
+---
+
+### 7. 重排链表
+
+**难度：** 中等
+**主题：** linked-list, two-pointers, in-place
+**岗位：** SWE
+**级别：** L5
+
+**问题：** 给定链表 `L0 → L1 → … → Ln-1 → Ln`，将其原地重排为 `L0 → Ln → L1 → Ln-1 → L2 → Ln-2 → …`，不得修改节点值。
+
+**思路：** 三步走：快慢指针找中点将链表切成两半；翻转后半部分；再交替合并两半。全程只改指针，时间 O(n)，空间 O(1)。这类“首尾交替”的重排在页面分页展示、队列公平调度中都有类似模式。
+
+**Python：**
+```python
+def reorder_list(head: ListNode | None) -> None:
+    if not head or not head.next:
+        return
+    slow, fast = head, head
+    while fast.next and fast.next.next:
+        slow, fast = slow.next, fast.next.next
+    second = slow.next
+    slow.next = None
+    prev = None
+    while second:
+        second.next, prev, second = prev, second, second.next
+    first = head
+    while prev:
+        first.next, first = prev, first.next
+        prev.next, prev = first, prev.next
+```
+
+**TypeScript：**
+```typescript
+function reorderList(head: ListNode | null): void {
+  if (!head || !head.next) return;
+  let slow = head, fast = head;
+  while (fast.next && fast.next.next) { slow = slow.next!; fast = fast.next.next; }
+  let second = slow.next;
+  slow.next = null;
+  let prev: ListNode | null = null;
+  while (second) { const nxt = second.next; second.next = prev; prev = second; second = nxt; }
+  let first: ListNode | null = head;
+  while (prev) {
+    const n1 = first!.next, n2 = prev.next;
+    first!.next = prev;
+    prev.next = n1;
+    first = n1;
+    prev = n2;
+  }
+}
+```
+
+**Java：**
+```java
+class Solution {
+    public void reorderList(ListNode head) {
+        if (head == null || head.next == null) return;
+        ListNode slow = head, fast = head;
+        while (fast.next != null && fast.next.next != null) { slow = slow.next; fast = fast.next.next; }
+        ListNode second = slow.next;
+        slow.next = null;
+        ListNode prev = null;
+        while (second != null) { ListNode nxt = second.next; second.next = prev; prev = second; second = nxt; }
+        ListNode first = head;
+        while (prev != null) {
+            ListNode n1 = first.next, n2 = prev.next;
+            first.next = prev;
+            prev.next = n1;
+            first = n1;
+            prev = n2;
+        }
+    }
+}
+```
+
+**要点：**
+- 找中点用快慢指针，偶数长度时前半段不短于后半段。
+- 切断中点后翻转后半，再交替穿插合并。
+- 时间 O(n)，原地重排空间 O(1)。
+
+**常见追问：**
+- 如何用同样的技巧判断链表是否回文？
+- 若不允许翻转（保序），能否用双端队列实现，代价如何？
+
+**常见坑：**
+- 切分时忘记把前半段末尾 `next` 置空，形成环。
+- 合并时未提前保存两侧的 `next`，指针改写后丢失后继。
+
+**标签：** #algorithm
+
+---
+
 ## 树
 
-### 5. 单词拆分
+### 8. 单词拆分
 
 **难度：** 中等
 **主题：** dp, strings, trie
@@ -505,7 +779,7 @@ class Solution {
 
 ---
 
-### 6. 连接词
+### 9. 连接词
 
 **难度：** 困难
 **主题：** dp, trie, strings
@@ -588,7 +862,7 @@ class Solution {
 
 ---
 
-### 7. 另一棵树的子树
+### 10. 另一棵树的子树
 
 **难度：** 简单
 **主题：** tree, dfs, recursion
@@ -658,7 +932,7 @@ class Solution {
 
 ---
 
-### 8. 二叉树的序列化与反序列化
+### 11. 二叉树的序列化与反序列化
 
 **难度：** 困难
 **主题：** tree, dfs, bfs, design
@@ -756,7 +1030,7 @@ public class Codec {
 
 ---
 
-### 9. 单词搜索 II
+### 12. 单词搜索 II
 
 **难度：** 困难
 **主题：** trie, backtracking, dfs, matrix
@@ -869,7 +1143,7 @@ class Solution {
 
 ---
 
-### 10. 二叉树的最近公共祖先
+### 13. 二叉树的最近公共祖先
 
 **难度：** 中等
 **主题：** tree, dfs, recursion
@@ -925,7 +1199,7 @@ class Solution {
 
 ---
 
-### 11. 验证二叉搜索树
+### 14. 验证二叉搜索树
 
 **难度：** 中等
 **主题：** tree, dfs, recursion
@@ -983,9 +1257,340 @@ class Solution {
 
 ---
 
+### 15. 二叉树的层序遍历
+
+**难度：** 中等
+**主题：** tree, bfs, queue
+**岗位：** SDE
+**级别：** L5
+
+**问题：** 给定一棵二叉树，按层从上到下、每层从左到右返回节点值，结果为二维数组，每个子数组对应一层。
+
+**思路：** 标准 BFS：用队列，每轮先记录当前队列长度 `size`，只弹出这 `size` 个节点构成本层，同时把它们的孩子入队。时间 O(n)，空间 O(n)（队列最宽一层可达 n/2）。层序遍历是 Amazon 后端处理树/DAG 结构（如订单依赖、分类目录）的常用基础。
+
+**Python：**
+```python
+from collections import deque
+
+def level_order(root: TreeNode | None) -> list[list[int]]:
+    if root is None:
+        return []
+    res: list[list[int]] = []
+    q: deque[TreeNode] = deque([root])
+    while q:
+        level: list[int] = []
+        for _ in range(len(q)):
+            node = q.popleft()
+            level.append(node.val)
+            if node.left:
+                q.append(node.left)
+            if node.right:
+                q.append(node.right)
+        res.append(level)
+    return res
+```
+
+**TypeScript：**
+```typescript
+function levelOrder(root: TreeNode | null): number[][] {
+  if (!root) return [];
+  const res: number[][] = [];
+  let queue: TreeNode[] = [root];
+  while (queue.length) {
+    const level: number[] = [];
+    const next: TreeNode[] = [];
+    for (const node of queue) {
+      level.push(node.val);
+      if (node.left) next.push(node.left);
+      if (node.right) next.push(node.right);
+    }
+    res.push(level);
+    queue = next;
+  }
+  return res;
+}
+```
+
+**Java：**
+```java
+class Solution {
+    public List<List<Integer>> levelOrder(TreeNode root) {
+        List<List<Integer>> res = new ArrayList<>();
+        if (root == null) return res;
+        Queue<TreeNode> q = new LinkedList<>();
+        q.offer(root);
+        while (!q.isEmpty()) {
+            int size = q.size();
+            List<Integer> level = new ArrayList<>();
+            for (int i = 0; i < size; i++) {
+                TreeNode node = q.poll();
+                level.add(node.val);
+                if (node.left != null) q.offer(node.left);
+                if (node.right != null) q.offer(node.right);
+            }
+            res.add(level);
+        }
+        return res;
+    }
+}
+```
+
+**要点：**
+- 每轮循环前先固定 `size`，才能把节点正确切分到各层。
+- 时间 O(n)，空间 O(n)。
+- 改成从右往左入队或结果反转即可得到自底向上/锯齿遍历。
+
+**常见追问：**
+- 如何实现锯齿形（Zigzag）层序遍历？
+- 若树极度倾斜（链状），BFS 与 DFS 的空间开销差异如何？
+
+**常见坑：**
+- 在循环内直接用 `len(q)` 而不先缓存，会把新入队的孩子混进当前层。
+- 忘记处理空根节点导致返回错误结构。
+
+**标签：** #algorithm
+
+---
+
+### 16. 二叉树的右视图
+
+**难度：** 中等
+**主题：** tree, bfs, dfs
+**岗位：** SDE
+**级别：** L5
+
+**问题：** 给定一棵二叉树，想象自己站在树的右侧，从上到下返回你能看到的节点值（每层最右边的那个节点）。
+
+**思路：** BFS 每层取最后一个节点即可，时间 O(n)、空间 O(n)。也可用 DFS，按「根 → 右 → 左」顺序遍历，并用当前深度是否等于结果长度来判断该深度是否第一次被访问——第一次到达的即该层最右节点，空间 O(h)。这里给出简洁的 DFS 解法。
+
+**Python：**
+```python
+def right_side_view(root: TreeNode | None) -> list[int]:
+    res: list[int] = []
+    def dfs(node: TreeNode | None, depth: int) -> None:
+        if node is None:
+            return
+        if depth == len(res):
+            res.append(node.val)
+        dfs(node.right, depth + 1)
+        dfs(node.left, depth + 1)
+    dfs(root, 0)
+    return res
+```
+
+**TypeScript：**
+```typescript
+function rightSideView(root: TreeNode | null): number[] {
+  const res: number[] = [];
+  const dfs = (node: TreeNode | null, depth: number): void => {
+    if (!node) return;
+    if (depth === res.length) res.push(node.val);
+    dfs(node.right, depth + 1);
+    dfs(node.left, depth + 1);
+  };
+  dfs(root, 0);
+  return res;
+}
+```
+
+**Java：**
+```java
+class Solution {
+    public List<Integer> rightSideView(TreeNode root) {
+        List<Integer> res = new ArrayList<>();
+        dfs(root, 0, res);
+        return res;
+    }
+    private void dfs(TreeNode node, int depth, List<Integer> res) {
+        if (node == null) return;
+        if (depth == res.size()) res.add(node.val);
+        dfs(node.right, depth + 1, res);
+        dfs(node.left, depth + 1, res);
+    }
+}
+```
+
+**要点：**
+- 先递归右子树，保证每个深度第一次被访问的是最右节点。
+- `depth == len(res)` 是判断某深度首次访问的经典技巧。
+- 时间 O(n)，DFS 空间 O(h)。
+
+**常见追问：**
+- 如何求左视图？把递归顺序改成先左后右即可。
+- 用 BFS 如何实现，两种方案空间复杂度差异？
+
+**常见坑：**
+- 误以为右视图就是「所有右孩子」；当右子树缺失时左子树节点也可能可见。
+- DFS 时先递归左子树会得到错误的首访节点。
+
+**标签：** #algorithm
+
+---
+
+### 17. 二叉树中的最大路径和
+
+**难度：** 困难
+**主题：** tree, dfs, recursion
+**岗位：** SDE
+**级别：** L5-L6
+
+**问题：** 路径定义为从任意节点出发、沿父子边到达任意节点的序列，路径至少含一个节点且不必经过根。求所有路径中节点值之和的最大值（节点值可为负）。
+
+**思路：** 后序 DFS。对每个节点，计算它向下能提供的「单边最大贡献」= `node.val + max(0, 左贡献, 右贡献)`（负贡献剪成 0）。同时用「以当前节点为最高点、左右都取正贡献」的路径和 `node.val + max(0,左) + max(0,右)` 去更新全局答案。时间 O(n)，空间 O(h)。这类树上 DP 常出现在 Amazon 的高阶算法轮。
+
+**Python：**
+```python
+def max_path_sum(root: TreeNode | None) -> int:
+    best = float('-inf')
+    def gain(node: TreeNode | None) -> int:
+        nonlocal best
+        if node is None:
+            return 0
+        left = max(gain(node.left), 0)
+        right = max(gain(node.right), 0)
+        best = max(best, node.val + left + right)
+        return node.val + max(left, right)
+    gain(root)
+    return int(best)
+```
+
+**TypeScript：**
+```typescript
+function maxPathSum(root: TreeNode | null): number {
+  let best = -Infinity;
+  const gain = (node: TreeNode | null): number => {
+    if (!node) return 0;
+    const left = Math.max(gain(node.left), 0);
+    const right = Math.max(gain(node.right), 0);
+    best = Math.max(best, node.val + left + right);
+    return node.val + Math.max(left, right);
+  };
+  gain(root);
+  return best;
+}
+```
+
+**Java：**
+```java
+class Solution {
+    private int best = Integer.MIN_VALUE;
+    public int maxPathSum(TreeNode root) {
+        gain(root);
+        return best;
+    }
+    private int gain(TreeNode node) {
+        if (node == null) return 0;
+        int left = Math.max(gain(node.left), 0);
+        int right = Math.max(gain(node.right), 0);
+        best = Math.max(best, node.val + left + right);
+        return node.val + Math.max(left, right);
+    }
+}
+```
+
+**要点：**
+- 区分「返回给父节点的单边贡献」与「以当前节点拐点更新的全局答案」。
+- 负贡献用 `max(0, ...)` 剪掉，避免拖累路径。
+- 全局答案初始化为负无穷，兼容全负值的树。
+
+**常见追问：**
+- 如何在求最大和的同时还原出这条路径本身？
+- 若限制路径必须经过根节点，解法如何简化？
+
+**常见坑：**
+- 把返回值也算成「左+右」，导致返回给父节点的贡献不再是合法单边路径。
+- 用 0 初始化全局最优，全负值树会得到错误的 0。
+
+**标签：** #algorithm
+
+---
+
+### 18. 二叉搜索树中第 K 小的元素
+
+**难度：** 中等
+**主题：** tree, bst, dfs, inorder
+**岗位：** SDE
+**级别：** L5
+
+**问题：** 给定一棵二叉搜索树（BST）的根节点和整数 `k`，返回树中所有节点值里第 `k` 小的值（`k` 从 1 计）。
+
+**思路：** BST 的中序遍历是递增序列，因此第 `k` 个访问到的节点即答案。用迭代式中序遍历（显式栈）在数到第 `k` 个时即可提前返回，时间 O(h + k)，空间 O(h)。相比一次遍历全部再取，提前终止更适合 `k` 较小的场景。
+
+**Python：**
+```python
+def kth_smallest(root: TreeNode | None, k: int) -> int:
+    stack: list[TreeNode] = []
+    node = root
+    while stack or node:
+        while node:
+            stack.append(node)
+            node = node.left
+        node = stack.pop()
+        k -= 1
+        if k == 0:
+            return node.val
+        node = node.right
+    raise ValueError("k out of range")
+```
+
+**TypeScript：**
+```typescript
+function kthSmallest(root: TreeNode | null, k: number): number {
+  const stack: TreeNode[] = [];
+  let node = root;
+  while (stack.length || node) {
+    while (node) {
+      stack.push(node);
+      node = node.left;
+    }
+    node = stack.pop()!;
+    if (--k === 0) return node.val;
+    node = node.right;
+  }
+  throw new Error("k out of range");
+}
+```
+
+**Java：**
+```java
+class Solution {
+    public int kthSmallest(TreeNode root, int k) {
+        Deque<TreeNode> stack = new ArrayDeque<>();
+        TreeNode node = root;
+        while (!stack.isEmpty() || node != null) {
+            while (node != null) {
+                stack.push(node);
+                node = node.left;
+            }
+            node = stack.pop();
+            if (--k == 0) return node.val;
+            node = node.right;
+        }
+        throw new IllegalArgumentException("k out of range");
+    }
+}
+```
+
+**要点：**
+- 利用 BST 中序递增的性质，无需排序。
+- 迭代中序可在数到第 k 个时提前退出，时间 O(h + k)。
+- 空间 O(h)，即栈深不超过树高。
+
+**常见追问：**
+- 若树会频繁插入/删除并多次查询第 k 小，如何优化（在节点维护子树规模）？
+- 如何改成求第 k 大？
+
+**常见坑：**
+- 忘记先一路向左压栈，导致中序顺序错误。
+- 递减 `k` 的时机放在弹栈前后不当，产生 off-by-one。
+
+**标签：** #algorithm
+
+---
+
 ## 图
 
-### 12. 岛屿数量
+### 19. 岛屿数量
 
 **难度：** 中等
 **主题：** graph, dfs, bfs, matrix
@@ -1075,7 +1680,7 @@ class Solution {
 
 ---
 
-### 13. 省份数量
+### 20. 省份数量
 
 **难度：** 中等
 **主题：** graph, union-find, dfs
@@ -1159,7 +1764,7 @@ class Solution {
 
 ---
 
-### 14. 课程表
+### 21. 课程表
 
 **难度：** 中等
 **主题：** graph, topological-sort, dfs, bfs
@@ -1239,7 +1844,7 @@ class Solution {
 
 ---
 
-### 15. 单词接龙 II
+### 22. 单词接龙 II
 
 **难度：** 困难
 **主题：** bfs, graph, backtracking, strings
@@ -1375,7 +1980,7 @@ class Solution {
 
 ---
 
-### 16. 网络中的关键连接
+### 23. 网络中的关键连接
 
 **难度：** 困难
 **主题：** graph, dfs, tarjan, bridges
@@ -1476,7 +2081,7 @@ class Solution {
 
 ---
 
-### 17. 迷宫 II
+### 24. 迷宫 II
 
 **难度：** 中等
 **主题：** bfs, dijkstra, matrix
@@ -1578,7 +2183,7 @@ class Solution {
 
 ---
 
-### 18. 概率最大的路径
+### 25. 概率最大的路径
 
 **难度：** 中等
 **主题：** graph, dijkstra, heap
@@ -1677,7 +2282,7 @@ class Solution {
 
 ---
 
-### 19. 岛屿数量 II
+### 26. 岛屿数量 II
 
 **难度：** 困难
 **主题：** union-find, graph
@@ -1783,7 +2388,7 @@ class Solution {
 
 ---
 
-### 20. 优化村庄供水分配
+### 27. 优化村庄供水分配
 
 **难度：** 困难
 **主题：** graph, mst, union-find
@@ -1870,9 +2475,307 @@ class Solution {
 
 ---
 
+### 28. 克隆图
+
+**难度：** 中等
+**主题：** graph, dfs, bfs, hash-table
+**岗位：** SWE
+**级别：** L5
+
+**问题：** 给定一个连通无向图的某个节点引用，返回该图的深拷贝。每个节点含一个 `val` 和邻居列表 `neighbors`。
+
+**思路：** 用哈希表映射「原节点 -> 新节点」，DFS 或 BFS 遍历。访问节点时先建其克隆并入表，再递归克隆每个邻居并接上；表可去重避免环导致无限递归。时间 O(V+E)，空间 O(V)。在 Amazon 这类图复制常用于服务依赖拓扑或订单履约网络的快照。
+
+**Python：**
+```python
+from typing import Optional
+
+class Node:
+    def __init__(self, val: int = 0, neighbors: list['Node'] | None = None):
+        self.val = val
+        self.neighbors = neighbors or []
+
+def clone_graph(node: Optional[Node]) -> Optional[Node]:
+    if node is None:
+        return None
+    seen: dict[Node, Node] = {}
+    def dfs(cur: Node) -> Node:
+        if cur in seen:
+            return seen[cur]
+        copy = Node(cur.val)
+        seen[cur] = copy
+        copy.neighbors = [dfs(nb) for nb in cur.neighbors]
+        return copy
+    return dfs(node)
+```
+
+**TypeScript：**
+```typescript
+class GraphNode {
+  val: number;
+  neighbors: GraphNode[];
+  constructor(val = 0, neighbors: GraphNode[] = []) {
+    this.val = val;
+    this.neighbors = neighbors;
+  }
+}
+
+function cloneGraph(node: GraphNode | null): GraphNode | null {
+  if (node === null) return null;
+  const seen = new Map<GraphNode, GraphNode>();
+  const dfs = (cur: GraphNode): GraphNode => {
+    const existing = seen.get(cur);
+    if (existing) return existing;
+    const copy = new GraphNode(cur.val);
+    seen.set(cur, copy);
+    copy.neighbors = cur.neighbors.map(dfs);
+    return copy;
+  };
+  return dfs(node);
+}
+```
+
+**Java：**
+```java
+class Node {
+    public int val;
+    public List<Node> neighbors;
+    public Node(int val) { this.val = val; this.neighbors = new ArrayList<>(); }
+}
+
+class Solution {
+    private final Map<Node, Node> seen = new HashMap<>();
+    public Node cloneGraph(Node node) {
+        if (node == null) return null;
+        if (seen.containsKey(node)) return seen.get(node);
+        Node copy = new Node(node.val);
+        seen.put(node, copy);
+        for (Node nb : node.neighbors) copy.neighbors.add(cloneGraph(nb));
+        return copy;
+    }
+}
+```
+
+**要点：**
+- 先入表再递归邻居，才能正确处理环。
+- 哈希表键用原节点引用，保证同一节点只克隆一次。
+- DFS/BFS 均可，复杂度都是 O(V+E)。
+
+**常见追问：**
+- 若节点 `val` 不唯一，能否用 `val` 作哈希键？（不能，必须用引用/身份）
+- 改用 BFS 迭代实现如何避免深图爆栈？
+
+**常见坑：**
+- 忘记在克隆前就把映射入表，导致环上无限递归。
+- 对空图（node 为 null）未特判。
+
+**标签：** #algorithm
+
+---
+
+### 29. 火星词典
+
+**难度：** 困难
+**主题：** graph, topological-sort, bfs
+**岗位：** SWE
+**级别：** L5-L6
+
+**问题：** 给定一个按某种未知字母顺序排序的外星语单词列表 `words`，推断出这套字母表的字典序。若顺序非法返回空串，若存在多个合法顺序返回其中任意一个。
+
+**思路：** 从相邻单词对逐字符比较，第一个不同字符 `a != b` 给出一条有向边 `a -> b`。对所有出现的字符建图后做 Kahn 拓扑排序；若无法排完所有字符说明有环，返回空串。特别注意「前缀在后」的非法情形（如 `abc` 排在 `ab` 前）。时间 O(总字符数)，空间 O(1) 字符集常数级。Amazon 排序/规则推断类题常考此类拓扑建模。
+
+**Python：**
+```python
+from collections import deque
+
+def alien_order(words: list[str]) -> str:
+    graph: dict[str, set[str]] = {c: set() for w in words for c in w}
+    indeg: dict[str, int] = {c: 0 for c in graph}
+    for a, b in zip(words, words[1:]):
+        for x, y in zip(a, b):
+            if x != y:
+                if y not in graph[x]:
+                    graph[x].add(y)
+                    indeg[y] += 1
+                break
+        else:
+            if len(a) > len(b):
+                return ""
+    q = deque([c for c in indeg if indeg[c] == 0])
+    order: list[str] = []
+    while q:
+        c = q.popleft()
+        order.append(c)
+        for nxt in graph[c]:
+            indeg[nxt] -= 1
+            if indeg[nxt] == 0:
+                q.append(nxt)
+    return "".join(order) if len(order) == len(indeg) else ""
+```
+
+**TypeScript：**
+```typescript
+function alienOrder(words: string[]): string {
+  const graph = new Map<string, Set<string>>();
+  const indeg = new Map<string, number>();
+  for (const w of words) for (const c of w) {
+    if (!graph.has(c)) { graph.set(c, new Set()); indeg.set(c, 0); }
+  }
+  for (let i = 0; i + 1 < words.length; i++) {
+    const a = words[i], b = words[i + 1];
+    let j = 0;
+    const min = Math.min(a.length, b.length);
+    while (j < min && a[j] === b[j]) j++;
+    if (j === min) { if (a.length > b.length) return ""; continue; }
+    if (!graph.get(a[j])!.has(b[j])) {
+      graph.get(a[j])!.add(b[j]);
+      indeg.set(b[j], indeg.get(b[j])! + 1);
+    }
+  }
+  const q: string[] = [];
+  for (const [c, d] of indeg) if (d === 0) q.push(c);
+  const order: string[] = [];
+  while (q.length) {
+    const c = q.shift()!;
+    order.push(c);
+    for (const nxt of graph.get(c)!) {
+      indeg.set(nxt, indeg.get(nxt)! - 1);
+      if (indeg.get(nxt) === 0) q.push(nxt);
+    }
+  }
+  return order.length === indeg.size ? order.join("") : "";
+}
+```
+
+**Java：**
+```java
+class Solution {
+    public String alienOrder(String[] words) {
+        Map<Character, Set<Character>> graph = new HashMap<>();
+        Map<Character, Integer> indeg = new HashMap<>();
+        for (String w : words) for (char c : w.toCharArray()) {
+            graph.putIfAbsent(c, new HashSet<>());
+            indeg.putIfAbsent(c, 0);
+        }
+        for (int i = 0; i + 1 < words.length; i++) {
+            String a = words[i], b = words[i + 1];
+            int min = Math.min(a.length(), b.length()), j = 0;
+            while (j < min && a.charAt(j) == b.charAt(j)) j++;
+            if (j == min) { if (a.length() > b.length()) return ""; continue; }
+            char x = a.charAt(j), y = b.charAt(j);
+            if (graph.get(x).add(y)) indeg.merge(y, 1, Integer::sum);
+        }
+        Deque<Character> q = new ArrayDeque<>();
+        for (var e : indeg.entrySet()) if (e.getValue() == 0) q.add(e.getKey());
+        StringBuilder sb = new StringBuilder();
+        while (!q.isEmpty()) {
+            char c = q.poll();
+            sb.append(c);
+            for (char nxt : graph.get(c)) if (indeg.merge(nxt, -1, Integer::sum) == 0) q.add(nxt);
+        }
+        return sb.length() == indeg.size() ? sb.toString() : "";
+    }
+}
+```
+
+**要点：**
+- 只从相邻单词对的第一个不同字符建一条边。
+- 拓扑排序结果长度不等于字符总数说明有环，返回空串。
+- 长单词是短单词前缀且排在前面属非法，需单独判断。
+
+**常见追问：**
+- 如何检测答案是否唯一？（队列中任一时刻元素数 > 1 则不唯一）
+- 若要求输出所有合法顺序如何做？（回溯枚举拓扑序）
+
+**常见坑：**
+- 忘记处理 `["abc", "ab"]` 这种非法前缀情形。
+- 重复加同一条边导致入度被多计。
+
+**标签：** #algorithm
+
+---
+
+### 30. K 站中转内最便宜的航班
+
+**难度：** 中等
+**主题：** graph, shortest-path, bellman-ford, bfs
+**岗位：** SWE
+**级别：** L5
+
+**问题：** 有 `n` 个城市和一组航班 `flights[i] = [from, to, price]`。求从 `src` 到 `dst` 至多经过 `k` 个中转站的最便宜价格；不存在则返回 -1。
+
+**思路：** 带跳数限制的最短路，用 Bellman-Ford 松弛 `k+1` 轮。每轮基于上一轮的距离快照更新，保证第 i 轮得到的是「至多用 i 条边」的最短距离，从而恰好限制中转数。时间 O(k * E)，空间 O(n)。这类「限制跳数的最优路径」直接对应 Amazon 物流/配送在换手次数约束下的成本优化。
+
+**Python：**
+```python
+def find_cheapest_price(n: int, flights: list[list[int]], src: int, dst: int, k: int) -> int:
+    INF = float('inf')
+    dist = [INF] * n
+    dist[src] = 0
+    for _ in range(k + 1):
+        prev = dist[:]
+        for u, v, w in flights:
+            if prev[u] + w < dist[v]:
+                dist[v] = prev[u] + w
+    return -1 if dist[dst] == INF else dist[dst]
+```
+
+**TypeScript：**
+```typescript
+function findCheapestPrice(n: number, flights: number[][], src: number, dst: number, k: number): number {
+  const INF = Infinity;
+  let dist = new Array<number>(n).fill(INF);
+  dist[src] = 0;
+  for (let i = 0; i <= k; i++) {
+    const prev = dist.slice();
+    for (const [u, v, w] of flights) {
+      if (prev[u] + w < dist[v]) dist[v] = prev[u] + w;
+    }
+  }
+  return dist[dst] === INF ? -1 : dist[dst];
+}
+```
+
+**Java：**
+```java
+class Solution {
+    public int findCheapestPrice(int n, int[][] flights, int src, int dst, int k) {
+        final int INF = Integer.MAX_VALUE;
+        int[] dist = new int[n];
+        Arrays.fill(dist, INF);
+        dist[src] = 0;
+        for (int i = 0; i <= k; i++) {
+            int[] prev = dist.clone();
+            for (int[] f : flights) {
+                int u = f[0], v = f[1], w = f[2];
+                if (prev[u] != INF && prev[u] + w < dist[v]) dist[v] = prev[u] + w;
+            }
+        }
+        return dist[dst] == INF ? -1 : dist[dst];
+    }
+}
+```
+
+**要点：**
+- 恰好松弛 k+1 轮对应「至多 k 个中转（k+1 条边）」。
+- 每轮必须基于上一轮快照 `prev`，否则一轮内可能连用多条边、跳数失控。
+- 复杂度 O(k * E)，无需堆。
+
+**常见追问：**
+- 用 Dijkstra + 状态 (城市, 已用跳数) 如何实现？各有何取舍？
+- 若边权可能为负如何处理？（Bellman-Ford 天然支持，但需注意负环）
+
+**常见坑：**
+- 不用快照直接在原数组上松弛，导致一轮内传播超过一条边。
+- Java 中未判 `prev[u] != INF` 就相加会整型溢出。
+
+**标签：** #algorithm
+
+---
+
 ## 堆 / 优先队列
 
-### 21. 前 K 个高频元素
+### 31. 前 K 个高频元素
 
 **难度：** 中等
 **主题：** hashmap, heap, bucket-sort
@@ -1952,7 +2855,7 @@ class Solution {
 
 ---
 
-### 22. 接雨水 II
+### 32. 接雨水 II
 
 **难度：** 困难
 **主题：** heap, bfs, matrix
@@ -2055,7 +2958,7 @@ class Solution {
 
 ---
 
-### 23. 高尔夫赛事砍树
+### 33. 高尔夫赛事砍树
 
 **难度：** 困难
 **主题：** bfs, heap, matrix
@@ -2181,7 +3084,7 @@ class Solution {
 
 ---
 
-### 24. 最接近原点的 K 个点
+### 34. 最接近原点的 K 个点
 
 **难度：** 中等
 **主题：** heap, quickselect, sorting
@@ -2246,7 +3149,7 @@ class Solution {
 
 ---
 
-### 25. 会议室 II
+### 35. 会议室 II
 
 **难度：** 中等
 **主题：** heap, intervals, sorting
@@ -2313,7 +3216,7 @@ class Solution {
 
 ---
 
-### 26. 数据流的中位数
+### 36. 数据流的中位数
 
 **难度：** 困难
 **主题：** heap, design, streaming
@@ -2390,7 +3293,7 @@ class MedianFinder {
 
 ---
 
-### 27. 连接绳子的最小成本
+### 37. 连接绳子的最小成本
 
 **难度：** 中等
 **主题：** heap, greedy
@@ -2460,7 +3363,7 @@ class Solution {
 
 ---
 
-### 28. 重构字符串
+### 38. 重构字符串
 
 **难度：** 中等
 **主题：** heap, greedy, strings
@@ -2550,9 +3453,146 @@ class Solution {
 
 ---
 
+### 39. 数组中的第 K 个最大元素
+
+**难度：** 中等
+**主题：** heap, quickselect, sorting
+**岗位：** SWE
+**级别：** L5
+
+**问题：** 给定整数数组 `nums` 和整数 `k`，返回数组中第 `k` 个最大的元素（按值排名，而非第 k 个不同的元素）。
+
+**思路：** 维护一个大小为 `k` 的小顶堆：逐个入堆，当大小超过 `k` 时弹出堆顶。堆顶即第 k 大元素。时间 O(n log k)，空间 O(k)——适合流式或超大 `n` 场景，如商品热销榜排序。Quickselect 围绕枢轴划分，平均 O(n)，最坏 O(n^2)。
+
+**Python：**
+```python
+import heapq
+
+def findKthLargest(nums: list[int], k: int) -> int:
+    heap: list[int] = []
+    for x in nums:
+        heapq.heappush(heap, x)
+        if len(heap) > k:
+            heapq.heappop(heap)
+    return heap[0]
+```
+
+**TypeScript：**
+```typescript
+function findKthLargest(nums: number[], k: number): number {
+  const heap: number[] = [];
+  for (const x of nums) {
+    heap.push(x);
+    heap.sort((a, b) => a - b);
+    if (heap.length > k) heap.shift();
+  }
+  return heap[0];
+}
+```
+
+**Java：**
+```java
+class Solution {
+    public int findKthLargest(int[] nums, int k) {
+        PriorityQueue<Integer> heap = new PriorityQueue<>();
+        for (int x : nums) {
+            heap.offer(x);
+            if (heap.size() > k) heap.poll();
+        }
+        return heap.peek();
+    }
+}
+```
+
+**要点：**
+- 大小为 k 的小顶堆恰好保留见过的 k 个最大元素，堆顶即答案。
+- 当 k 较小时，O(n log k) 优于整体排序的 O(n log n)。
+- Quickselect 平均 O(n)，但在面试中不易一次写对。
+
+**常见追问：**
+- 若数据是无界流式怎么办？（大小为 k 的堆天然支持在线处理。）
+- 实现 Quickselect 版本并分析其最坏情况。
+
+**常见坑：**
+- 用大小为 n 的大顶堆既浪费内存又是 O(n log n)，大小为 k 的小顶堆更优。
+- 混淆按值第 k 大与第 k 个不同值。
+
+**标签：** #algorithm
+
+---
+
+### 40. 前 K 个高频单词
+
+**难度：** 中等
+**主题：** heap, hash-table, sorting
+**岗位：** SWE
+**级别：** L5
+
+**问题：** 给定单词列表 `words` 和整数 `k`，返回出现频率前 `k` 高的单词，按频率降序排列；频率相同时按字典序（字母顺序）排列。
+
+**思路：** 用哈希表统计词频，再按复合键 `(-freq, word)` 选出前 k 个。大小为 k 的堆保留最优 k 个，时间 O(n log k)。Amazon 常见场景：热门搜索词或趋势查询。正确的平局处理是关键。
+
+**Python：**
+```python
+import heapq
+from collections import Counter
+
+def topKFrequent(words: list[str], k: int) -> list[str]:
+    count = Counter(words)
+    return heapq.nsmallest(k, count, key=lambda w: (-count[w], w))
+```
+
+**TypeScript：**
+```typescript
+function topKFrequent(words: string[], k: number): string[] {
+  const count = new Map<string, number>();
+  for (const w of words) count.set(w, (count.get(w) ?? 0) + 1);
+  return [...count.keys()]
+    .sort((a, b) => count.get(b)! - count.get(a)! || a.localeCompare(b))
+    .slice(0, k);
+}
+```
+
+**Java：**
+```java
+class Solution {
+    public List<String> topKFrequent(String[] words, int k) {
+        Map<String, Integer> count = new HashMap<>();
+        for (String w : words) count.merge(w, 1, Integer::sum);
+        PriorityQueue<String> heap = new PriorityQueue<>((a, b) ->
+            count.get(a).equals(count.get(b)) ? b.compareTo(a) : count.get(a) - count.get(b));
+        for (String w : count.keySet()) {
+            heap.offer(w);
+            if (heap.size() > k) heap.poll();
+        }
+        List<String> out = new ArrayList<>();
+        while (!heap.isEmpty()) out.add(heap.poll());
+        Collections.reverse(out);
+        return out;
+    }
+}
+```
+
+**要点：**
+- 排序键 `(-freq, word)` 用一次比较同时表达频率降序与字母升序。
+- 大小为 k 的堆为 O(n log k)；整体排序 O(n log n) 但更易推理。
+- 用小顶堆时需反转平局方向（字典序更大者置顶），弹出后才保留正确的 k 个。
+
+**常见追问：**
+- 若 k 等于不同单词的数量怎么办？（此时整体排序不可避免。）
+- 面对数十亿条查询日志，如何跨机器分片处理？
+
+**常见坑：**
+- 用大小为 k 的小顶堆时把平局比较方向搞反。
+- 忘记反转堆输出，导致得到升序而非降序结果。
+
+**标签：** #algorithm
+
+---
+
 ## 栈 / 队列
 
-### 29. 滑动窗口最大值
+### 41. 滑动窗口最大值
 
 **难度：** 困难
 **主题：** deque, sliding-window
@@ -2622,7 +3662,7 @@ class Solution {
 
 ---
 
-### 30. 最小栈
+### 42. 最小栈
 
 **难度：** 中等
 **主题：** stack, design
@@ -2694,7 +3734,7 @@ class MinStack {
 
 ---
 
-### 31. 设计点击计数器
+### 43. 设计点击计数器
 
 **难度：** 中等
 **主题：** design, queue, hashmap
@@ -2769,9 +3809,159 @@ class HitCounter {
 
 ---
 
+### 44. 有效的括号
+
+**难度：** 简单
+**主题：** stack, string
+**岗位：** SWE
+**级别：** L4
+
+**问题：** 给定仅含 `()[]{}` 的字符串 `s`，判断其是否有效——每个左括号都由相同类型的右括号按正确顺序闭合。
+
+**思路：** 遇到左括号就把其对应的右括号压栈；遇到右括号时必须与栈顶匹配。当且仅当每个右括号都匹配且最终栈为空时有效。时间 O(n)，空间 O(n)。这是校验嵌套结构（如 JSON/配置解析）的经典入门题。
+
+**Python：**
+```python
+def isValid(s: str) -> bool:
+    pairs = {')': '(', ']': '[', '}': '{'}
+    stack: list[str] = []
+    for c in s:
+        if c in pairs:
+            if not stack or stack.pop() != pairs[c]:
+                return False
+        else:
+            stack.append(c)
+    return not stack
+```
+
+**TypeScript：**
+```typescript
+function isValid(s: string): boolean {
+  const pairs: Record<string, string> = { ")": "(", "]": "[", "}": "{" };
+  const stack: string[] = [];
+  for (const c of s) {
+    if (c in pairs) {
+      if (stack.pop() !== pairs[c]) return false;
+    } else {
+      stack.push(c);
+    }
+  }
+  return stack.length === 0;
+}
+```
+
+**Java：**
+```java
+class Solution {
+    public boolean isValid(String s) {
+        Deque<Character> stack = new ArrayDeque<>();
+        for (char c : s.toCharArray()) {
+            if (c == '(') stack.push(')');
+            else if (c == '[') stack.push(']');
+            else if (c == '{') stack.push('}');
+            else if (stack.isEmpty() || stack.pop() != c) return false;
+        }
+        return stack.isEmpty();
+    }
+}
+```
+
+**要点：**
+- 栈的 LIFO 特性天然契合嵌套括号。
+- 结尾既要检查是否失配，也要检查栈是否还有残留。
+- 压入「期望的右括号」使比较简化为一次相等判断。
+
+**常见追问：**
+- 支持通配符 `*`，可代表 `(`、`)` 或空（LeetCode 678）。
+- 返回第一个非法字符的下标而非布尔值。
+
+**常见坑：**
+- 右括号先到时从空栈弹出——需先做空栈判断。
+- 栈中仍有未闭合的左括号时却返回 `true`。
+
+**标签：** #algorithm
+
+---
+
+### 45. 每日温度
+
+**难度：** 中等
+**主题：** stack, monotonic-stack, array
+**岗位：** SWE
+**级别：** L5
+
+**问题：** 给定每日温度数组 `temperatures`，返回数组 `answer`，其中 `answer[i]` 表示在第 `i` 天之后需要等待多少天才会出现更高的温度；若不存在则为 `0`。
+
+**思路：** 维护一个下标的单调递减栈。对每一天，当当前温度高于栈顶下标处的温度时，弹出该下标并记录天数差。每个下标只入栈、出栈一次——时间 O(n)，空间 O(n)。这种「下一个更大元素」模式可用于诸如补货时长等指标计算。
+
+**Python：**
+```python
+def dailyTemperatures(temperatures: list[int]) -> list[int]:
+    res = [0] * len(temperatures)
+    stack: list[int] = []  # indices, decreasing temps
+    for i, t in enumerate(temperatures):
+        while stack and temperatures[stack[-1]] < t:
+            j = stack.pop()
+            res[j] = i - j
+        stack.append(i)
+    return res
+```
+
+**TypeScript：**
+```typescript
+function dailyTemperatures(temperatures: number[]): number[] {
+  const res = new Array<number>(temperatures.length).fill(0);
+  const stack: number[] = [];
+  for (let i = 0; i < temperatures.length; i++) {
+    while (stack.length && temperatures[stack[stack.length - 1]] < temperatures[i]) {
+      const j = stack.pop()!;
+      res[j] = i - j;
+    }
+    stack.push(i);
+  }
+  return res;
+}
+```
+
+**Java：**
+```java
+class Solution {
+    public int[] dailyTemperatures(int[] temperatures) {
+        int n = temperatures.length;
+        int[] res = new int[n];
+        Deque<Integer> stack = new ArrayDeque<>();
+        for (int i = 0; i < n; i++) {
+            while (!stack.isEmpty() && temperatures[stack.peek()] < temperatures[i]) {
+                int j = stack.pop();
+                res[j] = i - j;
+            }
+            stack.push(i);
+        }
+        return res;
+    }
+}
+```
+
+**要点：**
+- 栈中存下标而非数值，才能直接算出天数差。
+- 单调递减栈保证每个元素只入栈/出栈一次——摊还 O(n)。
+- 未被解决的下标保留默认值 `0`。
+
+**常见追问：**
+- 返回真正更高的温度值，而非天数。
+- 处理逐个到达的流式温度数据。
+
+**常见坑：**
+- 存数值而非下标，导致无法计算 `i - j`。
+- 用 `<=` 而非 `<`，会错误处理连续相等的温度。
+
+**标签：** #algorithm
+
+---
+
 ## 哈希表
 
-### 32. 两数之和
+### 46. 两数之和
 
 **难度：** 简单
 **主题：** arrays, hashmap
@@ -2840,7 +4030,7 @@ class Solution {
 
 ---
 
-### 33. 最常见单词
+### 47. 最常见单词
 
 **难度：** 简单
 **主题：** strings, hashmap, parsing
@@ -2907,7 +4097,7 @@ class Solution {
 
 ---
 
-### 34. 分析用户网站访问模式
+### 48. 分析用户网站访问模式
 
 **难度：** 中等
 **主题：** hashmap, sorting, strings
@@ -3006,7 +4196,7 @@ class Solution {
 
 ---
 
-### 35. 字母异位词分组
+### 49. 字母异位词分组
 
 **难度：** 中等
 **主题：** hashmap, strings, sorting
@@ -3064,9 +4254,402 @@ class Solution {
 
 ---
 
+### 50. 有效的数独
+
+**难度：** 中等
+**主题：** hash-table, array, matrix
+**岗位：** SWE
+**级别：** L5
+
+**问题：** 判断一个 9x9 的数独棋盘是否有效（只需按已填数字校验），空格用 `.` 表示，无需保证可解。
+
+**思路：** 遍历一次，对每个已填数字检查它所在行、列、3x3 宫是否重复。用三组集合（9 行、9 列、9 宫）记录出现过的数字，宫下标用 `(r // 3) * 3 + c // 3` 计算。时间 O(81) = O(1)，空间 O(1)。
+
+**Python：**
+```python
+def is_valid_sudoku(board: list[list[str]]) -> bool:
+    rows: list[set[str]] = [set() for _ in range(9)]
+    cols: list[set[str]] = [set() for _ in range(9)]
+    boxes: list[set[str]] = [set() for _ in range(9)]
+    for r in range(9):
+        for c in range(9):
+            v = board[r][c]
+            if v == ".":
+                continue
+            b = (r // 3) * 3 + c // 3
+            if v in rows[r] or v in cols[c] or v in boxes[b]:
+                return False
+            rows[r].add(v)
+            cols[c].add(v)
+            boxes[b].add(v)
+    return True
+```
+
+**TypeScript：**
+```typescript
+function isValidSudoku(board: string[][]): boolean {
+  const rows = Array.from({ length: 9 }, () => new Set<string>());
+  const cols = Array.from({ length: 9 }, () => new Set<string>());
+  const boxes = Array.from({ length: 9 }, () => new Set<string>());
+  for (let r = 0; r < 9; r++) {
+    for (let c = 0; c < 9; c++) {
+      const v = board[r][c];
+      if (v === ".") continue;
+      const b = Math.floor(r / 3) * 3 + Math.floor(c / 3);
+      if (rows[r].has(v) || cols[c].has(v) || boxes[b].has(v)) return false;
+      rows[r].add(v);
+      cols[c].add(v);
+      boxes[b].add(v);
+    }
+  }
+  return true;
+}
+```
+
+**Java：**
+```java
+class Solution {
+    public boolean isValidSudoku(char[][] board) {
+        Set<String> seen = new HashSet<>();
+        for (int r = 0; r < 9; r++) {
+            for (int c = 0; c < 9; c++) {
+                char v = board[r][c];
+                if (v == '.') continue;
+                int b = (r / 3) * 3 + c / 3;
+                if (!seen.add("r" + r + v) || !seen.add("c" + c + v) || !seen.add("b" + b + v))
+                    return false;
+            }
+        }
+        return true;
+    }
+}
+```
+
+**要点：**
+- 只校验行、列、宫三个约束，任一重复即无效。
+- 宫下标公式 `(r // 3) * 3 + c // 3` 把 9 个宫映射到 0..8。
+- 盘面固定 9x9，时间与空间都是 O(1)。
+
+**常见追问：**
+- 如何进一步求解数独（回溯 + 剪枝）？
+- 若盘面为 NxN 通用大小该如何泛化？
+
+**常见坑：**
+- 忘记跳过 `.`，把空格当数字校验。
+- 宫下标算错（写成 `r // 3 + c // 3`），导致跨宫误判。
+
+**标签：** #algorithm
+
+---
+
+### 51. 最长连续序列
+
+**难度：** 中等
+**主题：** hash-table, union-find, array
+**岗位：** SWE
+**级别：** L5
+
+**问题：** 给定未排序数组 `nums`，返回最长连续整数序列的长度，要求时间复杂度为 O(n)。
+
+**思路：** 将所有数放入哈希集合。只从没有前驱（`x - 1` 不存在）的数开始计数——那才是一段序列的起点，然后沿 `x+1, x+2, ...` 只要存在就延伸。每个数至多访问两次，尽管有嵌套循环，总体仍为 O(n)。空间 O(n)。
+
+**Python：**
+```python
+def longestConsecutive(nums: list[int]) -> int:
+    s = set(nums)
+    best = 0
+    for x in s:
+        if x - 1 not in s:  # start of a run
+            length = 1
+            while x + length in s:
+                length += 1
+            best = max(best, length)
+    return best
+```
+
+**TypeScript：**
+```typescript
+function longestConsecutive(nums: number[]): number {
+  const set = new Set(nums);
+  let best = 0;
+  for (const x of set) {
+    if (!set.has(x - 1)) {
+      let length = 1;
+      while (set.has(x + length)) length++;
+      best = Math.max(best, length);
+    }
+  }
+  return best;
+}
+```
+
+**Java：**
+```java
+class Solution {
+    public int longestConsecutive(int[] nums) {
+        Set<Integer> set = new HashSet<>();
+        for (int x : nums) set.add(x);
+        int best = 0;
+        for (int x : set) {
+            if (!set.contains(x - 1)) {
+                int length = 1;
+                while (set.contains(x + length)) length++;
+                best = Math.max(best, length);
+            }
+        }
+        return best;
+    }
+}
+```
+
+**要点：**
+- `x - 1 not in set` 判断保证每段序列只被展开一次。
+- 内层循环总工作量被 n 界定，因此整体保持 O(n)。
+- 哈希集合提供 O(1) 查询，此处优于排序的 O(n log n)。
+
+**常见追问：**
+- 同时返回实际序列，而不仅是长度。
+- 用并查集求解并比较取舍。
+
+**常见坑：**
+- 遍历原始数组（含重复）而非集合，可能退化为 O(n^2)。
+- 不做前驱判断就从每个元素开始计数，会破坏 O(n) 复杂度。
+
+**标签：** #algorithm
+
+---
+
+## 二分查找
+
+### 52. 在排序数组中查找元素的第一个和最后一个位置
+
+**难度：** 中等
+**主题：** binary-search, array
+**岗位：** SWE
+**级别：** L5
+
+**问题：** 给定升序数组 `nums` 和目标值 `target`，返回 `[first, last]`——`target` 的起始与结束下标。若不存在返回 `[-1, -1]`。要求时间复杂度 O(log n)。
+
+**思路：** 用两次二分查找边界：左边界（第一个 >= target 的下标）与右边界（第一个 > target 的下标，减一）。若左边界越界或对应值不等于 target，则不存在。时间 O(log n)，空间 O(1)。
+
+**Python：**
+```python
+import bisect
+
+def searchRange(nums: list[int], target: int) -> list[int]:
+    lo = bisect.bisect_left(nums, target)
+    if lo == len(nums) or nums[lo] != target:
+        return [-1, -1]
+    hi = bisect.bisect_right(nums, target) - 1
+    return [lo, hi]
+```
+
+**TypeScript：**
+```typescript
+function searchRange(nums: number[], target: number): number[] {
+  const bound = (isLeft: boolean): number => {
+    let lo = 0, hi = nums.length;
+    while (lo < hi) {
+      const mid = (lo + hi) >> 1;
+      if (nums[mid] > target || (isLeft && nums[mid] === target)) hi = mid;
+      else lo = mid + 1;
+    }
+    return lo;
+  };
+  const left = bound(true);
+  if (left === nums.length || nums[left] !== target) return [-1, -1];
+  return [left, bound(false) - 1];
+}
+```
+
+**Java：**
+```java
+class Solution {
+    public int[] searchRange(int[] nums, int target) {
+        int left = bound(nums, target, true);
+        if (left == nums.length || nums[left] != target) return new int[]{-1, -1};
+        return new int[]{left, bound(nums, target, false) - 1};
+    }
+    private int bound(int[] nums, int target, boolean isLeft) {
+        int lo = 0, hi = nums.length;
+        while (lo < hi) {
+            int mid = (lo + hi) >>> 1;
+            if (nums[mid] > target || (isLeft && nums[mid] == target)) hi = mid;
+            else lo = mid + 1;
+        }
+        return lo;
+    }
+}
+```
+
+**要点：**
+- 左边界 = 第一个 >= target 的下标；右边界 = 第一个 > target 的下标。
+- 解引用前先用数组长度校验左边界。
+- 两次查找均用半开区间 `[lo, hi)` 不变式，避免差一错误。
+
+**常见追问：**
+- 统计 target 的出现次数（右边界减左边界）。
+- 改造为在 target 缺失时返回插入位置。
+
+**常见坑：**
+- 未先检查 `left == nums.length` 就访问 `nums[left]`。
+- 两次查找间混用闭区间与半开区间约定。
+
+**标签：** #algorithm
+
+---
+
+### 53. 寻找旋转排序数组中的最小值
+
+**难度：** 中等
+**主题：** binary-search, array
+**岗位：** SWE
+**级别：** L5
+
+**问题：** 一个由不同整数组成的升序数组在未知枢轴处被旋转，请在 O(log n) 时间内找出最小元素。
+
+**思路：** 二分查找，比较 `nums[mid]` 与 `nums[hi]`。若 `nums[mid] > nums[hi]`，最小值在右侧（`lo = mid + 1`）；否则在 `mid` 或左侧（`hi = mid`）。最终收敛到旋转点。时间 O(log n)，空间 O(1)。与 `hi`（而非 `lo`）比较可避免未旋转数组时的歧义。
+
+**Python：**
+```python
+def findMin(nums: list[int]) -> int:
+    lo, hi = 0, len(nums) - 1
+    while lo < hi:
+        mid = (lo + hi) // 2
+        if nums[mid] > nums[hi]:
+            lo = mid + 1
+        else:
+            hi = mid
+    return nums[lo]
+```
+
+**TypeScript：**
+```typescript
+function findMin(nums: number[]): number {
+  let lo = 0, hi = nums.length - 1;
+  while (lo < hi) {
+    const mid = (lo + hi) >> 1;
+    if (nums[mid] > nums[hi]) lo = mid + 1;
+    else hi = mid;
+  }
+  return nums[lo];
+}
+```
+
+**Java：**
+```java
+class Solution {
+    public int findMin(int[] nums) {
+        int lo = 0, hi = nums.length - 1;
+        while (lo < hi) {
+            int mid = (lo + hi) >>> 1;
+            if (nums[mid] > nums[hi]) lo = mid + 1;
+            else hi = mid;
+        }
+        return nums[lo];
+    }
+}
+```
+
+**要点：**
+- 与 `nums[hi]`（而非 `nums[lo]`）比较，才能正确处理已排序的情形。
+- 循环条件 `lo < hi` 收敛到单一下标，无需额外的命中判断。
+- 假设元素各不相同；若有重复，最坏情况会退化到 O(n)。
+
+**常见追问：**
+- 处理有重复的情形（LeetCode 154）并解释 O(n) 最坏情况。
+- 返回旋转次数（即最小值的下标）。
+
+**常见坑：**
+- 与 `nums[lo]` 比较，会错误处理未旋转的数组。
+- 使用 `lo <= hi` 或 `hi = mid - 1`，可能跳过真正的最小值。
+
+**标签：** #algorithm
+
+---
+
+### 54. 爱吃香蕉的珂珂
+
+**难度：** 中等
+**主题：** binary-search, search-on-answer
+**岗位：** SWE
+**级别：** L5
+
+**问题：** 给定香蕉堆 `piles` 和 `h` 小时，珂珂以速度 `k`（根/小时）进食（每小时最多吃完一堆）。返回能在 `h` 小时内吃完所有堆的最小整数速度 `k`。
+
+**思路：** 在答案区间 `[1, max(piles)]` 上二分。速度 `k` 所需小时数为 `sum(ceil(p / k))`，关于 `k` 单调非增。找出使总小时数 `<= h` 的最小 `k`。时间 O(n log(最大堆))。这种吞吐/速率调优模式常见于容量预置场景。
+
+**Python：**
+```python
+def minEatingSpeed(piles: list[int], h: int) -> int:
+    def hours(speed: int) -> int:
+        return sum((p + speed - 1) // speed for p in piles)
+    lo, hi = 1, max(piles)
+    while lo < hi:
+        mid = (lo + hi) // 2
+        if hours(mid) <= h:
+            hi = mid
+        else:
+            lo = mid + 1
+    return lo
+```
+
+**TypeScript：**
+```typescript
+function minEatingSpeed(piles: number[], h: number): number {
+  const hours = (speed: number): number =>
+    piles.reduce((sum, p) => sum + Math.ceil(p / speed), 0);
+  let lo = 1, hi = Math.max(...piles);
+  while (lo < hi) {
+    const mid = (lo + hi) >> 1;
+    if (hours(mid) <= h) hi = mid;
+    else lo = mid + 1;
+  }
+  return lo;
+}
+```
+
+**Java：**
+```java
+class Solution {
+    public int minEatingSpeed(int[] piles, int h) {
+        int lo = 1, hi = 0;
+        for (int p : piles) hi = Math.max(hi, p);
+        while (lo < hi) {
+            int mid = (lo + hi) >>> 1;
+            if (hours(piles, mid) <= h) hi = mid;
+            else lo = mid + 1;
+        }
+        return lo;
+    }
+    private long hours(int[] piles, int speed) {
+        long total = 0;
+        for (int p : piles) total += (p + speed - 1) / speed;
+        return total;
+    }
+}
+```
+
+**要点：**
+- 「在答案上二分」：可行性判定关于 `k` 单调。
+- 向上取整除法 `(p + k - 1) / k` 计算每堆所需的整小时数。
+- 搜索上界为 `max(piles)`，因为更快的速度无益。
+
+**常见追问：**
+- 若珂珂能在一小时内跨堆分配时间怎么办？（小时数公式会改变。）
+- 推广为「D 天内送达的最小运力」（LeetCode 1011）。
+
+**常见坑：**
+- `lo` 从 0 开始会导致小时数函数除零。
+- 用 32 位整型累加小时数在大堆时可能溢出；应使用更宽的类型。
+
+**标签：** #algorithm
+
+---
+
 ## 动态规划
 
-### 36. 接雨水
+### 55. 接雨水
 
 **难度：** 困难
 **主题：** arrays, two-pointer, dp
@@ -3153,7 +4736,7 @@ class Solution {
 
 ---
 
-### 37. 最大子数组和（Kadane）
+### 56. 最大子数组和（Kadane）
 
 **难度：** 中等
 **主题：** dp, arrays
@@ -3209,7 +4792,7 @@ class Solution {
 
 ---
 
-### 38. 工作安排的最大利润
+### 57. 工作安排的最大利润
 
 **难度：** 困难
 **主题：** dp, binary-search, sorting
@@ -3283,9 +4866,843 @@ class Solution {
 
 ---
 
+### 58. 零钱兑换
+
+**难度：** 中等
+**主题：** dp, arrays, bfs
+**岗位：** SWE
+**级别：** L5
+
+**问题：** 给定硬币面额 `coins` 和总金额 `amount`，返回凑出该金额所需的最少硬币数；若无法凑出返回 `-1`。
+
+**思路：** 完全背包。`dp[a]` 表示凑出金额 `a` 的最少硬币数。转移：对所有 `c <= a` 取 `dp[a] = min(dp[a - c] + 1)`。初始化 `dp[0] = 0`，其余设为哨兵值 `amount + 1`。时间 O(amount * coins)，空间 O(amount)。任意面额下贪心不成立，必须用 DP——结账找零场景里也是同样的逻辑。
+
+**Python：**
+```python
+def coin_change(coins: list[int], amount: int) -> int:
+    dp = [amount + 1] * (amount + 1)
+    dp[0] = 0
+    for a in range(1, amount + 1):
+        for c in coins:
+            if c <= a:
+                dp[a] = min(dp[a], dp[a - c] + 1)
+    return dp[amount] if dp[amount] <= amount else -1
+```
+
+**TypeScript：**
+```typescript
+function coinChange(coins: number[], amount: number): number {
+  const dp = new Array<number>(amount + 1).fill(amount + 1);
+  dp[0] = 0;
+  for (let a = 1; a <= amount; a++) {
+    for (const c of coins) {
+      if (c <= a) dp[a] = Math.min(dp[a], dp[a - c] + 1);
+    }
+  }
+  return dp[amount] <= amount ? dp[amount] : -1;
+}
+```
+
+**Java：**
+```java
+class Solution {
+    public int coinChange(int[] coins, int amount) {
+        int[] dp = new int[amount + 1];
+        Arrays.fill(dp, amount + 1);
+        dp[0] = 0;
+        for (int a = 1; a <= amount; a++) {
+            for (int c : coins) {
+                if (c <= a) dp[a] = Math.min(dp[a], dp[a - c] + 1);
+            }
+        }
+        return dp[amount] <= amount ? dp[amount] : -1;
+    }
+}
+```
+
+**要点：**
+- 哨兵值 `amount + 1` 稳妥地大于任何真实答案，且不会溢出。
+- 自底向上避免递归深度问题；每个金额只依赖更小的金额。
+- 贪心（总取最大面额）在如 `[1, 3, 4]` 凑 `6` 时会出错。
+
+**常见追问：**
+- 统计凑法总数（零钱兑换 II）——外层遍历硬币。
+- 返回具体硬币组合而非数量——为每个金额记录父指针。
+
+**常见坑：**
+- 用 `Integer.MAX_VALUE` 作哨兵再 `+ 1` 会溢出；应使用 `amount + 1`。
+- 遗漏金额无法凑出时返回 `-1` 的情况。
+
+**标签：** #algorithm
+
+---
+
+### 59. 最长递增子序列
+
+**难度：** 中等
+**主题：** dp, binary-search, arrays
+**岗位：** SWE
+**级别：** L5
+
+**问题：** 给定整数数组 `nums`，返回其最长严格递增子序列的长度。
+
+**思路：** 耐心排序。维护 `tails`，`tails[i]` 表示长度为 `i + 1` 的递增子序列的最小可能末尾。对每个数二分查找第一个 `>= num` 的末尾并替换（若没有则追加）。`tails` 的长度即答案。时间 O(n log n)，空间 O(n)。经典 O(n^2) DP（`dp[i] = 1 + max(dp[j])`，其中 `nums[j] < nums[i]`）也可但更慢——在分析指标/遥测数据的单调趋势时会用到。
+
+**Python：**
+```python
+import bisect
+
+def length_of_lis(nums: list[int]) -> int:
+    tails: list[int] = []
+    for x in nums:
+        i = bisect.bisect_left(tails, x)
+        if i == len(tails):
+            tails.append(x)
+        else:
+            tails[i] = x
+    return len(tails)
+```
+
+**TypeScript：**
+```typescript
+function lengthOfLIS(nums: number[]): number {
+  const tails: number[] = [];
+  for (const x of nums) {
+    let lo = 0, hi = tails.length;
+    while (lo < hi) {
+      const mid = (lo + hi) >> 1;
+      if (tails[mid] < x) lo = mid + 1;
+      else hi = mid;
+    }
+    if (lo === tails.length) tails.push(x);
+    else tails[lo] = x;
+  }
+  return tails.length;
+}
+```
+
+**Java：**
+```java
+class Solution {
+    public int lengthOfLIS(int[] nums) {
+        int[] tails = new int[nums.length];
+        int size = 0;
+        for (int x : nums) {
+            int lo = 0, hi = size;
+            while (lo < hi) {
+                int mid = (lo + hi) >>> 1;
+                if (tails[mid] < x) lo = mid + 1;
+                else hi = mid;
+            }
+            tails[lo] = x;
+            if (lo == size) size++;
+        }
+        return size;
+    }
+}
+```
+
+**要点：**
+- `tails` 始终有序，这正是二分查找成立的前提。
+- `bisect_left` / lower-bound 得到严格递增；non-decreasing 用 upper-bound。
+- `tails` 本身不是合法子序列，只有其长度有意义。
+
+**常见追问：**
+- 还原一个真实的 LIS——在耐心堆旁记录前驱下标。
+- 统计最长长度的 LIS 个数——把长度 DP 与计数 DP 结合。
+
+**常见坑：**
+- 用 upper-bound（`bisect_right`）得到的是最长非递减子序列，而非严格递增。
+- 把 `tails` 当成答案序列——其内容可能不是合法子序列。
+
+**标签：** #algorithm
+
+---
+
+### 60. 编辑距离
+
+**难度：** 困难
+**主题：** dp, strings, two-dimensional
+**岗位：** SWE
+**级别：** L5-L6
+
+**问题：** 给定两个字符串 `word1` 和 `word2`，返回把 `word1` 转换成 `word2` 所需的最少插入、删除、替换操作次数。
+
+**思路：** 二维 DP（Levenshtein）。`dp[i][j]` 表示 `word1[:i]` 与 `word2[:j]` 的编辑距离。字符相同时 `dp[i][j] = dp[i-1][j-1]`；否则 `1 + min(删除 dp[i-1][j], 插入 dp[i][j-1], 替换 dp[i-1][j-1])`。边界：与空串互转的代价等于其长度。时间 O(m*n)，空间 O(m*n)，用滚动数组可降至 O(min(m, n))——商品目录的模糊搜索/拼写纠错会用到。
+
+**Python：**
+```python
+def min_distance(word1: str, word2: str) -> int:
+    m, n = len(word1), len(word2)
+    dp = [[0] * (n + 1) for _ in range(m + 1)]
+    for i in range(m + 1):
+        dp[i][0] = i
+    for j in range(n + 1):
+        dp[0][j] = j
+    for i in range(1, m + 1):
+        for j in range(1, n + 1):
+            if word1[i - 1] == word2[j - 1]:
+                dp[i][j] = dp[i - 1][j - 1]
+            else:
+                dp[i][j] = 1 + min(dp[i - 1][j], dp[i][j - 1], dp[i - 1][j - 1])
+    return dp[m][n]
+```
+
+**TypeScript：**
+```typescript
+function minDistance(word1: string, word2: string): number {
+  const m = word1.length, n = word2.length;
+  const dp = Array.from({ length: m + 1 }, () => new Array<number>(n + 1).fill(0));
+  for (let i = 0; i <= m; i++) dp[i][0] = i;
+  for (let j = 0; j <= n; j++) dp[0][j] = j;
+  for (let i = 1; i <= m; i++) {
+    for (let j = 1; j <= n; j++) {
+      if (word1[i - 1] === word2[j - 1]) dp[i][j] = dp[i - 1][j - 1];
+      else dp[i][j] = 1 + Math.min(dp[i - 1][j], dp[i][j - 1], dp[i - 1][j - 1]);
+    }
+  }
+  return dp[m][n];
+}
+```
+
+**Java：**
+```java
+class Solution {
+    public int minDistance(String word1, String word2) {
+        int m = word1.length(), n = word2.length();
+        int[][] dp = new int[m + 1][n + 1];
+        for (int i = 0; i <= m; i++) dp[i][0] = i;
+        for (int j = 0; j <= n; j++) dp[0][j] = j;
+        for (int i = 1; i <= m; i++) {
+            for (int j = 1; j <= n; j++) {
+                if (word1.charAt(i - 1) == word2.charAt(j - 1)) dp[i][j] = dp[i - 1][j - 1];
+                else dp[i][j] = 1 + Math.min(dp[i - 1][j - 1], Math.min(dp[i - 1][j], dp[i][j - 1]));
+            }
+        }
+        return dp[m][n];
+    }
+}
+```
+
+**要点：**
+- 三个转移恰好对应删除、插入、替换。
+- 首行/首列表示与空前缀互转，每个字符一次操作。
+- 字符匹配时直接沿用对角线值，不增加代价。
+
+**常见追问：**
+- 用两行滚动数组把空间降到 O(min(m, n))。
+- 为操作赋不同权重（如替换代价为 2）——推广 `min` 各项。
+
+**常见坑：**
+- 字符串下标（`i - 1`）与 DP 下标（`i`）之间的差一错误。
+- 主循环前忘记初始化首行和首列。
+
+**标签：** #algorithm
+
+---
+
+### 61. 解码方法
+
+**难度：** 中等
+**主题：** dp, strings
+**岗位：** SWE
+**级别：** L5
+
+**问题：** 一段数字消息按 `'A'..'Z'` 对应 `"1".."26"` 编码。给定数字字符串 `s`，返回解码的方法总数。
+
+**思路：** 一维 DP。`dp[i]` 表示前缀 `s[:i]` 的解码方法数。在位置 `i`，取一位（当 `s[i-1] != '0'` 时有效）贡献 `dp[i-1]`，取两位（当 `s[i-2:i]` 在 `10..26` 时有效）贡献 `dp[i-2]`。边界：`dp[0] = 1`（空串）。时间 O(n)，用两个滚动变量空间 O(1)。核心在于对 0 的谨慎处理——解析序列化订单/追踪载荷时同样需要这种边界纪律。
+
+**Python：**
+```python
+def num_decodings(s: str) -> int:
+    if not s or s[0] == '0':
+        return 0
+    prev, cur = 1, 1  # dp[i-2], dp[i-1]
+    for i in range(1, len(s)):
+        cnt = 0
+        if s[i] != '0':
+            cnt += cur
+        if '10' <= s[i - 1:i + 1] <= '26':
+            cnt += prev
+        prev, cur = cur, cnt
+    return cur
+```
+
+**TypeScript：**
+```typescript
+function numDecodings(s: string): number {
+  if (s.length === 0 || s[0] === '0') return 0;
+  let prev = 1, cur = 1;
+  for (let i = 1; i < s.length; i++) {
+    let cnt = 0;
+    if (s[i] !== '0') cnt += cur;
+    const two = Number(s.slice(i - 1, i + 1));
+    if (two >= 10 && two <= 26) cnt += prev;
+    prev = cur;
+    cur = cnt;
+  }
+  return cur;
+}
+```
+
+**Java：**
+```java
+class Solution {
+    public int numDecodings(String s) {
+        if (s.isEmpty() || s.charAt(0) == '0') return 0;
+        int prev = 1, cur = 1;
+        for (int i = 1; i < s.length(); i++) {
+            int cnt = 0;
+            if (s.charAt(i) != '0') cnt += cur;
+            int two = Integer.parseInt(s.substring(i - 1, i + 1));
+            if (two >= 10 && two <= 26) cnt += prev;
+            prev = cur;
+            cur = cnt;
+        }
+        return cur;
+    }
+}
+```
+
+**要点：**
+- 开头的 `'0'`（或任何前面不是 1、2 的孤立 `'0'`）会使字符串无法解码。
+- 两位数块只有落在闭区间 `10..26` 才有效。
+- 每个状态只依赖前两个，故 O(1) 空间足够。
+
+**常见追问：**
+- 支持 `'*'` 通配匹配任意数字 `1..9`（解码方法 II）——扩展转移计数。
+- 返回具体的解码结果而非数量——改用回溯。
+
+**常见坑：**
+- 把 `'0'` 当成合法的单位解码；只有 `1..9` 才能单独解码。
+- 漏掉范围判断，导致 `27`、`06` 之类的块被错误计入。
+
+**标签：** #algorithm
+
+---
+
+## 回溯
+
+### 62. 组合总和
+
+**难度：** 中等
+**主题：** backtracking, array, recursion
+**岗位：** SWE
+**级别：** L5
+
+**问题：** 给定一组互不相同的正整数 `candidates` 和目标值 `target`，返回所有和为 `target` 的唯一组合，每个数字可以被无限次重复使用。
+
+**思路：** 经典回溯，用起始下标避免同一组合以不同顺序被重复统计。每一步要么复用当前候选（停在 `i`），要么前进到 `i + 1`。亚马逊常把这种结构用于「从可复用商品类型中凑出目标重量/价值的履约打包」类问题。时间 O(N^(T/M))，M 为最小候选值；空间 O(T/M) 为递归深度。
+
+**Python：**
+```python
+def combination_sum(candidates: list[int], target: int) -> list[list[int]]:
+    res: list[list[int]] = []
+    path: list[int] = []
+
+    def backtrack(start: int, remaining: int) -> None:
+        if remaining == 0:
+            res.append(path[:])
+            return
+        for i in range(start, len(candidates)):
+            if candidates[i] > remaining:
+                continue
+            path.append(candidates[i])
+            backtrack(i, remaining - candidates[i])
+            path.pop()
+
+    backtrack(0, target)
+    return res
+```
+
+**TypeScript：**
+```typescript
+function combinationSum(candidates: number[], target: number): number[][] {
+  const res: number[][] = [];
+  const path: number[] = [];
+
+  const backtrack = (start: number, remaining: number): void => {
+    if (remaining === 0) {
+      res.push([...path]);
+      return;
+    }
+    for (let i = start; i < candidates.length; i++) {
+      if (candidates[i] > remaining) continue;
+      path.push(candidates[i]);
+      backtrack(i, remaining - candidates[i]);
+      path.pop();
+    }
+  };
+
+  backtrack(0, target);
+  return res;
+}
+```
+
+**Java：**
+```java
+class Solution {
+    public List<List<Integer>> combinationSum(int[] candidates, int target) {
+        List<List<Integer>> res = new ArrayList<>();
+        backtrack(candidates, 0, target, new ArrayList<>(), res);
+        return res;
+    }
+
+    private void backtrack(int[] c, int start, int remaining,
+                           List<Integer> path, List<List<Integer>> res) {
+        if (remaining == 0) {
+            res.add(new ArrayList<>(path));
+            return;
+        }
+        for (int i = start; i < c.length; i++) {
+            if (c[i] > remaining) continue;
+            path.add(c[i]);
+            backtrack(c, i, remaining - c[i], path, res);
+            path.remove(path.size() - 1);
+        }
+    }
+}
+```
+
+**要点：**
+- 递归传入 `i`（而非 `i + 1`）以允许重复使用同一候选。
+- 起始下标向前推进可避免 [2,3] 与 [3,2] 这类排列型重复。
+- 先排序后可用 `break` 替代 `continue`，候选超过剩余值即可提前终止。
+
+**常见追问：**
+- 组合总和 II：候选可重复且每个只能用一次——在同一递归层跳过重复元素。
+- 若只需组合数量而非具体组合？改用 DP，复杂度 O(N*target)。
+
+**常见坑：**
+- 每次调用都从 0 开始会产生重复/排列型组合。
+- 忘记拷贝 `path`（直接存入可变引用）会污染所有已保存结果。
+
+**标签：** #algorithm
+
+---
+
+### 63. 电话号码的字母组合
+
+**难度：** 中等
+**主题：** backtracking, string, recursion
+**岗位：** SWE
+**级别：** L5
+
+**问题：** 给定一个仅含数字 2-9 的字符串，按经典电话键盘映射返回它能表示的所有字母组合，输入为空时返回空列表。
+
+**思路：** 按数字位置回溯；对每个数字展开其映射的每个字母并递归到下一位。这与 Alexa/语音输入类的候选消歧场景直接对应——键盘或音素编码展开成候选词。设每个数字对应 `k` 个字母、共 `n` 位，构建每个字符串的时间为 O(k^n * n)，递归空间 O(n)。
+
+**Python：**
+```python
+def letter_combinations(digits: str) -> list[str]:
+    if not digits:
+        return []
+    mapping = {"2": "abc", "3": "def", "4": "ghi", "5": "jkl",
+               "6": "mno", "7": "pqrs", "8": "tuv", "9": "wxyz"}
+    res: list[str] = []
+    path: list[str] = []
+
+    def backtrack(i: int) -> None:
+        if i == len(digits):
+            res.append("".join(path))
+            return
+        for ch in mapping[digits[i]]:
+            path.append(ch)
+            backtrack(i + 1)
+            path.pop()
+
+    backtrack(0)
+    return res
+```
+
+**TypeScript：**
+```typescript
+function letterCombinations(digits: string): string[] {
+  if (!digits) return [];
+  const mapping: Record<string, string> = {
+    "2": "abc", "3": "def", "4": "ghi", "5": "jkl",
+    "6": "mno", "7": "pqrs", "8": "tuv", "9": "wxyz",
+  };
+  const res: string[] = [];
+  const path: string[] = [];
+
+  const backtrack = (i: number): void => {
+    if (i === digits.length) {
+      res.push(path.join(""));
+      return;
+    }
+    for (const ch of mapping[digits[i]]) {
+      path.push(ch);
+      backtrack(i + 1);
+      path.pop();
+    }
+  };
+
+  backtrack(0);
+  return res;
+}
+```
+
+**Java：**
+```java
+class Solution {
+    private static final String[] MAP = {
+        "", "", "abc", "def", "ghi", "jkl", "mno", "pqrs", "tuv", "wxyz"
+    };
+
+    public List<String> letterCombinations(String digits) {
+        List<String> res = new ArrayList<>();
+        if (digits == null || digits.isEmpty()) return res;
+        backtrack(digits, 0, new StringBuilder(), res);
+        return res;
+    }
+
+    private void backtrack(String digits, int i, StringBuilder sb, List<String> res) {
+        if (i == digits.length()) {
+            res.add(sb.toString());
+            return;
+        }
+        for (char ch : MAP[digits.charAt(i) - '0'].toCharArray()) {
+            sb.append(ch);
+            backtrack(digits, i + 1, sb, res);
+            sb.deleteCharAt(sb.length() - 1);
+        }
+    }
+}
+```
+
+**要点：**
+- 递归深度等于数字位数，分支因子为 3 或 4 个字母。
+- 对空输入提前返回，避免产生多余的空字符串。
+- 迭代式 BFS 方案在不断增长的前缀集合上追加字母——复杂度相同。
+
+**常见追问：**
+- 用字典/字典树剪枝，只保留真实单词（语音搜索）。
+- 如何按可能性排序输出？为每个候选附加语言模型分数。
+
+**常见坑：**
+- 把空字符串当作合法组合而返回 `[""]`。
+- 索引映射数组时的差一错误（数字 0 和 1 没有字母）。
+
+**标签：** #algorithm
+
+---
+
+## 双指针 / 滑动窗口
+
+### 64. 无重复字符的最长子串
+
+**难度：** 中等
+**主题：** sliding-window, string, hashmap, two-pointers
+**岗位：** SWE
+**级别：** L5
+
+**问题：** 给定字符串 `s`，返回其中不含重复字符的最长子串的长度。
+
+**思路：** 用双指针维护滑动窗口，并用哈希表记录每个字符最近出现的下标。当重复字符落在当前窗口内时，把左指针直接跳到它上次出现位置的后一位。这是亚马逊数据管道中流/日志去重窗口的常见基础题。时间 O(n)，空间 O(min(n, 字符集))。
+
+**Python：**
+```python
+def length_of_longest_substring(s: str) -> int:
+    last: dict[str, int] = {}
+    left = 0
+    best = 0
+    for right, ch in enumerate(s):
+        if ch in last and last[ch] >= left:
+            left = last[ch] + 1
+        last[ch] = right
+        best = max(best, right - left + 1)
+    return best
+```
+
+**TypeScript：**
+```typescript
+function lengthOfLongestSubstring(s: string): number {
+  const last = new Map<string, number>();
+  let left = 0;
+  let best = 0;
+  for (let right = 0; right < s.length; right++) {
+    const ch = s[right];
+    const prev = last.get(ch);
+    if (prev !== undefined && prev >= left) {
+      left = prev + 1;
+    }
+    last.set(ch, right);
+    best = Math.max(best, right - left + 1);
+  }
+  return best;
+}
+```
+
+**Java：**
+```java
+class Solution {
+    public int lengthOfLongestSubstring(String s) {
+        Map<Character, Integer> last = new HashMap<>();
+        int left = 0, best = 0;
+        for (int right = 0; right < s.length(); right++) {
+            char ch = s.charAt(right);
+            Integer prev = last.get(ch);
+            if (prev != null && prev >= left) {
+                left = prev + 1;
+            }
+            last.put(ch, right);
+            best = Math.max(best, right - left + 1);
+        }
+        return best;
+    }
+}
+```
+
+**要点：**
+- 记录最近下标可让 `left` 直接跳跃，而非逐步收缩。
+- 判断 `last[ch] >= left` 可忽略已滑出窗口的旧重复。
+- 窗口长度始终为 `right - left + 1`。
+
+**常见追问：**
+- 返回子串本身而不仅是长度——记录最优窗口的边界。
+- 推广到「至多 K 个不同字符」（不同的滑窗不变量）。
+
+**常见坑：**
+- 不判断 `last[ch] >= left`，会让 `left` 回退并导致多算。
+- 窗口长度计算的差一错误。
+
+**标签：** #algorithm
+
+---
+
+### 65. 三数之和
+
+**难度：** 中等
+**主题：** two-pointers, array, sorting
+**岗位：** SWE
+**级别：** L5
+
+**问题：** 给定整数数组 `nums`，返回所有满足 `a + b + c == 0` 的唯一三元组 `[a, b, c]`，结果集中不能包含重复的三元组。
+
+**思路：** 先排序，再固定下标 `i`，在剩余子数组两端用双指针向中间收拢，寻找和为 `-nums[i]` 的数对；跳过相等元素以避免重复三元组。亚马逊常用它考察「对冲交易/退款相互抵消到零」的对账场景。时间 O(n^2)，除输出外空间 O(1)（排序需 O(n)）。
+
+**Python：**
+```python
+def three_sum(nums: list[int]) -> list[list[int]]:
+    nums.sort()
+    res: list[list[int]] = []
+    n = len(nums)
+    for i in range(n - 2):
+        if nums[i] > 0:
+            break
+        if i > 0 and nums[i] == nums[i - 1]:
+            continue
+        lo, hi = i + 1, n - 1
+        while lo < hi:
+            total = nums[i] + nums[lo] + nums[hi]
+            if total < 0:
+                lo += 1
+            elif total > 0:
+                hi -= 1
+            else:
+                res.append([nums[i], nums[lo], nums[hi]])
+                lo += 1
+                hi -= 1
+                while lo < hi and nums[lo] == nums[lo - 1]:
+                    lo += 1
+                while lo < hi and nums[hi] == nums[hi + 1]:
+                    hi -= 1
+    return res
+```
+
+**TypeScript：**
+```typescript
+function threeSum(nums: number[]): number[][] {
+  nums.sort((a, b) => a - b);
+  const res: number[][] = [];
+  const n = nums.length;
+  for (let i = 0; i < n - 2; i++) {
+    if (nums[i] > 0) break;
+    if (i > 0 && nums[i] === nums[i - 1]) continue;
+    let lo = i + 1, hi = n - 1;
+    while (lo < hi) {
+      const total = nums[i] + nums[lo] + nums[hi];
+      if (total < 0) lo++;
+      else if (total > 0) hi--;
+      else {
+        res.push([nums[i], nums[lo], nums[hi]]);
+        lo++;
+        hi--;
+        while (lo < hi && nums[lo] === nums[lo - 1]) lo++;
+        while (lo < hi && nums[hi] === nums[hi + 1]) hi--;
+      }
+    }
+  }
+  return res;
+}
+```
+
+**Java：**
+```java
+class Solution {
+    public List<List<Integer>> threeSum(int[] nums) {
+        Arrays.sort(nums);
+        List<List<Integer>> res = new ArrayList<>();
+        int n = nums.length;
+        for (int i = 0; i < n - 2; i++) {
+            if (nums[i] > 0) break;
+            if (i > 0 && nums[i] == nums[i - 1]) continue;
+            int lo = i + 1, hi = n - 1;
+            while (lo < hi) {
+                int total = nums[i] + nums[lo] + nums[hi];
+                if (total < 0) lo++;
+                else if (total > 0) hi--;
+                else {
+                    res.add(Arrays.asList(nums[i], nums[lo], nums[hi]));
+                    lo++;
+                    hi--;
+                    while (lo < hi && nums[lo] == nums[lo - 1]) lo++;
+                    while (lo < hi && nums[hi] == nums[hi + 1]) hi--;
+                }
+            }
+        }
+        return res;
+    }
+}
+```
+
+**要点：**
+- 排序使双指针扫描成为可能，也让去重变得简单。
+- 在固定下标处以及记录一个匹配之后都要跳过重复。
+- 当 `nums[i] > 0` 时提前 `break`，因为没有正数三元组能和为零。
+
+**常见追问：**
+- 最接近的三数之和：记录和最接近目标的三元组。
+- kSum 泛化：递归降维到双指针基本情形。
+
+**常见坑：**
+- 在记录首个合法三元组之前就跳过重复，导致漏解。
+- 用三元组哈希集合去重而非指针跳过——能用但浪费内存。
+
+**标签：** #algorithm
+
+---
+
+### 66. 最小覆盖子串
+
+**难度：** 困难
+**主题：** sliding-window, string, hashmap, two-pointers
+**岗位：** SWE
+**级别：** L5-L6
+
+**问题：** 给定字符串 `s` 和 `t`，返回 `s` 中包含 `t` 全部字符（含重复次数）的最短子串；若不存在则返回空字符串。
+
+**思路：** 右指针扩张直到满足所有必需字符计数，再从左指针收缩，在保持有效的前提下缩小窗口并记录最优。用 `formed` 计数已完全匹配的必需字符个数，避免每次重扫整张表。亚马逊常用此结构寻找「包含一组必需信号的最紧凑日志/事件窗口」。时间 O(|s| + |t|)，空间 O(字符集)。
+
+**Python：**
+```python
+from collections import Counter
+
+def min_window(s: str, t: str) -> str:
+    if not s or not t or len(t) > len(s):
+        return ""
+    need = Counter(t)
+    required = len(need)
+    window: dict[str, int] = {}
+    formed = 0
+    left = 0
+    best_len = float("inf")
+    best_left = 0
+    for right, ch in enumerate(s):
+        window[ch] = window.get(ch, 0) + 1
+        if ch in need and window[ch] == need[ch]:
+            formed += 1
+        while formed == required:
+            if right - left + 1 < best_len:
+                best_len = right - left + 1
+                best_left = left
+            lc = s[left]
+            window[lc] -= 1
+            if lc in need and window[lc] < need[lc]:
+                formed -= 1
+            left += 1
+    return "" if best_len == float("inf") else s[best_left:best_left + best_len]
+```
+
+**TypeScript：**
+```typescript
+function minWindow(s: string, t: string): string {
+  if (!s || !t || t.length > s.length) return "";
+  const need = new Map<string, number>();
+  for (const c of t) need.set(c, (need.get(c) ?? 0) + 1);
+  const required = need.size;
+  const window = new Map<string, number>();
+  let formed = 0, left = 0, bestLen = Infinity, bestLeft = 0;
+  for (let right = 0; right < s.length; right++) {
+    const ch = s[right];
+    window.set(ch, (window.get(ch) ?? 0) + 1);
+    if (need.has(ch) && window.get(ch) === need.get(ch)) formed++;
+    while (formed === required) {
+      if (right - left + 1 < bestLen) {
+        bestLen = right - left + 1;
+        bestLeft = left;
+      }
+      const lc = s[left];
+      window.set(lc, window.get(lc)! - 1);
+      if (need.has(lc) && window.get(lc)! < need.get(lc)!) formed--;
+      left++;
+    }
+  }
+  return bestLen === Infinity ? "" : s.substring(bestLeft, bestLeft + bestLen);
+}
+```
+
+**Java：**
+```java
+class Solution {
+    public String minWindow(String s, String t) {
+        if (s.length() == 0 || t.length() == 0 || t.length() > s.length()) return "";
+        Map<Character, Integer> need = new HashMap<>();
+        for (char c : t.toCharArray()) need.merge(c, 1, Integer::sum);
+        int required = need.size();
+        Map<Character, Integer> window = new HashMap<>();
+        int formed = 0, left = 0, bestLen = Integer.MAX_VALUE, bestLeft = 0;
+        for (int right = 0; right < s.length(); right++) {
+            char ch = s.charAt(right);
+            window.merge(ch, 1, Integer::sum);
+            if (need.containsKey(ch) && window.get(ch).intValue() == need.get(ch).intValue()) formed++;
+            while (formed == required) {
+                if (right - left + 1 < bestLen) {
+                    bestLen = right - left + 1;
+                    bestLeft = left;
+                }
+                char lc = s.charAt(left);
+                window.merge(lc, -1, Integer::sum);
+                if (need.containsKey(lc) && window.get(lc) < need.get(lc)) formed--;
+                left++;
+            }
+        }
+        return bestLen == Integer.MAX_VALUE ? "" : s.substring(bestLeft, bestLeft + bestLen);
+    }
+}
+```
+
+**要点：**
+- `formed == required` 表示每个不同的必需字符都已满足其全部计数。
+- 仅在窗口仍有效时从左收缩，从而捕获最小窗口。
+- 在 Java 中按值（而非引用）比较计数对装箱整数很关键。
+
+**常见追问：**
+- 返回所有最小长度窗口，而不仅是第一个。
+- 若 `t` 可能含 ASCII 范围外的字符会有何变化？改用通用映射。
+
+**常见坑：**
+- 在 Java 中对 `Integer` 对象用 `==` 而非 `.intValue()`/`.equals()`。
+- 每次计数变化都更新 `formed`，而不是仅在跨过阈值时更新。
+
+**标签：** #algorithm
+
+---
+
 ## 矩阵
 
-### 39. 滑动谜题
+### 67. 滑动谜题
 
 **难度：** 困难
 **主题：** bfs, matrix, state-search
@@ -3385,7 +5802,7 @@ class Solution {
 
 ---
 
-### 40. 设计井字棋
+### 68. 设计井字棋
 
 **难度：** 中等
 **主题：** design, ood, matrix
@@ -3472,7 +5889,7 @@ class TicTacToe {
 
 ---
 
-### 41. 腐烂的橘子
+### 69. 腐烂的橘子
 
 **难度：** 中等
 **主题：** bfs, matrix
@@ -3580,7 +5997,7 @@ class Solution {
 
 ---
 
-### 42. 带障碍消除的网格最短路径
+### 70. 带障碍消除的网格最短路径
 
 **难度：** 困难
 **主题：** bfs, matrix, state-search
@@ -3679,7 +6096,7 @@ class Solution {
 
 ## 数组 / 字符串
 
-### 43. 重新排序日志文件
+### 71. 重新排序日志文件
 
 **难度：** 简单
 **主题：** strings, sorting, comparator
@@ -3762,7 +6179,7 @@ class Solution {
 
 ---
 
-### 44. 困于环中的机器人
+### 72. 困于环中的机器人
 
 **难度：** 中等
 **主题：** simulation, math
@@ -3824,7 +6241,7 @@ class Solution {
 
 ---
 
-### 45. N 天后的牢房
+### 73. N 天后的牢房
 
 **难度：** 中等
 **主题：** simulation, cycle-detection, bit-manipulation
@@ -3914,7 +6331,7 @@ class Solution {
 
 ---
 
-### 46. 含 3 个不同字符的长度为 3 的子串
+### 74. 含 3 个不同字符的长度为 3 的子串
 
 **难度：** 简单
 **主题：** strings, sliding-window
@@ -3971,7 +6388,7 @@ class Solution {
 
 ---
 
-### 47. 卡车上的最大单元数
+### 75. 卡车上的最大单元数
 
 **难度：** 简单
 **主题：** greedy, sorting
@@ -4037,7 +6454,7 @@ class Solution {
 
 ---
 
-### 48. 找出环形游戏的获胜者
+### 76. 找出环形游戏的获胜者
 
 **难度：** 中等
 **主题：** simulation, recursion, math
@@ -4086,7 +6503,7 @@ class Solution {
 
 ---
 
-### 49. 搜索旋转排序数组
+### 77. 搜索旋转排序数组
 
 **难度：** 中等
 **主题：** binary-search, arrays
@@ -4167,7 +6584,7 @@ class Solution {
 
 ---
 
-### 50. 划分字母区间
+### 78. 划分字母区间
 
 **难度：** 中等
 **主题：** greedy, strings, two-pointer
@@ -4233,9 +6650,256 @@ class Solution {
 
 ---
 
+### 79. 字符串相乘
+
+**难度：** 中等
+**主题：** array, string, math
+**岗位：** SWE
+**级别：** L5
+
+**问题：** 给定两个以字符串表示的非负整数 `num1` 和 `num2`，返回它们乘积的字符串表示，不能使用大整数库或直接转成整数。
+
+**思路：** 模拟竖式乘法。长度为 m、n 的两数乘积至多 m+n 位，用长度 m+n 的数组存每一位。`num1[i]` 与 `num2[j]` 相乘结果落在下标 `i+j`（高位）和 `i+j+1`（低位），先累加再统一进位。最后跳过前导零。时间 O(m·n)，空间 O(m+n)。
+
+**Python：**
+```python
+def multiply(num1: str, num2: str) -> str:
+    if num1 == "0" or num2 == "0":
+        return "0"
+    m, n = len(num1), len(num2)
+    res = [0] * (m + n)
+    for i in range(m - 1, -1, -1):
+        for j in range(n - 1, -1, -1):
+            mul = (ord(num1[i]) - 48) * (ord(num2[j]) - 48)
+            total = mul + res[i + j + 1]
+            res[i + j + 1] = total % 10
+            res[i + j] += total // 10
+    s = "".join(map(str, res)).lstrip("0")
+    return s or "0"
+```
+
+**TypeScript：**
+```typescript
+function multiply(num1: string, num2: string): string {
+  if (num1 === "0" || num2 === "0") return "0";
+  const m = num1.length, n = num2.length;
+  const res = new Array(m + n).fill(0);
+  for (let i = m - 1; i >= 0; i--) {
+    for (let j = n - 1; j >= 0; j--) {
+      const mul = (num1.charCodeAt(i) - 48) * (num2.charCodeAt(j) - 48);
+      const total = mul + res[i + j + 1];
+      res[i + j + 1] = total % 10;
+      res[i + j] += Math.floor(total / 10);
+    }
+  }
+  return res.join("").replace(/^0+/, "") || "0";
+}
+```
+
+**Java：**
+```java
+class Solution {
+    public String multiply(String num1, String num2) {
+        if (num1.equals("0") || num2.equals("0")) return "0";
+        int m = num1.length(), n = num2.length();
+        int[] res = new int[m + n];
+        for (int i = m - 1; i >= 0; i--) {
+            for (int j = n - 1; j >= 0; j--) {
+                int mul = (num1.charAt(i) - '0') * (num2.charAt(j) - '0');
+                int total = mul + res[i + j + 1];
+                res[i + j + 1] = total % 10;
+                res[i + j] += total / 10;
+            }
+        }
+        StringBuilder sb = new StringBuilder();
+        for (int d : res) if (!(sb.length() == 0 && d == 0)) sb.append(d);
+        return sb.length() == 0 ? "0" : sb.toString();
+    }
+}
+```
+
+**要点：**
+- `num1[i] * num2[j]` 恰好贡献到结果下标 `i+j` 和 `i+j+1`。
+- 先把所有乘积累加进数组，再统一处理进位，逻辑更清晰。
+- 结果长度上界为 m+n，需去掉前导零。
+
+**常见追问：**
+- 如何支持负数或小数？
+- 极大数相乘能否用 FFT 把复杂度降到 O(n log n)？
+
+**常见坑：**
+- 忘记处理任一操作数为 "0" 的情况，返回带前导零的结果。
+- 进位下标写错（把高低位 `i+j` 与 `i+j+1` 弄反）。
+
+**标签：** #algorithm
+
+---
+
+### 80. 除自身以外数组的乘积
+
+**难度：** 中等
+**主题：** arrays, prefix-product
+**岗位：** SWE
+**级别：** L5
+
+**问题：** 给定整数数组，返回一个数组，其中每个元素等于其余所有元素的乘积；不得使用除法，且要求 O(n) 时间。
+
+**思路：** 两趟遍历。第一趟把 `res[i]` 填为 `i` 之前所有元素的前缀积；第二趟用一个滚动标量累乘 `i` 之后的后缀积。禁用除法（且遇到 0 也会出错）。O(n) 时间，除输出外 O(1) 额外空间。
+
+**Python：**
+```python
+def product_except_self(nums: list[int]) -> list[int]:
+    n = len(nums)
+    res = [1] * n
+    prefix = 1
+    for i in range(n):
+        res[i] = prefix
+        prefix *= nums[i]
+    suffix = 1
+    for i in range(n - 1, -1, -1):
+        res[i] *= suffix
+        suffix *= nums[i]
+    return res
+```
+
+**TypeScript：**
+```typescript
+function productExceptSelf(nums: number[]): number[] {
+  const n = nums.length;
+  const res = new Array<number>(n).fill(1);
+  let prefix = 1;
+  for (let i = 0; i < n; i++) { res[i] = prefix; prefix *= nums[i]; }
+  let suffix = 1;
+  for (let i = n - 1; i >= 0; i--) { res[i] *= suffix; suffix *= nums[i]; }
+  return res;
+}
+```
+
+**Java：**
+```java
+class Solution {
+    public int[] productExceptSelf(int[] nums) {
+        int n = nums.length;
+        int[] res = new int[n];
+        int prefix = 1;
+        for (int i = 0; i < n; i++) { res[i] = prefix; prefix *= nums[i]; }
+        int suffix = 1;
+        for (int i = n - 1; i >= 0; i--) { res[i] *= suffix; suffix *= nums[i]; }
+        return res;
+    }
+}
+```
+
+**要点：**
+- 把答案拆成前缀积 × 后缀积，两者都不含 `nums[i]`。
+- 输出数组兼作暂存空间，因此只用 O(1) 额外内存。
+- 不用除法就彻底规避了 0 的处理问题。
+
+**常见追问：**
+- 处理溢出——对大质数取模，或用 64 位。
+- 支持在线更新：单点低成本重算（乘积线段树）。
+- 若允许除法会怎样？（按 0 的个数分情况讨论。）
+
+**常见坑：**
+- 图省事用除法，数组含一个或多个 0 时崩掉。
+- 单独开前缀和后缀两个数组还声称 O(1) 空间。
+
+**标签：** #algorithm
+
+---
+
+### 81. 最长回文子串
+
+**难度：** 中等
+**主题：** string, dynamic-programming, two-pointers
+**岗位：** SWE
+**级别：** L5
+
+**问题：** 给定字符串 `s`，返回其中最长的回文子串（连续子串）。
+
+**思路：** 中心扩展。回文中心有 2n-1 个（每个字符及每对相邻字符之间），从每个中心向两侧扩展，记录最长区间。时间 O(n²)，空间 O(1)。也可用 Manacher 在 O(n) 内求解，但代码更复杂。
+
+**Python：**
+```python
+def longest_palindrome(s: str) -> str:
+    if not s:
+        return ""
+    start, end = 0, 0
+    def expand(l: int, r: int) -> tuple[int, int]:
+        while l >= 0 and r < len(s) and s[l] == s[r]:
+            l -= 1
+            r += 1
+        return l + 1, r - 1
+    for i in range(len(s)):
+        l1, r1 = expand(i, i)
+        l2, r2 = expand(i, i + 1)
+        if r1 - l1 > end - start:
+            start, end = l1, r1
+        if r2 - l2 > end - start:
+            start, end = l2, r2
+    return s[start:end + 1]
+```
+
+**TypeScript：**
+```typescript
+function longestPalindrome(s: string): string {
+  if (s.length === 0) return "";
+  let start = 0, end = 0;
+  const expand = (l: number, r: number): [number, number] => {
+    while (l >= 0 && r < s.length && s[l] === s[r]) { l--; r++; }
+    return [l + 1, r - 1];
+  };
+  for (let i = 0; i < s.length; i++) {
+    const [l1, r1] = expand(i, i);
+    const [l2, r2] = expand(i, i + 1);
+    if (r1 - l1 > end - start) { start = l1; end = r1; }
+    if (r2 - l2 > end - start) { start = l2; end = r2; }
+  }
+  return s.slice(start, end + 1);
+}
+```
+
+**Java：**
+```java
+class Solution {
+    public String longestPalindrome(String s) {
+        if (s.isEmpty()) return "";
+        int start = 0, end = 0;
+        for (int i = 0; i < s.length(); i++) {
+            int[] a = expand(s, i, i);
+            int[] b = expand(s, i, i + 1);
+            if (a[1] - a[0] > end - start) { start = a[0]; end = a[1]; }
+            if (b[1] - b[0] > end - start) { start = b[0]; end = b[1]; }
+        }
+        return s.substring(start, end + 1);
+    }
+    private int[] expand(String s, int l, int r) {
+        while (l >= 0 && r < s.length() && s.charAt(l) == s.charAt(r)) { l--; r++; }
+        return new int[]{l + 1, r - 1};
+    }
+}
+```
+
+**要点：**
+- 每个位置要考虑奇数（单中心）和偶数（双中心）两种回文。
+- 中心扩展用 O(1) 空间即可，比二维 DP 更省内存。
+- 用起止下标记录最长区间，避免反复拷贝子串。
+
+**常见追问：**
+- 如何在 O(n) 内求解（Manacher 算法）？
+- 如何统计回文子串的总个数？
+
+**常见坑：**
+- 只处理奇数中心，漏掉偶数长度回文（如 "abba"）。
+- 用长度比较时把奇偶两种情况的区间边界算错。
+
+**标签：** #algorithm
+
+---
+
 ## 其他算法
 
-### 51. 设计停车场
+### 82. 设计停车场
 
 **难度：** 中等
 **主题：** ood, design
@@ -4340,7 +7004,7 @@ class ParkingLot {
 
 ## 系统设计
 
-### 52. 设计 Amazon Prime Video
+### 83. 设计 Amazon Prime Video
 
 **难度：** 困难
 **主题：** system-design, cdn, video-streaming, drm, recommendation
@@ -4366,7 +7030,7 @@ class ParkingLot {
 
 ---
 
-### 53. 设计 Amazon.com 商品页
+### 84. 设计 Amazon.com 商品页
 
 **难度：** 困难
 **主题：** system-design, caching, microservices, search
@@ -4381,7 +7045,7 @@ class ParkingLot {
 
 ---
 
-### 54. 设计 Kindle 同步
+### 85. 设计 Kindle 同步
 
 **难度：** 困难
 **主题：** system-design, sync, conflict-resolution, offline
@@ -4396,7 +7060,7 @@ class ParkingLot {
 
 ---
 
-### 55. 设计 Amazon S3
+### 86. 设计 Amazon S3
 
 **难度：** 困难
 **主题：** system-design, blob-storage, consistency, replication
@@ -4411,7 +7075,7 @@ class ParkingLot {
 
 ---
 
-### 56. 设计分布式锁服务
+### 87. 设计分布式锁服务
 
 **难度：** 困难
 **主题：** system-design, consensus, paxos, zookeeper
@@ -4426,9 +7090,84 @@ class ParkingLot {
 
 ---
 
+### 88. 设计亚马逊购物车与结账
+
+**难度：** 困难
+**主题：** system-design, e-commerce, dynamodb, idempotency, consistency
+**岗位：** 高级 SWE
+**级别：** L5-L6
+
+**问题：** 设计 Amazon.com 的购物车与结账流程，支撑数亿用户、跨设备的购物车持久化，以及大促高并发下的正确行为。
+
+**思路：** 购物车服务以 DynamoDB 存储，按 `user_id`（游客用 session id）为键，每条商品记 `{product_id, qty, price_snapshot}`；登录时把游客购物车合并进用户购物车。购物车写入量大、需读己之写，用 DynamoDB + 写穿透缓存（DAX/ElastiCache）。结账是一个 saga/状态机：(1) 预留库存（乐观并发的条件递减），(2) 授权支付，(3) 创建订单，(4) 确认。每步通过客户端提供的 `idempotency_key` 做幂等，重试不会重复扣款或重复预留。价格在结账时重新校验（购物车存快照，但真源是定价服务）。各阶段间用 SQS 保证持久性与背压；失败时用补偿事务释放库存 / 撤销授权。讨论库存最终一致性（超卖风险 vs 预留 TTL）、黑五尖刺（自动扩容、基于队列的削峰）、以及为降低延迟做的跨区域购物车复制。
+
+**常见追问：**
+- 支付过程中客户端重试或网络超时，如何防止重复扣款？
+- 库存预留 TTL：用户预留后放弃结账会怎样？
+- 同一商品存在于两台设备时的购物车合并冲突——数量如何调和？
+- 单个爆款商品的秒杀热分区——如何避免 DynamoDB 热点键？
+
+**常见坑：**
+- 结账时信任客户端购物车里的价格，而不在服务端重新校验。
+- 结账各步非幂等，重试就产生重复订单或重复扣款。
+
+**标签：** #system-design
+
+---
+
+### 89. 设计类 Amazon SQS 的分布式消息队列
+
+**难度：** 困难
+**主题：** system-design, messaging, queue, durability, at-least-once
+**岗位：** 高级 SWE
+**级别：** L5-L6
+
+**问题：** 设计一个可水平扩展、持久、支持至少一次投递的消息队列服务，类似 Amazon SQS。
+
+**思路：** 前端 API 层（SendMessage / ReceiveMessage / DeleteMessage）置于负载均衡之后，按队列鉴权。消息按分区分散到大量存储节点；每个分区在向生产者 ack 前，跨多个 AZ 的节点做多副本写（quorum 写）——由此保证持久性。投递语义为至少一次：接收时消息进入 `visibility_timeout` 变为不可见而非删除；消费者处理完必须显式 DeleteMessage，否则消息重新出现被重投。这要求消费者幂等。记录重投次数，超过 N 次后转入死信队列。标准队列偏重吞吐、尽力而为的顺序；FIFO 变体用 `message_group_id` 实现组内有序，再加去重 id 在一定窗口内近似恰好一次。讨论长轮询以减少空接收、由积压指标驱动的消费者自动扩缩、以及为何在分布式队列上强求全局严格有序会摧毁可扩展性。
+
+**常见追问：**
+- 为什么是至少一次而不是恰好一次？作为代价消费者需承担什么？
+- 可见性超时与处理超时的慢消费者如何相互作用？
+- 设计 FIFO 变体：如何在分片的同时保序？
+- 如何防止一条毒消息永久阻塞某个分区？
+
+**常见坑：**
+- 假设恰好一次投递，从而省掉幂等消费者设计。
+- 承诺全局严格有序，逼出单分区，吞吐彻底崩溃。
+
+**标签：** #system-design
+
+---
+
+### 90. 设计 Alexa 语音助手
+
+**难度：** 困难
+**主题：** system-design, speech, nlu, low-latency, streaming
+**岗位：** 高级 SWE
+**级别：** L5-L6
+
+**问题：** 设计 Alexa 的后端：用户对设备说话，它在一两秒内以动作或语音回应。
+
+**思路：** 流水线：唤醒词检测在设备端运行（廉价、保护隐私），避免把所有音频都传到云端。识别到唤醒词后，音频通过持久连接流式上传到云。自动语音识别（ASR）增量地把流式音频转成文本。自然语言理解（NLU）把文本映射为意图 + 槽位（如 `PlayMusic{artist: ...}`）。编排/对话管理器把意图路由到正确的技能（第一方，或经 Skills API 的第三方），技能返回响应。文本转语音（TTS）合成语音回复并流式回传，让播放在合成完成前就开始。延迟是硬约束：每个阶段都流式、连接保活、ASR/NLU/TTS 都做成低延迟服务并按区域就近部署。个性化与上下文（设备状态、上一轮对话）放在会话存储。讨论隐私（设备端唤醒词、退出选项、数据留存）、多轮对话状态、以及技能沙箱与超时。
+
+**常见追问：**
+- 如何把端到端延迟控制在约 1 秒内？哪些环节必须流式？
+- 多轮上下文（"播放它" 承接 "这是什么歌"）——对话状态存在哪？
+- 第三方技能变慢或崩溃——如何隔离并优雅降级？
+- 意图歧义或 ASR 置信度低时——重新询问还是取最佳猜测？
+
+**常见坑：**
+- 把所有音频都传到云端，而不用设备端唤醒词做门控（成本 + 隐私）。
+- 把整个流程当成请求/响应式批处理而非流式，导致延迟预算爆掉。
+
+**标签：** #system-design
+
+---
+
 ## 行为面试
 
-### 57. 讲一次你为客户超出预期付出的经历
+### 91. 讲一次你为客户超出预期付出的经历
 
 **难度：** 中等
 **主题：** behavioral, customer-obsession
@@ -4443,7 +7182,7 @@ class ParkingLot {
 
 ---
 
-### 58. 讲一次你担起了职责之外的重要工作
+### 92. 讲一次你担起了职责之外的重要工作
 
 **难度：** 中等
 **主题：** behavioral, ownership, bias-for-action
@@ -4458,7 +7197,7 @@ class ParkingLot {
 
 ---
 
-### 59. 讲一次你在信息不足时做决策的经历
+### 93. 讲一次你在信息不足时做决策的经历
 
 **难度：** 中等
 **主题：** behavioral, bias-for-action, are-right-a-lot
@@ -4473,7 +7212,7 @@ class ParkingLot {
 
 ---
 
-### 60. 讲讲你最有挑战的技术项目
+### 94. 讲讲你最有挑战的技术项目
 
 **难度：** 中等
 **主题：** behavioral, dive-deep, deliver-results
@@ -4488,9 +7227,39 @@ class ParkingLot {
 
 ---
 
+### 95. 讲一次你为复杂问题发明了更简单的方案
+
+**难度：** 中等
+**主题：** behavioral, invent-and-simplify, ownership
+**岗位：** 高级 SWE
+**级别：** L5
+
+**问题：** 描述一次你在别人过度设计时，找到了明显更简单的解决方案的经历。
+
+**思路：** STAR 对应 **Invent and Simplify**（LP #5）。面试官想看到你挑战了默认的复杂方案，并找到实质更简单的做法——更少的组件、更少的代码、更低的成本或更小的运维负担——同时不在正确性上偷工减料。结构：（Situation）当时摆在桌面上的复杂方案及其笨重之处；（Task）你的角色与约束；（Action）解锁更简单设计的洞见或重新定义问题的方式，以及你如何说服他人认同；（Result）可量化的简化——如"砍掉一个服务，p99 降低 40%，on-call 报警减半"。好的回答要体现你"发明"了非显而易见的点子，而不只是删减了范围。避免那种"更简单"其实等于少做需求本身的故事。
+
+**标签：** #behavioral
+
+---
+
+### 96. 讲一次你犯了错误以及你如何重新赢得信任
+
+**难度：** 中等
+**主题：** behavioral, earn-trust, ownership, dive-deep
+**岗位：** SWE
+**级别：** L5
+
+**问题：** 讲一次你在工作中犯下重大错误的经历。发生了什么，你又是如何处理的？
+
+**思路：** STAR 对应 **Earn Trust** 与 **Ownership**。面试官考察的是自省与担当，而非你是否完美无缺。结构：（Situation）一个真实、有分量且你主动承担的错误——一次糟糕的发布、一个错误的估算、一处影响客户的设计缺陷；（Task）影响范围与受影响的人；（Action）你如何回应——及时且透明地承认（不甩锅），控制损失，深入挖掘根因，并落地一个持久修复或流程（如 COE/复盘、补测试、回滚护栏）；（Result）结果，以及最关键的——你如何随时间重建团队或客户的信任。好的回答体现你在别人发现之前主动坦白，且同类错误再未复发。避免假错误（"我工作太拼了"）或甩锅他人。
+
+**标签：** #behavioral
+
+---
+
 ## 领域知识
 
-### 61. LP 深挖：Disagree and Commit
+### 97. LP 深挖：Disagree and Commit
 
 **难度：** 中等
 **主题：** behavioral, have-backbone, earn-trust
@@ -4505,7 +7274,7 @@ class ParkingLot {
 
 ---
 
-### 62. LP 深挖：Frugality
+### 98. LP 深挖：Frugality
 
 **难度：** 中等
 **主题：** behavioral, frugality, invent-and-simplify
@@ -4515,6 +7284,36 @@ class ParkingLot {
 **问题：** 讲一次你用有限资源完成重大成果的经历。
 
 **思路：** 对应 **Frugality**（"用更少做更多"）。资源可以是人力、时间、预算或算力。展示：你没去要更多人头/预算——而是想出了巧妙的简化方案（也呼应 **Invent and Simplify**）。具体：例如"我们需要实时分析但用不起 Snowflake——我用 Kinesis + DynamoDB streams 搭了一条管道，每月 200 美元，而不是 2 万美元。"量化节省。
+
+**标签：** #domain-knowledge
+
+---
+
+### 99. 如何让一个类做到线程安全？
+
+**难度：** 中等
+**主题：** concurrency, thread-safety, java, synchronization
+**岗位：** SWE
+**级别：** L5
+
+**问题：** 线程安全意味着什么？你会用哪些手段让共享对象在并发访问下保持安全？
+
+**思路：** 线程安全指并发访问在无外部同步的情况下也能产生正确结果——没有数据竞争，不破坏不变式。按从廉价到强力的顺序梳理工具箱：(1) **不可变性**——构造后状态永不改变的对象天生线程安全（Java `final` 字段、防御性拷贝）；优先选它。(2) **限定/封闭**——把状态限制在单线程内（thread-local，或 actor/事件循环模型），从不共享。(3) **同步**——用锁（`synchronized`、`ReentrantLock`）守护可变共享状态，保证同一时刻只有一个线程修改；务必建立一致的加锁顺序以避免死锁，并让临界区尽量小。(4) **原子类 / 无锁**——`AtomicInteger`、CAS 循环、并发集合（`ConcurrentHashMap`）用于高竞争的计数器和映射，无需显式加锁。(5) **可见性**——`volatile` 保证写对其他线程可见（修复双检锁和停止标志的 bug），但不为复合操作提供原子性。讨论竞态条件（交错执行）与可见性问题（读到过期缓存）的区别，以及为何 `check-then-act`（如懒加载、`containsKey` + `put`）需要单个原子步骤。亚马逊的服务高度并发，预期会被追问让你修好一个坏掉的单例或计数器。
+
+**标签：** #domain-knowledge
+
+---
+
+### 100. 分布式系统中的幂等性与投递语义
+
+**难度：** 中等
+**主题：** distributed-systems, idempotency, reliability, messaging
+**岗位：** SWE
+**级别：** L5
+
+**问题：** 什么是幂等性？它在分布式系统中为何重要？如何在至少一次投递之上实现恰好一次处理？
+
+**思路：** 一个操作若多次执行的效果与执行一次相同，即为幂等。它之所以重要，是因为网络不可靠：任何请求都可能超时且结果未知，于是客户端会重试——而多数持久消息系统（SQS、Kinesis、Kafka 的至少一次）都可能重投。没有幂等性，重试就会重复扣款、重复发货或重复计数。梳理投递语义谱系：至多一次（可能丢失）、至少一次（可能重复，常见的持久默认）、恰好一次（通常是一种幻觉，由至少一次投递 + 幂等处理构成）。手段：(1) **幂等键**——客户端为每个逻辑操作发送唯一键；服务端记录已处理的键，重复时返回上次结果。(2) **天然幂等**——把写设计成 `SET x = v` 而非 `x += 1`，或用基于去重 id 的条件写 / upsert。(3) **去重存储**——一张带 TTL 的已见请求 id 表或缓存。(4) **幂等消费者**——把去重 id 与一个原子的"处理并标记完成"步骤（事务性 outbox / 去重表）结合，让重投变成空操作。讨论权衡：去重窗口是有限的（存储成本），且"恰好一次"只有在副作用与去重记录原子提交时才成立。这是亚马逊订单与支付管道的核心，预期会被追问如何在重试下防止重复扣款。
 
 **标签：** #domain-knowledge
 

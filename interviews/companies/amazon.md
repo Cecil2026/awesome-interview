@@ -424,9 +424,283 @@ class Solution {
 
 ---
 
+### 5. Reverse Nodes in k-Group
+
+**Difficulty:** Hard
+**Topics:** linked-list, recursion, in-place
+**Position:** SWE
+**Years:** L5-L6
+
+**Question:** Given a linked list, reverse the nodes `k` at a time and return the modified list; nodes left over that number fewer than `k` stay in original order.
+
+**Approach:** Use a `dummy` before head and keep a `group_prev` pointer. Each round, walk `k` steps to find the group's `kth` node; if fewer than `k` remain, stop. Then reverse the group in place and reconnect predecessor and successor. Only pointers change: O(n) time, O(1) space. Batching fixed-size chunks of an order/logistics stream is a real-world abstraction of this.
+
+**Python:**
+```python
+def reverse_k_group(head: ListNode | None, k: int) -> ListNode | None:
+    dummy = ListNode(0, head)
+    group_prev = dummy
+    while True:
+        kth = group_prev
+        for _ in range(k):
+            kth = kth.next
+            if not kth:
+                return dummy.next
+        group_next = kth.next
+        prev, cur = group_next, group_prev.next
+        while cur is not group_next:
+            cur.next, prev, cur = prev, cur, cur.next
+        tmp = group_prev.next
+        group_prev.next = kth
+        group_prev = tmp
+```
+
+**TypeScript:**
+```typescript
+function reverseKGroup(head: ListNode | null, k: number): ListNode | null {
+  const dummy = new ListNode(0, head);
+  let groupPrev: ListNode = dummy;
+  while (true) {
+    let kth: ListNode | null = groupPrev;
+    for (let i = 0; i < k; i++) {
+      kth = kth!.next;
+      if (!kth) return dummy.next;
+    }
+    const groupNext = kth.next;
+    let prev = groupNext, cur = groupPrev.next;
+    while (cur !== groupNext) {
+      const nxt = cur!.next;
+      cur!.next = prev;
+      prev = cur;
+      cur = nxt;
+    }
+    const tmp = groupPrev.next!;
+    groupPrev.next = kth;
+    groupPrev = tmp;
+  }
+}
+```
+
+**Java:**
+```java
+class Solution {
+    public ListNode reverseKGroup(ListNode head, int k) {
+        ListNode dummy = new ListNode(0, head), groupPrev = dummy;
+        while (true) {
+            ListNode kth = groupPrev;
+            for (int i = 0; i < k; i++) {
+                kth = kth.next;
+                if (kth == null) return dummy.next;
+            }
+            ListNode groupNext = kth.next, prev = groupNext, cur = groupPrev.next;
+            while (cur != groupNext) {
+                ListNode nxt = cur.next;
+                cur.next = prev;
+                prev = cur;
+                cur = nxt;
+            }
+            ListNode tmp = groupPrev.next;
+            groupPrev.next = kth;
+            groupPrev = tmp;
+        }
+    }
+}
+```
+
+**Key points:**
+- Probe whether the group has `k` nodes first; if not, leave it untouched and return.
+- A sentinel `dummy` uniformly handles the head being reversed.
+- O(n) time, pointer-only rewiring, O(1) space.
+
+**Follow-ups:**
+- How would a recursive version look, and what is its stack depth?
+- If the leftover tail group must also be reversed, how does the code change?
+
+**Common Pitfalls:**
+- Forgetting to link the previous group's tail to the new group head, breaking the chain.
+- Updating `group_prev` incorrectly and reconnecting to the pre-reversal old head.
+
+**Tags:** #algorithm
+
+---
+
+### 6. Add Two Numbers
+
+**Difficulty:** Medium
+**Topics:** linked-list, math, simulation
+**Position:** SWE
+**Years:** L5
+
+**Question:** Two non-empty linked lists represent two non-negative integers stored in reverse order, one digit per node. Add the numbers and return the sum as a linked list in the same reverse order.
+
+**Approach:** Traverse both lists together, adding digit by digit while keeping a `carry`. A sentinel `dummy` simplifies building; each step creates a node valued `(a + b + carry) % 10` with carry `// 10`. Treat an exhausted list as 0, and keep looping while `carry` is nonzero. O(max(m, n)) time and O(max(m, n)) space for the result. Reverse storage naturally matches adding from the least significant digit.
+
+**Python:**
+```python
+def add_two_numbers(l1: ListNode | None, l2: ListNode | None) -> ListNode | None:
+    dummy = ListNode()
+    cur = dummy
+    carry = 0
+    while l1 or l2 or carry:
+        a = l1.val if l1 else 0
+        b = l2.val if l2 else 0
+        carry, digit = divmod(a + b + carry, 10)
+        cur.next = ListNode(digit)
+        cur = cur.next
+        l1 = l1.next if l1 else None
+        l2 = l2.next if l2 else None
+    return dummy.next
+```
+
+**TypeScript:**
+```typescript
+function addTwoNumbers(l1: ListNode | null, l2: ListNode | null): ListNode | null {
+  const dummy = new ListNode();
+  let cur = dummy, carry = 0;
+  while (l1 || l2 || carry) {
+    const sum = (l1?.val ?? 0) + (l2?.val ?? 0) + carry;
+    carry = Math.floor(sum / 10);
+    cur.next = new ListNode(sum % 10);
+    cur = cur.next;
+    l1 = l1?.next ?? null;
+    l2 = l2?.next ?? null;
+  }
+  return dummy.next;
+}
+```
+
+**Java:**
+```java
+class Solution {
+    public ListNode addTwoNumbers(ListNode l1, ListNode l2) {
+        ListNode dummy = new ListNode(), cur = dummy;
+        int carry = 0;
+        while (l1 != null || l2 != null || carry != 0) {
+            int a = l1 != null ? l1.val : 0;
+            int b = l2 != null ? l2.val : 0;
+            int sum = a + b + carry;
+            carry = sum / 10;
+            cur.next = new ListNode(sum % 10);
+            cur = cur.next;
+            if (l1 != null) l1 = l1.next;
+            if (l2 != null) l2 = l2.next;
+        }
+        return dummy.next;
+    }
+}
+```
+
+**Key points:**
+- Keep `carry` in the loop condition to emit a final carry digit (e.g., 5+5).
+- The sentinel `dummy` avoids special-casing the result head.
+- Pad the shorter list with zeros when lengths differ.
+
+**Follow-ups:**
+- What if digits are stored in forward order (most significant first)? (Use stacks or reverse first.)
+- How could you reuse one input list in place to save memory?
+
+**Common Pitfalls:**
+- Dropping the leftover carry, producing a result short one digit.
+- Continuing only while both lists are non-empty, missing the tail of the longer one.
+
+**Tags:** #algorithm
+
+---
+
+### 7. Reorder List
+
+**Difficulty:** Medium
+**Topics:** linked-list, two-pointers, in-place
+**Position:** SWE
+**Years:** L5
+
+**Question:** Given a linked list `L0 → L1 → … → Ln-1 → Ln`, reorder it in place to `L0 → Ln → L1 → Ln-1 → L2 → Ln-2 → …` without modifying node values.
+
+**Approach:** Three steps: find the midpoint with slow/fast pointers and split into two halves; reverse the second half; then merge the two halves alternately. Pointer-only rewiring gives O(n) time, O(1) space. This head-tail interleaving pattern shows up in paginated display and fair queue scheduling.
+
+**Python:**
+```python
+def reorder_list(head: ListNode | None) -> None:
+    if not head or not head.next:
+        return
+    slow, fast = head, head
+    while fast.next and fast.next.next:
+        slow, fast = slow.next, fast.next.next
+    second = slow.next
+    slow.next = None
+    prev = None
+    while second:
+        second.next, prev, second = prev, second, second.next
+    first = head
+    while prev:
+        first.next, first = prev, first.next
+        prev.next, prev = first, prev.next
+```
+
+**TypeScript:**
+```typescript
+function reorderList(head: ListNode | null): void {
+  if (!head || !head.next) return;
+  let slow = head, fast = head;
+  while (fast.next && fast.next.next) { slow = slow.next!; fast = fast.next.next; }
+  let second = slow.next;
+  slow.next = null;
+  let prev: ListNode | null = null;
+  while (second) { const nxt = second.next; second.next = prev; prev = second; second = nxt; }
+  let first: ListNode | null = head;
+  while (prev) {
+    const n1 = first!.next, n2 = prev.next;
+    first!.next = prev;
+    prev.next = n1;
+    first = n1;
+    prev = n2;
+  }
+}
+```
+
+**Java:**
+```java
+class Solution {
+    public void reorderList(ListNode head) {
+        if (head == null || head.next == null) return;
+        ListNode slow = head, fast = head;
+        while (fast.next != null && fast.next.next != null) { slow = slow.next; fast = fast.next.next; }
+        ListNode second = slow.next;
+        slow.next = null;
+        ListNode prev = null;
+        while (second != null) { ListNode nxt = second.next; second.next = prev; prev = second; second = nxt; }
+        ListNode first = head;
+        while (prev != null) {
+            ListNode n1 = first.next, n2 = prev.next;
+            first.next = prev;
+            prev.next = n1;
+            first = n1;
+            prev = n2;
+        }
+    }
+}
+```
+
+**Key points:**
+- Find the midpoint with slow/fast pointers; for even length the first half is no shorter than the second.
+- Cut at the midpoint, reverse the second half, then interleave-merge.
+- O(n) time, in-place O(1) space.
+
+**Follow-ups:**
+- How would the same technique test whether a list is a palindrome?
+- If reversal is disallowed (keep order), could a deque implement this, and at what cost?
+
+**Common Pitfalls:**
+- Forgetting to null the first half's tail `next` when splitting, creating a cycle.
+- Not saving both sides' `next` before rewiring during merge, losing successors.
+
+**Tags:** #algorithm
+
+---
+
 ## Tree
 
-### 5. Word Break
+### 8. Word Break
 
 **Difficulty:** Medium
 **Topics:** dp, strings, trie
@@ -505,7 +779,7 @@ class Solution {
 
 ---
 
-### 6. Concatenated Words
+### 9. Concatenated Words
 
 **Difficulty:** Hard
 **Topics:** dp, trie, strings
@@ -588,7 +862,7 @@ class Solution {
 
 ---
 
-### 7. Subtree of Another Tree
+### 10. Subtree of Another Tree
 
 **Difficulty:** Easy
 **Topics:** tree, dfs, recursion
@@ -658,7 +932,7 @@ class Solution {
 
 ---
 
-### 8. Serialize and Deserialize Binary Tree
+### 11. Serialize and Deserialize Binary Tree
 
 **Difficulty:** Hard
 **Topics:** tree, dfs, bfs, design
@@ -756,7 +1030,7 @@ public class Codec {
 
 ---
 
-### 9. Word Search II
+### 12. Word Search II
 
 **Difficulty:** Hard
 **Topics:** trie, backtracking, dfs, matrix
@@ -869,7 +1143,7 @@ class Solution {
 
 ---
 
-### 10. Lowest Common Ancestor of a Binary Tree
+### 13. Lowest Common Ancestor of a Binary Tree
 
 **Difficulty:** Medium
 **Topics:** tree, dfs, recursion
@@ -925,7 +1199,7 @@ class Solution {
 
 ---
 
-### 11. Validate Binary Search Tree
+### 14. Validate Binary Search Tree
 
 **Difficulty:** Medium
 **Topics:** tree, dfs, recursion
@@ -983,9 +1257,340 @@ class Solution {
 
 ---
 
+### 15. Binary Tree Level Order Traversal
+
+**Difficulty:** Medium
+**Topics:** tree, bfs, queue
+**Position:** SDE
+**Years:** L5
+
+**Question:** Given a binary tree, return its node values level by level from top to bottom, left to right, as a list of lists where each inner list is one level.
+
+**Approach:** Standard BFS: use a queue, and at each round record the current queue size, popping exactly that many nodes to form the level while enqueuing their children. Time O(n), space O(n) (the widest level can hold ~n/2 nodes). Level order is a staple when Amazon backends walk tree/DAG structures such as order dependencies or category hierarchies.
+
+**Python:**
+```python
+from collections import deque
+
+def level_order(root: TreeNode | None) -> list[list[int]]:
+    if root is None:
+        return []
+    res: list[list[int]] = []
+    q: deque[TreeNode] = deque([root])
+    while q:
+        level: list[int] = []
+        for _ in range(len(q)):
+            node = q.popleft()
+            level.append(node.val)
+            if node.left:
+                q.append(node.left)
+            if node.right:
+                q.append(node.right)
+        res.append(level)
+    return res
+```
+
+**TypeScript:**
+```typescript
+function levelOrder(root: TreeNode | null): number[][] {
+  if (!root) return [];
+  const res: number[][] = [];
+  let queue: TreeNode[] = [root];
+  while (queue.length) {
+    const level: number[] = [];
+    const next: TreeNode[] = [];
+    for (const node of queue) {
+      level.push(node.val);
+      if (node.left) next.push(node.left);
+      if (node.right) next.push(node.right);
+    }
+    res.push(level);
+    queue = next;
+  }
+  return res;
+}
+```
+
+**Java:**
+```java
+class Solution {
+    public List<List<Integer>> levelOrder(TreeNode root) {
+        List<List<Integer>> res = new ArrayList<>();
+        if (root == null) return res;
+        Queue<TreeNode> q = new LinkedList<>();
+        q.offer(root);
+        while (!q.isEmpty()) {
+            int size = q.size();
+            List<Integer> level = new ArrayList<>();
+            for (int i = 0; i < size; i++) {
+                TreeNode node = q.poll();
+                level.add(node.val);
+                if (node.left != null) q.offer(node.left);
+                if (node.right != null) q.offer(node.right);
+            }
+            res.add(level);
+        }
+        return res;
+    }
+}
+```
+
+**Key points:**
+- Snapshot `size` before the inner loop so nodes are partitioned into the right level.
+- Time O(n), space O(n).
+- Enqueue right-to-left or reverse the result to get zigzag/bottom-up variants.
+
+**Follow-ups:**
+- How would you produce a zigzag (spiral) level order traversal?
+- For a heavily skewed (linked-list-like) tree, how do BFS and DFS space costs compare?
+
+**Common Pitfalls:**
+- Reading `queue length` inside the loop instead of caching it mixes newly added children into the current level.
+- Forgetting the empty-root case returns the wrong structure.
+
+**Tags:** #algorithm
+
+---
+
+### 16. Binary Tree Right Side View
+
+**Difficulty:** Medium
+**Topics:** tree, bfs, dfs
+**Position:** SDE
+**Years:** L5
+
+**Question:** Given a binary tree, imagine standing on its right side; return the values of the nodes you can see from top to bottom (the rightmost node of each level).
+
+**Approach:** BFS taking the last node of each level works in O(n) time, O(n) space. Alternatively, DFS in root -> right -> left order and record a node whenever the current depth equals the result length: the first node reached at each depth is the rightmost, using O(h) space. The concise DFS solution is shown.
+
+**Python:**
+```python
+def right_side_view(root: TreeNode | None) -> list[int]:
+    res: list[int] = []
+    def dfs(node: TreeNode | None, depth: int) -> None:
+        if node is None:
+            return
+        if depth == len(res):
+            res.append(node.val)
+        dfs(node.right, depth + 1)
+        dfs(node.left, depth + 1)
+    dfs(root, 0)
+    return res
+```
+
+**TypeScript:**
+```typescript
+function rightSideView(root: TreeNode | null): number[] {
+  const res: number[] = [];
+  const dfs = (node: TreeNode | null, depth: number): void => {
+    if (!node) return;
+    if (depth === res.length) res.push(node.val);
+    dfs(node.right, depth + 1);
+    dfs(node.left, depth + 1);
+  };
+  dfs(root, 0);
+  return res;
+}
+```
+
+**Java:**
+```java
+class Solution {
+    public List<Integer> rightSideView(TreeNode root) {
+        List<Integer> res = new ArrayList<>();
+        dfs(root, 0, res);
+        return res;
+    }
+    private void dfs(TreeNode node, int depth, List<Integer> res) {
+        if (node == null) return;
+        if (depth == res.size()) res.add(node.val);
+        dfs(node.right, depth + 1, res);
+        dfs(node.left, depth + 1, res);
+    }
+}
+```
+
+**Key points:**
+- Recurse into the right subtree first so the first node seen at each depth is the rightmost.
+- `depth == len(res)` is the classic first-visit-per-depth trick.
+- Time O(n), DFS space O(h).
+
+**Follow-ups:**
+- How would you get the left side view? Swap the recursion order to left before right.
+- How would a BFS solution look, and how do the two differ in space?
+
+**Common Pitfalls:**
+- Assuming the view is just all right children; a left-subtree node is visible when the right subtree is missing.
+- Recursing left first in DFS records the wrong first-visited node.
+
+**Tags:** #algorithm
+
+---
+
+### 17. Binary Tree Maximum Path Sum
+
+**Difficulty:** Hard
+**Topics:** tree, dfs, recursion
+**Position:** SDE
+**Years:** L5-L6
+
+**Question:** A path is any sequence of nodes connected by parent-child edges; it contains at least one node and need not pass through the root. Return the maximum sum of node values over all paths (values may be negative).
+
+**Approach:** Post-order DFS. For each node compute the best single-branch gain it can hand upward = `node.val + max(0, leftGain, rightGain)` (clamp negative gains to 0). Meanwhile update the global answer with a path that peaks at this node using both branches: `node.val + max(0,left) + max(0,right)`. Time O(n), space O(h). This tree DP shows up in Amazon's harder algorithm rounds.
+
+**Python:**
+```python
+def max_path_sum(root: TreeNode | None) -> int:
+    best = float('-inf')
+    def gain(node: TreeNode | None) -> int:
+        nonlocal best
+        if node is None:
+            return 0
+        left = max(gain(node.left), 0)
+        right = max(gain(node.right), 0)
+        best = max(best, node.val + left + right)
+        return node.val + max(left, right)
+    gain(root)
+    return int(best)
+```
+
+**TypeScript:**
+```typescript
+function maxPathSum(root: TreeNode | null): number {
+  let best = -Infinity;
+  const gain = (node: TreeNode | null): number => {
+    if (!node) return 0;
+    const left = Math.max(gain(node.left), 0);
+    const right = Math.max(gain(node.right), 0);
+    best = Math.max(best, node.val + left + right);
+    return node.val + Math.max(left, right);
+  };
+  gain(root);
+  return best;
+}
+```
+
+**Java:**
+```java
+class Solution {
+    private int best = Integer.MIN_VALUE;
+    public int maxPathSum(TreeNode root) {
+        gain(root);
+        return best;
+    }
+    private int gain(TreeNode node) {
+        if (node == null) return 0;
+        int left = Math.max(gain(node.left), 0);
+        int right = Math.max(gain(node.right), 0);
+        best = Math.max(best, node.val + left + right);
+        return node.val + Math.max(left, right);
+    }
+}
+```
+
+**Key points:**
+- Separate the single-branch gain returned to the parent from the global answer updated at the turning point.
+- Clamp negative gains with `max(0, ...)` so they do not drag the path down.
+- Initialize the global best to negative infinity to handle all-negative trees.
+
+**Follow-ups:**
+- How would you also reconstruct the actual path that yields the maximum sum?
+- If the path must pass through the root, how does the solution simplify?
+
+**Common Pitfalls:**
+- Returning `left + right` as the upward gain, which is not a valid single-branch path for the parent.
+- Initializing the global best to 0, which returns a wrong 0 for all-negative trees.
+
+**Tags:** #algorithm
+
+---
+
+### 18. Kth Smallest Element in a BST
+
+**Difficulty:** Medium
+**Topics:** tree, bst, dfs, inorder
+**Position:** SDE
+**Years:** L5
+
+**Question:** Given the root of a binary search tree (BST) and an integer `k`, return the `k`-th smallest value among all node values (1-indexed).
+
+**Approach:** An in-order traversal of a BST visits values in ascending order, so the `k`-th visited node is the answer. Use an iterative in-order traversal with an explicit stack and return early once the count reaches `k`: time O(h + k), space O(h). Early termination beats a full traversal when `k` is small.
+
+**Python:**
+```python
+def kth_smallest(root: TreeNode | None, k: int) -> int:
+    stack: list[TreeNode] = []
+    node = root
+    while stack or node:
+        while node:
+            stack.append(node)
+            node = node.left
+        node = stack.pop()
+        k -= 1
+        if k == 0:
+            return node.val
+        node = node.right
+    raise ValueError("k out of range")
+```
+
+**TypeScript:**
+```typescript
+function kthSmallest(root: TreeNode | null, k: number): number {
+  const stack: TreeNode[] = [];
+  let node = root;
+  while (stack.length || node) {
+    while (node) {
+      stack.push(node);
+      node = node.left;
+    }
+    node = stack.pop()!;
+    if (--k === 0) return node.val;
+    node = node.right;
+  }
+  throw new Error("k out of range");
+}
+```
+
+**Java:**
+```java
+class Solution {
+    public int kthSmallest(TreeNode root, int k) {
+        Deque<TreeNode> stack = new ArrayDeque<>();
+        TreeNode node = root;
+        while (!stack.isEmpty() || node != null) {
+            while (node != null) {
+                stack.push(node);
+                node = node.left;
+            }
+            node = stack.pop();
+            if (--k == 0) return node.val;
+            node = node.right;
+        }
+        throw new IllegalArgumentException("k out of range");
+    }
+}
+```
+
+**Key points:**
+- Exploit the ascending in-order property of a BST; no sorting needed.
+- Iterative in-order can exit early at the k-th node for O(h + k) time.
+- Space O(h), the stack depth never exceeds tree height.
+
+**Follow-ups:**
+- If the tree is modified often (inserts/deletes) with many k-th queries, how would you optimize (store subtree sizes in nodes)?
+- How would you adapt it to find the k-th largest?
+
+**Common Pitfalls:**
+- Forgetting to push all left children first, which breaks in-order order.
+- Decrementing `k` at the wrong moment relative to the pop, causing an off-by-one.
+
+**Tags:** #algorithm
+
+---
+
 ## Graph
 
-### 12. Number of Islands
+### 19. Number of Islands
 
 **Difficulty:** Medium
 **Topics:** graph, dfs, bfs, matrix
@@ -1075,7 +1680,7 @@ class Solution {
 
 ---
 
-### 13. Number of Provinces
+### 20. Number of Provinces
 
 **Difficulty:** Medium
 **Topics:** graph, union-find, dfs
@@ -1159,7 +1764,7 @@ class Solution {
 
 ---
 
-### 14. Course Schedule
+### 21. Course Schedule
 
 **Difficulty:** Medium
 **Topics:** graph, topological-sort, dfs, bfs
@@ -1239,7 +1844,7 @@ class Solution {
 
 ---
 
-### 15. Word Ladder II
+### 22. Word Ladder II
 
 **Difficulty:** Hard
 **Topics:** bfs, graph, backtracking, strings
@@ -1375,7 +1980,7 @@ class Solution {
 
 ---
 
-### 16. Critical Connections in a Network
+### 23. Critical Connections in a Network
 
 **Difficulty:** Hard
 **Topics:** graph, dfs, tarjan, bridges
@@ -1476,7 +2081,7 @@ class Solution {
 
 ---
 
-### 17. The Maze II
+### 24. The Maze II
 
 **Difficulty:** Medium
 **Topics:** bfs, dijkstra, matrix
@@ -1578,7 +2183,7 @@ class Solution {
 
 ---
 
-### 18. Path with Maximum Probability
+### 25. Path with Maximum Probability
 
 **Difficulty:** Medium
 **Topics:** graph, dijkstra, heap
@@ -1677,7 +2282,7 @@ class Solution {
 
 ---
 
-### 19. Number of Islands II
+### 26. Number of Islands II
 
 **Difficulty:** Hard
 **Topics:** union-find, graph
@@ -1783,7 +2388,7 @@ class Solution {
 
 ---
 
-### 20. Optimize Water Distribution in a Village
+### 27. Optimize Water Distribution in a Village
 
 **Difficulty:** Hard
 **Topics:** graph, mst, union-find
@@ -1870,9 +2475,307 @@ class Solution {
 
 ---
 
+### 28. Clone Graph
+
+**Difficulty:** Medium
+**Topics:** graph, dfs, bfs, hash-table
+**Position:** SWE
+**Years:** L5
+
+**Question:** Given a reference to a node in a connected undirected graph, return a deep copy of the graph. Each node has a `val` and a list of `neighbors`.
+
+**Approach:** Keep a hash map from original node to its clone and traverse via DFS or BFS. On visiting a node, create its clone and record it *before* recursing into neighbors; the map both deduplicates and breaks cycles. Time O(V+E), space O(V). At Amazon this pattern shows up when snapshotting service dependency topologies or order-fulfillment networks.
+
+**Python:**
+```python
+from typing import Optional
+
+class Node:
+    def __init__(self, val: int = 0, neighbors: list['Node'] | None = None):
+        self.val = val
+        self.neighbors = neighbors or []
+
+def clone_graph(node: Optional[Node]) -> Optional[Node]:
+    if node is None:
+        return None
+    seen: dict[Node, Node] = {}
+    def dfs(cur: Node) -> Node:
+        if cur in seen:
+            return seen[cur]
+        copy = Node(cur.val)
+        seen[cur] = copy
+        copy.neighbors = [dfs(nb) for nb in cur.neighbors]
+        return copy
+    return dfs(node)
+```
+
+**TypeScript:**
+```typescript
+class GraphNode {
+  val: number;
+  neighbors: GraphNode[];
+  constructor(val = 0, neighbors: GraphNode[] = []) {
+    this.val = val;
+    this.neighbors = neighbors;
+  }
+}
+
+function cloneGraph(node: GraphNode | null): GraphNode | null {
+  if (node === null) return null;
+  const seen = new Map<GraphNode, GraphNode>();
+  const dfs = (cur: GraphNode): GraphNode => {
+    const existing = seen.get(cur);
+    if (existing) return existing;
+    const copy = new GraphNode(cur.val);
+    seen.set(cur, copy);
+    copy.neighbors = cur.neighbors.map(dfs);
+    return copy;
+  };
+  return dfs(node);
+}
+```
+
+**Java:**
+```java
+class Node {
+    public int val;
+    public List<Node> neighbors;
+    public Node(int val) { this.val = val; this.neighbors = new ArrayList<>(); }
+}
+
+class Solution {
+    private final Map<Node, Node> seen = new HashMap<>();
+    public Node cloneGraph(Node node) {
+        if (node == null) return null;
+        if (seen.containsKey(node)) return seen.get(node);
+        Node copy = new Node(node.val);
+        seen.put(node, copy);
+        for (Node nb : node.neighbors) copy.neighbors.add(cloneGraph(nb));
+        return copy;
+    }
+}
+```
+
+**Key points:**
+- Record the clone in the map before recursing so cycles terminate.
+- Key the map by node identity, ensuring each node is cloned once.
+- DFS or BFS both work; each is O(V+E).
+
+**Follow-ups:**
+- If `val` is not unique, can you key by `val`? (No — must key by reference/identity.)
+- How would an iterative BFS version avoid stack overflow on deep graphs?
+
+**Common Pitfalls:**
+- Forgetting to insert the mapping before recursing, causing infinite recursion on cycles.
+- Not handling the empty graph (null input).
+
+**Tags:** #algorithm
+
+---
+
+### 29. Alien Dictionary
+
+**Difficulty:** Hard
+**Topics:** graph, topological-sort, bfs
+**Position:** SWE
+**Years:** L5-L6
+
+**Question:** Given a list of `words` from an alien language sorted lexicographically by some unknown alphabet order, derive that alphabet's order. Return an empty string if the ordering is invalid, or any valid order if several exist.
+
+**Approach:** Compare each adjacent word pair character by character; the first differing pair `a != b` yields a directed edge `a -> b`. Build the graph over all characters seen, then run Kahn's topological sort; if you cannot emit every character, there is a cycle, so return "". Watch the invalid "prefix comes after" case (e.g. `abc` before `ab`). Time O(total chars), space O(1) since the alphabet is constant. Amazon ordering/rule-inference questions favor this topological modeling.
+
+**Python:**
+```python
+from collections import deque
+
+def alien_order(words: list[str]) -> str:
+    graph: dict[str, set[str]] = {c: set() for w in words for c in w}
+    indeg: dict[str, int] = {c: 0 for c in graph}
+    for a, b in zip(words, words[1:]):
+        for x, y in zip(a, b):
+            if x != y:
+                if y not in graph[x]:
+                    graph[x].add(y)
+                    indeg[y] += 1
+                break
+        else:
+            if len(a) > len(b):
+                return ""
+    q = deque([c for c in indeg if indeg[c] == 0])
+    order: list[str] = []
+    while q:
+        c = q.popleft()
+        order.append(c)
+        for nxt in graph[c]:
+            indeg[nxt] -= 1
+            if indeg[nxt] == 0:
+                q.append(nxt)
+    return "".join(order) if len(order) == len(indeg) else ""
+```
+
+**TypeScript:**
+```typescript
+function alienOrder(words: string[]): string {
+  const graph = new Map<string, Set<string>>();
+  const indeg = new Map<string, number>();
+  for (const w of words) for (const c of w) {
+    if (!graph.has(c)) { graph.set(c, new Set()); indeg.set(c, 0); }
+  }
+  for (let i = 0; i + 1 < words.length; i++) {
+    const a = words[i], b = words[i + 1];
+    let j = 0;
+    const min = Math.min(a.length, b.length);
+    while (j < min && a[j] === b[j]) j++;
+    if (j === min) { if (a.length > b.length) return ""; continue; }
+    if (!graph.get(a[j])!.has(b[j])) {
+      graph.get(a[j])!.add(b[j]);
+      indeg.set(b[j], indeg.get(b[j])! + 1);
+    }
+  }
+  const q: string[] = [];
+  for (const [c, d] of indeg) if (d === 0) q.push(c);
+  const order: string[] = [];
+  while (q.length) {
+    const c = q.shift()!;
+    order.push(c);
+    for (const nxt of graph.get(c)!) {
+      indeg.set(nxt, indeg.get(nxt)! - 1);
+      if (indeg.get(nxt) === 0) q.push(nxt);
+    }
+  }
+  return order.length === indeg.size ? order.join("") : "";
+}
+```
+
+**Java:**
+```java
+class Solution {
+    public String alienOrder(String[] words) {
+        Map<Character, Set<Character>> graph = new HashMap<>();
+        Map<Character, Integer> indeg = new HashMap<>();
+        for (String w : words) for (char c : w.toCharArray()) {
+            graph.putIfAbsent(c, new HashSet<>());
+            indeg.putIfAbsent(c, 0);
+        }
+        for (int i = 0; i + 1 < words.length; i++) {
+            String a = words[i], b = words[i + 1];
+            int min = Math.min(a.length(), b.length()), j = 0;
+            while (j < min && a.charAt(j) == b.charAt(j)) j++;
+            if (j == min) { if (a.length() > b.length()) return ""; continue; }
+            char x = a.charAt(j), y = b.charAt(j);
+            if (graph.get(x).add(y)) indeg.merge(y, 1, Integer::sum);
+        }
+        Deque<Character> q = new ArrayDeque<>();
+        for (var e : indeg.entrySet()) if (e.getValue() == 0) q.add(e.getKey());
+        StringBuilder sb = new StringBuilder();
+        while (!q.isEmpty()) {
+            char c = q.poll();
+            sb.append(c);
+            for (char nxt : graph.get(c)) if (indeg.merge(nxt, -1, Integer::sum) == 0) q.add(nxt);
+        }
+        return sb.length() == indeg.size() ? sb.toString() : "";
+    }
+}
+```
+
+**Key points:**
+- Add exactly one edge from the first differing char of each adjacent pair.
+- If the topological order's length differs from the char count, a cycle exists — return "".
+- A longer word that is a prefix of an earlier shorter word is invalid; handle it separately.
+
+**Follow-ups:**
+- How do you detect whether the answer is unique? (More than one node in the queue at any step means non-unique.)
+- How would you enumerate all valid orderings? (Backtracking over topological orders.)
+
+**Common Pitfalls:**
+- Missing the invalid prefix case like `["abc", "ab"]`.
+- Adding a duplicate edge and over-counting in-degree.
+
+**Tags:** #algorithm
+
+---
+
+### 30. Cheapest Flights Within K Stops
+
+**Difficulty:** Medium
+**Topics:** graph, shortest-path, bellman-ford, bfs
+**Position:** SWE
+**Years:** L5
+
+**Question:** There are `n` cities and flights `flights[i] = [from, to, price]`. Find the cheapest price from `src` to `dst` using at most `k` stops; return -1 if none exists.
+
+**Approach:** Shortest path with a hop limit, done with Bellman-Ford relaxing `k+1` rounds. Each round updates from the previous round's distance snapshot, so after round i you hold the shortest distance using at most i edges — exactly bounding the number of stops. Time O(k * E), space O(n). This "optimal path under a hop constraint" maps directly to Amazon logistics/delivery cost optimization under a bounded number of handoffs.
+
+**Python:**
+```python
+def find_cheapest_price(n: int, flights: list[list[int]], src: int, dst: int, k: int) -> int:
+    INF = float('inf')
+    dist = [INF] * n
+    dist[src] = 0
+    for _ in range(k + 1):
+        prev = dist[:]
+        for u, v, w in flights:
+            if prev[u] + w < dist[v]:
+                dist[v] = prev[u] + w
+    return -1 if dist[dst] == INF else dist[dst]
+```
+
+**TypeScript:**
+```typescript
+function findCheapestPrice(n: number, flights: number[][], src: number, dst: number, k: number): number {
+  const INF = Infinity;
+  let dist = new Array<number>(n).fill(INF);
+  dist[src] = 0;
+  for (let i = 0; i <= k; i++) {
+    const prev = dist.slice();
+    for (const [u, v, w] of flights) {
+      if (prev[u] + w < dist[v]) dist[v] = prev[u] + w;
+    }
+  }
+  return dist[dst] === INF ? -1 : dist[dst];
+}
+```
+
+**Java:**
+```java
+class Solution {
+    public int findCheapestPrice(int n, int[][] flights, int src, int dst, int k) {
+        final int INF = Integer.MAX_VALUE;
+        int[] dist = new int[n];
+        Arrays.fill(dist, INF);
+        dist[src] = 0;
+        for (int i = 0; i <= k; i++) {
+            int[] prev = dist.clone();
+            for (int[] f : flights) {
+                int u = f[0], v = f[1], w = f[2];
+                if (prev[u] != INF && prev[u] + w < dist[v]) dist[v] = prev[u] + w;
+            }
+        }
+        return dist[dst] == INF ? -1 : dist[dst];
+    }
+}
+```
+
+**Key points:**
+- Exactly k+1 relaxation rounds corresponds to "at most k stops (k+1 edges)."
+- Each round must relax from the previous snapshot `prev`, or multiple edges could chain within one round and blow the hop count.
+- O(k * E); no heap required.
+
+**Follow-ups:**
+- How would a Dijkstra with state (city, hops used) work, and what are the trade-offs?
+- What if edge weights can be negative? (Bellman-Ford handles it, but beware negative cycles.)
+
+**Common Pitfalls:**
+- Relaxing in place without a snapshot, letting more than one edge propagate per round.
+- In Java, adding without checking `prev[u] != INF` causes integer overflow.
+
+**Tags:** #algorithm
+
+---
+
 ## Heap / Priority Queue
 
-### 21. Top K Frequent Elements
+### 31. Top K Frequent Elements
 
 **Difficulty:** Medium
 **Topics:** hashmap, heap, bucket-sort
@@ -1952,7 +2855,7 @@ class Solution {
 
 ---
 
-### 22. Trapping Rain Water II
+### 32. Trapping Rain Water II
 
 **Difficulty:** Hard
 **Topics:** heap, bfs, matrix
@@ -2055,7 +2958,7 @@ class Solution {
 
 ---
 
-### 23. Cut Off Trees for Golf Event
+### 33. Cut Off Trees for Golf Event
 
 **Difficulty:** Hard
 **Topics:** bfs, heap, matrix
@@ -2181,7 +3084,7 @@ class Solution {
 
 ---
 
-### 24. K Closest Points to Origin
+### 34. K Closest Points to Origin
 
 **Difficulty:** Medium
 **Topics:** heap, quickselect, sorting
@@ -2246,7 +3149,7 @@ class Solution {
 
 ---
 
-### 25. Meeting Rooms II
+### 35. Meeting Rooms II
 
 **Difficulty:** Medium
 **Topics:** heap, intervals, sorting
@@ -2313,7 +3216,7 @@ class Solution {
 
 ---
 
-### 26. Find Median from Data Stream
+### 36. Find Median from Data Stream
 
 **Difficulty:** Hard
 **Topics:** heap, design, streaming
@@ -2390,7 +3293,7 @@ class MedianFinder {
 
 ---
 
-### 27. Min Cost to Connect Ropes
+### 37. Min Cost to Connect Ropes
 
 **Difficulty:** Medium
 **Topics:** heap, greedy
@@ -2460,7 +3363,7 @@ class Solution {
 
 ---
 
-### 28. Reorganize String
+### 38. Reorganize String
 
 **Difficulty:** Medium
 **Topics:** heap, greedy, strings
@@ -2550,9 +3453,146 @@ class Solution {
 
 ---
 
+### 39. Kth Largest Element in an Array
+
+**Difficulty:** Medium
+**Topics:** heap, quickselect, sorting
+**Position:** SDE
+**Years:** L5
+
+**Question:** Given an integer array `nums` and integer `k`, return the `k`th largest element in the array (kth largest by value, not the kth distinct element).
+
+**Approach:** Maintain a min-heap of size `k`: push each element, pop when size exceeds `k`. The heap's root is the kth largest. O(n log k) time, O(k) space — ideal for streaming/large `n` like ranking top sellers. Quickselect partitions around a pivot for O(n) average, O(n^2) worst.
+
+**Python:**
+```python
+import heapq
+
+def findKthLargest(nums: list[int], k: int) -> int:
+    heap: list[int] = []
+    for x in nums:
+        heapq.heappush(heap, x)
+        if len(heap) > k:
+            heapq.heappop(heap)
+    return heap[0]
+```
+
+**TypeScript:**
+```typescript
+function findKthLargest(nums: number[], k: number): number {
+  const heap: number[] = [];
+  for (const x of nums) {
+    heap.push(x);
+    heap.sort((a, b) => a - b);
+    if (heap.length > k) heap.shift();
+  }
+  return heap[0];
+}
+```
+
+**Java:**
+```java
+class Solution {
+    public int findKthLargest(int[] nums, int k) {
+        PriorityQueue<Integer> heap = new PriorityQueue<>();
+        for (int x : nums) {
+            heap.offer(x);
+            if (heap.size() > k) heap.poll();
+        }
+        return heap.peek();
+    }
+}
+```
+
+**Key points:**
+- A min-heap of size k keeps exactly the k largest seen; its root is the answer.
+- O(n log k) beats a full sort's O(n log n) when k is small.
+- Quickselect gives O(n) average but is harder to get right under interview pressure.
+
+**Follow-ups:**
+- How would you handle a data stream where `n` is unbounded? (The size-k heap already works online.)
+- Implement the Quickselect variant and analyze its worst case.
+
+**Common Pitfalls:**
+- Using a max-heap of size n wastes memory and is O(n log n); the min-heap of size k is the tighter solution.
+- Confusing kth largest by value with kth distinct value.
+
+**Tags:** #algorithm
+
+---
+
+### 40. Top K Frequent Words
+
+**Difficulty:** Medium
+**Topics:** heap, hash-table, sorting
+**Position:** SDE
+**Years:** L5
+
+**Question:** Given a list of `words` and integer `k`, return the `k` most frequent words, sorted by frequency descending; ties broken by lexicographical (alphabetical) order.
+
+**Approach:** Count frequencies with a hash map, then select the top k by the composite key `(-freq, word)`. A size-k heap keeping the k best runs in O(n log k). Common Amazon framing: top search terms or trending queries. Careful tie-breaking is the crux.
+
+**Python:**
+```python
+import heapq
+from collections import Counter
+
+def topKFrequent(words: list[str], k: int) -> list[str]:
+    count = Counter(words)
+    return heapq.nsmallest(k, count, key=lambda w: (-count[w], w))
+```
+
+**TypeScript:**
+```typescript
+function topKFrequent(words: string[], k: number): string[] {
+  const count = new Map<string, number>();
+  for (const w of words) count.set(w, (count.get(w) ?? 0) + 1);
+  return [...count.keys()]
+    .sort((a, b) => count.get(b)! - count.get(a)! || a.localeCompare(b))
+    .slice(0, k);
+}
+```
+
+**Java:**
+```java
+class Solution {
+    public List<String> topKFrequent(String[] words, int k) {
+        Map<String, Integer> count = new HashMap<>();
+        for (String w : words) count.merge(w, 1, Integer::sum);
+        PriorityQueue<String> heap = new PriorityQueue<>((a, b) ->
+            count.get(a).equals(count.get(b)) ? b.compareTo(a) : count.get(a) - count.get(b));
+        for (String w : count.keySet()) {
+            heap.offer(w);
+            if (heap.size() > k) heap.poll();
+        }
+        List<String> out = new ArrayList<>();
+        while (!heap.isEmpty()) out.add(heap.poll());
+        Collections.reverse(out);
+        return out;
+    }
+}
+```
+
+**Key points:**
+- Sort key `(-freq, word)` encodes frequency-desc then alphabetical-asc in one comparison.
+- Size-k heap gives O(n log k); a full sort is O(n log n) but simpler to reason about.
+- With a min-heap, invert the tie-break (larger word on top) so popping keeps the correct k.
+
+**Follow-ups:**
+- What if k equals the number of distinct words? (Full sort is then unavoidable.)
+- How would you shard this across machines for billions of query logs?
+
+**Common Pitfalls:**
+- Getting the tie-break direction backwards when using a min-heap of size k.
+- Forgetting to reverse the heap output, yielding ascending instead of descending order.
+
+**Tags:** #algorithm
+
+---
+
 ## Stack / Queue
 
-### 29. Sliding Window Maximum
+### 41. Sliding Window Maximum
 
 **Difficulty:** Hard
 **Topics:** deque, sliding-window
@@ -2622,7 +3662,7 @@ class Solution {
 
 ---
 
-### 30. Min Stack
+### 42. Min Stack
 
 **Difficulty:** Medium
 **Topics:** stack, design
@@ -2694,7 +3734,7 @@ class MinStack {
 
 ---
 
-### 31. Design Hit Counter
+### 43. Design Hit Counter
 
 **Difficulty:** Medium
 **Topics:** design, queue, hashmap
@@ -2769,9 +3809,159 @@ class HitCounter {
 
 ---
 
+### 44. Valid Parentheses
+
+**Difficulty:** Easy
+**Topics:** stack, string
+**Position:** SDE
+**Years:** L4
+
+**Question:** Given a string `s` containing only `()[]{}`, determine if the input is valid — every open bracket is closed by the same type in the correct order.
+
+**Approach:** Push the expected closing bracket for each opener onto a stack; on a closer, it must match the stack top. Valid iff every closer matches and the stack is empty at the end. O(n) time, O(n) space. A canonical warm-up for validating nested structures (e.g. JSON/config parsing).
+
+**Python:**
+```python
+def isValid(s: str) -> bool:
+    pairs = {')': '(', ']': '[', '}': '{'}
+    stack: list[str] = []
+    for c in s:
+        if c in pairs:
+            if not stack or stack.pop() != pairs[c]:
+                return False
+        else:
+            stack.append(c)
+    return not stack
+```
+
+**TypeScript:**
+```typescript
+function isValid(s: string): boolean {
+  const pairs: Record<string, string> = { ")": "(", "]": "[", "}": "{" };
+  const stack: string[] = [];
+  for (const c of s) {
+    if (c in pairs) {
+      if (stack.pop() !== pairs[c]) return false;
+    } else {
+      stack.push(c);
+    }
+  }
+  return stack.length === 0;
+}
+```
+
+**Java:**
+```java
+class Solution {
+    public boolean isValid(String s) {
+        Deque<Character> stack = new ArrayDeque<>();
+        for (char c : s.toCharArray()) {
+            if (c == '(') stack.push(')');
+            else if (c == '[') stack.push(']');
+            else if (c == '{') stack.push('}');
+            else if (stack.isEmpty() || stack.pop() != c) return false;
+        }
+        return stack.isEmpty();
+    }
+}
+```
+
+**Key points:**
+- Stack matches the LIFO nature of nested brackets.
+- Must check both mismatch and a non-empty leftover stack at the end.
+- Pushing the expected closer keeps the comparison a single equality check.
+
+**Follow-ups:**
+- Support wildcard `*` that can be `(`, `)`, or empty (LeetCode 678).
+- Return the index of the first invalid character instead of a boolean.
+
+**Common Pitfalls:**
+- Popping from an empty stack when a closer arrives first — guard with an emptiness check.
+- Returning `true` while the stack still holds unclosed openers.
+
+**Tags:** #algorithm
+
+---
+
+### 45. Daily Temperatures
+
+**Difficulty:** Medium
+**Topics:** stack, monotonic-stack, array
+**Position:** SDE
+**Years:** L5
+
+**Question:** Given daily `temperatures`, return an array `answer` where `answer[i]` is the number of days you must wait after day `i` for a warmer temperature, or `0` if none.
+
+**Approach:** Keep a monotonically decreasing stack of indices. For each day, while the current temperature exceeds the temperature at the stack top, pop that index and record the gap. Each index is pushed and popped once — O(n) time, O(n) space. This "next greater element" pattern powers metrics like time-to-restock.
+
+**Python:**
+```python
+def dailyTemperatures(temperatures: list[int]) -> list[int]:
+    res = [0] * len(temperatures)
+    stack: list[int] = []  # indices, decreasing temps
+    for i, t in enumerate(temperatures):
+        while stack and temperatures[stack[-1]] < t:
+            j = stack.pop()
+            res[j] = i - j
+        stack.append(i)
+    return res
+```
+
+**TypeScript:**
+```typescript
+function dailyTemperatures(temperatures: number[]): number[] {
+  const res = new Array<number>(temperatures.length).fill(0);
+  const stack: number[] = [];
+  for (let i = 0; i < temperatures.length; i++) {
+    while (stack.length && temperatures[stack[stack.length - 1]] < temperatures[i]) {
+      const j = stack.pop()!;
+      res[j] = i - j;
+    }
+    stack.push(i);
+  }
+  return res;
+}
+```
+
+**Java:**
+```java
+class Solution {
+    public int[] dailyTemperatures(int[] temperatures) {
+        int n = temperatures.length;
+        int[] res = new int[n];
+        Deque<Integer> stack = new ArrayDeque<>();
+        for (int i = 0; i < n; i++) {
+            while (!stack.isEmpty() && temperatures[stack.peek()] < temperatures[i]) {
+                int j = stack.pop();
+                res[j] = i - j;
+            }
+            stack.push(i);
+        }
+        return res;
+    }
+}
+```
+
+**Key points:**
+- Store indices, not values, so you can compute the day gap directly.
+- The monotonic-decreasing stack guarantees each element is pushed/popped once — amortized O(n).
+- Unresolved indices keep their default `0`.
+
+**Follow-ups:**
+- Return the actual warmer temperature instead of the day count.
+- Handle a streaming feed where temperatures arrive one at a time.
+
+**Common Pitfalls:**
+- Pushing values instead of indices, losing the ability to compute `i - j`.
+- Using `<=` instead of `<`, which mishandles equal consecutive temperatures.
+
+**Tags:** #algorithm
+
+---
+
 ## Hash Table
 
-### 32. Two Sum
+### 46. Two Sum
 
 **Difficulty:** Easy
 **Topics:** arrays, hashmap
@@ -2840,7 +4030,7 @@ class Solution {
 
 ---
 
-### 33. Most Common Word
+### 47. Most Common Word
 
 **Difficulty:** Easy
 **Topics:** strings, hashmap, parsing
@@ -2907,7 +4097,7 @@ class Solution {
 
 ---
 
-### 34. Analyze User Website Visit Pattern
+### 48. Analyze User Website Visit Pattern
 
 **Difficulty:** Medium
 **Topics:** hashmap, sorting, strings
@@ -3006,7 +4196,7 @@ class Solution {
 
 ---
 
-### 35. Group Anagrams
+### 49. Group Anagrams
 
 **Difficulty:** Medium
 **Topics:** hashmap, strings, sorting
@@ -3064,9 +4254,402 @@ class Solution {
 
 ---
 
+### 50. Valid Sudoku
+
+**Difficulty:** Medium
+**Topics:** hash-table, array, matrix
+**Position:** SWE
+**Years:** L5
+
+**Question:** Determine whether a 9x9 Sudoku board is valid, checking only the filled cells (`.` marks empty); it need not be solvable.
+
+**Approach:** Scan once; for each filled digit check its row, column, and 3x3 box for duplicates. Keep three groups of sets (9 rows, 9 cols, 9 boxes); the box index is `(r // 3) * 3 + c // 3`. Time O(81) = O(1), space O(1).
+
+**Python:**
+```python
+def is_valid_sudoku(board: list[list[str]]) -> bool:
+    rows: list[set[str]] = [set() for _ in range(9)]
+    cols: list[set[str]] = [set() for _ in range(9)]
+    boxes: list[set[str]] = [set() for _ in range(9)]
+    for r in range(9):
+        for c in range(9):
+            v = board[r][c]
+            if v == ".":
+                continue
+            b = (r // 3) * 3 + c // 3
+            if v in rows[r] or v in cols[c] or v in boxes[b]:
+                return False
+            rows[r].add(v)
+            cols[c].add(v)
+            boxes[b].add(v)
+    return True
+```
+
+**TypeScript:**
+```typescript
+function isValidSudoku(board: string[][]): boolean {
+  const rows = Array.from({ length: 9 }, () => new Set<string>());
+  const cols = Array.from({ length: 9 }, () => new Set<string>());
+  const boxes = Array.from({ length: 9 }, () => new Set<string>());
+  for (let r = 0; r < 9; r++) {
+    for (let c = 0; c < 9; c++) {
+      const v = board[r][c];
+      if (v === ".") continue;
+      const b = Math.floor(r / 3) * 3 + Math.floor(c / 3);
+      if (rows[r].has(v) || cols[c].has(v) || boxes[b].has(v)) return false;
+      rows[r].add(v);
+      cols[c].add(v);
+      boxes[b].add(v);
+    }
+  }
+  return true;
+}
+```
+
+**Java:**
+```java
+class Solution {
+    public boolean isValidSudoku(char[][] board) {
+        Set<String> seen = new HashSet<>();
+        for (int r = 0; r < 9; r++) {
+            for (int c = 0; c < 9; c++) {
+                char v = board[r][c];
+                if (v == '.') continue;
+                int b = (r / 3) * 3 + c / 3;
+                if (!seen.add("r" + r + v) || !seen.add("c" + c + v) || !seen.add("b" + b + v))
+                    return false;
+            }
+        }
+        return true;
+    }
+}
+```
+
+**Key points:**
+- Only three constraints matter: row, column, and box; any duplicate makes it invalid.
+- The box index `(r // 3) * 3 + c // 3` maps the 9 boxes to 0..8.
+- The board is fixed 9x9, so time and space are both O(1).
+
+**Follow-ups:**
+- How would you actually solve the Sudoku (backtracking with pruning)?
+- How does this generalize to an NxN board?
+
+**Common Pitfalls:**
+- Forgetting to skip `.` and validating empty cells as digits.
+- Miscomputing the box index (e.g. `r // 3 + c // 3`), causing cross-box false positives.
+
+**Tags:** #algorithm
+
+---
+
+### 51. Longest Consecutive Sequence
+
+**Difficulty:** Medium
+**Topics:** hash-table, union-find, array
+**Position:** SDE
+**Years:** L5
+
+**Question:** Given an unsorted array `nums`, return the length of the longest run of consecutive integers. Must run in O(n) time.
+
+**Approach:** Put all numbers in a hash set. Only start counting from a number that has no predecessor (`x - 1` absent) — that is a run's beginning. Walk `x+1, x+2, ...` while present. Each number is visited at most twice, giving O(n) total despite the nested loop. O(n) space.
+
+**Python:**
+```python
+def longestConsecutive(nums: list[int]) -> int:
+    s = set(nums)
+    best = 0
+    for x in s:
+        if x - 1 not in s:  # start of a run
+            length = 1
+            while x + length in s:
+                length += 1
+            best = max(best, length)
+    return best
+```
+
+**TypeScript:**
+```typescript
+function longestConsecutive(nums: number[]): number {
+  const set = new Set(nums);
+  let best = 0;
+  for (const x of set) {
+    if (!set.has(x - 1)) {
+      let length = 1;
+      while (set.has(x + length)) length++;
+      best = Math.max(best, length);
+    }
+  }
+  return best;
+}
+```
+
+**Java:**
+```java
+class Solution {
+    public int longestConsecutive(int[] nums) {
+        Set<Integer> set = new HashSet<>();
+        for (int x : nums) set.add(x);
+        int best = 0;
+        for (int x : set) {
+            if (!set.contains(x - 1)) {
+                int length = 1;
+                while (set.contains(x + length)) length++;
+                best = Math.max(best, length);
+            }
+        }
+        return best;
+    }
+}
+```
+
+**Key points:**
+- The `x - 1 not in set` check ensures each run is expanded exactly once.
+- Total inner-loop work is bounded by n, so the algorithm stays O(n).
+- A hash set gives O(1) membership, which sorting (O(n log n)) cannot beat here.
+
+**Follow-ups:**
+- Also return the actual sequence, not just its length.
+- Solve with Union-Find and compare trade-offs.
+
+**Common Pitfalls:**
+- Iterating over the raw array (with duplicates) instead of the set can degrade to O(n^2).
+- Starting a count from every element without the predecessor check breaks the O(n) bound.
+
+**Tags:** #algorithm
+
+---
+
+## Binary Search
+
+### 52. Find First and Last Position of Element in Sorted Array
+
+**Difficulty:** Medium
+**Topics:** binary-search, array
+**Position:** SDE
+**Years:** L5
+
+**Question:** Given a sorted array `nums` and a `target`, return `[first, last]` — the starting and ending indices of `target`. Return `[-1, -1]` if absent. Must run in O(log n).
+
+**Approach:** Two binary searches for the boundaries: the left bound (first index >= target) and the right bound (first index > target, minus one). If the left bound is out of range or does not equal target, the value is absent. O(log n) time, O(1) space.
+
+**Python:**
+```python
+import bisect
+
+def searchRange(nums: list[int], target: int) -> list[int]:
+    lo = bisect.bisect_left(nums, target)
+    if lo == len(nums) or nums[lo] != target:
+        return [-1, -1]
+    hi = bisect.bisect_right(nums, target) - 1
+    return [lo, hi]
+```
+
+**TypeScript:**
+```typescript
+function searchRange(nums: number[], target: number): number[] {
+  const bound = (isLeft: boolean): number => {
+    let lo = 0, hi = nums.length;
+    while (lo < hi) {
+      const mid = (lo + hi) >> 1;
+      if (nums[mid] > target || (isLeft && nums[mid] === target)) hi = mid;
+      else lo = mid + 1;
+    }
+    return lo;
+  };
+  const left = bound(true);
+  if (left === nums.length || nums[left] !== target) return [-1, -1];
+  return [left, bound(false) - 1];
+}
+```
+
+**Java:**
+```java
+class Solution {
+    public int[] searchRange(int[] nums, int target) {
+        int left = bound(nums, target, true);
+        if (left == nums.length || nums[left] != target) return new int[]{-1, -1};
+        return new int[]{left, bound(nums, target, false) - 1};
+    }
+    private int bound(int[] nums, int target, boolean isLeft) {
+        int lo = 0, hi = nums.length;
+        while (lo < hi) {
+            int mid = (lo + hi) >>> 1;
+            if (nums[mid] > target || (isLeft && nums[mid] == target)) hi = mid;
+            else lo = mid + 1;
+        }
+        return lo;
+    }
+}
+```
+
+**Key points:**
+- Left bound = first index >= target; right bound = first index > target.
+- Validate the left bound against the array length before dereferencing.
+- Both searches use the half-open `[lo, hi)` invariant, avoiding off-by-one bugs.
+
+**Follow-ups:**
+- Count occurrences of target (right bound minus left bound).
+- Adapt to find the insertion point when the target is missing.
+
+**Common Pitfalls:**
+- Accessing `nums[left]` without first checking `left == nums.length`.
+- Mixing closed and half-open interval conventions between the two searches.
+
+**Tags:** #algorithm
+
+---
+
+### 53. Find Minimum in Rotated Sorted Array
+
+**Difficulty:** Medium
+**Topics:** binary-search, array
+**Position:** SDE
+**Years:** L5
+
+**Question:** A sorted array of distinct integers is rotated at an unknown pivot. Find the minimum element in O(log n).
+
+**Approach:** Binary search comparing `nums[mid]` to `nums[hi]`. If `nums[mid] > nums[hi]`, the minimum lies to the right (`lo = mid + 1`); otherwise it is at `mid` or to the left (`hi = mid`). Converges to the rotation point. O(log n) time, O(1) space. Comparing to `hi` (not `lo`) avoids ambiguity on a non-rotated array.
+
+**Python:**
+```python
+def findMin(nums: list[int]) -> int:
+    lo, hi = 0, len(nums) - 1
+    while lo < hi:
+        mid = (lo + hi) // 2
+        if nums[mid] > nums[hi]:
+            lo = mid + 1
+        else:
+            hi = mid
+    return nums[lo]
+```
+
+**TypeScript:**
+```typescript
+function findMin(nums: number[]): number {
+  let lo = 0, hi = nums.length - 1;
+  while (lo < hi) {
+    const mid = (lo + hi) >> 1;
+    if (nums[mid] > nums[hi]) lo = mid + 1;
+    else hi = mid;
+  }
+  return nums[lo];
+}
+```
+
+**Java:**
+```java
+class Solution {
+    public int findMin(int[] nums) {
+        int lo = 0, hi = nums.length - 1;
+        while (lo < hi) {
+            int mid = (lo + hi) >>> 1;
+            if (nums[mid] > nums[hi]) lo = mid + 1;
+            else hi = mid;
+        }
+        return nums[lo];
+    }
+}
+```
+
+**Key points:**
+- Compare against `nums[hi]`, not `nums[lo]`, to correctly handle the already-sorted case.
+- The loop condition `lo < hi` converges to a single index without a separate found-check.
+- Distinct values assumed; duplicates would degrade the worst case to O(n).
+
+**Follow-ups:**
+- Handle duplicates (LeetCode 154) and explain the O(n) worst case.
+- Return the rotation count (index of the minimum).
+
+**Common Pitfalls:**
+- Comparing `nums[mid]` to `nums[lo]`, which mishandles a non-rotated array.
+- Using `lo <= hi` or `hi = mid - 1`, which can skip the true minimum.
+
+**Tags:** #algorithm
+
+---
+
+### 54. Koko Eating Bananas
+
+**Difficulty:** Medium
+**Topics:** binary-search, search-on-answer
+**Position:** SDE
+**Years:** L5
+
+**Question:** Given `piles` of bananas and `h` hours, Koko eats at speed `k` bananas/hour (finishing at most one pile per hour). Return the minimum integer `k` such that she finishes all piles within `h` hours.
+
+**Approach:** Binary search on the answer `k` in `[1, max(piles)]`. Hours needed at speed `k` is `sum(ceil(p / k))`, which is monotonically non-increasing in `k`. Find the smallest `k` whose total hours is `<= h`. O(n log(max pile)) time. This throughput/rate-tuning pattern is common for provisioning capacity.
+
+**Python:**
+```python
+def minEatingSpeed(piles: list[int], h: int) -> int:
+    def hours(speed: int) -> int:
+        return sum((p + speed - 1) // speed for p in piles)
+    lo, hi = 1, max(piles)
+    while lo < hi:
+        mid = (lo + hi) // 2
+        if hours(mid) <= h:
+            hi = mid
+        else:
+            lo = mid + 1
+    return lo
+```
+
+**TypeScript:**
+```typescript
+function minEatingSpeed(piles: number[], h: number): number {
+  const hours = (speed: number): number =>
+    piles.reduce((sum, p) => sum + Math.ceil(p / speed), 0);
+  let lo = 1, hi = Math.max(...piles);
+  while (lo < hi) {
+    const mid = (lo + hi) >> 1;
+    if (hours(mid) <= h) hi = mid;
+    else lo = mid + 1;
+  }
+  return lo;
+}
+```
+
+**Java:**
+```java
+class Solution {
+    public int minEatingSpeed(int[] piles, int h) {
+        int lo = 1, hi = 0;
+        for (int p : piles) hi = Math.max(hi, p);
+        while (lo < hi) {
+            int mid = (lo + hi) >>> 1;
+            if (hours(piles, mid) <= h) hi = mid;
+            else lo = mid + 1;
+        }
+        return lo;
+    }
+    private long hours(int[] piles, int speed) {
+        long total = 0;
+        for (int p : piles) total += (p + speed - 1) / speed;
+        return total;
+    }
+}
+```
+
+**Key points:**
+- "Binary search on the answer": the feasibility predicate is monotonic in `k`.
+- Ceiling division `(p + k - 1) / k` counts whole hours per pile.
+- Search space upper bound is `max(piles)`, since a faster speed never helps.
+
+**Follow-ups:**
+- What if Koko could split time across piles within an hour? (Changes the hours formula.)
+- Generalize to "minimum capacity to ship within D days" (LeetCode 1011).
+
+**Common Pitfalls:**
+- Starting `lo` at 0 causes a division-by-zero in the hours function.
+- Accumulating hours in a 32-bit int can overflow for large piles; use a wider type.
+
+**Tags:** #algorithm
+
+---
+
 ## Dynamic Programming
 
-### 36. Trapping Rain Water
+### 55. Trapping Rain Water
 
 **Difficulty:** Hard
 **Topics:** arrays, two-pointer, dp
@@ -3153,7 +4736,7 @@ class Solution {
 
 ---
 
-### 37. Maximum Subarray (Kadane's)
+### 56. Maximum Subarray (Kadane's)
 
 **Difficulty:** Medium
 **Topics:** dp, arrays
@@ -3209,7 +4792,7 @@ class Solution {
 
 ---
 
-### 38. Maximum Profit in Job Scheduling
+### 57. Maximum Profit in Job Scheduling
 
 **Difficulty:** Hard
 **Topics:** dp, binary-search, sorting
@@ -3283,9 +4866,843 @@ class Solution {
 
 ---
 
+### 58. Coin Change
+
+**Difficulty:** Medium
+**Topics:** dp, arrays, bfs
+**Position:** SWE
+**Years:** L5
+
+**Question:** Given coin denominations `coins` and an amount, return the fewest number of coins needed to make up that amount, or `-1` if it cannot be made.
+
+**Approach:** Unbounded knapsack. `dp[a]` = min coins to make amount `a`. Transition: `dp[a] = min(dp[a - c] + 1)` over all coins `c <= a`. Initialize `dp[0] = 0` and the rest to a sentinel (amount + 1). Time O(amount * coins), space O(amount). Greedy fails for arbitrary denominations, so DP is required — the same reasoning appears in pricing/checkout make-change flows.
+
+**Python:**
+```python
+def coin_change(coins: list[int], amount: int) -> int:
+    dp = [amount + 1] * (amount + 1)
+    dp[0] = 0
+    for a in range(1, amount + 1):
+        for c in coins:
+            if c <= a:
+                dp[a] = min(dp[a], dp[a - c] + 1)
+    return dp[amount] if dp[amount] <= amount else -1
+```
+
+**TypeScript:**
+```typescript
+function coinChange(coins: number[], amount: number): number {
+  const dp = new Array<number>(amount + 1).fill(amount + 1);
+  dp[0] = 0;
+  for (let a = 1; a <= amount; a++) {
+    for (const c of coins) {
+      if (c <= a) dp[a] = Math.min(dp[a], dp[a - c] + 1);
+    }
+  }
+  return dp[amount] <= amount ? dp[amount] : -1;
+}
+```
+
+**Java:**
+```java
+class Solution {
+    public int coinChange(int[] coins, int amount) {
+        int[] dp = new int[amount + 1];
+        Arrays.fill(dp, amount + 1);
+        dp[0] = 0;
+        for (int a = 1; a <= amount; a++) {
+            for (int c : coins) {
+                if (c <= a) dp[a] = Math.min(dp[a], dp[a - c] + 1);
+            }
+        }
+        return dp[amount] <= amount ? dp[amount] : -1;
+    }
+}
+```
+
+**Key points:**
+- Sentinel `amount + 1` is safely larger than any real answer and avoids overflow.
+- Bottom-up avoids recursion depth issues; each amount depends only on smaller amounts.
+- Greedy (always take largest coin) is incorrect for denominations like `[1, 3, 4]` making `6`.
+
+**Follow-ups:**
+- Count the number of distinct combinations (Coin Change II) — iterate coins in the outer loop.
+- Return the actual coin set, not just the count — track a parent pointer per amount.
+
+**Common Pitfalls:**
+- Using `Integer.MAX_VALUE` as the sentinel and then doing `+ 1` overflows; use `amount + 1`.
+- Forgetting the `-1` case when the amount is unreachable.
+
+**Tags:** #algorithm
+
+---
+
+### 59. Longest Increasing Subsequence
+
+**Difficulty:** Medium
+**Topics:** dp, binary-search, arrays
+**Position:** SWE
+**Years:** L5
+
+**Question:** Given an integer array `nums`, return the length of the longest strictly increasing subsequence.
+
+**Approach:** Patience sorting. Maintain `tails`, where `tails[i]` is the smallest possible tail of an increasing subsequence of length `i + 1`. For each number, binary-search the leftmost tail `>= num` and replace it (or append if none). The length of `tails` is the answer. Time O(n log n), space O(n). The classic O(n^2) DP (`dp[i] = 1 + max(dp[j])` for `nums[j] < nums[i]`) also works but is slower — relevant when analyzing monotonic trends in metrics/telemetry.
+
+**Python:**
+```python
+import bisect
+
+def length_of_lis(nums: list[int]) -> int:
+    tails: list[int] = []
+    for x in nums:
+        i = bisect.bisect_left(tails, x)
+        if i == len(tails):
+            tails.append(x)
+        else:
+            tails[i] = x
+    return len(tails)
+```
+
+**TypeScript:**
+```typescript
+function lengthOfLIS(nums: number[]): number {
+  const tails: number[] = [];
+  for (const x of nums) {
+    let lo = 0, hi = tails.length;
+    while (lo < hi) {
+      const mid = (lo + hi) >> 1;
+      if (tails[mid] < x) lo = mid + 1;
+      else hi = mid;
+    }
+    if (lo === tails.length) tails.push(x);
+    else tails[lo] = x;
+  }
+  return tails.length;
+}
+```
+
+**Java:**
+```java
+class Solution {
+    public int lengthOfLIS(int[] nums) {
+        int[] tails = new int[nums.length];
+        int size = 0;
+        for (int x : nums) {
+            int lo = 0, hi = size;
+            while (lo < hi) {
+                int mid = (lo + hi) >>> 1;
+                if (tails[mid] < x) lo = mid + 1;
+                else hi = mid;
+            }
+            tails[lo] = x;
+            if (lo == size) size++;
+        }
+        return size;
+    }
+}
+```
+
+**Key points:**
+- `tails` is always sorted, which is what makes binary search valid.
+- `bisect_left` / lower-bound gives strictly increasing; use upper-bound for non-decreasing.
+- `tails` is not itself a valid subsequence, only its length is meaningful.
+
+**Follow-ups:**
+- Reconstruct one actual LIS — keep predecessor indices alongside the patience piles.
+- Count the number of LIS of maximum length — combine length DP with count DP.
+
+**Common Pitfalls:**
+- Using upper-bound (`bisect_right`) yields the longest non-decreasing subsequence, not strictly increasing.
+- Treating `tails` as the answer sequence — its contents can be an invalid subsequence.
+
+**Tags:** #algorithm
+
+---
+
+### 60. Edit Distance
+
+**Difficulty:** Hard
+**Topics:** dp, strings, two-dimensional
+**Position:** SWE
+**Years:** L5-L6
+
+**Question:** Given two strings `word1` and `word2`, return the minimum number of insert, delete, or replace operations to convert `word1` into `word2`.
+
+**Approach:** 2D DP (Levenshtein). `dp[i][j]` = edit distance between `word1[:i]` and `word2[:j]`. If characters match, `dp[i][j] = dp[i-1][j-1]`; otherwise `1 + min(delete dp[i-1][j], insert dp[i][j-1], replace dp[i-1][j-1])`. Base cases: converting to/from an empty string costs its length. Time O(m*n), space O(m*n), reducible to O(min(m, n)) with a rolling row — used in fuzzy search / spell correction for product catalogs.
+
+**Python:**
+```python
+def min_distance(word1: str, word2: str) -> int:
+    m, n = len(word1), len(word2)
+    dp = [[0] * (n + 1) for _ in range(m + 1)]
+    for i in range(m + 1):
+        dp[i][0] = i
+    for j in range(n + 1):
+        dp[0][j] = j
+    for i in range(1, m + 1):
+        for j in range(1, n + 1):
+            if word1[i - 1] == word2[j - 1]:
+                dp[i][j] = dp[i - 1][j - 1]
+            else:
+                dp[i][j] = 1 + min(dp[i - 1][j], dp[i][j - 1], dp[i - 1][j - 1])
+    return dp[m][n]
+```
+
+**TypeScript:**
+```typescript
+function minDistance(word1: string, word2: string): number {
+  const m = word1.length, n = word2.length;
+  const dp = Array.from({ length: m + 1 }, () => new Array<number>(n + 1).fill(0));
+  for (let i = 0; i <= m; i++) dp[i][0] = i;
+  for (let j = 0; j <= n; j++) dp[0][j] = j;
+  for (let i = 1; i <= m; i++) {
+    for (let j = 1; j <= n; j++) {
+      if (word1[i - 1] === word2[j - 1]) dp[i][j] = dp[i - 1][j - 1];
+      else dp[i][j] = 1 + Math.min(dp[i - 1][j], dp[i][j - 1], dp[i - 1][j - 1]);
+    }
+  }
+  return dp[m][n];
+}
+```
+
+**Java:**
+```java
+class Solution {
+    public int minDistance(String word1, String word2) {
+        int m = word1.length(), n = word2.length();
+        int[][] dp = new int[m + 1][n + 1];
+        for (int i = 0; i <= m; i++) dp[i][0] = i;
+        for (int j = 0; j <= n; j++) dp[0][j] = j;
+        for (int i = 1; i <= m; i++) {
+            for (int j = 1; j <= n; j++) {
+                if (word1.charAt(i - 1) == word2.charAt(j - 1)) dp[i][j] = dp[i - 1][j - 1];
+                else dp[i][j] = 1 + Math.min(dp[i - 1][j - 1], Math.min(dp[i - 1][j], dp[i][j - 1]));
+            }
+        }
+        return dp[m][n];
+    }
+}
+```
+
+**Key points:**
+- The three transitions map exactly to delete, insert, and replace.
+- Base row/column encode converting an empty prefix, costing one op per character.
+- On a match, carry the diagonal value with no added cost.
+
+**Follow-ups:**
+- Reduce space to O(min(m, n)) using two rolling rows.
+- Weight operations differently (e.g. replace costs 2) — generalize the `min` terms.
+
+**Common Pitfalls:**
+- Off-by-one between string indices (`i - 1`) and DP indices (`i`).
+- Forgetting to initialize the first row and column before the main loop.
+
+**Tags:** #algorithm
+
+---
+
+### 61. Decode Ways
+
+**Difficulty:** Medium
+**Topics:** dp, strings
+**Position:** SWE
+**Years:** L5
+
+**Question:** A message of digits is encoded where `'A'..'Z'` map to `"1".."26"`. Given a digit string `s`, return the number of ways to decode it.
+
+**Approach:** 1D DP. `dp[i]` = number of decodings of the prefix `s[:i]`. From position `i`, take one digit (valid if `s[i-1] != '0'`) contributing `dp[i-1]`, and take two digits (valid if `s[i-2:i]` is in `10..26`) contributing `dp[i-2]`. Base: `dp[0] = 1` (empty string). Time O(n), space O(1) with two rolling variables. Careful zero-handling is the crux — the same edge-case discipline matters in parsing serialized order/tracking payloads.
+
+**Python:**
+```python
+def num_decodings(s: str) -> int:
+    if not s or s[0] == '0':
+        return 0
+    prev, cur = 1, 1  # dp[i-2], dp[i-1]
+    for i in range(1, len(s)):
+        cnt = 0
+        if s[i] != '0':
+            cnt += cur
+        if '10' <= s[i - 1:i + 1] <= '26':
+            cnt += prev
+        prev, cur = cur, cnt
+    return cur
+```
+
+**TypeScript:**
+```typescript
+function numDecodings(s: string): number {
+  if (s.length === 0 || s[0] === '0') return 0;
+  let prev = 1, cur = 1;
+  for (let i = 1; i < s.length; i++) {
+    let cnt = 0;
+    if (s[i] !== '0') cnt += cur;
+    const two = Number(s.slice(i - 1, i + 1));
+    if (two >= 10 && two <= 26) cnt += prev;
+    prev = cur;
+    cur = cnt;
+  }
+  return cur;
+}
+```
+
+**Java:**
+```java
+class Solution {
+    public int numDecodings(String s) {
+        if (s.isEmpty() || s.charAt(0) == '0') return 0;
+        int prev = 1, cur = 1;
+        for (int i = 1; i < s.length(); i++) {
+            int cnt = 0;
+            if (s.charAt(i) != '0') cnt += cur;
+            int two = Integer.parseInt(s.substring(i - 1, i + 1));
+            if (two >= 10 && two <= 26) cnt += prev;
+            prev = cur;
+            cur = cnt;
+        }
+        return cur;
+    }
+}
+```
+
+**Key points:**
+- A leading `'0'` (or any standalone `'0'` not preceded by 1 or 2) makes the string undecodable.
+- Two-digit block is valid only in the inclusive range `10..26`.
+- O(1) space suffices because each state depends on the previous two.
+
+**Follow-ups:**
+- Support `'*'` wildcards matching any digit `1..9` (Decode Ways II) — expand the transition counts.
+- Return the actual decodings, not just the count — switch to backtracking.
+
+**Common Pitfalls:**
+- Treating `'0'` as a valid single-digit decode; only `1..9` decode alone.
+- Missing the range check, so blocks like `27` or `06` are wrongly counted.
+
+**Tags:** #algorithm
+
+---
+
+## Backtracking
+
+### 62. Combination Sum
+
+**Difficulty:** Medium
+**Topics:** backtracking, array, recursion
+**Position:** SWE
+**Years:** L5
+
+**Question:** Given an array of distinct positive integers `candidates` and a target integer `target`, return all unique combinations of `candidates` that sum to `target`. Each number may be reused an unlimited number of times.
+
+**Approach:** Classic backtracking with an index to prevent counting the same combination in different orders. At each step either reuse the current candidate (stay on `i`) or move on (`i + 1`). Amazon uses this shape for problems like assembling fulfillment packages that hit a target weight/value from reusable item types. Time O(N^(T/M)) where M is the smallest candidate, space O(T/M) for recursion depth.
+
+**Python:**
+```python
+def combination_sum(candidates: list[int], target: int) -> list[list[int]]:
+    res: list[list[int]] = []
+    path: list[int] = []
+
+    def backtrack(start: int, remaining: int) -> None:
+        if remaining == 0:
+            res.append(path[:])
+            return
+        for i in range(start, len(candidates)):
+            if candidates[i] > remaining:
+                continue
+            path.append(candidates[i])
+            backtrack(i, remaining - candidates[i])
+            path.pop()
+
+    backtrack(0, target)
+    return res
+```
+
+**TypeScript:**
+```typescript
+function combinationSum(candidates: number[], target: number): number[][] {
+  const res: number[][] = [];
+  const path: number[] = [];
+
+  const backtrack = (start: number, remaining: number): void => {
+    if (remaining === 0) {
+      res.push([...path]);
+      return;
+    }
+    for (let i = start; i < candidates.length; i++) {
+      if (candidates[i] > remaining) continue;
+      path.push(candidates[i]);
+      backtrack(i, remaining - candidates[i]);
+      path.pop();
+    }
+  };
+
+  backtrack(0, target);
+  return res;
+}
+```
+
+**Java:**
+```java
+class Solution {
+    public List<List<Integer>> combinationSum(int[] candidates, int target) {
+        List<List<Integer>> res = new ArrayList<>();
+        backtrack(candidates, 0, target, new ArrayList<>(), res);
+        return res;
+    }
+
+    private void backtrack(int[] c, int start, int remaining,
+                           List<Integer> path, List<List<Integer>> res) {
+        if (remaining == 0) {
+            res.add(new ArrayList<>(path));
+            return;
+        }
+        for (int i = start; i < c.length; i++) {
+            if (c[i] > remaining) continue;
+            path.add(c[i]);
+            backtrack(c, i, remaining - c[i], path, res);
+            path.remove(path.size() - 1);
+        }
+    }
+}
+```
+
+**Key points:**
+- Passing `i` (not `i + 1`) into recursion allows reuse of the same candidate.
+- Advancing the start index prevents permutation duplicates like [2,3] and [3,2].
+- Sorting first lets you `break` instead of `continue` once a candidate exceeds the remainder.
+
+**Follow-ups:**
+- Combination Sum II: candidates may repeat and each may be used once — skip duplicates at the same recursion depth.
+- What if you only need the count of combinations, not the lists? Switch to DP for O(N*target).
+
+**Common Pitfalls:**
+- Reusing the same start of 0 in every call produces duplicate/permuted combinations.
+- Forgetting to copy `path` (appending the mutable reference) corrupts all stored results.
+
+**Tags:** #algorithm
+
+---
+
+### 63. Letter Combinations of a Phone Number
+
+**Difficulty:** Medium
+**Topics:** backtracking, string, recursion
+**Position:** SWE
+**Years:** L5
+
+**Question:** Given a string of digits from 2-9, return all possible letter combinations the number could represent, using the classic telephone keypad mapping. Return an empty list for an empty input.
+
+**Approach:** Backtrack over digit positions; for each digit expand every mapped letter and recurse to the next position. This maps directly to Alexa / voice-input style disambiguation where a keypad or phoneme code expands into candidate words. With `k` letters per digit and `n` digits, time is O(k^n * n) to build each string, space O(n) for recursion.
+
+**Python:**
+```python
+def letter_combinations(digits: str) -> list[str]:
+    if not digits:
+        return []
+    mapping = {"2": "abc", "3": "def", "4": "ghi", "5": "jkl",
+               "6": "mno", "7": "pqrs", "8": "tuv", "9": "wxyz"}
+    res: list[str] = []
+    path: list[str] = []
+
+    def backtrack(i: int) -> None:
+        if i == len(digits):
+            res.append("".join(path))
+            return
+        for ch in mapping[digits[i]]:
+            path.append(ch)
+            backtrack(i + 1)
+            path.pop()
+
+    backtrack(0)
+    return res
+```
+
+**TypeScript:**
+```typescript
+function letterCombinations(digits: string): string[] {
+  if (!digits) return [];
+  const mapping: Record<string, string> = {
+    "2": "abc", "3": "def", "4": "ghi", "5": "jkl",
+    "6": "mno", "7": "pqrs", "8": "tuv", "9": "wxyz",
+  };
+  const res: string[] = [];
+  const path: string[] = [];
+
+  const backtrack = (i: number): void => {
+    if (i === digits.length) {
+      res.push(path.join(""));
+      return;
+    }
+    for (const ch of mapping[digits[i]]) {
+      path.push(ch);
+      backtrack(i + 1);
+      path.pop();
+    }
+  };
+
+  backtrack(0);
+  return res;
+}
+```
+
+**Java:**
+```java
+class Solution {
+    private static final String[] MAP = {
+        "", "", "abc", "def", "ghi", "jkl", "mno", "pqrs", "tuv", "wxyz"
+    };
+
+    public List<String> letterCombinations(String digits) {
+        List<String> res = new ArrayList<>();
+        if (digits == null || digits.isEmpty()) return res;
+        backtrack(digits, 0, new StringBuilder(), res);
+        return res;
+    }
+
+    private void backtrack(String digits, int i, StringBuilder sb, List<String> res) {
+        if (i == digits.length()) {
+            res.add(sb.toString());
+            return;
+        }
+        for (char ch : MAP[digits.charAt(i) - '0'].toCharArray()) {
+            sb.append(ch);
+            backtrack(digits, i + 1, sb, res);
+            sb.deleteCharAt(sb.length() - 1);
+        }
+    }
+}
+```
+
+**Key points:**
+- The recursion depth equals the number of digits; the branching factor is 3 or 4 letters.
+- Returning early for empty input avoids emitting a spurious empty string.
+- An iterative BFS approach appends letters to a growing frontier — same complexity.
+
+**Follow-ups:**
+- Prune against a dictionary/trie so only real words survive (voice search).
+- How would you rank output by likelihood? Attach a language-model score per candidate.
+
+**Common Pitfalls:**
+- Treating empty string as a valid combination and returning `[""]`.
+- Off-by-one when indexing the mapping array (digits 0 and 1 have no letters).
+
+**Tags:** #algorithm
+
+---
+
+## Two Pointers / Sliding Window
+
+### 64. Longest Substring Without Repeating Characters
+
+**Difficulty:** Medium
+**Topics:** sliding-window, string, hashmap, two-pointers
+**Position:** SWE
+**Years:** L5
+
+**Question:** Given a string `s`, return the length of the longest substring that contains no repeating characters.
+
+**Approach:** Maintain a sliding window with two pointers and a hashmap of each character's last seen index. When a repeat falls inside the current window, jump the left pointer to just past its previous occurrence. This is a staple for stream/log dedup windows in Amazon's data pipelines. Time O(n), space O(min(n, charset)).
+
+**Python:**
+```python
+def length_of_longest_substring(s: str) -> int:
+    last: dict[str, int] = {}
+    left = 0
+    best = 0
+    for right, ch in enumerate(s):
+        if ch in last and last[ch] >= left:
+            left = last[ch] + 1
+        last[ch] = right
+        best = max(best, right - left + 1)
+    return best
+```
+
+**TypeScript:**
+```typescript
+function lengthOfLongestSubstring(s: string): number {
+  const last = new Map<string, number>();
+  let left = 0;
+  let best = 0;
+  for (let right = 0; right < s.length; right++) {
+    const ch = s[right];
+    const prev = last.get(ch);
+    if (prev !== undefined && prev >= left) {
+      left = prev + 1;
+    }
+    last.set(ch, right);
+    best = Math.max(best, right - left + 1);
+  }
+  return best;
+}
+```
+
+**Java:**
+```java
+class Solution {
+    public int lengthOfLongestSubstring(String s) {
+        Map<Character, Integer> last = new HashMap<>();
+        int left = 0, best = 0;
+        for (int right = 0; right < s.length(); right++) {
+            char ch = s.charAt(right);
+            Integer prev = last.get(ch);
+            if (prev != null && prev >= left) {
+                left = prev + 1;
+            }
+            last.put(ch, right);
+            best = Math.max(best, right - left + 1);
+        }
+        return best;
+    }
+}
+```
+
+**Key points:**
+- Storing the last index lets `left` jump directly instead of shrinking one step at a time.
+- The guard `last[ch] >= left` ignores duplicates that already fell outside the window.
+- Window length is always `right - left + 1`.
+
+**Follow-ups:**
+- Return the substring itself, not just its length — track the best window bounds.
+- Generalize to at most K distinct characters (a different sliding-window invariant).
+
+**Common Pitfalls:**
+- Not checking `last[ch] >= left`, which can move `left` backwards and overcount.
+- Off-by-one in the window length calculation.
+
+**Tags:** #algorithm
+
+---
+
+### 65. 3Sum
+
+**Difficulty:** Medium
+**Topics:** two-pointers, array, sorting
+**Position:** SWE
+**Years:** L5
+
+**Question:** Given an integer array `nums`, return all unique triplets `[a, b, c]` such that `a + b + c == 0`. The solution set must not contain duplicate triplets.
+
+**Approach:** Sort, then fix each index `i` and use two pointers converging from both ends of the remaining subarray to find pairs summing to `-nums[i]`. Skip equal values to avoid duplicate triplets. A frequent Amazon screen for reconciling offsetting transactions/refunds to zero. Time O(n^2), space O(1) beyond the output (or O(n) for the sort).
+
+**Python:**
+```python
+def three_sum(nums: list[int]) -> list[list[int]]:
+    nums.sort()
+    res: list[list[int]] = []
+    n = len(nums)
+    for i in range(n - 2):
+        if nums[i] > 0:
+            break
+        if i > 0 and nums[i] == nums[i - 1]:
+            continue
+        lo, hi = i + 1, n - 1
+        while lo < hi:
+            total = nums[i] + nums[lo] + nums[hi]
+            if total < 0:
+                lo += 1
+            elif total > 0:
+                hi -= 1
+            else:
+                res.append([nums[i], nums[lo], nums[hi]])
+                lo += 1
+                hi -= 1
+                while lo < hi and nums[lo] == nums[lo - 1]:
+                    lo += 1
+                while lo < hi and nums[hi] == nums[hi + 1]:
+                    hi -= 1
+    return res
+```
+
+**TypeScript:**
+```typescript
+function threeSum(nums: number[]): number[][] {
+  nums.sort((a, b) => a - b);
+  const res: number[][] = [];
+  const n = nums.length;
+  for (let i = 0; i < n - 2; i++) {
+    if (nums[i] > 0) break;
+    if (i > 0 && nums[i] === nums[i - 1]) continue;
+    let lo = i + 1, hi = n - 1;
+    while (lo < hi) {
+      const total = nums[i] + nums[lo] + nums[hi];
+      if (total < 0) lo++;
+      else if (total > 0) hi--;
+      else {
+        res.push([nums[i], nums[lo], nums[hi]]);
+        lo++;
+        hi--;
+        while (lo < hi && nums[lo] === nums[lo - 1]) lo++;
+        while (lo < hi && nums[hi] === nums[hi + 1]) hi--;
+      }
+    }
+  }
+  return res;
+}
+```
+
+**Java:**
+```java
+class Solution {
+    public List<List<Integer>> threeSum(int[] nums) {
+        Arrays.sort(nums);
+        List<List<Integer>> res = new ArrayList<>();
+        int n = nums.length;
+        for (int i = 0; i < n - 2; i++) {
+            if (nums[i] > 0) break;
+            if (i > 0 && nums[i] == nums[i - 1]) continue;
+            int lo = i + 1, hi = n - 1;
+            while (lo < hi) {
+                int total = nums[i] + nums[lo] + nums[hi];
+                if (total < 0) lo++;
+                else if (total > 0) hi--;
+                else {
+                    res.add(Arrays.asList(nums[i], nums[lo], nums[hi]));
+                    lo++;
+                    hi--;
+                    while (lo < hi && nums[lo] == nums[lo - 1]) lo++;
+                    while (lo < hi && nums[hi] == nums[hi + 1]) hi--;
+                }
+            }
+        }
+        return res;
+    }
+}
+```
+
+**Key points:**
+- Sorting enables the two-pointer sweep and makes duplicate-skipping trivial.
+- Skip duplicates at both the fixed index and after recording a match.
+- Early `break` when `nums[i] > 0` since no positive triple can sum to zero.
+
+**Follow-ups:**
+- 3Sum Closest: track the triplet whose sum is nearest to a target.
+- kSum generalization via recursion reducing to the two-pointer base case.
+
+**Common Pitfalls:**
+- Skipping duplicates before recording the first valid triplet, missing results.
+- Using a hashset of triplets to dedup instead of pointer skips — works but wastes memory.
+
+**Tags:** #algorithm
+
+---
+
+### 66. Minimum Window Substring
+
+**Difficulty:** Hard
+**Topics:** sliding-window, string, hashmap, two-pointers
+**Position:** SWE
+**Years:** L5-L6
+
+**Question:** Given strings `s` and `t`, return the shortest substring of `s` that contains every character of `t` (including duplicates). If no such window exists, return the empty string.
+
+**Approach:** Expand the right pointer to satisfy all required character counts, then contract from the left to shrink the window while still valid, tracking the best. A `formed` counter of how many required characters are fully matched avoids rescanning the whole map. Amazon uses this shape for finding the tightest log/event window containing a required set of signals. Time O(|s| + |t|), space O(charset).
+
+**Python:**
+```python
+from collections import Counter
+
+def min_window(s: str, t: str) -> str:
+    if not s or not t or len(t) > len(s):
+        return ""
+    need = Counter(t)
+    required = len(need)
+    window: dict[str, int] = {}
+    formed = 0
+    left = 0
+    best_len = float("inf")
+    best_left = 0
+    for right, ch in enumerate(s):
+        window[ch] = window.get(ch, 0) + 1
+        if ch in need and window[ch] == need[ch]:
+            formed += 1
+        while formed == required:
+            if right - left + 1 < best_len:
+                best_len = right - left + 1
+                best_left = left
+            lc = s[left]
+            window[lc] -= 1
+            if lc in need and window[lc] < need[lc]:
+                formed -= 1
+            left += 1
+    return "" if best_len == float("inf") else s[best_left:best_left + best_len]
+```
+
+**TypeScript:**
+```typescript
+function minWindow(s: string, t: string): string {
+  if (!s || !t || t.length > s.length) return "";
+  const need = new Map<string, number>();
+  for (const c of t) need.set(c, (need.get(c) ?? 0) + 1);
+  const required = need.size;
+  const window = new Map<string, number>();
+  let formed = 0, left = 0, bestLen = Infinity, bestLeft = 0;
+  for (let right = 0; right < s.length; right++) {
+    const ch = s[right];
+    window.set(ch, (window.get(ch) ?? 0) + 1);
+    if (need.has(ch) && window.get(ch) === need.get(ch)) formed++;
+    while (formed === required) {
+      if (right - left + 1 < bestLen) {
+        bestLen = right - left + 1;
+        bestLeft = left;
+      }
+      const lc = s[left];
+      window.set(lc, window.get(lc)! - 1);
+      if (need.has(lc) && window.get(lc)! < need.get(lc)!) formed--;
+      left++;
+    }
+  }
+  return bestLen === Infinity ? "" : s.substring(bestLeft, bestLeft + bestLen);
+}
+```
+
+**Java:**
+```java
+class Solution {
+    public String minWindow(String s, String t) {
+        if (s.length() == 0 || t.length() == 0 || t.length() > s.length()) return "";
+        Map<Character, Integer> need = new HashMap<>();
+        for (char c : t.toCharArray()) need.merge(c, 1, Integer::sum);
+        int required = need.size();
+        Map<Character, Integer> window = new HashMap<>();
+        int formed = 0, left = 0, bestLen = Integer.MAX_VALUE, bestLeft = 0;
+        for (int right = 0; right < s.length(); right++) {
+            char ch = s.charAt(right);
+            window.merge(ch, 1, Integer::sum);
+            if (need.containsKey(ch) && window.get(ch).intValue() == need.get(ch).intValue()) formed++;
+            while (formed == required) {
+                if (right - left + 1 < bestLen) {
+                    bestLen = right - left + 1;
+                    bestLeft = left;
+                }
+                char lc = s.charAt(left);
+                window.merge(lc, -1, Integer::sum);
+                if (need.containsKey(lc) && window.get(lc) < need.get(lc)) formed--;
+                left++;
+            }
+        }
+        return bestLen == Integer.MAX_VALUE ? "" : s.substring(bestLeft, bestLeft + bestLen);
+    }
+}
+```
+
+**Key points:**
+- `formed == required` means every distinct required char has met its full count.
+- Contract from the left only while the window stays valid, capturing the minimum.
+- Comparing counts by value (not identity) matters for boxed integers in Java.
+
+**Follow-ups:**
+- Return all minimum-length windows, not just the first.
+- What changes if `t` can contain characters outside the ASCII range? Use a general map.
+
+**Common Pitfalls:**
+- Using Java `==` on `Integer` objects instead of `.intValue()`/`.equals()`.
+- Updating `formed` on every count change instead of only when a threshold is crossed.
+
+**Tags:** #algorithm
+
+---
+
 ## Matrix
 
-### 39. Sliding Puzzle
+### 67. Sliding Puzzle
 
 **Difficulty:** Hard
 **Topics:** bfs, matrix, state-search
@@ -3385,7 +5802,7 @@ class Solution {
 
 ---
 
-### 40. Design Tic-Tac-Toe
+### 68. Design Tic-Tac-Toe
 
 **Difficulty:** Medium
 **Topics:** design, ood, matrix
@@ -3472,7 +5889,7 @@ class TicTacToe {
 
 ---
 
-### 41. Rotting Oranges
+### 69. Rotting Oranges
 
 **Difficulty:** Medium
 **Topics:** bfs, matrix
@@ -3580,7 +5997,7 @@ class Solution {
 
 ---
 
-### 42. Shortest Path in a Grid with Obstacles Elimination
+### 70. Shortest Path in a Grid with Obstacles Elimination
 
 **Difficulty:** Hard
 **Topics:** bfs, matrix, state-search
@@ -3679,7 +6096,7 @@ class Solution {
 
 ## Array / String
 
-### 43. Reorder Log Files
+### 71. Reorder Log Files
 
 **Difficulty:** Easy
 **Topics:** strings, sorting, comparator
@@ -3762,7 +6179,7 @@ class Solution {
 
 ---
 
-### 44. Robot Bounded in Circle
+### 72. Robot Bounded in Circle
 
 **Difficulty:** Medium
 **Topics:** simulation, math
@@ -3824,7 +6241,7 @@ class Solution {
 
 ---
 
-### 45. Prison Cells After N Days
+### 73. Prison Cells After N Days
 
 **Difficulty:** Medium
 **Topics:** simulation, cycle-detection, bit-manipulation
@@ -3914,7 +6331,7 @@ class Solution {
 
 ---
 
-### 46. Substrings of Size Three with Distinct Characters
+### 74. Substrings of Size Three with Distinct Characters
 
 **Difficulty:** Easy
 **Topics:** strings, sliding-window
@@ -3971,7 +6388,7 @@ class Solution {
 
 ---
 
-### 47. Maximum Units on a Truck
+### 75. Maximum Units on a Truck
 
 **Difficulty:** Easy
 **Topics:** greedy, sorting
@@ -4037,7 +6454,7 @@ class Solution {
 
 ---
 
-### 48. Find the Winner of the Circular Game
+### 76. Find the Winner of the Circular Game
 
 **Difficulty:** Medium
 **Topics:** simulation, recursion, math
@@ -4086,7 +6503,7 @@ class Solution {
 
 ---
 
-### 49. Search in Rotated Sorted Array
+### 77. Search in Rotated Sorted Array
 
 **Difficulty:** Medium
 **Topics:** binary-search, arrays
@@ -4167,7 +6584,7 @@ class Solution {
 
 ---
 
-### 50. Partition Labels
+### 78. Partition Labels
 
 **Difficulty:** Medium
 **Topics:** greedy, strings, two-pointer
@@ -4233,9 +6650,256 @@ class Solution {
 
 ---
 
+### 79. Multiply Strings
+
+**Difficulty:** Medium
+**Topics:** array, string, math
+**Position:** SWE
+**Years:** L5
+
+**Question:** Given two non-negative integers `num1` and `num2` represented as strings, return their product as a string, without using any big-integer library or converting to an integer directly.
+
+**Approach:** Simulate grade-school multiplication. The product of an m-digit and n-digit number has at most m+n digits; use an array of size m+n. `num1[i] * num2[j]` lands at index `i+j` (high) and `i+j+1` (low); accumulate first, then propagate carries. Strip leading zeros at the end. Time O(m·n), space O(m+n).
+
+**Python:**
+```python
+def multiply(num1: str, num2: str) -> str:
+    if num1 == "0" or num2 == "0":
+        return "0"
+    m, n = len(num1), len(num2)
+    res = [0] * (m + n)
+    for i in range(m - 1, -1, -1):
+        for j in range(n - 1, -1, -1):
+            mul = (ord(num1[i]) - 48) * (ord(num2[j]) - 48)
+            total = mul + res[i + j + 1]
+            res[i + j + 1] = total % 10
+            res[i + j] += total // 10
+    s = "".join(map(str, res)).lstrip("0")
+    return s or "0"
+```
+
+**TypeScript:**
+```typescript
+function multiply(num1: string, num2: string): string {
+  if (num1 === "0" || num2 === "0") return "0";
+  const m = num1.length, n = num2.length;
+  const res = new Array(m + n).fill(0);
+  for (let i = m - 1; i >= 0; i--) {
+    for (let j = n - 1; j >= 0; j--) {
+      const mul = (num1.charCodeAt(i) - 48) * (num2.charCodeAt(j) - 48);
+      const total = mul + res[i + j + 1];
+      res[i + j + 1] = total % 10;
+      res[i + j] += Math.floor(total / 10);
+    }
+  }
+  return res.join("").replace(/^0+/, "") || "0";
+}
+```
+
+**Java:**
+```java
+class Solution {
+    public String multiply(String num1, String num2) {
+        if (num1.equals("0") || num2.equals("0")) return "0";
+        int m = num1.length(), n = num2.length();
+        int[] res = new int[m + n];
+        for (int i = m - 1; i >= 0; i--) {
+            for (int j = n - 1; j >= 0; j--) {
+                int mul = (num1.charAt(i) - '0') * (num2.charAt(j) - '0');
+                int total = mul + res[i + j + 1];
+                res[i + j + 1] = total % 10;
+                res[i + j] += total / 10;
+            }
+        }
+        StringBuilder sb = new StringBuilder();
+        for (int d : res) if (!(sb.length() == 0 && d == 0)) sb.append(d);
+        return sb.length() == 0 ? "0" : sb.toString();
+    }
+}
+```
+
+**Key points:**
+- `num1[i] * num2[j]` contributes exactly to result indices `i+j` and `i+j+1`.
+- Accumulate all partial products first, then handle carries in one pass for clarity.
+- The result has at most m+n digits; strip leading zeros.
+
+**Follow-ups:**
+- How would you support negatives or decimals?
+- For huge numbers, can FFT bring this down to O(n log n)?
+
+**Common Pitfalls:**
+- Forgetting the "0" operand case, returning a string with leading zeros.
+- Swapping the high/low carry indices `i+j` and `i+j+1`.
+
+**Tags:** #algorithm
+
+---
+
+### 80. Product of Array Except Self
+
+**Difficulty:** Medium
+**Topics:** arrays, prefix-product
+**Position:** SWE
+**Years:** L5
+
+**Question:** Given an integer array, return an array where each element is the product of all other elements, without using division and in O(n) time.
+
+**Approach:** Two passes. First pass fills `res[i]` with the prefix product of everything before `i`; second pass multiplies in the suffix product of everything after `i`, carried in a running scalar. Division is banned (and would break on zeros anyway). O(n) time, O(1) extra space besides the output.
+
+**Python:**
+```python
+def product_except_self(nums: list[int]) -> list[int]:
+    n = len(nums)
+    res = [1] * n
+    prefix = 1
+    for i in range(n):
+        res[i] = prefix
+        prefix *= nums[i]
+    suffix = 1
+    for i in range(n - 1, -1, -1):
+        res[i] *= suffix
+        suffix *= nums[i]
+    return res
+```
+
+**TypeScript:**
+```typescript
+function productExceptSelf(nums: number[]): number[] {
+  const n = nums.length;
+  const res = new Array<number>(n).fill(1);
+  let prefix = 1;
+  for (let i = 0; i < n; i++) { res[i] = prefix; prefix *= nums[i]; }
+  let suffix = 1;
+  for (let i = n - 1; i >= 0; i--) { res[i] *= suffix; suffix *= nums[i]; }
+  return res;
+}
+```
+
+**Java:**
+```java
+class Solution {
+    public int[] productExceptSelf(int[] nums) {
+        int n = nums.length;
+        int[] res = new int[n];
+        int prefix = 1;
+        for (int i = 0; i < n; i++) { res[i] = prefix; prefix *= nums[i]; }
+        int suffix = 1;
+        for (int i = n - 1; i >= 0; i--) { res[i] *= suffix; suffix *= nums[i]; }
+        return res;
+    }
+}
+```
+
+**Key points:**
+- Split the answer into prefix-product times suffix-product; neither includes `nums[i]`.
+- The output array doubles as scratch space, so only O(1) extra memory is used.
+- Avoiding division sidesteps zero-handling entirely.
+
+**Follow-ups:**
+- Handle overflow — return results modulo a large prime, or use 64-bit.
+- Support live updates: recompute a single index cheaply (segment tree of products).
+- What changes if division were allowed? (count zeros case-by-case.)
+
+**Common Pitfalls:**
+- Reaching for division and crashing when the array contains one or more zeros.
+- Allocating separate prefix and suffix arrays and claiming O(1) space.
+
+**Tags:** #algorithm
+
+---
+
+### 81. Longest Palindromic Substring
+
+**Difficulty:** Medium
+**Topics:** string, dynamic-programming, two-pointers
+**Position:** SWE
+**Years:** L5
+
+**Question:** Given a string `s`, return the longest palindromic (contiguous) substring within it.
+
+**Approach:** Expand around center. There are 2n-1 possible centers (each character and each gap between adjacent characters); expand outward from each and track the longest span. Time O(n²), space O(1). Manacher's algorithm solves it in O(n) but is more complex.
+
+**Python:**
+```python
+def longest_palindrome(s: str) -> str:
+    if not s:
+        return ""
+    start, end = 0, 0
+    def expand(l: int, r: int) -> tuple[int, int]:
+        while l >= 0 and r < len(s) and s[l] == s[r]:
+            l -= 1
+            r += 1
+        return l + 1, r - 1
+    for i in range(len(s)):
+        l1, r1 = expand(i, i)
+        l2, r2 = expand(i, i + 1)
+        if r1 - l1 > end - start:
+            start, end = l1, r1
+        if r2 - l2 > end - start:
+            start, end = l2, r2
+    return s[start:end + 1]
+```
+
+**TypeScript:**
+```typescript
+function longestPalindrome(s: string): string {
+  if (s.length === 0) return "";
+  let start = 0, end = 0;
+  const expand = (l: number, r: number): [number, number] => {
+    while (l >= 0 && r < s.length && s[l] === s[r]) { l--; r++; }
+    return [l + 1, r - 1];
+  };
+  for (let i = 0; i < s.length; i++) {
+    const [l1, r1] = expand(i, i);
+    const [l2, r2] = expand(i, i + 1);
+    if (r1 - l1 > end - start) { start = l1; end = r1; }
+    if (r2 - l2 > end - start) { start = l2; end = r2; }
+  }
+  return s.slice(start, end + 1);
+}
+```
+
+**Java:**
+```java
+class Solution {
+    public String longestPalindrome(String s) {
+        if (s.isEmpty()) return "";
+        int start = 0, end = 0;
+        for (int i = 0; i < s.length(); i++) {
+            int[] a = expand(s, i, i);
+            int[] b = expand(s, i, i + 1);
+            if (a[1] - a[0] > end - start) { start = a[0]; end = a[1]; }
+            if (b[1] - b[0] > end - start) { start = b[0]; end = b[1]; }
+        }
+        return s.substring(start, end + 1);
+    }
+    private int[] expand(String s, int l, int r) {
+        while (l >= 0 && r < s.length() && s.charAt(l) == s.charAt(r)) { l--; r++; }
+        return new int[]{l + 1, r - 1};
+    }
+}
+```
+
+**Key points:**
+- Consider both odd (single center) and even (double center) palindromes at each position.
+- Expand-around-center uses O(1) space, beating the O(n²) 2D DP table.
+- Track the best span by start/end indices to avoid repeatedly copying substrings.
+
+**Follow-ups:**
+- How would you solve it in O(n) (Manacher's algorithm)?
+- How would you count the total number of palindromic substrings?
+
+**Common Pitfalls:**
+- Handling only odd centers and missing even-length palindromes (e.g. "abba").
+- Getting the span boundaries wrong when comparing odd vs even cases by length.
+
+**Tags:** #algorithm
+
+---
+
 ## Other Algorithms
 
-### 51. Design a Parking Lot
+### 82. Design a Parking Lot
 
 **Difficulty:** Medium
 **Topics:** ood, design
@@ -4340,7 +7004,7 @@ class ParkingLot {
 
 ## System Design
 
-### 52. Design Amazon Prime Video
+### 83. Design Amazon Prime Video
 
 **Difficulty:** Hard
 **Topics:** system-design, cdn, video-streaming, drm, recommendation, cloud
@@ -4366,7 +7030,7 @@ class ParkingLot {
 
 ---
 
-### 53. Design Amazon.com Product Page
+### 84. Design Amazon.com Product Page
 
 **Difficulty:** Hard
 **Topics:** system-design, caching, microservices, search
@@ -4381,7 +7045,7 @@ class ParkingLot {
 
 ---
 
-### 54. Design Kindle Sync
+### 85. Design Kindle Sync
 
 **Difficulty:** Hard
 **Topics:** system-design, sync, conflict-resolution, offline
@@ -4396,7 +7060,7 @@ class ParkingLot {
 
 ---
 
-### 55. Design Amazon S3
+### 86. Design Amazon S3
 
 **Difficulty:** Hard
 **Topics:** system-design, blob-storage, consistency, replication, cloud
@@ -4411,7 +7075,7 @@ class ParkingLot {
 
 ---
 
-### 56. Design a Distributed Lock Service
+### 87. Design a Distributed Lock Service
 
 **Difficulty:** Hard
 **Topics:** system-design, consensus, paxos, zookeeper
@@ -4426,9 +7090,84 @@ class ParkingLot {
 
 ---
 
+### 88. Design Amazon Shopping Cart and Checkout
+
+**Difficulty:** Hard
+**Topics:** system-design, e-commerce, dynamodb, idempotency, consistency
+**Position:** Senior SWE
+**Years:** L5-L6
+
+**Question:** Design the shopping cart and checkout flow for Amazon.com, handling hundreds of millions of users, cart persistence across devices, and correct behavior under high-concurrency sales events.
+
+**Approach:** Cart service backed by DynamoDB keyed by `user_id` (or session id for guests), storing line items as `{product_id, qty, price_snapshot}`; merge guest cart into user cart on login. Cart writes are high-volume, read-your-writes; use DynamoDB with a write-through cache (DAX/ElastiCache). Checkout is a saga/state machine: (1) reserve inventory (conditional decrement with optimistic concurrency), (2) authorize payment, (3) create order, (4) confirm. Make each step idempotent via a client-supplied `idempotency_key` so retries do not double-charge or double-reserve. Price is re-validated at checkout (cart holds a snapshot, but the source of truth is the pricing service). Use SQS between stages for durability and back-pressure; compensating transactions release inventory / void auth on failure. Discuss eventual consistency of inventory (over-selling risk vs reservation TTL), Black Friday spikes (auto-scale, queue-based load leveling), and cross-region cart replication for latency.
+
+**Follow-ups:**
+- How do you prevent double-charge on a client retry or network timeout during payment?
+- Inventory reservation TTL: what happens if a user abandons checkout after reserving?
+- Cart merge conflicts when the same item exists on two devices — how to reconcile quantity?
+- Flash-sale hot partition on a single popular product — how to avoid a DynamoDB hot key?
+
+**Common Pitfalls:**
+- Trusting the client-side cart price at checkout instead of re-validating server-side.
+- Making checkout steps non-idempotent, so retries create duplicate orders or charges.
+
+**Tags:** #system-design
+
+---
+
+### 89. Design a Distributed Message Queue like Amazon SQS
+
+**Difficulty:** Hard
+**Topics:** system-design, messaging, queue, durability, at-least-once
+**Position:** Senior SWE
+**Years:** L5-L6
+
+**Question:** Design a horizontally scalable, durable message queue service like Amazon SQS supporting at-least-once delivery.
+
+**Approach:** Front-end API layer (SendMessage / ReceiveMessage / DeleteMessage) behind a load balancer, authenticated per queue. Messages are partitioned across many storage nodes; each partition replicates writes to multiple nodes across AZs (quorum write) before acking the producer — that gives durability. Delivery is at-least-once: on receive, a message becomes invisible for a `visibility_timeout` instead of being deleted; the consumer must explicitly DeleteMessage after processing, otherwise it reappears for redelivery. This means consumers must be idempotent. Track redelivery count and route to a dead-letter queue after N attempts. Standard queues favor throughput with best-effort ordering; a FIFO variant uses a `message_group_id` for per-group ordering plus a dedup id for exactly-once-ish semantics within a window. Discuss long-polling to reduce empty receives, backlog metrics driving consumer auto-scaling, and why a strict global order across a distributed queue kills scalability.
+
+**Follow-ups:**
+- Why at-least-once and not exactly-once? What does the consumer owe in return?
+- How does visibility timeout interact with a slow consumer that misses the deadline?
+- Design the FIFO variant: how do you preserve ordering while still sharding?
+- How do you keep a poison message from blocking a partition forever?
+
+**Common Pitfalls:**
+- Assuming exactly-once delivery and skipping idempotent consumer design.
+- Promising strict global ordering, which forces a single partition and destroys throughput.
+
+**Tags:** #system-design
+
+---
+
+### 90. Design Alexa Voice Assistant
+
+**Difficulty:** Hard
+**Topics:** system-design, speech, nlu, low-latency, streaming
+**Position:** Senior SWE
+**Years:** L5-L6
+
+**Question:** Design the backend for Alexa: a user speaks to a device, and it responds with an action or spoken answer within a second or two.
+
+**Approach:** Pipeline: wake-word detection runs on-device (cheap, private) to avoid streaming everything to the cloud. After the wake word, audio streams to the cloud over a persistent connection. Automatic Speech Recognition (ASR) transcribes streaming audio to text incrementally. Natural Language Understanding (NLU) maps text to an intent + slots (e.g. `PlayMusic{artist: ...}`). An orchestrator/dialog manager routes the intent to the right skill (first-party or third-party via the Skills API), which returns a response. Text-to-Speech (TTS) synthesizes the spoken reply, streamed back so playback starts before synthesis finishes. Latency is the hard constraint: stream at every stage, keep connections warm, run ASR/NLU/TTS as low-latency services, and colocate regionally. Personalization and context (device state, previous turn) live in a session store. Discuss privacy (on-device wake word, opt-out, data retention), multi-turn dialog state, and skill sandboxing/timeouts.
+
+**Follow-ups:**
+- How do you keep end-to-end latency under ~1s? Where is streaming essential?
+- Multi-turn context ("play it" after "what song is this") — where does dialog state live?
+- Third-party skill is slow or crashes — how do you isolate and degrade gracefully?
+- Handling ambiguous intents or low ASR confidence — reprompt vs best guess?
+
+**Common Pitfalls:**
+- Streaming all audio to the cloud instead of gating with an on-device wake word (cost + privacy).
+- Treating the flow as request/response batch instead of streaming, blowing the latency budget.
+
+**Tags:** #system-design
+
+---
+
 ## Behavioral
 
-### 57. Tell me about a time you went above and beyond for a customer
+### 91. Tell me about a time you went above and beyond for a customer
 
 **Difficulty:** Medium
 **Topics:** behavioral, customer-obsession
@@ -4443,7 +7182,7 @@ class ParkingLot {
 
 ---
 
-### 58. Tell me about a time you took on something significant outside your responsibility
+### 92. Tell me about a time you took on something significant outside your responsibility
 
 **Difficulty:** Medium
 **Topics:** behavioral, ownership, bias-for-action
@@ -4458,7 +7197,7 @@ class ParkingLot {
 
 ---
 
-### 59. Tell me about a time you had to make a decision with incomplete information
+### 93. Tell me about a time you had to make a decision with incomplete information
 
 **Difficulty:** Medium
 **Topics:** behavioral, bias-for-action, are-right-a-lot
@@ -4473,7 +7212,7 @@ class ParkingLot {
 
 ---
 
-### 60. Tell me about your most challenging technical project
+### 94. Tell me about your most challenging technical project
 
 **Difficulty:** Medium
 **Topics:** behavioral, dive-deep, deliver-results
@@ -4488,9 +7227,39 @@ class ParkingLot {
 
 ---
 
+### 95. Tell me about a time you invented a simpler solution to a complex problem
+
+**Difficulty:** Medium
+**Topics:** behavioral, invent-and-simplify, ownership
+**Position:** Senior SWE
+**Years:** L5
+
+**Question:** Describe a time you found a significantly simpler way to solve a problem others were over-engineering.
+
+**Approach:** STAR mapped to **Invent and Simplify** (LP #5). Interviewers want evidence you challenged the default, complex approach and found something materially simpler — fewer moving parts, less code, lower cost, or less operational burden — without cutting corners on correctness. Structure: (Situation) the complex plan on the table and why it was heavy; (Task) your role and the constraint; (Action) the insight or reframing that unlocked the simpler design, and how you got others to buy in; (Result) quantified simplification — e.g. "removed a service, cut p99 by 40%, dropped on-call pages in half." Strong answers show you invented (a non-obvious idea), not just deleted scope. Avoid stories where "simpler" just meant doing less of the actual requirement.
+
+**Tags:** #behavioral
+
+---
+
+### 96. Tell me about a time you made a mistake and how you earned back trust
+
+**Difficulty:** Medium
+**Topics:** behavioral, earn-trust, ownership, dive-deep
+**Position:** SWE
+**Years:** L5
+
+**Question:** Tell me about a time you made a significant mistake at work. What happened, and how did you handle it?
+
+**Approach:** STAR mapped to **Earn Trust** and **Ownership**. Interviewers are testing self-awareness and accountability, not whether you are flawless. Structure: (Situation) a real, meaningful mistake you owned — a bad deploy, a wrong estimate, a design flaw that hit customers; (Task) the impact and who was affected; (Action) how you responded — acknowledged it promptly and transparently (no blame-shifting), contained the damage, dove deep to find root cause, and put a durable fix or process in place (e.g. a COE/postmortem, added tests, a rollback guardrail); (Result) the outcome and, crucially, how you rebuilt confidence with the team or customer over time. Strong answers show you told people before they found out, and that the same class of mistake never recurred. Avoid fake mistakes ("I work too hard") or blaming others.
+
+**Tags:** #behavioral
+
+---
+
 ## Domain Knowledge
 
-### 61. Leadership Principle deep-dive: Disagree and Commit
+### 97. Leadership Principle deep-dive: Disagree and Commit
 
 **Difficulty:** Medium
 **Topics:** behavioral, have-backbone, earn-trust
@@ -4505,7 +7274,7 @@ class ParkingLot {
 
 ---
 
-### 62. Leadership Principle deep-dive: Frugality
+### 98. Leadership Principle deep-dive: Frugality
 
 **Difficulty:** Medium
 **Topics:** behavioral, frugality, invent-and-simplify
@@ -4515,6 +7284,36 @@ class ParkingLot {
 **Question:** Tell me about a time you accomplished something significant with limited resources.
 
 **Approach:** Maps to **Frugality** ("accomplish more with less"). Resources can be people, time, money, or compute. Show: you didn't ask for more headcount/budget — you found a clever simplification (also touches **Invent and Simplify**). Concrete: "we needed real-time analytics but couldn't afford Snowflake — I built a Kinesis + DynamoDB streams pipeline for $200/month instead of $20k." Quantify the savings.
+
+**Tags:** #domain-knowledge
+
+---
+
+### 99. How do you make a class thread-safe?
+
+**Difficulty:** Medium
+**Topics:** concurrency, thread-safety, java, synchronization
+**Position:** SWE
+**Years:** L5
+
+**Question:** What does thread safety mean, and what techniques do you use to make a shared object safe under concurrent access?
+
+**Approach:** Thread safety means concurrent access produces correct results without external synchronization — no data races, no broken invariants. Walk through the toolkit from cheapest to strongest: (1) **Immutability** — an object whose state never changes after construction is inherently thread-safe (Java `final` fields, defensive copies); prefer this. (2) **Confinement** — keep state on one thread (thread-local, or an actor/event-loop model) so it is never shared. (3) **Synchronization** — guard mutable shared state with locks (`synchronized`, `ReentrantLock`) so only one thread mutates at a time; always establish a consistent lock ordering to avoid deadlock, and keep critical sections small. (4) **Atomics / lock-free** — `AtomicInteger`, CAS loops, and concurrent collections (`ConcurrentHashMap`) for high-contention counters and maps without explicit locking. (5) **Visibility** — `volatile` ensures writes are visible across threads (fixes the double-checked-locking and stop-flag bugs) but does not provide atomicity for compound actions. Discuss the difference between a race condition (interleaving) and a visibility problem (stale cache), and why `check-then-act` (like lazy init or `containsKey` + `put`) needs a single atomic step. Amazon services are heavily concurrent, so expect a follow-up asking you to fix a broken singleton or counter.
+
+**Tags:** #domain-knowledge
+
+---
+
+### 100. Idempotency and delivery semantics in distributed systems
+
+**Difficulty:** Medium
+**Topics:** distributed-systems, idempotency, reliability, messaging
+**Position:** SWE
+**Years:** L5
+
+**Question:** What is idempotency, why does it matter in distributed systems, and how do you achieve exactly-once processing on top of at-least-once delivery?
+
+**Approach:** An operation is idempotent if applying it multiple times has the same effect as applying it once. It matters because networks are unreliable: any request can time out with an unknown outcome, so clients retry — and most durable messaging (SQS, Kinesis, Kafka at-least-once) can redeliver. Without idempotency, retries double-charge, double-ship, or double-increment. Cover the delivery-semantics spectrum: at-most-once (may lose), at-least-once (may duplicate, the common durable default), exactly-once (usually an illusion built from at-least-once delivery + idempotent processing). Techniques: (1) **Idempotency keys** — the client sends a unique key per logical operation; the server records processed keys and returns the prior result on a repeat. (2) **Natural idempotency** — design writes as `SET x = v` rather than `x += 1`, or use conditional writes / upserts keyed on a deduplication id. (3) **Dedup store** — a table or cache of seen request ids with a TTL. (4) **Idempotent consumers** — combine a dedup id with an atomic "process-and-mark-done" step (transactional outbox / dedup table) so a redelivery is a no-op. Discuss the tradeoffs: dedup windows are finite (storage cost), and "exactly-once" only holds if the side effect and the dedup record commit atomically. This is core to Amazon order and payment pipelines, so expect a follow-up on preventing double-charge under retries.
 
 **Tags:** #domain-knowledge
 

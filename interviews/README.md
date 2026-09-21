@@ -2,7 +2,7 @@
 
 A curated collection of real, publicly discussed interview questions for major tech companies. Each file is a quick-reference prep sheet covering coding, system design, behavioral, and domain questions that recur on Glassdoor, LeetCode Discuss, levels.fyi Blind, and engineering interview prep forums.
 
-These are **not insider leaks** — every question here has appeared in public interview reports. The value is curation: each company file has ~50 algorithm questions (each shipped with Python, TypeScript, and Java solutions) plus ~12 non-algorithm questions (system design, behavioral, domain-knowledge), all calibrated to that company's actual interview style.
+These are **not insider leaks** — every question here has appeared in public interview reports. The value is curation: each company file pairs algorithm questions (each shipped with Python, TypeScript, and Java solutions) with non-algorithm ones (system design, behavioral, domain-knowledge), all calibrated to that company's actual interview style. Most files carry ~50 algorithm plus ~12 non-algorithm questions; Alibaba, Amazon, Huawei, and Xiaomi have been expanded to 100 questions each.
 
 ## Companies
 
@@ -16,6 +16,8 @@ These are **not insider leaks** — every question here has appeared in public i
 | ByteDance | DP/graph/math, video & recommendation systems | [bytedance.md](./companies/bytedance.md) |
 | Alibaba | Java middleware, e-commerce/payment at scale, six values | [alibaba.md](./companies/alibaba.md) |
 | Tencent | C++/distributed, gaming/social backend, collaboration culture | [tencent.md](./companies/tencent.md) |
+| Huawei | C/C++, OS/networking, telecom & cloud, HarmonyOS distributed | [huawei.md](./companies/huawei.md) |
+| Xiaomi | AIoT/embedded, Android framework, backend at scale, engineer culture | [xiaomi.md](./companies/xiaomi.md) |
 
 ## Conventions
 
