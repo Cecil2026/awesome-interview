@@ -29,12 +29,30 @@ if [ -n "$JAVA_BIN" ]; then
 fi
 echo ">> JAVA_HOME=${JAVA_HOME:-<unset>}"
 
+# Pick a working Python. The Windows `py` launcher is preferred because a bare
+# `python`/`python3` on PATH is often the Microsoft Store app-execution alias,
+# which silently exits non-zero without running anything. Validate each
+# candidate by actually running it before committing to it.
+PY=""
+for cand in "py -3" python3 python; do
+  if $cand -c "import sys" >/dev/null 2>&1; then
+    PY="$cand"
+    break
+  fi
+done
+if [ -z "$PY" ]; then
+  echo ">> No working Python found. Install Python 3 (or enable the 'py' launcher)." >&2
+  echo "   Tip: disable the Store aliases under Settings > Apps > App execution aliases." >&2
+  exit 1
+fi
+echo ">> Python=$PY ($($PY --version 2>&1))"
+
 echo ">> Assembling www/ ..."
-python tools/build_www.py
+$PY tools/build_www.py
 
 if [ "${1:-}" = "--icons" ]; then
   echo ">> Regenerating icons/splash from assets/ ..."
-  python tools/make_icon.py
+  $PY tools/make_icon.py
   npx @capacitor/assets generate --android
 fi
 
