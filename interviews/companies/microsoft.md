@@ -2455,7 +2455,136 @@ class HitCounter {
 - Stale slots are detected by comparing stored timestamp to current.
 - For very high QPS, switch to a queue of (ts, count) and pop expired entries.
 
-**Tags:** #algorithm
+**Deep dive: concurrency / QPS / precision-space tradeoffs**
+
+The version above is single-threaded. At L62-L63 the interviewer usually pushes on three fronts: what about multiple threads? what about millions of QPS? how do you trade memory against precision? Take them one at a time.
+
+**① Concurrency: why you can't just wrap the two arrays in atomics**
+
+Each slot is really a pair of related fields `(timestamp, count)`, and on a second rollover you must "reset the timestamp AND zero the count" as one unit. If you use two separate `AtomicIntegerArray`s, you get a race: thread A has just changed `time` to the new second but hasn't zeroed the count yet, and thread B increments the stale count — leftover hits from the previous second leak into this one.
+
+The correct lock-free approach is to **pack `(timestamp, count)` into a single `long`** (high 32 bits = timestamp, low 32 bits = count) and swap it atomically with `AtomicLongArray`'s CAS, so the reset is atomic:
+
+```java
+import java.util.concurrent.atomic.AtomicLongArray;
+
+class ConcurrentHitCounter {
+    private static final int WINDOW = 300;
+    // each slot packed into one long: high 32 bits = timestamp, low 32 bits = count
+    private final AtomicLongArray slots = new AtomicLongArray(WINDOW);
+
+    public void hit(int timestamp) {
+        int i = timestamp % WINDOW;
+        while (true) {
+            long cur = slots.get(i);
+            int ts  = (int) (cur >>> 32);
+            int cnt = (int) cur;                 // low 32 bits
+            long next = (ts == timestamp)
+                ? ((long) timestamp << 32) | ((cnt + 1) & 0xffffffffL)  // same second, increment
+                : ((long) timestamp << 32) | 1L;                        // new second, reset to 1
+            if (slots.compareAndSet(i, cur, next)) return;
+            // CAS failed = concurrent writer, spin and retry
+        }
+    }
+
+    public int getHits(int timestamp) {
+        long total = 0;
+        for (int i = 0; i < WINDOW; i++) {
+            long cur = slots.get(i);
+            if (timestamp - (int) (cur >>> 32) < WINDOW) total += (int) cur;
+        }
+        return (int) total;
+    }
+}
+```
+
+- hit is still O(1) and lock-free; getHits is an O(300) consistent-enough snapshot (each slot read independently, no cross-slot consistency, which is fine for a counter).
+- Better than a global `synchronized`: contention only on the same slot (same second), so hits in different seconds never block each other.
+
+**② QPS: CAS contention on a hot second**
+
+The CAS version above still has every thread CAS the same slot under "millions of concurrent hits in the same second," and the spin-retries explode. Here you want **`LongAdder`-style striping** — spread the count across multiple cells to cut single-point contention. The rollover is rare, so guard it with a separate CAS so only one thread zeroes it:
+
+```java
+import java.util.concurrent.atomic.AtomicIntegerArray;
+import java.util.concurrent.atomic.LongAdder;
+
+class HighQpsHitCounter {
+    private static final int WINDOW = 300;
+    private final LongAdder[]       counts = new LongAdder[WINDOW];
+    private final AtomicIntegerArray times = new AtomicIntegerArray(WINDOW);
+
+    public HighQpsHitCounter() {
+        for (int i = 0; i < WINDOW; i++) counts[i] = new LongAdder();
+    }
+
+    public void hit(int timestamp) {
+        int i = timestamp % WINDOW;
+        int ts = times.get(i);
+        if (ts != timestamp && times.compareAndSet(i, ts, timestamp)) {
+            counts[i].reset();          // rollover: only the CAS winner zeroes it (rare path)
+        }
+        counts[i].increment();          // hot path: striped, low contention
+    }
+
+    public int getHits(int timestamp) {
+        long total = 0;
+        for (int i = 0; i < WINDOW; i++) {
+            if (timestamp - times.get(i) < WINDOW) total += counts[i].sum();
+        }
+        return (int) total;
+    }
+}
+```
+
+- The common-case increment goes through `LongAdder`, whose throughput far exceeds a single `AtomicLong` under high contention (exactly what `LongAdder` exists for in the JDK).
+- **Cost:** a tiny race at the rollover instant — a thread can `increment()` just before another thread's `reset()`, and that vote gets wiped. Acceptable for an approximate counter; if you need exactness, fall back to the packed CAS in ①. This is the classic **throughput vs precision** tradeoff.
+- Beyond a single machine, shard: multiple counter instances keyed by thread/request hash, summed at getHits time; or push down to Redis / a time-series DB for a distributed sliding window.
+
+**③ Precision / space tradeoff: tunable bucket granularity**
+
+The default is 1-second granularity → 300 slots. This is really "window size / bucket granularity = bucket count":
+
+| Bucket granularity | Buckets (5-min window) | Space | getHits cost | Boundary error |
+|--------|--------|------|------|------|
+| 1 second | 300 | medium | O(300) | ≤1 second |
+| 10 seconds | 30 | small | O(30) | ≤10 seconds |
+| 1 millisecond | 300,000 | large | O(3e5) | ≤1 millisecond |
+
+Coarser buckets save memory and make getHits cheaper, but the window boundary carries up to "one bucket" of error (a sliding window approximated as a hopping window). Make granularity a parameter to trade precision against cost per your business need:
+
+```java
+class BucketedHitCounter {
+    private final int  bucketSec;   // seconds per bucket, e.g. 10
+    private final int  n;           // bucket count = window / bucketSec
+    private final long[] times;     // bucket-aligned start bucket id
+    private final long[] counts;
+
+    public BucketedHitCounter(int windowSeconds, int bucketSeconds) {
+        this.bucketSec = bucketSeconds;
+        this.n      = windowSeconds / bucketSeconds;
+        this.times  = new long[n];
+        this.counts = new long[n];
+    }
+
+    public synchronized void hit(long timestamp) {
+        long bucket = timestamp / bucketSec;
+        int i = (int) (bucket % n);
+        if (times[i] != bucket) { times[i] = bucket; counts[i] = 0; }
+        counts[i]++;
+    }
+
+    public synchronized long getHits(long timestamp) {
+        long cur = timestamp / bucketSec, total = 0;
+        for (int i = 0; i < n; i++) if (cur - times[i] < n) total += counts[i];
+        return total;
+    }
+}
+```
+
+**Tradeoffs in one line:** strict thread safety → packed CAS; max throughput → `LongAdder` striping + tolerate boundary approximation; save memory / faster queries → coarsen bucket granularity for precision; single machine can't keep up → shard or push down to distributed storage.
+
+**Tags:** #algorithm #concurrency
 
 ---
 

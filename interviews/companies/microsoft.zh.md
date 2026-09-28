@@ -2455,7 +2455,136 @@ class HitCounter {
 - 比较当前时间戳与槽存时间戳即可识别过期槽。
 - 超高 QPS 时可改为 (ts, count) 队列，过期就 pop。
 
-**标签：** #algorithm
+**深入：并发 / QPS / 精度权衡**
+
+上面的实现是单线程的。面试到 L62-L63，面试官通常会追问：多线程怎么办？QPS 上到百万级怎么办？内存和精度怎么取舍？分三个角度看。
+
+**① 并发：为什么两个数组的方案不能直接加原子类**
+
+每个槽其实是一对关联字段 `(timestamp, count)`，跨秒时要「重置时间戳 + 清零计数」作为一个整体完成。如果用两个 `AtomicIntegerArray` 分开做，会出现「A 线程刚把 time 改成新秒、还没清零，B 线程就在旧 count 上自增」的竞态，导致上一秒的残留计数被算进这一秒。
+
+正确的无锁做法是把 `(timestamp, count)` **打包进一个 `long`**（高 32 位存时间戳，低 32 位存计数），用 `AtomicLongArray` 的 CAS 一次性替换，保证重置的原子性：
+
+```java
+import java.util.concurrent.atomic.AtomicLongArray;
+
+class ConcurrentHitCounter {
+    private static final int WINDOW = 300;
+    // 每个 slot 打包成一个 long：高 32 位 = timestamp，低 32 位 = count
+    private final AtomicLongArray slots = new AtomicLongArray(WINDOW);
+
+    public void hit(int timestamp) {
+        int i = timestamp % WINDOW;
+        while (true) {
+            long cur = slots.get(i);
+            int ts  = (int) (cur >>> 32);
+            int cnt = (int) cur;                 // 取低 32 位
+            long next = (ts == timestamp)
+                ? ((long) timestamp << 32) | ((cnt + 1) & 0xffffffffL)  // 同一秒自增
+                : ((long) timestamp << 32) | 1L;                        // 新的一秒，重置为 1
+            if (slots.compareAndSet(i, cur, next)) return;
+            // CAS 失败 = 有并发写，自旋重试
+        }
+    }
+
+    public int getHits(int timestamp) {
+        long total = 0;
+        for (int i = 0; i < WINDOW; i++) {
+            long cur = slots.get(i);
+            if (timestamp - (int) (cur >>> 32) < WINDOW) total += (int) cur;
+        }
+        return (int) total;
+    }
+}
+```
+
+- hit 仍是 O(1)、无锁；getHits 是 O(300) 的一致性快照（每个槽单独读，槽间不强一致，对计数器语义足够）。
+- 比 `synchronized` 全局串行强：只在同一槽（同一秒）上竞争，不同秒的 hit 互不阻塞。
+
+**② QPS：热点秒上的 CAS 竞争**
+
+上面的 CAS 版在「同一秒内百万并发」时，所有线程都 CAS 同一个槽，自旋重试会飙升。这时该用 **`LongAdder` 的分段（striping）**思想——把计数摊到多个 cell 上，减少单点竞争。跨秒重置很罕见，单独用 CAS 保证只有一个线程清零：
+
+```java
+import java.util.concurrent.atomic.AtomicIntegerArray;
+import java.util.concurrent.atomic.LongAdder;
+
+class HighQpsHitCounter {
+    private static final int WINDOW = 300;
+    private final LongAdder[]       counts = new LongAdder[WINDOW];
+    private final AtomicIntegerArray times = new AtomicIntegerArray(WINDOW);
+
+    public HighQpsHitCounter() {
+        for (int i = 0; i < WINDOW; i++) counts[i] = new LongAdder();
+    }
+
+    public void hit(int timestamp) {
+        int i = timestamp % WINDOW;
+        int ts = times.get(i);
+        if (ts != timestamp && times.compareAndSet(i, ts, timestamp)) {
+            counts[i].reset();          // 跨秒：只有 CAS 成功者清零（罕见路径）
+        }
+        counts[i].increment();          // 常态路径：striped，低竞争
+    }
+
+    public int getHits(int timestamp) {
+        long total = 0;
+        for (int i = 0; i < WINDOW; i++) {
+            if (timestamp - times.get(i) < WINDOW) total += counts[i].sum();
+        }
+        return (int) total;
+    }
+}
+```
+
+- 常态自增走 `LongAdder`，高竞争下吞吐远超单个 `AtomicLong`（这正是 JDK 里 `LongAdder` 的用途）。
+- **代价**：跨秒瞬间存在极小的竞态——某线程在另一线程 `reset()` 之前就 `increment()`，这一票会被清掉。对「近似计数器」可接受；要严格精确就退回 ① 的打包 CAS。这是一个典型的**吞吐 vs 精度**取舍。
+- 再往上（单机扛不住）就分片：多个计数器实例按线程/请求 hash 打散，getHits 时汇总；或直接下沉到 Redis / 时序库做分布式滑窗。
+
+**③ 精度 / 空间权衡：桶粒度可调**
+
+题目默认 1 秒粒度 → 300 个槽。这本质是「窗口大小 / 桶粒度 = 桶数」：
+
+| 桶粒度 | 桶数（5 分钟窗口） | 空间 | getHits 成本 | 边界误差 |
+|--------|--------|------|------|------|
+| 1 秒 | 300 | 中 | O(300) | ≤1 秒 |
+| 10 秒 | 30 | 小 | O(30) | ≤10 秒 |
+| 1 毫秒 | 300,000 | 大 | O(3e5) | ≤1 毫秒 |
+
+粒度越粗，越省内存、getHits 越快，但窗口边界上最多有「一个桶」的误差（滑窗被近似成了跳窗）。把粒度做成参数即可按业务在精度和成本间取舍：
+
+```java
+class BucketedHitCounter {
+    private final int  bucketSec;   // 每桶秒数，如 10
+    private final int  n;           // 桶数 = window / bucketSec
+    private final long[] times;     // 桶对齐后的起始桶号
+    private final long[] counts;
+
+    public BucketedHitCounter(int windowSeconds, int bucketSeconds) {
+        this.bucketSec = bucketSeconds;
+        this.n      = windowSeconds / bucketSeconds;
+        this.times  = new long[n];
+        this.counts = new long[n];
+    }
+
+    public synchronized void hit(long timestamp) {
+        long bucket = timestamp / bucketSec;
+        int i = (int) (bucket % n);
+        if (times[i] != bucket) { times[i] = bucket; counts[i] = 0; }
+        counts[i]++;
+    }
+
+    public synchronized long getHits(long timestamp) {
+        long cur = timestamp / bucketSec, total = 0;
+        for (int i = 0; i < n; i++) if (cur - times[i] < n) total += counts[i];
+        return total;
+    }
+}
+```
+
+**一句话总结取舍：** 要严格线程安全→打包 CAS；要极致吞吐→`LongAdder` 分段 + 容忍边界近似；要省内存/快查询→放粗桶粒度换精度；单机撑不住→分片或下沉到分布式存储。
+
+**标签：** #algorithm #concurrency
 
 ---
 
